@@ -20,6 +20,7 @@ return new class extends Migration
             $table->datetime('order_date');
             $table->unsignedBigInteger('total_amount');
             $table->enum('status', ['paid', 'unpaid', 'canceled'])->default('unpaid');
+            $table->string('qr_token', 60)->nullable();
             $table->timestamps();
         });
     }

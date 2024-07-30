@@ -13,6 +13,9 @@ class OrderController extends Controller
     public function index()
     {
         //
+        $order = order::with('customer', 'product')->get();
+        return view('order.index', compact('order'));
+
     }
 
     /**

@@ -15,6 +15,7 @@ class Order extends Model
         'order_date',
         'total_amount',	
         'status',	
+        'qr_token',	
     ];
 
     public function customer(){

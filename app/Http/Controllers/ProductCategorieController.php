@@ -13,7 +13,9 @@ class ProductCategorieController extends Controller
     public function index()
     {
         //
-        return view('productcategories.index');
+        return view('productcategories.index',[
+            'productcat' => Product_categorie::all()
+        ]);
     }
 
     /**
@@ -22,6 +24,7 @@ class ProductCategorieController extends Controller
     public function create()
     {
         //
+        return view('productcategories.create');
     }
 
     /**
@@ -30,6 +33,20 @@ class ProductCategorieController extends Controller
     public function store(Request $request)
     {
         //
+        $request->validate([
+            'category_name' => 'required',
+            'type' => 'required',
+            'cycle' => 'required',
+        ]);
+
+        
+        $productcat = new Product_categorie();
+        $productcat->category_name = $request->category_name;
+        $productcat->type = $request->type;
+        $productcat->cycle = $request->cycle;
+        $productcat->save();
+    
+        return redirect()->route('productcategories.index')->with('success', 'productcat created successfully.');
     }
 
     /**
@@ -43,24 +60,44 @@ class ProductCategorieController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product_categorie $product_categorie)
+    public function edit(Product_categorie $product_categorie, $id)
     {
         //
+        $productcat = Product_categorie::findOrFail($id);
+
+        return view('productcategories.edit', compact('productcat'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product_categorie $product_categorie)
+    public function update(Request $request,$id, Product_categorie $product_categorie)
     {
         //
+        $request->validate([
+            'category_name' => 'required',
+            'type' => 'required',
+            'cycle' => 'required',
+        ]);
+
+        
+        $productcat = Product_categorie::findOrFail($id);
+        $productcat->category_name = $request->category_name;
+        $productcat->type = $request->type;
+        $productcat->cycle = $request->cycle;
+        $productcat->save();
+    
+        return redirect()->route('productcategories.index')->with('success', 'productcat created successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product_categorie $product_categorie)
+    public function destroy(Product_categorie $product_categorie, $id)
     {
         //
+        $productcat = product_categorie::findOrFail($id);
+        $productcat->delete();
+        return redirect()->route('productcategories.index')->with('success', 'productcategories berhasil dihapus.');
     }
 }
