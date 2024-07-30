@@ -22,18 +22,18 @@
                   <form action="{{ route('productcategories.store')}}" method="POST" enctype="multipart/form-data">
                       @csrf
                         <div class="mb-3 ms-3 me-3">
-                            <label for="category_name" class="form-label">category_name</label>
-                            <input type="text" class="ps-2 form-control border border-secondary-subtle @error('category_name') is-invalid @enderror" placeholder="category_name" aria-label="category_name" id="category_name" name="category_name" value="{{ old('category_name') }}">
+                            <label for="category_name" class="form-label">category name</label>
+                            <input type="text" class="ps-2 form-control border border-secondary-subtle @error('category_name') is-invalid @enderror" placeholder="category name" aria-label="category_name" id="category_name" name="category_name" value="{{ old('category_name') }}">
                             @error('category_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 ms-3 me-3">
-                            <label for="type" class="form-label">type</label>
-                            <input type="text" class="ps-2 form-control border border-secondary-subtle @error('type') is-invalid @enderror" placeholder="type" aria-label="type" id="type" name="type" value="{{ old('type') }}">
-                            @error('type')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                          <label for="type">Type</label>
+                          <select class="form-select @error('type') is-invalid @enderror" id="type" name="type">
+                              <option value="day" @if (old('type') == 'day') selected @endif>Day</option>
+                              <option value="month" @if (old('type') == 'month') selected @endif>Month</option>
+                          </select>
                         </div>
                         <div class="mb-3 ms-3 me-3">
                             <label for="cycle" class="form-label">cycle</label>

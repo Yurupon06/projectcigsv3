@@ -31,15 +31,15 @@
                             </select>
                         </div>
                         <div class="mb-3 ms-3 me-3">
-                            <label for="product_name" class="form-label">product_name</label>
-                            <input type="text" class="ps-2 form-control border border-secondary-subtle @error('product_name') is-invalid @enderror" placeholder="product_name" aria-label="product_name" id="product_name" name="product_name" value="{{ old('product_name') }}">
+                            <label for="product_name" class="form-label">product name</label>
+                            <input type="text" class="ps-2 form-control border border-secondary-subtle @error('product_name') is-invalid @enderror" placeholder="product name" aria-label="product_name" id="product_name" name="product_name" value="{{ old('product_name') }}">
                             @error('product_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="mb-3 ms-3 me-3">
                             <label for="description" class="form-label">description</label>
-                            <textarea class="ps-2 form-control border border-secondary-subtle" name="description" id="description" placeholder="Deskiripsi"></textarea>
+                            <textarea class="ps-2 form-control border border-secondary-subtle" name="description" id="description" placeholder="Description"></textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
