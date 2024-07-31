@@ -1,64 +1,165 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <title>Daftar</title>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Register</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+        }
+
+        .container {
+            padding: 2rem;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
+            padding: 2rem;
+            background-color: #404040;
+        }
+
+        .btn-primary {
+            background-color: #ff4b2b;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #ff1c1c;
+        }
+
+        .form-floating > label {
+            color: #bfbfbf;
+        }
+
+        .form-floating > .form-control:focus ~ label {
+            color: #ffffff;
+        }
+
+        .form-control {
+            background-color: #3c3c3c;
+            color: #ffffff;
+            border: 1px solid #ff4b2b;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(255, 75, 43, 0.2);
+        }
+
+        .form-control:focus {
+            background-color: #3c3c3c;
+            color: #ffffff;
+            border: 1px solid #ff4b2b;
+            box-shadow: 0 4px 10px rgba(255, 75, 43, 0.2);
+        }
+
+        .invalid-feedback {
+            color: #ff4b2b;
+        }
+
+        .form-links {
+            color: #ffffff;
+            text-align: center;
+            display: block;
+            margin-top: 1rem;
+        }
+
+        .form-links a {
+            color: #ff4b2b;
+            text-decoration: none;
+        }
+
+        .form-links a:hover {
+            text-decoration: underline;
+        }
+
+        h3 {
+            font-weight: 600;
+        }
+
+        /* Media Queries */
+        @media (max-width: 767.98px) {
+            .container {
+                padding: 2rem 1.5rem; 
+            }
+            h3 {
+                font-size: 1.5rem; 
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .container {
+                padding: 2rem 1rem; 
+            }
+            h3 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container mt-5">
+    <main class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-6">
+            <div class="col-lg-6 col-md-8 col-sm-10">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="text-center">Daftar</h3>
+                        <h3 class="text-center">Register</h3>
                     </div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
-                            <div class="mb-3">
-                                <label for="name" class="form-label">Nama</label>
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" id="floatingName" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                                <label for="floatingName">Name</label>
                                 @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required autocomplete="email">
+                            <div class="form-floating mb-3">
+                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="floatingEmail" name="email" value="{{ old('email') }}" required autocomplete="email">
+                                <label for="floatingEmail">Email</label>
                                 @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Kata Sandi</label>
-                                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required autocomplete="new-password">
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control @error('password') is-invalid @enderror" id="floatingPassword" name="password" required autocomplete="new-password">
+                                <label for="floatingPassword">Password</label>
                                 @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                    <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="mb-3">
-                                <label for="password-confirm" class="form-label">Konfirmasi Kata Sandi</label>
-                                <input type="password" class="form-control" id="password-confirm" name="password_confirmation" required autocomplete="new-password">
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="floatingPasswordConfirm" name="password_confirmation" required autocomplete="new-password">
+                                <label for="floatingPasswordConfirm">Confirm Password</label>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Daftar</button>
+                            <button type="submit" class="btn btn-primary w-100">Register</button>
                         </form>
                     </div>
                     <div class="card-footer text-center">
-                        <p>Sudah punya akun? <a href="{{ route('login') }}">Masuk</a></p>
+                        <p>Already have an account? <a href="{{ route('login') }}" style="color: #ff4b2b;">Login</a></p>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous"></script>
 </body>
+
 </html>
