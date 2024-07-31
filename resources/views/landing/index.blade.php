@@ -84,7 +84,7 @@
 						<a href="" class="flex-c-m trans-04 p-lr-25">
                             Login
                         </a>
-                        <a href="" class="flex-c-m trans-04 p-lr-25">
+                        <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25">
                             Register
                         </a>
 					</div>
@@ -107,10 +107,10 @@
 		<div class="menu-mobile">
 			<ul class="main-menu-m">
 				<li>
-					<a href="index.html">Login</a>
+					<a href="">Login</a>
 				</li>
 				<li>
-					<a href="index.html">Register</a>
+					<a href="{{ route('register') }}">Register</a>
 				</li>
 
 				<li>
@@ -137,7 +137,7 @@
 						<div class="flex-col-l-m h-full p-t-100 p-b-30">
 								
 							<div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="0">
-								<a href="product.html" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
+								<a href="{{ route('register') }}" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
 									Join Now
 								</a>
 							</div>

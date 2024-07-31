@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/', function () {
@@ -18,3 +19,14 @@ Route::resource('user', \App\Http\Controllers\UserController::class);
 Route::resource('member', \App\Http\Controllers\MemberController::class);
 Route::resource('order', \App\Http\Controllers\OrderController::class);
 Route::resource('payment', \App\Http\Controllers\PaymentController::class);
+
+// Register
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/forgot', [AuthController::class, 'showForgotForm'])->name('forgot');
+Route::post('/forgot', [AuthController::class, 'forgot']);
+
+Route::post('/reset', [AuthController::class, 'reset'])->name('reset');
