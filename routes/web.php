@@ -29,7 +29,12 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/forgot', [AuthController::class, 'showForgotForm'])->name('forgot');
-Route::post('/forgot', [AuthController::class, 'forgot']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/forgot', [AuthController::class, 'showForgotForm'])->name('show-forgot');
+Route::post('/forgot', [AuthController::class, 'forgot'])->name('forgot');
+
+Route::get('/reset/{token}', function (string $token) { 
+    return view('auth.reset-password', ['token' => $token]);
+})->name('password.reset');
 Route::post('/reset', [AuthController::class, 'reset'])->name('reset');

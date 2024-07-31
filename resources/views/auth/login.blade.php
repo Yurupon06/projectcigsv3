@@ -74,7 +74,7 @@
                         </div>
                         <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button><br>
                         <a href="{{ route('register') }}" class="w-100 btn btn-sm mt-2 btn-secondary">Register</a>
-                        <a href="{{ route('forgot') }}" class="w-100 btn btn-sm mt-2 btn-secondary">Forgot Password</a>
+                        <a href="{{ route('show-forgot') }}" class="w-100 btn btn-sm mt-2 btn-secondary">Forgot Password</a>
                     </form>
                 </div>
             </div>

@@ -81,12 +81,19 @@
 					</div>	
 
 					<div class="wrap-icon-header flex-w flex-r-m h-full">
-						<a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25">
-                            Login
-                        </a>
-                        <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25">
-                            Register
-                        </a>
+						@guest
+							<a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25">
+								Login
+							</a>
+							<a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25">
+								Register
+							</a>
+						@else
+							<form onsubmit="return confirm('Apakah anda yakin ingin logout?')" action="{{ route('logout') }}" method="POST">
+								@csrf
+								<button type="submit" class="btn btn-danger me-3">Logout</button>
+							</form>
+						@endguest
 					</div>
 				</nav>
 			</div>	
