@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing.index');
 
 
+Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login');
 Route::resource('dashboard', \App\Http\Controllers\DashboardController::class);
 Route::resource('productcategories', \App\Http\Controllers\ProductCategorieController::class);
 Route::resource('product', \App\Http\Controllers\ProductController::class);
@@ -19,6 +20,8 @@ Route::resource('user', \App\Http\Controllers\UserController::class);
 Route::resource('member', \App\Http\Controllers\MemberController::class);
 Route::resource('order', \App\Http\Controllers\OrderController::class);
 Route::resource('payment', \App\Http\Controllers\PaymentController::class);
+
+
 
 // Register
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');

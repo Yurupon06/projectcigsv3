@@ -81,7 +81,7 @@
 					</div>	
 
 					<div class="wrap-icon-header flex-w flex-r-m h-full">
-						<a href="" class="flex-c-m trans-04 p-lr-25">
+						<a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25">
                             Login
                         </a>
                         <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25">
@@ -107,7 +107,7 @@
 		<div class="menu-mobile">
 			<ul class="main-menu-m">
 				<li>
-					<a href="">Login</a>
+					<a href="{{ route('login')}}">Login</a>
 				</li>
 				<li>
 					<a href="{{ route('register') }}">Register</a>
