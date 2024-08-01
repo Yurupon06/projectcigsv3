@@ -43,6 +43,18 @@
             background-color: #ff1c1c;
         }
 
+        .btn-back {
+            background-color: #3c3c3c;
+            border: 1px solid #ff4b2b;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .btn-back:hover {
+            background-color: #ff4b2b;
+            border: 1px solid #ff4b2b;
+        }
+
         .form-floating > label {
             color: #bfbfbf;
         }
@@ -86,11 +98,28 @@
             text-decoration: underline;
         }
 
-        h3 {
-            font-weight: 600;
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0; 
         }
 
-        /* Media Queries */
+        .logo {
+            width: 150px;
+            height: auto;
+        }
+
+        h3 {
+            font-weight: 600;
+            margin: 0; 
+        }
+
+        .card-body {
+            padding-top: 1rem; 
+        }
+
         @media (max-width: 767.98px) {
             .container {
                 padding: 2rem 1.5rem; 
@@ -117,6 +146,7 @@
             <div class="col-lg-6 col-md-8 col-sm-10">
                 <div class="card">
                     <div class="card-header">
+                        <img src="../assets/images/logo_gym.png" alt="Logo" class="logo">
                         <h3 class="text-center">Register</h3>
                     </div>
                     <div class="card-body">
@@ -148,6 +178,7 @@
                                 <label for="floatingPasswordConfirm">Confirm Password</label>
                             </div>
                             <button type="submit" class="btn btn-primary w-100">Register</button>
+                            <a href="{{ url()->previous() }}" class="btn btn-back w-100 mt-3">Back</a>
                         </form>
                     </div>
                     <div class="card-footer text-center">
