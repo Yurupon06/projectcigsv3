@@ -130,7 +130,7 @@
                             @enderror
                         </div>
                         <div class="form-floating mb-3">
-                            <input name="password" type="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="floatingPassword" placeholder="Password" required minlength="6">
+                            <input name="password" type="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="floatingPassword" placeholder="Password" required>
                             <label for="floatingPassword">Password</label>
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
