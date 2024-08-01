@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -25,7 +26,8 @@ class UserController extends Controller
     public function create()
     {
         //
-        return view('user.create');
+        $roles = User::all();
+        return view('user.create', compact('roles'));
     }
 
     /**
@@ -33,22 +35,25 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,',
-            'password' => 'required|string|min:3|',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:admin,customer,cashier', // Validasi role
         ]);
 
-        
-        $user = new user();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = bcrypt($request->password);
+        // Simpan data pengguna
+        $user = new User();
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->password = Hash::make($request->input('password'));
+        $user->role = $request->input('role'); 
         $user->save();
-    
-        return redirect()->route('user.index')->with('success', 'user created successfully.');
+
+        return redirect()->route('user.index')->with('success', 'User created successfully.');
     }
+
 
     /**
      * Display the specified resource.
@@ -61,35 +66,29 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
-    {
-        //
-        $user = user::findOrFail($id);
-        return view('user.edit', compact('user'));
-    }
+    public function edit(User $user)
+{
+    return view('user.edit', compact('user'));
+}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,',
-        ]);
+public function update(Request $request, User $user)
+{
+    // Validasi input
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+        'role' => 'required|in:admin,customer,cashier', // Validasi role
+    ]);
 
-        
-        $user = user::findOrFail($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
-        if ($request->password) {
-            $user->password = bcrypt($request->password);
-        }
-        $user->save();
-    
-        return redirect()->route('user.index')->with('success', 'user created successfully.');
-    }
+    // Update data pengguna
+    $user->name = $request->input('name');
+    $user->email = $request->input('email');
+
+    $user->role = $request->input('role');
+    $user->save();
+
+    return redirect()->route('user.index')->with('success', 'User updated successfully.');
+}
 
     /**
      * Remove the specified resource from storage.
