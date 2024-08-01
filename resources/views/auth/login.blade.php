@@ -24,7 +24,7 @@
         .card {
             border: none;
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3); 
+            box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
             padding: 2rem;
             background-color: #404040;
         }
@@ -51,7 +51,7 @@
             color: #ffffff;
             border: 1px solid #ff4b2b;
             border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(255, 75, 43, 0.2); 
+            box-shadow: 0 2px 10px rgba(255, 75, 43, 0.2);
         }
 
         .form-control:focus {
@@ -73,7 +73,7 @@
         }
 
         .form-links a {
-            color: #ff4b2b; 
+            color: #ff4b2b;
             text-decoration: none;
         }
 
@@ -82,7 +82,19 @@
         }
 
         h1 {
-            font-weight: 600; 
+            font-weight: 600;
+            margin-top: 0.10rem;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 0.10rem auto; 
+            width: 300px; 
+            height: auto;
+        }
+
+        .card-content {
+            text-align: center;
         }
     </style>
 </head>
@@ -95,7 +107,10 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                    <h1 class="h3 mb-3 fw-normal text-center">Gym Login</h1>
+                    <div class="card-content">
+                        <img src="../assets/images/logo_gym.png" alt="Logo" class="logo">
+                        <h1 class="h3 mb-3 fw-normal">Sign In</h1>
+                    </div>
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-floating mb-3">
