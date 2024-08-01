@@ -14,7 +14,7 @@
             <div class="card my-4">
               <div class="card-header pb-0">
                 <a href="{{route('order.create')}}"><span class="badge badge-sm bg-gradient-primary mb-3 fs-6 ">add new item</span></a>
-                <h6>order</h6>
+                <h6>Order</h6>
               </div>
                 <div class="card-body px-0 pb-2">
                   <div class="table-responsive p-0">
