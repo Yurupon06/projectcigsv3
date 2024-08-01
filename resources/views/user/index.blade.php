@@ -55,11 +55,6 @@
                         
                           <td class="align-middle text-center text-sm">
                             <a href="{{ route('user.edit', $dt->id) }}"><span class="badge badge-sm bg-gradient-success">edit</span></a>
-                            <form action="{{ route('user.destroy', $dt->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="badge badge-sm bg-gradient-danger" onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
-                            </form>
                           </td>
                         
                           
