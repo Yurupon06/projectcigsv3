@@ -25,8 +25,10 @@
             border: none;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
-            padding: 2rem;
+            padding: 1.5rem;
             background-color: #404040;
+            max-width: 400px;
+            margin: 2rem auto;
         }
 
         .btn-primary {
@@ -88,13 +90,20 @@
 
         .logo {
             display: block;
-            margin: 0 auto 0.10rem auto; 
-            width: 300px; 
+            margin: 0 auto 0.10rem auto;
+            width: 250px;
             height: auto;
         }
 
         .card-content {
             text-align: center;
+        }
+
+        @media (min-width: 992px) {
+            .card {
+                padding: 2rem;
+                max-width: 500px;
+            }
         }
     </style>
 </head>
@@ -114,14 +123,14 @@
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-floating mb-3">
-                            <input name="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com">
+                            <input name="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" required>
                             <label for="floatingInput">Email address</label>
                             @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="form-floating mb-3">
-                            <input name="password" type="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="floatingPassword" placeholder="Password">
+                            <input name="password" type="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="floatingPassword" placeholder="Password" required minlength="6">
                             <label for="floatingPassword">Password</label>
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>

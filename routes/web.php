@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing.index');
 
 
-Route::post('/login', [App\Http\Controllers\Auth\LoginController::class, 'login'])->name('login');
 Route::resource('dashboard', \App\Http\Controllers\DashboardController::class);
 Route::resource('productcategories', \App\Http\Controllers\ProductCategorieController::class);
 Route::resource('product', \App\Http\Controllers\ProductController::class);
