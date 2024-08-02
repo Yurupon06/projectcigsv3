@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->ondelete('cascade')->onupdate('cascade');
-            $table->string('phone', 20);
-            $table->date('born');
+            $table->string('phone', 20)->nullable();
+            $table->date('born')->nullable();
             $table->enum('gender', ['men', 'women'])->default('men');
             $table->timestamps();
         });
