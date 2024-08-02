@@ -172,7 +172,7 @@
                         <div class="flex-col-l-m h-full p-t-100 p-b-30">
 
                             <div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="0">
-                                <a href="{{ route('register') }}"
+                                <a href="#product-section"
                                     class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                                     Join Now
                                 </a>
