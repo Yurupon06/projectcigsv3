@@ -19,7 +19,7 @@
             align-items: center;
             height: 100vh;
             font-family: 'Poppins', sans-serif;
-            margin: 3rem;
+            margin: 1rem;
         }
 
         .container {
@@ -30,10 +30,9 @@
             border: none;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
-            padding: 1.5rem; /* Reduced padding */
+            padding: 1rem; /* Reduced padding */
             background-color: #404040;
             max-width: 500px; /* Set maximum width */
-            margin: auto; /* Center card and add margin */
         }
 
         .btn-primary {
@@ -132,9 +131,7 @@
         }
 
         @media (max-width: 575.98px) {
-            .container {
-                padding: 2rem 1rem; 
-            }
+            .container 
             h3 {
                 font-size: 1.25rem;
             }
