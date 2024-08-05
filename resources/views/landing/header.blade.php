@@ -44,6 +44,7 @@
 
                         <li class="label1" data-label1="hot">
                             <a href="{{ route('landing.index') }}">Membership</a>
+
                         </li>
                     </ul>
                 </div>	
