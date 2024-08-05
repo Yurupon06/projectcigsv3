@@ -2,14 +2,12 @@
 @include('landing.header')
 
 <style>
-/* Style for the container */
 .container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
 
-/* Navigation links styling */
 .navigation-links {
     display: flex;
     justify-content: space-between;
@@ -25,8 +23,6 @@
 .navigation-links a:hover {
     text-decoration: underline;
 }
-
-/* Profile section styling */
 .profile-section {
     background-color: #f9f9f9;
     padding: 20px;
@@ -107,7 +103,7 @@
     </div>
 </div>
 
-<!-- Modal for updating profile -->
+<!-- Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

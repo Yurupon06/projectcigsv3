@@ -42,8 +42,13 @@
                             <a href="{{ route('landing.index') }}">Home</a>
                         </li>
 
-                        <li class="label1" data-label1="hot">
+                        <li>
+                            <a href="{{ route('yourorder.index') }}">My Order</a>
+                        </li>
+
+                        <li>
                             <a href="{{ route('landing.index') }}">Membership</a>
+
                         </li>
                     </ul>
                 </div>	
@@ -110,9 +115,12 @@
             <li>
                 <a href="{{ route('landing.index') }}">Home</a>
             </li>
+            <li>
+                <a href="{{ route('yourorder.index') }}">My Order</a>
+            </li>
 
             <li>
-                <a href="product.html" class="label1 rs1" data-label1="hot">Membership</a>
+                <a href="product.html">Membership</a>
             </li>
         </ul>
     </div>

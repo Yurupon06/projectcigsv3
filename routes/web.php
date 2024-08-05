@@ -10,9 +10,13 @@ use Illuminate\Support\Facades\Route;
 // In routes/web.php
 Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing.index');
 
+
 Route::middleware((['auth', 'customer']))->group(function (){
     Route::get('/profile', [\App\Http\Controllers\LandingController::class, 'profile'])->name('landing.profile');
     Route::post('/profile', [\App\Http\Controllers\LandingController::class, 'profileUpdate'])->name('update.profile');
+    Route::get('/myorder', [\App\Http\Controllers\LandingController::class, 'order'])->name('yourorder.index');
+    Route::post('/myorder', [\App\Http\Controllers\LandingController::class, 'orderStore'])->name('yourorder.update');
+    
     
 });
 

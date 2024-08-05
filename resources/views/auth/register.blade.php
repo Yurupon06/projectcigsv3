@@ -132,9 +132,7 @@
         }
 
         @media (max-width: 575.98px) {
-            .container {
-                padding: 2rem 1rem; 
-            }
+            .container 
             h3 {
                 font-size: 1.25rem;
             }
