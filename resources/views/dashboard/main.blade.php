@@ -23,13 +23,37 @@
                 </div>
               </a>
             </li>
-            <li class="nav-item px-3 d-flex align-items-center">
+            @auth
+            <li class="nav-item d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
+                  <i class="fa fa-user me-sm-1"></i>
+                  <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
+                  <span class="d-sm-inline d-none"> - {{ Auth::user()->role }}</span>
+              </a>
+              <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link text-body font-weight-bold px-0 ms-4">
+                  <i class="fa fa-sign-out me-1"></i>
+                  <span class="d-sm-inline d-none">Sign Out</span>
+                  <style>
+                      a:hover .fa-sign-out {
+                          color: #D81B60; 
+                      }
+                      a:hover span {
+                          color: #D81B60; 
+                      }
+                  </style>
+              </a>
+              <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                  @csrf
+              </form>
+          </li>
+            @else
             <li class="nav-item d-flex align-items-center">
               <a href="{{ route('login') }}" class="nav-link text-body font-weight-bold px-0">
                 <i class="fa fa-user me-sm-1"></i>
                 <span class="d-sm-inline d-none">Sign In</span>
               </a>
             </li>
+            @endauth
           </ul>
         </div>
       </div>

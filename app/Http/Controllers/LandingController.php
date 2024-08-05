@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Customer;
+use Illuminate\Support\Facades\Auth;
 
 class LandingController extends Controller
 {
@@ -17,51 +19,30 @@ class LandingController extends Controller
         return view('landing.index', compact('products'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function profile(){
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        return view('landing.profile', compact('user', 'customer'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function profileUpdate(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'phone' => 'required|string|max:20',
+            'born' => 'required|date',
+            'gender' => 'required|in:men,women',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        $user = Auth::user();
+        $customer = Customer::updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'phone' => $request->phone,
+                'born' => $request->born,
+                'gender' => $request->gender,
+            ]
+        );
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('landing.profile')->with('success', 'Profile updated successfully.');
     }
 }

@@ -142,7 +142,7 @@
                         </form>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="{{ url()->previous() }}" class="btn btn-back w-100">Back</a>
+                        <a href="{{ route('login') }}" class="btn btn-back w-100">Back</a>
                     </div>
                 </div>
             </div>

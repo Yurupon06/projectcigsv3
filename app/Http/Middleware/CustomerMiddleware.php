@@ -16,7 +16,7 @@ class CustomerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::user()->roles== 'customer'){
+        if(Auth::user()->role== 'customer'){
             return $next($request);
         }
         abort(403);
