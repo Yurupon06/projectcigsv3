@@ -1,3 +1,4 @@
+
 @extends('landing.master')
 @include('landing.header')
 
@@ -80,7 +81,3 @@
 		</span>
 	</div>
 
-
-
-</body>
-</html>

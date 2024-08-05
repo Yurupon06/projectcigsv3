@@ -19,7 +19,7 @@
             align-items: center;
             height: 100vh;
             font-family: 'Poppins', sans-serif;
-            margin: 0;
+            margin: 1rem;
         }
 
         .container {

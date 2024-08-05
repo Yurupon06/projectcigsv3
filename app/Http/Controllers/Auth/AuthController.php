@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -40,6 +41,10 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'roles' => 'customer'
+        ]);
+
+        Customer::create([
+            'user_id' => User::latest()->first()->id,
         ]);
 
         return redirect()->route('login');

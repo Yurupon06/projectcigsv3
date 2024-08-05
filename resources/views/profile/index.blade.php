@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Gym Login</title>
+    <title>Edit Profile</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -19,17 +19,14 @@
             align-items: center;
             height: 100vh;
             font-family: 'Poppins', sans-serif;
-            margin: 1rem;
         }
 
         .card {
             border: none;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
-            padding: 1.5rem;
+            padding: 2rem;
             background-color: #404040;
-            max-width: 400px;
-            margin: 2rem auto;
         }
 
         .btn-primary {
@@ -42,7 +39,7 @@
         }
 
         .form-floating > label {
-            color: #bfbfbf;
+            color: #ffffff;
         }
 
         .form-floating > .form-control:focus ~ label {
@@ -50,7 +47,7 @@
         }
 
         .form-control {
-            background-color: #3c3c3c;
+            background-color: #404040;
             color: #ffffff;
             border: 1px solid #ff4b2b;
             border-radius: 10px;
@@ -91,8 +88,8 @@
 
         .logo {
             display: block;
-            margin: 0 auto 0.10rem auto;
-            width: 250px;
+            margin: 0 auto 0.10rem auto; 
+            width: 300px; 
             height: auto;
         }
 
@@ -100,55 +97,92 @@
             text-align: center;
         }
 
-        @media (min-width: 992px) {
-            .card {
-                padding: 2rem;
-                max-width: 500px;
-            }
+        .profile-detail {
+          border: 1px solid #ff4b2b;
+          border-radius: 10px;
+          padding: 10px;
+          margin-bottom: 20px;
         }
+
+        .profile-detail p {
+          margin: 0;
+        }
+
+        .btn-orange {
+          background-color: #ff4b2b;
+        }
+
+        .btn-grey {
+          background-color: #696969;
+        }
+
     </style>
 </head>
 
 <body>
     <main class="container">
-        @if($message = session('success'))
-        <div class="alert alert-success my-2 text-success" role="alert">{{ $message }}</div>
-        @endif
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-content">
-                        <img src="../assets/images/logo_gym.png" alt="Logo" class="logo">
-                        <h1 class="h3 mb-3 fw-normal">Sign In</h1>
+                    <h3>Profile</h3>
+                    <div>
+                      <h6>Name</h6>
+                    <div class="profile-detail">
+                      <p>{{ $user->name }}</p>
                     </div>
-                    <form action="{{ route('login') }}" method="POST">
-                        @csrf
-                        <div class="form-floating mb-3">
-                            <input name="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" required>
-                            <label for="floatingInput">Email address</label>
-                            @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input name="password" type="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="floatingPassword" placeholder="Password" required>
-                            <label for="floatingPassword">Password</label>
-                            @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-                        <div class="form-links">
-                            <a href="{{ route('register') }}">Register</a> | <a href="{{ route('show-forgot') }}">Forgot Password</a>
-                        </div>
-                    </form>
+                    </div>
+
+                    <div>
+                      <h6>Email</h6>
+                    <div class="profile-detail">
+                      <p>{{ $user->email }}</p>
+                    </div>
+                    </div>
+
+                    <div>
+                      <h6>Phone Number</h6>
+                    <div class="profile-detail">
+                      <p>{{ $customer->phone ?? 'Not Found'}}</p>
+                    </div>
+                    </div>
+
+                    <div>
+                      <h6>Gender</h6>
+                    <div class="profile-detail">
+                      <p>{{ $customer->gender }}</p>
+                    </div>
+                    </div>
+
+                    <div>
+                      <h6>Birthdate</h6>
+                    <div class="profile-detail">
+                      <p>{{ $customer->born ?? 'Not Found'}}</p>
+                    </div>
+                    </div>
+                    <div>
+                      <a href="{{ route('profile.edit', $profile = $customer->id) }}" class="btn btn-orange text-white">Edit Profile</a>
+                      <a href="{{ route('landing.index') }}" class="btn btn-grey text-white">Back</a>
+                    </div>
+                      
                 </div>
             </div>
         </div>
     </main>
 
+    {{-- Sweet Alert --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous"></script>
+
+    <script>
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ session('success') }}',
+            })
+        @endif
+    </script>
 </body>
 
 </html>
