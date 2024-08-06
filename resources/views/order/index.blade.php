@@ -8,12 +8,14 @@
 @section('main')
     @include('dashboard.main')
 
+
+
       <div class="container-fluid py-4">
         <div class="row">
           <div class="col-12">
             <div class="card my-4">
               <div class="card-header pb-0">
-                <a href="{{route('order.create')}}"><span class="badge badge-sm bg-gradient-primary mb-3 fs-6 ">add new item</span></a>
+                <a href="{{route('scanner')}}"><span class="badge badge-sm bg-gradient-primary mb-3 fs-6 ">Scan QR</span></a>
                 <h6>Order</h6>
               </div>
                 <div class="card-body px-0 pb-2">
@@ -42,23 +44,22 @@
                             </div>
                           </td>
                           <td>
-                            {{ $dt->customer->customer_id }}
+                            {{ $dt->customer->user->name }}
                           </td>
                           <td>
-                            {{ $dt->product->product_id }}
+                            {{ $dt->product->product_name }}
                           </td>
                           <td>
                             {{$dt->order_date}}
                           </td>
                           <td>
-                            {{$dt->total_amount}}
+                            Rp.{{ number_format($dt->total_amount, 2) }}
                           </td>
-                          <td>
-                            {{$dt->status}}
+                          <td style="color: {{ $dt->status === 'unpaid' ? 'red' : ($dt->status === 'paid' ? 'green' : 'black') }}">
+                            {{ $dt->status }}
                           </td>
                         
                           <td class="align-middle text-center text-sm">
-                            <a href="{{ route('order.edit', $dt->id) }}"><span class="badge badge-sm bg-gradient-success">edit</span></a>
                             <form action="{{ route('order.destroy', $dt->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')

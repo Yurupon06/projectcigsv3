@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Order;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class LandingController extends Controller
@@ -47,32 +50,42 @@ class LandingController extends Controller
         return redirect()->route('landing.profile')->with('success', 'Profile updated successfully.');
     }
 
+
+
     public function order()
     {
-        // Fetch orders for the authenticated user
         $orders = Order::where('customer_id', Auth::id())->get();
 
-        // Pass orders to the view
         return view('landing.order', compact('orders'));
     }
 
     public function orderStore(Request $request)
     {
-        // Validate the request data
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
+        $qrToken = Str::random(60);
 
-        // Create a new order
-        Order::create([
+        $order = Order::create([
             'customer_id' => Auth::id(),
             'product_id' => $request->product_id,
             'order_date' => now(),
             'total_amount' => $request->total_amount,
             'status' => 'unpaid',
+            'qr_token' => $qrToken,
+
         ]);
 
-        // Redirect back with a success message
-        return redirect()->back()->with('success', 'Order created successfully.');
+        return redirect()->route('checkout', ['id' => $order->id])->with('success', 'Order created successfully.');
+    }
+
+
+
+
+
+
+    public function checkout($id){
+        $order = Order::with('customer', 'product')->find($id);
+        return view('landing.checkout', compact('order'));
     }
 }

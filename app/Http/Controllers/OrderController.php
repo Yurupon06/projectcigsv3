@@ -37,9 +37,10 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
+    public function show()
     {
-        //
+        $order = order::with('customer', 'product')->get();
+        return view('order.show', compact('order'));
     }
 
     /**
@@ -64,5 +65,17 @@ class OrderController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+
+    public function qrscan($qr_token)
+    {
+        $order = Order::where('qr_token', $qr_token)->first();
+    
+        if (!$order) {
+            return redirect()->route('order.index')->with('error', 'Order not found');
+        }
+    
+        return view('order.show', compact('order'));
     }
 }

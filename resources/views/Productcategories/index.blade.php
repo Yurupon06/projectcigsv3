@@ -44,7 +44,7 @@
                             {{$dt->type}}
                           </td>
                           <td>
-                            {{$dt->cycle}} day
+                            {{$dt->cycle}}
                           </td>
                         
                           <td class="align-middle text-center text-sm">
