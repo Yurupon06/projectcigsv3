@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 // In routes/web.php
 Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing.index');
+Route::get('cashier', [\App\Http\Controllers\CashierController::class, 'index'])->name('cashier.index');
 
 
 Route::middleware((['auth', 'customer']))->group(function (){
@@ -29,12 +30,13 @@ Route::middleware((['auth', 'admin']))->group(function (){
     Route::resource('member', \App\Http\Controllers\MemberController::class);
     Route::resource('order', \App\Http\Controllers\OrderController::class);
     Route::resource('payment', \App\Http\Controllers\PaymentController::class);
+    Route::get('/profil', [\App\Http\Controllers\DashboardController::class, 'profile'])->name('dashboard.profil');
+    Route::post('/profil/update', [\App\Http\Controllers\DashboardController::class, 'profileUpdate'])->name('update.profil');
 });
 
 
-
-
-
+// cashier
+Route::middleware((['auth', 'cashier']))->group(function (){});
 
 
 // Register
