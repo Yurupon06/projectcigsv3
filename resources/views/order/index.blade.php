@@ -42,10 +42,10 @@
                             </div>
                           </td>
                           <td>
-                            {{ $dt->customer->customer_id }}
+                            {{ $dt->customer->user->name }} 
                           </td>
                           <td>
-                            {{ $dt->product->product_id }}
+                            {{ $dt->product->product_name }}
                           </td>
                           <td>
                             {{$dt->order_date}}
