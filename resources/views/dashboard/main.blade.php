@@ -32,8 +32,10 @@
             <li class="nav-item d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
                   <i class="fa fa-user me-sm-1"></i>
-                  <span class="d-sm-inline d-none">{{ Auth::user()->name }}</span>
-                  <span class="d-sm-inline d-none"> - {{ Auth::user()->role }}</span>
+                  <a href="{{ route('dashboard.profil')}}" class="flex-c-m trans-04 p-lr-25" >
+                        {{ Auth::user()->name }}-
+                    </a>
+                  <span class="d-sm-inline d-none">{{ Auth::user()->role }}</span>
               </a>
               <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link text-body font-weight-bold px-0 ms-4">
                   <i class="fa fa-sign-out me-1"></i>
