@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing.index');
+Route::get('cashier', [\App\Http\Controllers\CashierController::class, 'index'])->name('cashier.index');
 
 
 Route::middleware((['auth', 'customer']))->group(function (){
@@ -33,9 +34,12 @@ Route::middleware((['auth', 'admin']))->group(function (){
     Route::get('scanner', function () {return view('order.scanner');})->name('scanner');
     Route::get('/order/qrscan/{qr_token}', [\App\Http\Controllers\OrderController::class, 'qrscan'])->name('order.qrscan');
     Route::resource('payment', \App\Http\Controllers\PaymentController::class);
+    Route::get('/profil', [\App\Http\Controllers\DashboardController::class, 'profile'])->name('dashboard.profil');
+    Route::post('/profil/update', [\App\Http\Controllers\DashboardController::class, 'profileUpdate'])->name('update.profil');
 });
 
 
+<<<<<<< HEAD
 Route::middleware('guest')->group(function (){
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
@@ -51,6 +55,18 @@ Route::middleware('guest')->group(function (){
 });
 
 
+=======
+// cashier
+Route::middleware((['auth', 'cashier']))->group(function (){});
+
+
+// Register
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+
+>>>>>>> 032f7b17ccb741586dfc6fea7d8d05ef5d3fecf7
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
