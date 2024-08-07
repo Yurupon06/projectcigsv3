@@ -91,7 +91,7 @@
         .logo {
             display: block;
             margin: 0 auto 0.10rem auto;
-            width: 250px;
+            width: 150px;
             height: auto;
         }
 
@@ -117,7 +117,7 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-content">
-                        <img src="../assets/images/logo_gym.png" alt="Logo" class="logo"><br><br>
+                        <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
                         <h1 class="h3 mb-3 fw-normal">Sign In</h1>
                     </div>
                     <form action="{{ route('login') }}" method="POST">
