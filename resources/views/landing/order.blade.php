@@ -1,9 +1,13 @@
-// resources/views/order/index.blade.php
 
 @extends('dashboard.master')
 @extends('landing.master')
 @include('landing.header')
 
+@if(session('success'))
+    <div class="alert alert-success" role="alert">
+        {{ session('success') }}
+    </div>
+@endif
 <table class="table align-items-center mb-0">
     <thead>
         <tr>
@@ -31,10 +35,10 @@
                 {{ $order->product->product_name }}
             </td>
             <td>
-                {{ $order->order_date }}
+                {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}
             </td>
             <td>
-                Rp.{{ number_format($order->total_amount, 2) }}
+                Rp.{{ number_format($order->total_amount) }}
             </td>
             <td>
                 <span style="color: {{ $order->status == 'unpaid' ? 'red' : ($order->status == 'canceled' ? 'gray' : 'green') }}; font-weight: bold;">
@@ -42,20 +46,12 @@
                 </span>
             </td>
             <td class="align-middle text-center text-sm">
-                @if($order->status == 'unpaid')
-                <form action="" method="POST" style="display:inline;">
+                <a href="{{ route('checkout', $order->id) }}"><span class="badge badge-sm bg-gradient-success">Pay</span></a>
+                <form action="{{route('yourorder.delete', $order->id)}}" method="POST" style="display:inline;">
                     @csrf
-                    @method('PATCH')
-                    <button type="submit" class="badge badge-sm bg-gradient-success">Pay</button>
+                    @method('DELETE')
+                    <button type="submit" class="badge badge-sm bg-gradient-danger" onclick="return confirm('Are you sure you want to Cancel this order?')">Cancel</button>
                 </form>
-                @endif
-                @if($order->status != 'canceled')
-                <form action="" method="POST" style="display:inline;">
-                    @csrf
-                    @method('PATCH')
-                    <button type="submit" class="badge badge-sm bg-gradient-danger" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel</button>
-                </form>
-                @endif
             </td>
         </tr>
         @endforeach

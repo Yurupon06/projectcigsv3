@@ -1,5 +1,9 @@
+@extends('dashboard.master')
+@section('sidebar')
+@section('page-title', 'Profile')
 @extends('landing.master')
-@include('landing.header')
+@section('main')
+    @include('dashboard.main')
 
 <style>
 .container {
@@ -63,7 +67,7 @@
 
 <div class="container">
     <div class="navigation-links">
-        <a href="{{ route('landing.index') }}">Back</a>
+        <a href="{{ route('dashboard.index') }}">Back</a>
     </div>
 
     <div class="profile-section">
@@ -71,11 +75,6 @@
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
-            </div>
-        @endif
-        @if(session('warning'))
-            <div class="alert alert-warning">
-                {{ session('warning') }}
             </div>
         @endif
         <div class="profile-field">
@@ -118,22 +117,22 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('update.profile') }}" method="POST">
+            <form action="{{ route('update.profil') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="phone">Phone</label>
-                        <input type="text" id="phone" name="phone" class="form-control" value="{{ $customer->phone ?? '' }}" required>
+                        <input type="text" id="phone" name="phone" class="form-control" value="{{ $admin->phone ?? '' }}" required>
                     </div>
                     <div class="form-group">
                         <label for="born">Date of Birth</label>
-                        <input type="date" id="born" name="born" class="form-control" value="{{ $customer->born ?? '' }}" required>
+                        <input type="date" id="born" name="born" class="form-control" value="{{ $admin->born ?? '' }}" required>
                     </div>
                     <div class="form-group">
                         <label for="gender">Gender</label>
                         <select id="gender" name="gender" class="form-control" required>
-                            <option value="men" {{ ($customer->gender ?? 'men') == 'men' ? 'selected' : '' }}>Men</option>
-                            <option value="women" {{ ($customer->gender ?? 'men') == 'women' ? 'selected' : '' }}>Women</option>
+                            <option value="men" {{ ($admin->gender ?? 'men') == 'men' ? 'selected' : '' }}>Men</option>
+                            <option value="women" {{ ($admin->gender ?? 'men') == 'women' ? 'selected' : '' }}>Women</option>
                         </select>
                     </div>
                 </div>

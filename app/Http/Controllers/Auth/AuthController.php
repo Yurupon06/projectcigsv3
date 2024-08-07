@@ -21,8 +21,6 @@ class AuthController extends Controller
     }
 
 
-
-
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -66,7 +64,7 @@ class AuthController extends Controller
                 return redirect('dashboard');
             }
             if ($user->role === 'cashier') {
-                return redirect('/');
+                return redirect('cashier');
             }
             if ($user->role === 'customer') {
                 return redirect('/');
