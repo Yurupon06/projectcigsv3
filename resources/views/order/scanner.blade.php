@@ -22,6 +22,7 @@
         <h1>Scan QR Code</h1>
         <div id="reader"></div>
         <p id="result"></p>
+        <a class="btn btn-outline-primary" href="{{route('order.index')}}" role="button">Back</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>

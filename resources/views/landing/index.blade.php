@@ -50,7 +50,7 @@
 							@csrf
 							<input type="hidden" name="product_id" value="{{ $dt->id }}">
 							<input type="hidden" name="total_amount" value="{{ $dt->price }}">
-							<button type="submit" class="boxed-btn3">Join Now</button>
+							<button type="submit" class="boxed-btn3" >Join Now</button>
 						</form>
 					</div>
 				</div>

@@ -3,6 +3,11 @@
 @extends('landing.master')
 @include('landing.header')
 
+@if(session('success'))
+    <div class="alert alert-success" role="alert">
+        {{ session('success') }}
+    </div>
+@endif
 <table class="table align-items-center mb-0">
     <thead>
         <tr>
@@ -30,7 +35,7 @@
                 {{ $order->product->product_name }}
             </td>
             <td>
-                {{ $order->order_date }}
+                {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}
             </td>
             <td>
                 Rp.{{ number_format($order->total_amount) }}
@@ -42,7 +47,7 @@
             </td>
             <td class="align-middle text-center text-sm">
                 <a href="{{ route('checkout', $order->id) }}"><span class="badge badge-sm bg-gradient-success">Pay</span></a>
-                <form action="" method="POST" style="display:inline;">
+                <form action="{{route('yourorder.delete', $order->id)}}" method="POST" style="display:inline;">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="badge badge-sm bg-gradient-danger" onclick="return confirm('Are you sure you want to Cancel this order?')">Cancel</button>
