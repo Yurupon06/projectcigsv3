@@ -29,6 +29,7 @@ Route::middleware((['auth', 'admin']))->group(function (){
     Route::resource('member', \App\Http\Controllers\MemberController::class);
     Route::resource('order', \App\Http\Controllers\OrderController::class);
     Route::resource('payment', \App\Http\Controllers\PaymentController::class);
+    Route::resource('application-setting', \App\Http\Controllers\ApplicationSettingController::class);
 });
 
 

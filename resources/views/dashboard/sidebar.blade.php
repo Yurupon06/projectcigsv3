@@ -149,6 +149,14 @@
           <span class="nav-link-text ms-1">Customer Detail</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link text-white {{ request()->is('application-setting') ? 'active' : '' }}" href="{{ route('application-setting.index') }}">
+          <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="material-icons opacity-10">settings</i>
+          </div>
+          <span class="nav-link-text ms-1">App Setting</span>
+        </a>
+      </li>
     </ul>
   </div>
 </aside>
