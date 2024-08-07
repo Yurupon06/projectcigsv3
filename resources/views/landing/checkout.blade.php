@@ -1,7 +1,6 @@
 @extends('landing.master')
 @include('landing.header')
 
-
 <style>
     .cell-padding {
         padding-left: 10px;
@@ -32,6 +31,10 @@
     }
     .navigation-links a:hover {
         text-decoration: underline;
+    }
+    .qr-code-container {
+        text-align: center;
+        margin-top: 30px;
     }
 </style>
 
@@ -80,12 +83,23 @@
                             {{ $order->order_date }}
                         </td>
                         <td class="column-1">
-                            Rp.{{ number_format($order->total_amount) }}
+                            Rp {{ number_format($order->total_amount) }}
                         </td>
                     </tr>
                 </table>
             </div>
             <br>
+            
+            @if ($order->status === 'unpaid')
+                <div class="qr-code-container">
+                    <div class="mt-3">Go To Cashier And Show The QrCode To Pay</div>
+                    <br>
+                    {!! QrCode::size(200)->generate(route('order.qrscan', ['qr_token' => $order->qr_token])) !!}
+                    
+                </div>
+                <br>
+            @endif
+
             <div class="flex-w flex-t p-t-27 p-b-33">
                 <div class="size-208">
                     <span class="mtext-101 cl2">
@@ -93,34 +107,21 @@
                     </span>
                 </div>
                 <div class="size-209 p-t-1 flex-w flex-sb">
+                    
                     <span class="mtext-110 cl2">
-                        Rp.{{ number_format($order->total_amount) }}
+                        Rp {{ number_format($order->total_amount) }}
                     </span>
-                    <span class="mtext-110 cl2" style="color: rgb(211, 32, 32); font-weight: bold;">
+                    <span class="mtext-110 cl2" style="color: {{ $order->status == 'unpaid' ? 'red' : ($order->status == 'canceled' ? 'gray' : 'green') }}; font-weight: bold;">
                         {{ ucfirst($order->status) }}
                     </span>
-                    <button type="button" class="flex-c-m stext-101 cl0 size-11 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" data-bs-toggle="modal" data-bs-target="#qrModal">
-                        Pay
-                    </button>
+                    @if ($order->status === 'unpaid')
+                    <form action="{{ route('yourorder.cancel', $order->id) }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="flex-c-m stext-101 cl0 size-11 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel Order</button>
+                    </form>
+                    @endif
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal -->
-<div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="qrModalLabel">Go To Cashier To Pay</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                {!! QrCode::size(200)->generate(route('order.qrscan', ['qr_token' => $order->qr_token])) !!}
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

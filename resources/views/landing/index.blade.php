@@ -46,11 +46,12 @@
 						</ul>
 					</div>
 					<div class="card-footer">
-						<form action="{{ route('yourorder.update') }}" method="POST">
-							@csrf
+						<form action="{{ route('beforeorder.index') }}" method="GET">
 							<input type="hidden" name="product_id" value="{{ $dt->id }}">
-							<input type="hidden" name="total_amount" value="{{ $dt->price }}">
-							<button type="submit" class="boxed-btn3" >Join Now</button>
+							<input type="hidden" name="product_name" value="{{ $dt->product_name }}">
+							<input type="hidden" name="description" value="{{ $dt->description }}">
+							<input type="hidden" name="price" value="{{ $dt->price }}">
+							<button type="submit" class="boxed-btn3">Join Now</button>
 						</form>
 					</div>
 				</div>

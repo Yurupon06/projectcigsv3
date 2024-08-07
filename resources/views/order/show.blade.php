@@ -32,7 +32,7 @@
                                 </tr>
                                 <tr>
                                     <th>Total Amount</th>
-                                    <td>Rp.{{ number_format($order->total_amount, 2) }}</td>
+                                    <td>Rp {{ number_format($order->total_amount) }}</td>
                                 </tr>
                                 <tr>
                                     <th>Status</th>
