@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class LandingController extends Controller
 {
@@ -98,6 +99,8 @@ class LandingController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
+
+        $qrToken = Str::random(60);
 
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
