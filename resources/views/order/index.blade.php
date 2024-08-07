@@ -57,7 +57,7 @@
                             {{ \Carbon\Carbon::parse($dt->order_date)->translatedFormat('d F Y H:i') }}
                           </td>
                           <td>
-                            Rp.{{ number_format($dt->total_amount) }}
+                            Rp {{ number_format($dt->total_amount) }}
                           </td>
                           <td style="color: {{ $dt->status === 'unpaid' ? 'red' : ($dt->status === 'paid' ? 'green' : 'black') }}">
                             {{ $dt->status }}

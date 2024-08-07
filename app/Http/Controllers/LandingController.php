@@ -92,9 +92,9 @@ class LandingController extends Controller
         return redirect()->route('checkout', ['id' => $order->id])->with('success', 'Order created successfully.');
     }
 
-    public function orderDelete($id){
+    public function orderCancel($id){
         $order = Order::findOrFail($id);
-        $order->delete();
+        $order->update(['status' => 'canceled']);
         return redirect()->route('yourorder.index')->with('success', 'Successfully Cancel The Order.');
     }
 
@@ -104,5 +104,17 @@ class LandingController extends Controller
     public function checkout($id){
         $order = Order::with('customer', 'product')->find($id);
         return view('landing.checkout', compact('order'));
+    }
+
+
+    public function beforeOrder(Request $request){
+        $product = $request->only(['product_id', 'product_name', 'description', 'price']);
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        if (!$customer || !$customer->phone || !$customer->born || !$customer->gender) {
+            return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
+        }
+    
+        return view('landing.beforeOrder', compact('product', 'user', 'customer'));
     }
 }

@@ -17,7 +17,8 @@ Route::middleware((['auth', 'customer']))->group(function (){
     Route::post('/profile', [\App\Http\Controllers\LandingController::class, 'profileUpdate'])->name('update.profile');
     Route::get('/myorder', [\App\Http\Controllers\LandingController::class, 'order'])->name('yourorder.index');
     Route::post('/myorder', [\App\Http\Controllers\LandingController::class, 'orderStore'])->name('yourorder.update');
-    Route::delete('/myorder/{id}', [\App\Http\Controllers\LandingController::class, 'orderDelete'])->name('yourorder.delete');
+    Route::patch('/myorder/{id}', [\App\Http\Controllers\LandingController::class, 'orderCancel'])->name('yourorder.cancel');
+    Route::get('/checking', [\App\Http\Controllers\LandingController::class, 'beforeOrder'])->name('beforeorder.index');
     
     
     

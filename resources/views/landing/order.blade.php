@@ -38,7 +38,7 @@
                 {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}
             </td>
             <td>
-                Rp.{{ number_format($order->total_amount) }}
+                Rp {{ number_format($order->total_amount) }}
             </td>
             <td>
                 <span style="color: {{ $order->status == 'unpaid' ? 'red' : ($order->status == 'canceled' ? 'gray' : 'green') }}; font-weight: bold;">
@@ -46,13 +46,7 @@
                 </span>
             </td>
             <td class="align-middle text-center text-sm">
-                <a href="{{ route('checkout', $order->id) }}"><span class="badge badge-sm bg-gradient-success">Pay</span></a>
-                <form action="{{route('yourorder.delete', $order->id)}}" method="POST" style="display:inline;">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="badge badge-sm bg-gradient-danger" onclick="return confirm('Are you sure you want to Cancel this order?')">Cancel</button>
-                </form>
-            </td>
+                <a href="{{ route('checkout', $order->id) }}"><span class="badge badge-sm bg-gradient-info">Detail</span></a>
         </tr>
         @endforeach
     </tbody>
