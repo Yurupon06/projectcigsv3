@@ -44,7 +44,7 @@
                             </div>
                           </td>
                           <td>
-                            {{ $dt->customer->user->name }}
+                            {{ $dt->customer->customer_id->name }}
                           </td>
                           <td>
                             {{ $dt->product->product_name }}

@@ -38,8 +38,6 @@ Route::middleware((['auth', 'admin']))->group(function (){
     Route::post('/profil/update', [\App\Http\Controllers\DashboardController::class, 'profileUpdate'])->name('update.profil');
 });
 
-
-<<<<<<< HEAD
 Route::middleware('guest')->group(function (){
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
@@ -54,8 +52,6 @@ Route::middleware('guest')->group(function (){
 
 });
 
-
-=======
 // cashier
 Route::middleware((['auth', 'cashier']))->group(function (){});
 
@@ -66,7 +62,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 
->>>>>>> 032f7b17ccb741586dfc6fea7d8d05ef5d3fecf7
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
