@@ -73,6 +73,11 @@
                 {{ session('success') }}
             </div>
         @endif
+        @if(session('warning'))
+            <div class="alert alert-warning">
+                {{ session('warning') }}
+            </div>
+        @endif
         <div class="profile-field">
             <span>Name:</span>
             <span>{{ $user->name }}</span>

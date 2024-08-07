@@ -28,7 +28,7 @@
                                 </tr>
                                 <tr>
                                     <th>Order Date</th>
-                                    <td>{{ $order->order_date }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}</td>
                                 </tr>
                                 <tr>
                                     <th>Total Amount</th>
@@ -41,7 +41,9 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    
+                                    <td colspan="2" class="text-end">
+                                        <button type="button" class="btn btn-success">pay</button>
+                                    </td>
                                 </tr>
                             </table>
                         </div>

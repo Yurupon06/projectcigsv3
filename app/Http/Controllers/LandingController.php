@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Order;
+use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +21,9 @@ class LandingController extends Controller
     {
         //
         $products = Product::with('productcat')->get();
-        return view('landing.index', compact('products'));
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        return view('landing.index', compact('products', 'user', 'customer'));
     }
 
     public function profile(){
@@ -54,9 +57,12 @@ class LandingController extends Controller
 
     public function order()
     {
-        $orders = Order::where('customer_id', Auth::id())->get();
-
-        return view('landing.order', compact('orders'));
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+    
+        $orders = $customer ? Order::where('customer_id', $customer->id)->get() : collect([]);
+    
+        return view('landing.order', compact('orders', 'customer'));
     }
 
     public function orderStore(Request $request)
@@ -66,10 +72,17 @@ class LandingController extends Controller
         ]);
         $qrToken = Str::random(60);
 
+
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        if (!$customer || !$customer->phone || !$customer->born || !$customer->gender) {
+            return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
+        }
+
         $order = Order::create([
-            'customer_id' => Auth::id(),
+            'customer_id' => $customer->id,
             'product_id' => $request->product_id,
-            'order_date' => now(),
+            'order_date' => Carbon::now('Asia/Jakarta'),
             'total_amount' => $request->total_amount,
             'status' => 'unpaid',
             'qr_token' => $qrToken,
@@ -79,7 +92,11 @@ class LandingController extends Controller
         return redirect()->route('checkout', ['id' => $order->id])->with('success', 'Order created successfully.');
     }
 
-
+    public function orderDelete($id){
+        $order = Order::findOrFail($id);
+        $order->delete();
+        return redirect()->route('yourorder.index')->with('success', 'Successfully Cancel The Order.');
+    }
 
 
 

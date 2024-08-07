@@ -1,6 +1,6 @@
 @extends('dashboard.master')
-@section('title', 'customer  create')
 @section('sidebar')
+@section('page-title', 'Profile')
 @extends('landing.master')
 @section('main')
     @include('dashboard.main')
