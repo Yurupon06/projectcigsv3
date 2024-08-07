@@ -17,25 +17,77 @@
                     </div>
                     <div class="card-body p-3">
                         @if ($setting)
-                            <div class="profile-field">
-                                <span>App Name:</span>
-                                <span>{{ $setting->app_name ?? 'Not filled' }}</span>
-                            </div>
-                            <div class="profile-field">
-                                <span>App Logo:</span>
-                                <span>
-                                    <img src="{{ $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
-                                        alt="App-Logo" width="200px">
-                                </span>
-                            </div>
-                            <div class="profile-field">
-                                <span>Address:</span>
-                                <span>{{ $setting->app_address ?? 'Not filled' }}</span>
-                            </div>
-                            <a href="{{ route('application-setting.edit', $setting->id) }}" class="btn btn-primary">Edit</a>
+                            <img class="d-block mx-auto" src="{{ $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" width="200px">
+                            <form action="{{ route('application-setting.update', $setting->id) }}" method="POST"
+                                enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                <div class="mb-3 ms-3 me-3">
+                                    <label for="app_name" class="form-label">App Name</label>
+                                    <input type="text"
+                                        class="ps-2 form-control border border-secondary-subtle @error('app_name') is-invalid @enderror"
+                                        placeholder="App Name" aria-label="app_name" id="app_name" name="app_name"
+                                        value="{{ old('app_name', $setting->app_name) }}">
+                                    @error('app_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3 ms-3 me-3">
+                                    <label for="app_logo" class="form-label">App Logo</label>
+                                    <input type="file"
+                                        class="ps-2 form-control border border-secondary-subtle @error('app_logo') is-invalid @enderror"
+                                        placeholder="App Logo" aria-label="app_logo" id="app_logo" name="app_logo"
+                                        value="{{ old('app_logo', $setting->app_logo) }}">
+                                    @error('app_logo')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3 ms-3 me-3">
+                                    <label for="app_address" class="form-label">Address</label>
+                                    <textarea name="app_address" id="app_address"
+                                        class="ps-2 form-control border border-secondary-subtle @error('app_address') is-invalid @enderror"
+                                        placeholder="Address" rows="3" style="resize: none;">{{ old('app_address', $setting->app_address) }}</textarea>
+                                    @error('app_address')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <button type="submit" class="btn btn-primary mb-3 ms-3 me-3">Update</button>
+                            </form>
                         @else
-                            <p>No settings available. Please add settings first.</p>
-                            <a href="{{ route('application-setting.create') }}" class="btn btn-primary">Add Settings</a>
+                        <p class="mb-3 ms-3 me-3">No settings available. Please add settings first.</p>
+                        <form action="{{ route('application-setting.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3 ms-3 me-3">
+                                <label for="app_name" class="form-label">App Name</label>
+                                <input type="text"
+                                    class="ps-2 form-control border border-secondary-subtle @error('app_name') is-invalid @enderror"
+                                    placeholder="App Name" aria-label="app_name" id="app_name" name="app_name"
+                                    value="{{ old('app_name') }}">
+                                @error('app_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3 ms-3 me-3">
+                                <label for="app_logo" class="form-label">App Logo</label>
+                                <input type="file"
+                                    class="ps-2 form-control border border-secondary-subtle @error('app_logo') is-invalid @enderror"
+                                    placeholder="App Logo" aria-label="app_logo" id="app_logo" name="app_logo"
+                                    value="{{ old('app_logo') }}">
+                                @error('app_logo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="mb-3 ms-3 me-3">
+                                <label for="app_address" class="form-label">Address</label>
+                                <textarea name="app_address" id="app_address"
+                                    class="ps-2 form-control border border-secondary-subtle @error('app_address') is-invalid @enderror"
+                                    placeholder="Address" rows="3" style="resize: none;">{{ old('app_address') }}</textarea>
+                                @error('app_address')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <button type="submit" class="btn btn-primary mb-3 ms-3 me-3">Create</button>
+                        </form>
                         @endif
                     </div>
                 </div>

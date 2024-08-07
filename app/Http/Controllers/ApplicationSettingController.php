@@ -11,10 +11,11 @@ class ApplicationSettingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $setting = ApplicationSetting::first();
-        return view('app_setting.index', compact('setting'));
+    public function index(Request $request)
+    {   
+
+        return view('app_setting.index');
+
     }
 
     /**
@@ -22,8 +23,7 @@ class ApplicationSettingController extends Controller
      */
     public function create()
     {
-        $setting = ApplicationSetting::first();
-        return view('app_setting.create', compact('setting'));
+        //
     }
 
     /**
@@ -64,8 +64,7 @@ class ApplicationSettingController extends Controller
      */
     public function edit(string $id)
     {
-        $setting = ApplicationSetting::findOrFail($id);
-    return view('app_setting.edit', compact('setting'));
+        //
     }
 
     /**
@@ -91,7 +90,7 @@ class ApplicationSettingController extends Controller
             $setting->update($request->only(['app_name', 'app_address']));
         }
 
-        return redirect()->route('application-setting.index')->with('success', 'Settings updated successfully');
+        return redirect()->back()->with('success', 'Settings updated successfully');
     }
 
     /**
