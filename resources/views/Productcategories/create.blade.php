@@ -30,14 +30,14 @@
                         </div>
                         
                         <div class="mb-3 ms-3 me-3">
-                          <label for="type">Jumlah Visit</label>
+                          <label for="type">Total Visit</label>
                           <select class="form-select @error('visit') is-invalid @enderror" id="visit" name="visit">
                               <option value="1" @if (old('visit') == '1') selected @endif>1</option>
                               <option value="30" @if (old('visit') == '30') selected @endif>30</option>
                           </select>
                         </div>
                         <div class="mb-3 ms-3 me-3">
-                            <label for="cycle" class="form-label">cycle</label>
+                            <label for="cycle" class="form-label">cycle (in day)</label>
                             <input type="number" class="ps-2 form-control border border-secondary-subtle @error('cycle') is-invalid @enderror" placeholder="cycle" aria-label="cycle" id="cycle" name="cycle" value="{{ old('cycle') }}">
                             @error('cycle')
                                 <div class="invalid-feedback">{{ $message }}</div>

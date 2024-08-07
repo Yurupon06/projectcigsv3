@@ -23,7 +23,7 @@
                         <tr>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">category name</th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">jumlah visit</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">total visit</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">cycle</th>
                           <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                         </tr>

@@ -59,6 +59,11 @@ Route::middleware((['auth', 'cashier']))->group(function (){});
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/struk-gym', function () {
+    return view('struk_gym');
+});
+
+
 
 
 
