@@ -81,10 +81,13 @@ class LandingController extends Controller
     public function order()
     {
         // Fetch orders for the authenticated user
-        $orders = Order::where('customer_id', Auth::id())->get();
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+
+        $orders = $customer ? Order::where('customer_id', $customer->id)->get() : collect([]);
 
         // Pass orders to the view
-        return view('landing.order', compact('orders'));
+        return view('landing.order', compact('orders', 'customer'));
     }
 
     public function orderStore(Request $request)
@@ -94,9 +97,12 @@ class LandingController extends Controller
             'product_id' => 'required|exists:products,id',
         ]);
 
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+
         // Create a new order
-        Order::create([
-            'customer_id' => Auth::id(),
+        $order =Order::create([
+            'customer_id' => $customer->id,
             'product_id' => $request->product_id,
             'order_date' => now(),
             'total_amount' => $request->total_amount,
@@ -104,7 +110,7 @@ class LandingController extends Controller
         ]);
 
         // Redirect back with a success message
-        return redirect()->back()->with('success', 'Order created successfully.');
+        return redirect()->route('yourorder.index', ['id' => $order->id])->with('success', 'Order created successfully.');
         
     }
 }
