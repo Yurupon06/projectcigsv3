@@ -22,7 +22,7 @@ class LandingController extends Controller
         //
         $products = Product::with('productcat')->get();
         $user = Auth::user();
-        $customer = Customer::where('user_id', $user->id)->first();
+        $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         return view('landing.index', compact('products', 'user', 'customer'));
     }
 
