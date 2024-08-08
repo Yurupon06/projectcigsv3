@@ -58,7 +58,9 @@ Route::middleware('guest')->group(function (){
 
 
 // cashier
-Route::middleware((['auth', 'cashier']))->group(function (){});
+Route::middleware((['auth', 'cashier']))->group(function (){
+    Route::get('/cashier', [\App\Http\Controllers\CashierController::class, 'index'])->name('cashier.index');
+});
 
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

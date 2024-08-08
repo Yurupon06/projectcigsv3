@@ -53,7 +53,7 @@
                                 <div class="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
                                     <select class="js-select2" name="payment_method">
                                         <option value="" selected disabled>Select a payment method</option>
-                                        <option value="cash">Cash Only</option>
+                                        <option value="cash">Cash</option>
                                     </select>
                                     <div class="dropDownSelect2"></div>
                                 </div>

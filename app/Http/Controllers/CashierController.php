@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Cashier;
 use App\Models\User;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class CashierController extends Controller
@@ -13,8 +14,8 @@ class CashierController extends Controller
      */
     public function index()
     {
-        // Mengembalikan view dengan data cashier
-        return view('cashier.index');
+        $order = order::with('customer', 'product')->get();
+        return view('cashier.index', compact('order'));
     }
 
     /**
@@ -38,7 +39,7 @@ class CashierController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cashier $cashier)
+    public function show()
     {
         // Menampilkan detail resource yang ditunjuk
         // (Implementasi sesuai kebutuhan)
