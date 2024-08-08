@@ -99,8 +99,7 @@ class LandingController extends Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
-
-        $qrToken = Str::random(60);
+        $qrToken = Str::random(10);
 
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
