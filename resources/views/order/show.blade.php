@@ -42,7 +42,7 @@
                                 </tr>
                                 <tr>
                                     <td colspan="2" class="text-end">
-                                        <button type="button" class="btn btn-success">pay</button>
+                                        <button type="button" class="btn btn-success">Procces Payment</button>
                                     </td>
                                 </tr>
                             </table>

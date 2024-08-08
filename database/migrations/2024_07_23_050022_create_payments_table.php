@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreign('order_id')->references('id')->on('orders')->ondelete('cascade')->onupdate('cascade');
             $table->datetime('payment_date');
             $table->unsignedBigInteger('amount');
+            $table->unsignedBigInteger('amount_given');
+            $table->unsignedBigInteger('change')->nullable();
             $table->timestamps();
         });
     }

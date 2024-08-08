@@ -13,6 +13,9 @@ class Payment extends Model
         'order_id',
         'payment_date',	
         'amount',	
+        'amount_given',	
+        'change',	
+        'qr_token',	
     ];
 
     public function order(){
