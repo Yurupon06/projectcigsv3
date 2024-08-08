@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Cashier;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Payment;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CashierController extends Controller
@@ -18,57 +21,50 @@ class CashierController extends Controller
         return view('cashier.index', compact('order'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        // Menampilkan form untuk membuat resource baru
-        // (Implementasi sesuai kebutuhan)
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        // Menyimpan resource baru ke dalam storage
-        // (Implementasi sesuai kebutuhan)
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show()
     {
-        // Menampilkan detail resource yang ditunjuk
-        // (Implementasi sesuai kebutuhan)
+        $order = order::with('customer', 'product')->get();
+        return view('cashier.show', compact('order'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit($id)
+    public function qrscan($qr_token)
     {
-        // Menampilkan form untuk mengedit resource yang ditunjuk
-        // (Implementasi sesuai kebutuhan)
+        $order = Order::where('qr_token', $qr_token)->first();
+    
+        if (!$order) {
+            return redirect()->route('order.index')->with('error', 'Order not found');
+        }
+    
+        return view('cashier.show', compact('order'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id)
+    public function store(Request $request, Order $order)
     {
-        // Memperbarui resource yang ditunjuk dalam storage
-        // (Implementasi sesuai kebutuhan)
+        // Validate the request
+        $request->validate([
+            'amount_given' => 'required|numeric|min:0',
+        ]);
+        $qrToken = Str::random(10);
+
+        // Calculate the change
+        $amountGiven = $request->input('amount_given');
+        $change = $amountGiven - $order->total_amount;
+
+        // Create a new payment record
+        Payment::create([
+            'order_id' => $order->id,
+            'payment_date' => Carbon::now('Asia/Jakarta'),
+            'amount' => $order->total_amount,
+            'amount_given' => $amountGiven,
+            'change' => $change,
+            'qr_token' => $qrToken,
+        ]);
+
+        // Update order status
+        $order->update(['status' => 'paid']);
+
+        // Redirect back with success message
+        return redirect()->route('cashier.index')->with('success', 'Payment processed successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-    {
-        // Menghapus resource yang ditunjuk dari storage
-        // (Implementasi sesuai kebutuhan)
-    }
 }

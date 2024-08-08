@@ -1,5 +1,8 @@
 @extends('dashboard.master')
 @section('title', 'order')
+@section('sidebar')
+    @include('cashier.sidebar')
+@endsection
 @section('page-title', 'order')
 @section('page', 'order')
 @section('main')
@@ -12,7 +15,7 @@
           <div class="col-12">
             <div class="card my-4">
               <div class="card-header pb-0">
-                <a href="">
+                <a href="{{route('scanner.cashier')}}">
                   <span class="badge badge-sm bg-gradient-primary mb-3 fs-6 ">
                     <i class="material-icons opacity-10">qr_code_scanner</i>
                   </span>
