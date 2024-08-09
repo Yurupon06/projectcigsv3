@@ -80,7 +80,7 @@
                             {{ $order->product->product_name }}
                         </td>
                         <td class="column-1">
-                            {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}
+                            {{ $order->order_date }}
                         </td>
                         <td class="column-1">
                             Rp {{ number_format($order->total_amount) }}

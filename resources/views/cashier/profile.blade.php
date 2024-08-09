@@ -1,6 +1,12 @@
+@extends('dashboard.master')
+@section('sidebar')
+@section('page-title', 'Profile Cashier')
 @extends('landing.master')
-@include('landing.header')
-
+@section('main')
+    @include('cashier.main')
+<head>
+    <title>Profile</title>
+</head>
 <style>
 .container {
     max-width: 800px;
@@ -63,19 +69,14 @@
 
 <div class="container">
     <div class="navigation-links">
-        <a href="{{ route('landing.index') }}">Back</a>
+        <a href="{{ route('cashier.index') }}">Back</a>
     </div>
 
     <div class="profile-section">
-        <h1>Profile</h1>
+        <h1>Profile Cashier</h1>
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
-            </div>
-        @endif
-        @if(session('warning'))
-            <div class="alert alert-warning">
-                {{ session('warning') }}
             </div>
         @endif
         <div class="profile-field">
@@ -88,18 +89,19 @@
         </div>
         <div class="profile-field">
             <span>Phone:</span>
-            <span>{{ $customer->phone ?? 'Not filled' }}</span>
+            <span class="{{ !$customer ? : '' }}">{{ $customer->phone ?? 'Not filled' }}</span>
         </div>
 
         <div class="profile-field">
             <span>Date of Birth:</span>
-            <span>{{ $customer->born ?? 'Not filled' }}</span>
+            <span class="{{ !$customer ? : '' }}">{{ $customer->born ?? 'Not filled' }}</span>
         </div>
 
         <div class="profile-field">
             <span>Gender:</span>
-            <span>{{ $customer->gender ?? 'Not filled' }}</span>
+            <span class="{{ !$customer ? : '' }}">{{ $customer->gender ?? 'Not filled' }}</span>
         </div>
+
 
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
             Update Profile
@@ -117,7 +119,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('update.profile') }}" method="POST">
+            <form action="{{ route('update.profill') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
@@ -143,21 +145,6 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
-                        @error('email')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', $customer->phone ?? '') }}" required>
-                        @error('phone')
-                            <div class="text-danger">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="form-group"> 
                         <label for="born">Date of Birth</label>
                         <input type="date" id="born" name="born" class="form-control" value="{{ old('born', $customer->born ?? '') }}" required>
                         @error('born')
@@ -166,7 +153,8 @@
                     </div>
                     <div class="form-group">
                         <label for="gender">Gender</label>
-                        <select id="gender" name="gender" class="form-control" required>
+                        <select id="gender" name="gender" class="form-control" required>    
+                            <option value="">Select Gender</option>
                             <option value="men" {{ old('gender', optional($customer)->gender) == 'men' ? 'selected' : '' }}>Men</option>
                             <option value="women" {{ old('gender', optional($customer)->gender) == 'women' ? 'selected' : '' }}>Women</option>
                         </select>
@@ -204,16 +192,15 @@
         </div>
     </div>
 </div>
-
 <script>
     document.querySelector('form').addEventListener('submit', function(event) {
-        var currentPassword = document.getElementById('current_password').value;
-        var newPassword = document.getElementById('password').value;
-        var confirmPassword = document.getElementById('password_confirmation').value;
+    var currentPassword = document.getElementById('current_password').value;
+    var newPassword = document.getElementById('password').value;
+    var confirmPassword = document.getElementById('password_confirmation').value;
 
-        if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
-            event.preventDefault();
-            alert('Please fill in all fields if you are changing your password.');
-        }
-    });
+    if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
+        event.preventDefault();
+        alert('Please fill in all fields if you are changing your password.');
+    }
+});
 </script>

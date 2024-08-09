@@ -1,10 +1,12 @@
 @extends('dashboard.master')
 @section('sidebar')
-@section('page-title', 'Profile')
+@section('page-title', 'Profile Admin')
 @extends('landing.master')
 @section('main')
     @include('dashboard.main')
-
+<head>
+    <title>Profile</title>
+</head>
 <style>
 .container {
     max-width: 800px;
@@ -71,7 +73,7 @@
     </div>
 
     <div class="profile-section">
-        <h1>Profile</h1>
+        <h1>Profile Admin</h1>
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -121,19 +123,65 @@
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $user->name) }}" required>
+                        @error('name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+                        @error('email')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
                         <label for="phone">Phone</label>
-                        <input type="text" id="phone" name="phone" class="form-control" value="{{ $admin->phone ?? '' }}" required>
+                        <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', $customer->phone ?? '') }}" required>
+                        @error('phone')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="born">Date of Birth</label>
-                        <input type="date" id="born" name="born" class="form-control" value="{{ $admin->born ?? '' }}" required>
+                        <input type="date" id="born" name="born" class="form-control" value="{{ old('born', $customer->born ?? '') }}" required>
+                        @error('born')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="gender">Gender</label>
-                        <select id="gender" name="gender" class="form-control" required>
-                            <option value="men" {{ ($admin->gender ?? 'men') == 'men' ? 'selected' : '' }}>Men</option>
-                            <option value="women" {{ ($admin->gender ?? 'men') == 'women' ? 'selected' : '' }}>Women</option>
+                        <select id="gender" name="gender" class="form-control" required>    
+                            <option value="">Select Gender</option>
+                            <option value="men" {{ old('gender', optional($customer)->gender) == 'men' ? 'selected' : '' }}>Men</option>
+                            <option value="women" {{ old('gender', optional($customer)->gender) == 'women' ? 'selected' : '' }}>Women</option>
                         </select>
+                        @error('gender')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="current_password">Current Password</label>
+                        <input type="password" id="current_password" name="current_password" class="form-control">
+                        @error('current_password')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="password">New Password</label>
+                        <input type="password" id="password" name="password" class="form-control">
+                        @error('password')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirmation">Confirm New Password</label>
+                        <input type="password" id="password_confirmation" name="password_confirmation" class="form-control">
+                        @error('password_confirmation')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -144,3 +192,15 @@
         </div>
     </div>
 </div>
+<script>
+    document.querySelector('form').addEventListener('submit', function(event) {
+    var currentPassword = document.getElementById('current_password').value;
+    var newPassword = document.getElementById('password').value;
+    var confirmPassword = document.getElementById('password_confirmation').value;
+
+    if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
+        event.preventDefault();
+        alert('Please fill in all fields if you are changing your password.');
+    }
+});
+</script>

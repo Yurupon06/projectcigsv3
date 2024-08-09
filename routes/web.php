@@ -3,10 +3,9 @@
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
-
-// Route::get('/', function () {
-//     return view('landing.index');
-// });
+Route::get('struk', function () {
+    return view('struk_gym');
+});
 
 
 Route::get('/', [\App\Http\Controllers\LandingController::class, 'index'])->name('landing.index');
@@ -53,8 +52,10 @@ Route::middleware((['auth', 'cashier']))->group(function (){
     Route::post('/payments/{order}', [\App\Http\Controllers\CashierController::class, 'store'])->name('payments.store');
     Route::get('/membercash/membercashier', [\App\Http\Controllers\CashierController::class, 'membercashier'])->name('membercashier.membercash');
 
-});
+    Route::get('/profill', [\App\Http\Controllers\CashierController::class, 'profile'])->name('cashier.profill');
+    Route::post('/profill/update', [\App\Http\Controllers\CashierController::class, 'profileUpdate'])->name('update.profill');
 
+});
 
 Route::middleware('guest')->group(function (){
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');

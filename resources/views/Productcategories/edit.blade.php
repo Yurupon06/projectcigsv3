@@ -29,17 +29,10 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
                         
                         <div class="mb-3 ms-3 me-3">
-                            <label for="cycle" class="form-label">Cycle</label>
-                            <input type="number" class="ps-2 form-control border border-secondary-subtle @error('cycle') is-invalid @enderror" placeholder="Cycle" aria-label="cycle" id="cycle" name="cycle" value="{{ old('cycle', $productcat->cycle) }}">
-                            @error('cycle')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3 ms-3 me-3">
-                          <label for="type">Jumlah Visit</label>
+                          <label for="type">Total Visit</label>
                           <select class="form-select @error('visit') is-invalid @enderror" id="visit" name="visit">
                               <option value="1" @if (old('visit') == '1') selected @endif>1</option>
                               <option value="30" @if (old('visit') == '30') selected @endif>30</option>
@@ -48,6 +41,15 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        
+                        <div class="mb-3 ms-3 me-3">
+                            <label for="cycle" class="form-label">Cycle (in day)</label>
+                            <input type="number" class="ps-2 form-control border border-secondary-subtle @error('cycle') is-invalid @enderror" placeholder="Cycle" aria-label="cycle" id="cycle" name="cycle" value="{{ old('cycle', $productcat->cycle) }}">
+                            @error('cycle')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
 
                         <div class="ms-3 me-3 text-end">
                             <a href="{{ route('productcategories.index')}}" type="button" class="btn bg-gradient-primary ws-15 my-4 mb-2">Cancel</a>
