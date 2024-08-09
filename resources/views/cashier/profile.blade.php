@@ -1,6 +1,12 @@
+@extends('dashboard.master')
+@section('sidebar')
+@section('page-title', 'Profile Cashier')
 @extends('landing.master')
-@include('landing.header')
-
+@section('main')
+    @include('cashier.main')
+<head>
+    <title>Profile</title>
+</head>
 <style>
 .container {
     max-width: 800px;
@@ -63,19 +69,14 @@
 
 <div class="container">
     <div class="navigation-links">
-        <a href="{{ route('landing.index') }}">Back</a>
+        <a href="{{ route('cashier.index') }}">Back</a>
     </div>
 
     <div class="profile-section">
-        <h1>Profile</h1>
+        <h1>Profile Cashier</h1>
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
-            </div>
-        @endif
-        @if(session('warning'))
-            <div class="alert alert-warning">
-                {{ session('warning') }}
             </div>
         @endif
         <div class="profile-field">
@@ -118,7 +119,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('update.profile') }}" method="POST">
+            <form action="{{ route('update.profill') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
