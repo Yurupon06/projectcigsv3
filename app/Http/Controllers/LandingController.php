@@ -33,26 +33,54 @@ class LandingController extends Controller
     }
 
     public function profileUpdate(Request $request)
-    {
-        $request->validate([
-            'phone' => 'required|string|max:20',
-            'born' => 'required|date',
-            'gender' => 'required|in:men,women',
-        ]);
+{
+    $rules = [
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'phone' => 'required|string|max:20',
+        'born' => 'required|date',
+        'gender' => 'required|in:men,women',
+    ];
 
-        $user = Auth::user();
-        $customer = Customer::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'phone' => $request->phone,
-                'born' => $request->born,
-                'gender' => $request->gender,
-            ]
-        );
-
-        return redirect()->route('landing.profile')->with('success', 'Profile updated successfully.');
+    // Validasi password hanya jika salah satu field password diisi
+    if ($request->filled('password') || $request->filled('password_confirmation')) {
+        $rules['current_password'] = 'required|string';
+        $rules['password'] = 'required|string|min:8|confirmed';
+        $rules['password_confirmation'] = 'required|string|min:8';
     }
 
+    $validatedData = $request->validate($rules);
+
+    $user = Auth::user();
+
+    // Update user details
+    $user->name = $validatedData['name'];
+    $user->email = $validatedData['email'];
+
+    // Cek jika password baru diisi
+    if ($request->filled('password')) {
+        // Validasi password lama
+        if (!Hash::check($validatedData['current_password'], $user->password)) {
+            return back()->withErrors(['current_password' => 'The provided current password does not match our records.'])->withInput();
+        }
+        // Update password
+        $user->password = Hash::make($validatedData['password']);
+    }
+
+    $user->save();
+
+    // Update atau buat detail pelanggan
+    Customer::updateOrCreate(
+        ['user_id' => $user->id],
+        [
+            'phone' => $validatedData['phone'],
+            'born' => $validatedData['born'],
+            'gender' => $validatedData['gender'],
+        ]
+    );
+
+    return redirect()->route('landing.profile')->with('success', 'Profile updated successfully.');
+}
 
 
     public function order()
@@ -115,6 +143,6 @@ class LandingController extends Controller
             return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
         }
     
-        return view('landing.beforeOrder', compact('product', 'user', 'customer'));
+        return view('landing.beforeOrder', compact('product', ));
     }
 }

@@ -35,15 +35,15 @@ class ProductCategorieController extends Controller
         //
         $request->validate([
             'category_name' => 'required',
-            'type' => 'required',
             'cycle' => 'required',
+            'visit' => 'required',
         ]);
 
         
         $productcat = new Product_categorie();
         $productcat->category_name = $request->category_name;
-        $productcat->type = $request->type;
         $productcat->cycle = $request->cycle;
+        $productcat->visit = $request->visit;
         $productcat->save();
     
         return redirect()->route('productcategories.index')->with('success', 'productcat created successfully.');
@@ -76,15 +76,15 @@ class ProductCategorieController extends Controller
         //
         $request->validate([
             'category_name' => 'required',
-            'type' => 'required',
             'cycle' => 'required',
+            'visit' => 'required',
         ]);
 
         
         $productcat = Product_categorie::findOrFail($id);
         $productcat->category_name = $request->category_name;
-        $productcat->type = $request->type;
         $productcat->cycle = $request->cycle;
+        $productcat->visit = $request->visit;
         $productcat->save();
     
         return redirect()->route('productcategories.index')->with('success', 'productcat created successfully.');

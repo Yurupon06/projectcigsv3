@@ -23,8 +23,8 @@
                         <tr>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">category name</th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">type</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">cycle</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">jumlah visit</th>
                           <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                         </tr>
                       </thead>
@@ -41,7 +41,7 @@
                           </td>
                           <td>{{ $dt->category_name }}</td>
                           <td>
-                            {{$dt->type}}
+                            {{$dt->cycle}} day
                           </td>
                           <td>
                             {{$dt->cycle}}
