@@ -1,7 +1,7 @@
 @extends('dashboard.master')
 @section('title', 'order')
 @section('sidebar')
-    @include('cashier.sidebar')
+    @include('dashboard.sidebar')
 @endsection
 @section('page-title', 'order')
 @section('page', 'order')
@@ -10,6 +10,11 @@
 
       <div class="container-fluid py-4">
         <div class="row">
+          @if(session('success'))
+              <div class="alert alert-success" role="alert">
+                  {{ session('success') }}
+              </div>
+          @endif
           <div class="col-12">
             <div class="card my-4">
               <div class="card-header pb-0">

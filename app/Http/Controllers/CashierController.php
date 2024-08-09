@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Cashier;
 use App\Models\User;
+use App\Models\Customer;
+use App\Models\Product;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Support\Str;
@@ -32,25 +34,28 @@ class CashierController extends Controller
         $order = Order::where('qr_token', $qr_token)->first();
     
         if (!$order) {
-            return redirect()->route('order.index')->with('error', 'Order not found');
+            return redirect()->route('cashier.index')->with('error', 'Order not found');
         }
     
         return view('cashier.show', compact('order'));
     }
 
+    public function payment()
+    {
+        $payment = Payment::with('order')->get();
+        return view('cashier.payment', compact('payment'));
+    }
+
     public function store(Request $request, Order $order)
     {
-        // Validate the request
         $request->validate([
             'amount_given' => 'required|numeric|min:0',
         ]);
         $qrToken = Str::random(10);
 
-        // Calculate the change
         $amountGiven = $request->input('amount_given');
         $change = $amountGiven - $order->total_amount;
 
-        // Create a new payment record
         Payment::create([
             'order_id' => $order->id,
             'payment_date' => Carbon::now('Asia/Jakarta'),
@@ -60,11 +65,17 @@ class CashierController extends Controller
             'qr_token' => $qrToken,
         ]);
 
-        // Update order status
         $order->update(['status' => 'paid']);
 
-        // Redirect back with success message
-        return redirect()->route('cashier.index')->with('success', 'Payment processed successfully!');
+        return redirect()->route('cashier.payment')->with('success', 'Payment processed successfully!');
+    }
+
+    public function order()
+    {
+
+        $customer = Customer::with('user')->get();
+        $product = Product::all();
+        return view('cashier.addorder', compact('customer', 'product'));
     }
 
 }

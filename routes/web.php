@@ -35,7 +35,6 @@ Route::middleware((['auth', 'admin']))->group(function (){
     Route::resource('order', \App\Http\Controllers\OrderController::class);
     Route::get('scanner', function () {return view('order.scanner');})->name('scanner');
     Route::get('/order/qrscan/{qr_token}', [\App\Http\Controllers\OrderController::class, 'qrscan'])->name('order.qrscan');
-
     Route::get('/profil', [\App\Http\Controllers\DashboardController::class, 'profile'])->name('dashboard.profil');
     Route::post('/profil/update', [\App\Http\Controllers\DashboardController::class, 'profileUpdate'])->name('update.profil');
     Route::resource('application-setting', \App\Http\Controllers\ApplicationSettingController::class);
@@ -49,7 +48,9 @@ Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier/show', [\App\Http\Controllers\CashierController::class, 'show'])->name('cashier.show');
     Route::get('/cashier/scanner', function () {return view('cashier.scanner');})->name('scanner.cashier');
     Route::get('/cashier/qrscan/{qr_token}', [\App\Http\Controllers\CashierController::class, 'qrscan'])->name('cashier.qrscan');
+    Route::get('/cashier/payment', [\App\Http\Controllers\CashierController::class, 'payment'])->name('cashier.payment');
     Route::post('/payments/{order}', [\App\Http\Controllers\CashierController::class, 'store'])->name('payments.store');
+    Route::get('/cashier/order', [\App\Http\Controllers\CashierController::class, 'order'])->name('cashier.order');
 
 });
 
