@@ -1,9 +1,9 @@
 @extends('dashboard.master')
 @section('sidebar')
-@section('page-title', 'Profile Admin')
+@section('page-title', 'Profile Cashier')
 @extends('landing.master')
 @section('main')
-    @include('dashboard.main')
+    @include('cashier.main')
 <head>
     <title>Profile</title>
 </head>
@@ -69,11 +69,11 @@
 
 <div class="container">
     <div class="navigation-links">
-        <a href="{{ route('dashboard.index') }}">Back</a>
+        <a href="{{ route('cashier.index') }}">Back</a>
     </div>
 
     <div class="profile-section">
-        <h1>Profile Admin</h1>
+        <h1>Profile Cashier</h1>
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
@@ -119,7 +119,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('update.profil') }}" method="POST">
+            <form action="{{ route('update.profill') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
