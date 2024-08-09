@@ -81,6 +81,7 @@
                         </td>
                         <td class="column-1">
                             {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d/m/Y H:i') }}
+
                         </td>
                         <td class="column-1">
                             Rp {{ number_format($order->total_amount) }}

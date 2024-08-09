@@ -23,7 +23,7 @@
                       @csrf
                       @method('PUT')
                       <div class="mb-2 ms-3 me-3">
-                        <label for="product_category_id" class="form-label">name</label>
+                        <label for="product_category_id" class="form-label">category</label>
                         <select id="product_category_id" name="product_category_id" class="ps-2 form-select" aria-label="Default select example">
                             <option selected disabled>Select Name</option>
                             @foreach ($productcat as $category)
@@ -32,7 +32,7 @@
                         </select>
                         </div>
                         <div class="mb-3 ms-3 me-3">
-                            <label for="product_name" class="form-label">product name</label>
+                            <label for="product_name" class="form-label">name</label>
                             <input type="text" class="ps-2 form-control border border-secondary-subtle @error('product_name') is-invalid @enderror" placeholder="product name" aria-label="product_name" id="product_name" name="product_name" value="{{ old('product_name', $product->product_name) }}">
                             @error('product_name')
                                 <div class="invalid-feedback">{{ $message }}</div>

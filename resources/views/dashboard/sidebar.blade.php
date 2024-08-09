@@ -4,7 +4,7 @@
     }
 
     .bg-gradient-dark {
-        background: linear-gradient(45deg, #000000, #3c3c3c);
+        backgr  ound: linear-gradient(45deg, #000000, #3c3c3c);
     }
 
     .bg-gradient-primary {
