@@ -88,19 +88,18 @@
         </div>
         <div class="profile-field">
             <span>Phone:</span>
-            <span class="{{ !$customer ? : '' }}">{{ $customer->phone ?? 'Not filled' }}</span>
+            <span>{{ $customer->phone ?? 'Not filled' }}</span>
         </div>
 
         <div class="profile-field">
             <span>Date of Birth:</span>
-            <span class="{{ !$customer ? : '' }}">{{ $customer->born ?? 'Not filled' }}</span>
+            <span>{{ $customer->born ?? 'Not filled' }}</span>
         </div>
 
         <div class="profile-field">
             <span>Gender:</span>
-            <span class="{{ !$customer ? : '' }}">{{ $customer->gender ?? 'Not filled' }}</span>
+            <span>{{ $customer->gender ?? 'Not filled' }}</span>
         </div>
-
 
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
             Update Profile
@@ -144,6 +143,21 @@
                         @enderror
                     </div>
                     <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
+                        @error('email')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" id="phone" name="phone" class="form-control" value="{{ old('phone', $customer->phone ?? '') }}" required>
+                        @error('phone')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="form-group"> 
                         <label for="born">Date of Birth</label>
                         <input type="date" id="born" name="born" class="form-control" value="{{ old('born', $customer->born ?? '') }}" required>
                         @error('born')
@@ -152,8 +166,7 @@
                     </div>
                     <div class="form-group">
                         <label for="gender">Gender</label>
-                        <select id="gender" name="gender" class="form-control" required>    
-                            <option value="">Select Gender</option>
+                        <select id="gender" name="gender" class="form-control" required>
                             <option value="men" {{ old('gender', optional($customer)->gender) == 'men' ? 'selected' : '' }}>Men</option>
                             <option value="women" {{ old('gender', optional($customer)->gender) == 'women' ? 'selected' : '' }}>Women</option>
                         </select>

@@ -69,6 +69,12 @@ class CashierController extends Controller
         // Redirect back with success message
         return redirect()->route('cashier.index')->with('success', 'Payment processed successfully!');
     }
+    public function membercashier()
+    {
+        $member = Order::with('customer', 'product')->get();
+        return view('membercash.membercashier', compact('member'));
+    }
+
 
     public function profile(){
         $user = Auth::user();

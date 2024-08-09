@@ -147,6 +147,6 @@ class LandingController extends Controller
             return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
         }
     
-        return view('landing.beforeOrder', compact('product', 'user', 'customer'));
+        return view('landing.beforeOrder', compact('product', 'user', 'customer' ));
     }
 }
