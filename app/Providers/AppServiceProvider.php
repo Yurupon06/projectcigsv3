@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-// use App\Models\ApplicationSetting;
+use App\Models\ApplicationSetting;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,8 +19,8 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    // public function boot(): void
-    // {
-    //     View::share('setting', ApplicationSetting::first());
-    // }
+    public function boot(): void
+    {
+        View::share('setting', ApplicationSetting::first());
+    }
 }

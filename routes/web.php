@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
+
 // Route::get('/', function () {
 //     return view('landing.index');
 // });
@@ -50,6 +51,7 @@ Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier/scanner', function () {return view('cashier.scanner');})->name('scanner.cashier');
     Route::get('/cashier/qrscan/{qr_token}', [\App\Http\Controllers\CashierController::class, 'qrscan'])->name('cashier.qrscan');
     Route::post('/payments/{order}', [\App\Http\Controllers\CashierController::class, 'store'])->name('payments.store');
+    Route::get('/membercash/membercashier', [\App\Http\Controllers\CashierController::class, 'membercashier'])->name('membercashier.membercash');
 
 });
 

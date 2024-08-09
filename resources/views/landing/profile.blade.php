@@ -88,19 +88,18 @@
         </div>
         <div class="profile-field">
             <span>Phone:</span>
-            <span class="{{ !$customer ? : '' }}">{{ $customer->phone ?? 'Not filled' }}</span>
+            <span>{{ $customer->phone ?? 'Not filled' }}</span>
         </div>
 
         <div class="profile-field">
             <span>Date of Birth:</span>
-            <span class="{{ !$customer ? : '' }}">{{ $customer->born ?? 'Not filled' }}</span>
+            <span>{{ $customer->born ?? 'Not filled' }}</span>
         </div>
 
         <div class="profile-field">
             <span>Gender:</span>
-            <span class="{{ !$customer ? : '' }}">{{ $customer->gender ?? 'Not filled' }}</span>
+            <span>{{ $customer->gender ?? 'Not filled' }}</span>
         </div>
-
 
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
             Update Profile
@@ -143,7 +142,7 @@
                             <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="form-group">
+                    <div class="form-group"> 
                         <label for="born">Date of Birth</label>
                         <input type="date" id="born" name="born" class="form-control" value="{{ old('born', $customer->born ?? '') }}" required>
                         @error('born')
@@ -153,8 +152,8 @@
                     <div class="form-group">
                         <label for="gender">Gender</label>
                         <select id="gender" name="gender" class="form-control" required>
-                            <option value="men" {{ old('gender', $customer->gender) == 'men' ? 'selected' : '' }}>Men</option>
-                            <option value="women" {{ old('gender', $customer->gender) == 'women' ? 'selected' : '' }}>Women</option>
+                            <option value="men" {{ old('gender', optional($customer)->gender) == 'men' ? 'selected' : '' }}>Men</option>
+                            <option value="women" {{ old('gender', optional($customer)->gender) == 'women' ? 'selected' : '' }}>Women</option>
                         </select>
                         @error('gender')
                             <div class="text-danger">{{ $message }}</div>
@@ -190,15 +189,16 @@
         </div>
     </div>
 </div>
+
 <script>
     document.querySelector('form').addEventListener('submit', function(event) {
-    var currentPassword = document.getElementById('current_password').value;
-    var newPassword = document.getElementById('password').value;
-    var confirmPassword = document.getElementById('password_confirmation').value;
+        var currentPassword = document.getElementById('current_password').value;
+        var newPassword = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('password_confirmation').value;
 
-    if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
-        event.preventDefault();
-        alert('Please fill in all fields if you are changing your password.');
-    }
-});
+        if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
+            event.preventDefault();
+            alert('Please fill in all fields if you are changing your password.');
+        }
+    });
 </script>
