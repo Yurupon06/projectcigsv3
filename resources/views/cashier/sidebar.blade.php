@@ -86,7 +86,7 @@
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link text-white {{ request()->is('cashier') ? 'active' : '' }}" href="cashier">
+          <a class="nav-link text-white {{ request()->is('cashier') ? 'active' : '' }}" href="{{route('cashier.index')}}">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">store</i>
             </div>
@@ -94,7 +94,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white {{ request()->is('productcategories') ? 'active' : '' }}" href="{{ route('productcategories.index') }}">
+          <a class="nav-link text-white {{ request()->is('cashier/order') ? 'active' : '' }}" href="{{ route('cashier.order') }}">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">add_shopping_cart</i>
             </div>
@@ -102,7 +102,7 @@
           </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-white {{ request()->is('payment') ? 'active' : '' }}" href="{{ route('payment.index') }}">
+            <a class="nav-link text-white {{ request()->is('cashier/payment') ? 'active' : '' }}" href="{{ route('cashier.payment') }}">
               <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                 <i class="material-icons opacity-10">payments</i>
               </div>
