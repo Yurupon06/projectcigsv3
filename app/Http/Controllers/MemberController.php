@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Member;
+use App\Models\Product_categorie;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class MemberController extends Controller
@@ -10,13 +12,22 @@ class MemberController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-        $member = Member::with('customer')->get();
-        return view('member.index', compact('member'));
+        public function index()
+        {
+            $members = Member::with('customer')->get();
+            return view('member.index', compact('members'));
+        }
+        
+        public function product_categorie()
+        {
+            return $this->belongsTo(Product_categorie::class, 'category_id');
+        }
 
-    }
+        public function customer()
+        {
+            return $this->belongsTo(Customer::class, 'user_id');
+        }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -65,4 +76,5 @@ class MemberController extends Controller
     {
         //
     }
+
 }
