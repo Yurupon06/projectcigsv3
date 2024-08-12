@@ -204,6 +204,7 @@
         </div>
     </div>
 </div>
+
 <script>
     document.querySelector('form').addEventListener('submit', function(event) {
     var currentPassword = document.getElementById('current_password').value;
