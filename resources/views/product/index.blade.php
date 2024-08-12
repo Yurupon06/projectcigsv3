@@ -48,7 +48,7 @@
                             {{$dt->description}}
                           </td>
                           <td>
-                            {{$dt->price}}
+                            Rp {{ number_format($dt->price) }}
                           </td>
                         
                           <td class="align-middle text-center text-sm">

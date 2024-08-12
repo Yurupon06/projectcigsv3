@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Cashier;
 use App\Models\Customer;
 use App\Models\User;
-use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\ApplicationSetting;
 use App\Models\Payment;
 use App\Models\Product_categorie;
 use Illuminate\Support\Facades\Auth;
@@ -84,10 +84,34 @@ class CashierController extends Controller
     public function order()
     {
 
-        $customer = Customer::with('user')->get();
+        $customer = Customer::whereHas('user', function ($role) {
+            $role->where('role', 'customer');
+        })->with('user')->get();
         $product = Product::all();
         return view('cashier.addorder', compact('customer', 'product'));
     }
+
+    public function makeOrder(Request $request)
+    {
+        $request->validate([
+            'customer_id' => 'required|exists:customers,id',
+            'product_id' => 'required|exists:products,id',
+        ]);
+
+        $qrToken = Str::random(10);
+
+        $order = Order::create([
+            'customer_id' => $request->customer_id,
+            'product_id' => $request->product_id,
+            'order_date' => Carbon::now('Asia/Jakarta'),
+            'total_amount' => $request->price,
+            'status' => 'unpaid', 
+            'qr_token' => $qrToken, 
+        ]);
+
+        return redirect()->route('cashier.qrscan', ['qr_token' => $order->qr_token]);
+    }
+
     public function membercashier()
     {
         $members = Order::with('customer', 'product')->get();
@@ -120,7 +144,8 @@ class CashierController extends Controller
 
         $validatedData = $request->validate($rules);
 
-        $user = Auth::user();
+        $user = User::find(Auth::user()->id);
+
 
         // Update user details
         $user->name = $validatedData['name'];
@@ -148,6 +173,20 @@ class CashierController extends Controller
             ]
         );
 
-        return redirect()->route('cashier.profill')->with('success', 'Profile updated successfully.');
+        return redirect()->route('cashier.profile')->with('success', 'Profile updated successfully.');
+    }
+
+
+    public function struk($paymentId)
+    {
+        $payment = Payment::with('order')->findOrFail($paymentId);
+        $payment->payment_date = Carbon::parse($payment->payment_date);
+        $appSetting = ApplicationSetting::first();
+    
+        // Pass both payment and application setting data to the view
+        return view('cashier.struk_gym', [
+            'payment' => $payment,
+            'appSetting' => $appSetting
+        ]);
     }
 }
