@@ -80,7 +80,8 @@
                             {{ $order->product->product_name }}
                         </td>
                         <td class="column-1">
-                            {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}
+                            {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d/m/Y H:i') }}
+
                         </td>
                         <td class="column-1">
                             Rp {{ number_format($order->total_amount) }}
@@ -94,7 +95,7 @@
                 <div class="qr-code-container">
                     <div class="mt-3">Go To Cashier And Show The QrCode To Pay</div>
                     <br>
-                    {!! QrCode::size(200)->generate(route('order.qrscan', ['qr_token' => $order->qr_token])) !!}
+                    {!! QrCode::size(200)->generate(route('cashier.qrscan', ['qr_token' => $order->qr_token])) !!}
                     
                 </div>
                 <br>

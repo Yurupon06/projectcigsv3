@@ -95,10 +95,14 @@ class LandingController extends Controller
 
     public function orderStore(Request $request)
     {
+        // Validate the request data
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
         $qrToken = Str::random(10);
+
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
 
 
         $user = Auth::user();

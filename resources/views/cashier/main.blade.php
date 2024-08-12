@@ -20,7 +20,7 @@
             </li>
             @auth
             <li class="nav-item d-flex align-items-center">
-              <a href="{{route('dashboard.profil')}}" class="nav-link text-body font-weight-bold px-0">
+              <a href="{{route('cashier.profill')}}" class="nav-link text-body font-weight-bold px-0">
                 {{ Auth::user()->role }} - {{ Auth::user()->name }}  
               </a>
               <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link text-body font-weight-bold px-0 ms-4">

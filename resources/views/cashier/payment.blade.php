@@ -1,7 +1,7 @@
 @extends('dashboard.master')
 @section('title', 'order')
 @section('sidebar')
-    @include('dashboard.sidebar')
+    @include('cashier.sidebar')
 @endsection
 @section('page-title', 'order')
 @section('page', 'order')
