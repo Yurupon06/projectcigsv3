@@ -20,8 +20,15 @@
             </li>
             @auth
             <li class="nav-item d-flex align-items-center">
-              <a href="{{route('cashier.profill')}}" class="nav-link text-body font-weight-bold px-0">
-                {{ Auth::user()->role }} - {{ Auth::user()->name }}  
+              <a href="{{route('cashier.profile')}}" class="nav-link text-body font-weight-bold px-0">
+                <span>
+                  {{ Auth::user()->role }} - {{ Auth::user()->name }}  
+                </span>
+                <style>
+                  a:hove span {
+                    color: #ff8800
+                  }
+                </style>
               </a>
               <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link text-body font-weight-bold px-0 ms-4">
                 <i class="fa fa-sign-out me-1"></i>

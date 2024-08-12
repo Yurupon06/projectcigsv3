@@ -4,7 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('struk', function () {
-    return view('struk_gym');
+    return view('cashier.struk_gym');
 });
 
 
@@ -15,6 +15,7 @@ Route::get('cashier', [\App\Http\Controllers\CashierController::class, 'index'])
 Route::middleware((['auth', 'customer']))->group(function (){
     Route::get('/profile', [\App\Http\Controllers\LandingController::class, 'profile'])->name('landing.profile');
     Route::post('/profile', [\App\Http\Controllers\LandingController::class, 'profileUpdate'])->name('update.profile');
+    Route::post('/profile/password', [\App\Http\Controllers\LandingController::class, 'updatePassword'])->name('update.password');
     Route::get('/myorder', [\App\Http\Controllers\LandingController::class, 'order'])->name('yourorder.index');
     Route::post('/myorder', [\App\Http\Controllers\LandingController::class, 'orderStore'])->name('yourorder.update');
     Route::patch('/myorder/{id}', [\App\Http\Controllers\LandingController::class, 'orderCancel'])->name('yourorder.cancel');
@@ -50,14 +51,12 @@ Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier/qrscan/{qr_token}', [\App\Http\Controllers\CashierController::class, 'qrscan'])->name('cashier.qrscan');
     Route::get('/cashier/payment', [\App\Http\Controllers\CashierController::class, 'payment'])->name('cashier.payment');
     Route::post('/payments/{order}', [\App\Http\Controllers\CashierController::class, 'store'])->name('payments.store');
-
     Route::get('/cashier/order', [\App\Http\Controllers\CashierController::class, 'order'])->name('cashier.order');
-
     Route::get('/membercash/membercashier', [\App\Http\Controllers\CashierController::class, 'membercashier'])->name('membercashier.membercash');
-
-
-    Route::get('/profill', [\App\Http\Controllers\CashierController::class, 'profile'])->name('cashier.profill');
+    Route::get('/cashier/profil', [\App\Http\Controllers\CashierController::class, 'profile'])->name('cashier.profile');
     Route::post('/profill/update', [\App\Http\Controllers\CashierController::class, 'profileUpdate'])->name('update.profill');
+    Route::post('/cashier/makeorder', [\App\Http\Controllers\CashierController::class, 'makeOrder'])->name('make.order');
+    Route::get('/cashier/receipt/{paymentId}', [\App\Http\Controllers\CashierController::class, 'struk'])->name('cashier.receipt');
 
 });
 
