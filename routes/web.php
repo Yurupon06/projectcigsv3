@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MemberController;
+
 
 Route::get('struk', function () {
     return view('struk_gym');
@@ -54,6 +56,7 @@ Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier/order', [\App\Http\Controllers\CashierController::class, 'order'])->name('cashier.order');
 
     Route::get('/membercash/membercashier', [\App\Http\Controllers\CashierController::class, 'membercashier'])->name('membercashier.membercash');
+    Route::resource('members', MemberController::class);
 
 
     Route::get('/profill', [\App\Http\Controllers\CashierController::class, 'profile'])->name('cashier.profill');

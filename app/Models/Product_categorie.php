@@ -19,4 +19,9 @@ class Product_categorie extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function members()
+    {
+        return $this->hasMany(Member::class, 'product_category_id');
+    }
 }

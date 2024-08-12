@@ -9,6 +9,7 @@ use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\Product_categorie;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -59,6 +60,7 @@ class CashierController extends Controller
         $amountGiven = $request->input('amount_given');
         $change = $amountGiven - $order->total_amount;
 
+
         Payment::create([
             'order_id' => $order->id,
             'payment_date' => Carbon::now('Asia/Jakarta'),
@@ -82,8 +84,8 @@ class CashierController extends Controller
     }
     public function membercashier()
     {
-        $member = Order::with('customer', 'product')->get();
-        return view('membercash.membercashier', compact('member'));
+        $members = Order::with('customer', 'product')->get();
+        return view('membercash.membercashier', compact('members'));
     }
 
 
