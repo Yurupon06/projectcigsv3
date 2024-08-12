@@ -193,13 +193,13 @@
 
 <script>
     document.querySelector('form').addEventListener('submit', function(event) {
-        var currentPassword = document.getElementById('current_password').value;
-        var newPassword = document.getElementById('password').value;
-        var confirmPassword = document.getElementById('password_confirmation').value;
+    var currentPassword = document.getElementById('current_password').value;
+    var newPassword = document.getElementById('password').value;
+    var confirmPassword = document.getElementById('password_confirmation').value;
 
-        if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
-            event.preventDefault();
-            alert('Please fill in all fields if you are changing your password.');
-        }
-    });
+    if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
+        event.preventDefault();
+        alert('Please fill in all fields if you are changing your password.');
+    }
+});
 </script>

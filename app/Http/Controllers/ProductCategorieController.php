@@ -100,4 +100,11 @@ class ProductCategorieController extends Controller
         $productcat->delete();
         return redirect()->route('productcategories.index')->with('success', 'productcategories berhasil dihapus.');
     }
+
+        public function member()
+    {
+        $members = Member::with('customer', 'product_categorie')->get();
+        return view('membercash.membercashier', 'member.index', compact('members'));
+    }
+
 }

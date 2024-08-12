@@ -30,27 +30,23 @@
                         </tr>
                       </thead>
                       <tbody>
-                          @foreach ($member as $i => $dt)
-                              
-                          
-                        
-                        <tr>
-                          <td>
-                            <div class="d-flex px-2 py-1">
-                                {{ $i + 1 . " . " }}
-                            </div>
-                          </td>
-                          <td>{{ $dt->customer->customer_id }}</td>
-                          <td>
-                            {{$dt->start_date}}
-                          </td>
-                          <td>
-                            {{$dt->end_date}}
-                          </td>
-                          <td>
-                            {{$dt->status}}
-                          </td>
-                        
+                                    @foreach ($members as $i => $member)
+                                        @php
+                                        $startDate = \Carbon\Carbon::now(); 
+                                        $cycle = 30; 
+                                        $endDate = $startDate->copy()->addDays($cycle);
+                                    @endphp
+                                    <tr>
+                                            <td class="text-center">
+                                                <div class="d-flex px-2 py-1">
+                                                    {{ $i + 1 }}
+                                                </div>
+                                            </td>
+                                            <td>{{ $member->customer ? $member->customer->user->name : ''}}</td>
+                                            <td>{{ $startDate->toDateString() }}</td>
+                                            <td>{{ $endDate->toDateString() }}</td>
+                                            <td>{{ $member->status }}</td>
+                                        </tr>
                           <td class="align-middle text-center text-sm">
                             <a href="{{ route('member.edit', $dt->id) }}"><span class="badge badge-sm bg-gradient-success">edit</span></a>
                             <form action="{{ route('member.destroy', $dt->id) }}" method="POST" class="d-inline">
@@ -59,8 +55,6 @@
                                 <button type="submit" class="badge badge-sm bg-gradient-danger" onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
                             </form>
                           </td>
-                        
-                          
                         </tr>
                         @endforeach
                       </tbody>

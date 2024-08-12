@@ -19,21 +19,18 @@
             align-items: center;
             height: 100vh;
             font-family: 'Poppins', sans-serif;
-            margin: 3rem;
-        }
-
-        .container {
-            padding: 2rem;
+            margin: 0;
         }
 
         .card {
             border: none;
             border-radius: 10px;
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
-            padding: 1.5rem; /* Reduced padding */
+            padding: 1.5rem;
             background-color: #404040;
-            max-width: 500px; /* Set maximum width */
-            margin: auto; /* Center card and add margin */
+            max-width: 500px;
+            width: 100%;
+            margin: auto;
         }
 
         .btn-primary {
@@ -105,7 +102,6 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
-            padding: 0; 
         }
 
         .logo {
@@ -122,12 +118,10 @@
             padding-top: 1rem; 
         }
 
-        @media (max-width: 767.98px) {
-            .container {
-                padding: 2rem 1.5rem; 
-            }
-            h3 {
-                font-size: 1.5rem; 
+        @media (max-width: 992px) {
+            .card {
+                padding: 2rem;
+                max-width: 500px;
             }
         }
 
