@@ -6,7 +6,7 @@
 @section('page-title', 'Order Detail')
 @section('page', 'Order Details')
 @section('main')
-    @include('dashboard.main')
+    @include('cashier.main')
 
     <style>
         .navigation-links {
