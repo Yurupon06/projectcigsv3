@@ -11,12 +11,17 @@ class Product_categorie extends Model
     protected $table = 'product_categories';
     protected $fillable = [
         'category_name',
-        'type',
         'cycle',
+        'visit',
     ];
 
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function members()
+    {
+        return $this->hasMany(Member::class, 'product_category_id');
     }
 }

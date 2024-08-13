@@ -20,4 +20,10 @@ class Member extends Model
     public function customer(){
         return $this->belongsTo(Customer::class, 'customer_id');
     }
+
+    public function product_categorie()
+    {
+        return $this->belongsTo(Product_categorie::class, 'product_category_id');
+    }
 }
+

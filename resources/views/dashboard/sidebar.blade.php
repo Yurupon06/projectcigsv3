@@ -4,7 +4,7 @@
     }
 
     .bg-gradient-dark {
-        background: linear-gradient(45deg, #000000, #3c3c3c);
+        backgr  ound: linear-gradient(45deg, #000000, #3c3c3c);
     }
 
     .bg-gradient-primary {
@@ -146,7 +146,7 @@
           <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
             <i class="material-icons opacity-10">person</i>
           </div>
-          <span class="nav-link-text ms-1">Customer Detail</span>
+          <span class="nav-link-text ms-1">Profile</span>
         </a>
       </li>
       <li class="nav-item">
