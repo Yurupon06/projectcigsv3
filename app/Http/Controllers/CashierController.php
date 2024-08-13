@@ -76,8 +76,8 @@ class CashierController extends Controller
     }
     public function membercashier()
     {
-        $member = Order::with('customer', 'product')->get();
-        return view('membercash.membercashier', compact('member'));
+        $members = Order::with('customer', 'product')->get();
+        return view('membercash.membercashier', compact('members'));
     }
 
 
@@ -112,11 +112,6 @@ class CashierController extends Controller
         return redirect()->route('cashier.qrscan', ['qr_token' => $order->qr_token]);
     }
 
-    public function membercashier()
-    {
-        $members = Order::with('customer', 'product')->get();
-        return view('membercash.membercashier', compact('members'));
-    }
 
 
     public function profile(){
@@ -173,7 +168,7 @@ class CashierController extends Controller
             ]
         );
 
-        return redirect()->route('cashier.profile')->with('success', 'Profile updated successfully.');
+        return redirect()->route('cashier.profill')->with('success', 'Profile updated successfully.');
     }
 
 

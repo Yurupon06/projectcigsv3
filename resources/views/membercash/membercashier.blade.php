@@ -28,12 +28,14 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($members as $i => $member)
+                                @foreach ($members as $i => $member)
                                         @php
-                                        $startDate = \Carbon\Carbon::now(); 
-                                        $cycle = 30; 
-                                        $endDate = $startDate->copy()->addDays($cycle);
-                                    @endphp
+                                            $startDate = \Carbon\Carbon::parse($member->order_date); 
+                                            $cycle = 30; 
+                                            $endDate = $startDate->copy()->addDays($cycle);
+                                            $formattedStartDate = $startDate->translatedFormat('d F Y H:i');
+                                            $formattedEndDate = $endDate->translatedFormat('d F Y H:i');
+                                        @endphp
                                         <tr>
                                             <td class="text-center">
                                                 <div class="d-flex px-2 py-1">
@@ -41,9 +43,11 @@
                                                 </div>
                                             </td>
                                             <td>{{ $member->customer ? $member->customer->user->name : ''}}</td>
-                                            <td>{{ $startDate->toDateString() }}</td>
-                                            <td>{{ $endDate->toDateString() }}</td>
-                                            <td>{{ $member->status }}</td>
+                                            <td>{{ $formattedStartDate }}</td>
+                                            <td>{{ $formattedEndDate }}</td>
+                                            <td style="color: {{ $member->status === 'unpaid' ? 'red' : ($member->status === 'paid' ? 'green' : 'black') }}">
+                                                {{ $member->status }}
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>
