@@ -65,7 +65,7 @@ class CashierController extends Controller
         $qrToken = Str::random(10);
         $amountGiven = $request->input('amount_given');
         $change = $amountGiven - $order->total_amount;
-    
+
         Payment::create([
             'order_id' => $order->id,
             'payment_date' => Carbon::now('Asia/Jakarta'),
@@ -76,8 +76,29 @@ class CashierController extends Controller
         ]);
     
         $order->update(['status' => 'paid']);
-    
-        return redirect()->route('cashier.payment')->with('success', 'Payment processed successfully!');
+
+
+        return redirect()->route('struk_gym', ['id' => $order->id])->with('success', 'Payment processed successfully!');
+    }
+
+    public function showStruk($id)
+    {
+        $order = Order::with('customer', 'product')->findOrFail($id);
+        $payment = Payment::where('order_id', $id)->first();
+        $product = $order->product;
+        $productcat = $product->productcat;
+        $visit = $productcat->visit;
+
+        $appSetting = ApplicationSetting::first();
+
+        return view('cashier.struk_gym', compact('order', 'payment', 'appSetting', 'visit'));
+    }
+
+
+    public function membercashier()
+    {
+        $member = Order::with('customer', 'product')->get();
+        return view('membercash.membercashier', compact('member'));
     }
 
 
@@ -110,12 +131,6 @@ class CashierController extends Controller
         ]);
 
         return redirect()->route('cashier.qrscan', ['qr_token' => $order->qr_token]);
-    }
-
-    public function membercashier()
-    {
-        $members = Order::with('customer', 'product')->get();
-        return view('membercash.membercashier', compact('members'));
     }
 
 
