@@ -95,12 +95,13 @@
                                             @csrf
                                             <div class="amount-input">
                                                 <label for="amount_given">Amount Given:</label>
-                                                <input type="number" name="amount_given" id="amount_given" min="0" step="0.01" required oninput="calculateChange()">
+                                                <input type="number" name="amount_given" id="amount_given" min="0" step="0.01"  oninput="calculateChange()">
                                             </div>
                                             <div class="change-display" id="change-display">
                                                 Change: <span id="change-amount">Rp 0</span>
                                             </div>
-                                            <button type="submit" class="btn btn-success">Process Payment</button>
+                                            <button type="submit" name="action" value="cancel" class="btn btn-danger">Cancel Order</button>
+                                            <button type="submit" name="action" value="process" class="btn btn-success">Process Payment</button>
                                         </form>
                                     </td>
                                 </tr>

@@ -114,19 +114,20 @@
         </table>
         <hr>
         <table class="table">
-            <tr>
-                <td>Cashier</td>
-                <td class="align-right"><?= $receipt['cashier_name']; ?></td>
-            </tr>
-            <tr>
-                <td>Order ID</td>
-                <td class="align-right">GYM{{ $payment->order->id }}</td>
-            </tr>
-			<tr>
-                <td>{{ $payment->payment_date->format('Y-m-d') }}</td>
-                <td class="align-right">{{ $payment->payment_date->format('H:i:s') }}</td>
-            </tr>
-        </table>
+        <tr>
+            <td>Cashier</td>
+            <td class="align-right">{{ $payment->cashier_name }}</td>
+        </tr>
+        <tr>
+            <td>Order ID</td>
+            <td class="align-right">GYM{{ $payment->order->id }}</td>
+        </tr>
+        <tr>
+            <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('Y-m-d') }}</td>
+            <td class="align-right">{{ \Carbon\Carbon::parse($payment->payment_date)->format('H:i:s') }}</td>
+        </tr>
+    </table>
+
         <hr>
         <table class="table">
             <tr>
@@ -155,27 +156,29 @@
             </tr>
         </table>
         <hr>
-        <table class="table">
-            <tr>
-                <td colspan="2">
-                    <div class="qr-code">
-                        {!! QrCode::size(100)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
-                        <p>Thank you, please come again</p>
-                    </div>
-                </td>
-            </tr>
-        </table>
-        <hr>
-        <table class="table">
-            <tr>
-                <td>Member</td>
-                <td class="align-right"><b>{{ $payment->order->customer->user->name }}</b></td>
-            </tr>
-            <tr>
-                <td>No Hp</td>
-                <td class="align-right">{{ $payment->order->customer->phone }}</td>
-            </tr>
-        </table>
+        @if($visit == 30)
+            <table class="table">
+                <tr>
+                    <td>Member</td>
+                    <td class="align-right"><b>{{ $payment->order->customer->user->name }}</b></td>
+                </tr>
+                <tr>
+                    <td>No Hp</td>
+                    <td class="align-right">{{ $payment->order->customer->phone }}</td>
+                </tr>
+            </table>
+        @elseif($visit == 1)
+            <table class="table">
+                <tr>
+                    <td colspan="2">
+                        <div class="qr-code">
+                            {!! QrCode::size(100)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
+                            <p>Thank you, please come again</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        @endif
         <h6 style="text-align: right;margin-top: 10px"><i>Print 
             {{ now()->format('Y-m-d H:i:s') }}</i></h6>
     </div>

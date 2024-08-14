@@ -23,52 +23,50 @@ class DashboardController extends Controller
 
     public function profileUpdate(Request $request)
     {
-        $rules = [
+        $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
             'phone' => 'required|string|max:20',
             'born' => 'required|date',
             'gender' => 'required|in:men,women',
-        ];
-
-        // Validasi password hanya jika salah satu field password diisi
-        if ($request->filled('password') || $request->filled('password_confirmation')) {
-            $rules['current_password'] = 'required|string';
-            $rules['password'] = 'required|string|confirmed';
-            $rules['password_confirmation'] = 'required|string';
-        }
-
-        $validatedData = $request->validate($rules);
+        ]);
 
         $user = Auth::user();
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
 
-        // Update user details
-        $user->name = $validatedData['name'];
-        $user->email = $validatedData['email'];
-
-        // Cek jika password baru diisi
-        if ($request->filled('password')) {
-            // Validasi password lama
-            if (!Hash::check($validatedData['current_password'], $user->password)) {
-                return back()->withErrors(['current_password' => 'The provided current password does not match our records.'])->withInput();
-            }
-            // Update password
-            $user->password = Hash::make($validatedData['password']);
-        }
-
-        $user->save();
-
-        // Update atau buat detail pelanggan
-        Customer::updateOrCreate(
+        $customer = Customer::updateOrCreate(
             ['user_id' => $user->id],
             [
-                'phone' => $validatedData['phone'],
-                'born' => $validatedData['born'],
-                'gender' => $validatedData['gender'],
+                'phone' => $request->phone,
+                'born' => $request->born,
+                'gender' => $request->gender,
             ]
         );
 
         return redirect()->route('dashboard.profil')->with('success', 'Profile updated successfully.');
+    }
+
+        public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|string|min:3|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->route('dashboard.profil')->with('warning', 'Current password does not match.');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('dashboard.profil')->with('success', 'Password updated successfully.');
     }
 
 }
