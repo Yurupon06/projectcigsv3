@@ -20,7 +20,7 @@
             </li>
             @auth
             <li class="nav-item d-flex align-items-center">
-              <a href="{{route('cashier.profile')}}" class="nav-link text-body font-weight-bold px-0">
+              <a href="{{route('cashier.profill')}}" class="nav-link text-body font-weight-bold px-0">
                 <span>
                   {{ Auth::user()->role }} - {{ Auth::user()->name }}  
                 </span>

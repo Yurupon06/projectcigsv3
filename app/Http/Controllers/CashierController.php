@@ -52,14 +52,19 @@ class CashierController extends Controller
 
     public function store(Request $request, Order $order)
     {
+        if ($request->input('action') === 'cancel') {
+            $order->update(['status' => 'canceled']);
+            return redirect()->route('cashier.index')->with('success', 'Order canceled successfully.');
+        }
+    
+        // Validation and payment processing only for the "Process Payment" action
         $request->validate([
             'amount_given' => 'required|numeric|min:0',
         ]);
+    
         $qrToken = Str::random(10);
-
         $amountGiven = $request->input('amount_given');
         $change = $amountGiven - $order->total_amount;
-
 
         Payment::create([
             'order_id' => $order->id,
@@ -69,11 +74,27 @@ class CashierController extends Controller
             'change' => $change,
             'qr_token' => $qrToken,
         ]);
-
+    
         $order->update(['status' => 'paid']);
 
-        return redirect()->route('cashier.payment')->with('success', 'Payment processed successfully!');
+
+        return redirect()->route('struk_gym', ['id' => $order->id])->with('success', 'Payment processed successfully!');
     }
+
+    public function showStruk($id)
+    {
+        $order = Order::with('customer', 'product')->findOrFail($id);
+        $payment = Payment::where('order_id', $id)->first();
+        $product = $order->product;
+        $productcat = $product->productcat;
+        $visit = $productcat->visit;
+
+        $appSetting = ApplicationSetting::first();
+
+        return view('cashier.struk_gym', compact('order', 'payment', 'appSetting', 'visit'));
+    }
+
+
     public function membercashier()
     {
         $member = Order::with('customer', 'product')->get();
@@ -101,7 +122,7 @@ class CashierController extends Controller
         $qrToken = Str::random(10);
 
         $order = Order::create([
-            'customer_id' => $request->customer_id,
+            'customer_id' => Auth::user()->id,
             'product_id' => $request->product_id,
             'order_date' => Carbon::now('Asia/Jakarta'),
             'total_amount' => $request->price,
@@ -110,12 +131,6 @@ class CashierController extends Controller
         ]);
 
         return redirect()->route('cashier.qrscan', ['qr_token' => $order->qr_token]);
-    }
-
-    public function membercashier()
-    {
-        $members = Order::with('customer', 'product')->get();
-        return view('membercash.membercashier', compact('members'));
     }
 
 
@@ -127,53 +142,50 @@ class CashierController extends Controller
 
     public function profileUpdate(Request $request)
     {
-        $rules = [
+        $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
             'phone' => 'required|string|max:20',
             'born' => 'required|date',
             'gender' => 'required|in:men,women',
-        ];
+        ]);
 
-        // Validasi password hanya jika salah satu field password diisi
-        if ($request->filled('password') || $request->filled('password_confirmation')) {
-            $rules['current_password'] = 'required|string';
-            $rules['password'] = 'required|string|confirmed';
-            $rules['password_confirmation'] = 'required|string';
-        }
+        $user = Auth::user();
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
 
-        $validatedData = $request->validate($rules);
-
-        $user = User::find(Auth::user()->id);
-
-
-        // Update user details
-        $user->name = $validatedData['name'];
-        $user->email = $validatedData['email'];
-
-        // Cek jika password baru diisi
-        if ($request->filled('password')) {
-            // Validasi password lama
-            if (!Hash::check($validatedData['current_password'], $user->password)) {
-                return back()->withErrors(['current_password' => 'The provided current password does not match our records.'])->withInput();
-            }
-            // Update password
-            $user->password = Hash::make($validatedData['password']);
-        }
-
-        $user->save();
-
-        // Update atau buat detail pelanggan
-        Customer::updateOrCreate(
+        $customer = Customer::updateOrCreate(
             ['user_id' => $user->id],
             [
-                'phone' => $validatedData['phone'],
-                'born' => $validatedData['born'],
-                'gender' => $validatedData['gender'],
+                'phone' => $request->phone,
+                'born' => $request->born,
+                'gender' => $request->gender,
             ]
         );
 
-        return redirect()->route('cashier.profile')->with('success', 'Profile updated successfully.');
+        return redirect()->route('cashier.profill')->with('success', 'Profile updated successfully.');
+    }
+
+        public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'password' => 'required|string|min:3|confirmed',
+        ]);
+
+        $user = Auth::user();
+
+        if (!Hash::check($request->current_password, $user->password)) {
+            return redirect()->route('cashier.profill')->with('warning', 'Current password does not match.');
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return redirect()->route('cashier.profill')->with('success', 'Password updated successfully.');
     }
 
 
