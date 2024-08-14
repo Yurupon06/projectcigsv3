@@ -47,7 +47,7 @@
                         </li>
 
                         <li>
-                            <a href="{{ route('landing.index') }}">Membership</a>
+                            <a href="{{ route('membership.index') }}">Membership</a>
 
                         </li>
                     </ul>
@@ -120,7 +120,7 @@
             </li>
 
             <li>
-                <a href="product.html">Membership</a>
+                <a href="{{ route('membership.index') }}">Membership</a>
             </li>
         </ul>
     </div>

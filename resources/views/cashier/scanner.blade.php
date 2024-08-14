@@ -15,13 +15,43 @@
         #reader video {
             transform: scaleX(-1);
         }
+
+        table td{
+            text-align: left;
+            font-size: 1.4rem;
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container mt-5 text-center">
         <h1>Scan QR Code</h1>
-        <div id="reader"></div>
-        <p id="result"></p>
+        <div class="row">
+            <div class="col-md-6">
+                <div id="reader"></div>
+            </div>
+            <div class="col-md-6">
+                <div id="result">
+                    <table>
+                        <tr>
+                            <td><b>Nama</b></td>
+                            <td>:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><b>No. Hp</b></td>
+                            <td>:</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td><b>Expiration Date</b></td>
+                            <td>:</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
         <a class="btn btn-outline-primary" href="{{route('cashier.index')}}" role="button">Back</a>
     </div>
 

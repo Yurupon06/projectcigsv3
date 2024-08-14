@@ -112,13 +112,6 @@ class CashierController extends Controller
         return redirect()->route('cashier.qrscan', ['qr_token' => $order->qr_token]);
     }
 
-    public function membercashier()
-    {
-        $members = Order::with('customer', 'product')->get();
-        return view('membercash.membercashier', compact('members'));
-    }
-
-
     public function profile(){
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();

@@ -147,4 +147,10 @@ class LandingController extends Controller
     
         return view('landing.beforeOrder', compact('product', 'user', 'customer' ));
     }
+
+    public function membership()
+    {
+        $user = Auth::user();
+        return view('landing.membership', compact('user'));
+    }
 }
