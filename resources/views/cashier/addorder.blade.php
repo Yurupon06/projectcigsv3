@@ -31,7 +31,7 @@
                                     <select id="product_id" name="product_id" class="ps-2 form-select" aria-label="Select Product">
                                         <option selected disabled>Select Product</option>
                                         @foreach($product as $dt)
-                                            <option value="{{ $dt->id }}" data-description="{{ $dt->description }}" data-price="Rp {{ number_format($dt->price) }}">
+                                            <option value="{{ $dt->id }}" data-description="{{ $dt->description }}" data-price="{{ $dt->price }}">
                                                 {{ $dt->product_name }}
                                             </option>
                                         @endforeach

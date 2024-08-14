@@ -115,7 +115,7 @@ class CashierController extends Controller
     public function makeOrder(Request $request)
     {
         $request->validate([
-            'customer_id' => 'required|exists:customers,id',
+            'customer_id' => 'required|exists:users,id',
             'product_id' => 'required|exists:products,id',
         ]);
 
