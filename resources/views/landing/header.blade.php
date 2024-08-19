@@ -56,7 +56,6 @@
                         <li>
                             <a href="{{ route('yourorder.index') }}">My Order</a>
                         </li>
-                        @if($member->status == 'active' )
                         <li>
                             @auth
                             @if($member)
@@ -65,7 +64,6 @@
                             @endif
                         @endauth
                         </li>
-                        @endif
                     </ul>
                 </div>
 

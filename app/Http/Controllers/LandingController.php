@@ -7,7 +7,6 @@ use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Member;
 use App\Models\Order;
-use App\Models\Member;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
