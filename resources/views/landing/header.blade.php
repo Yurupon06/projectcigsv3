@@ -1,29 +1,32 @@
 <style>
     .wrap-header-mobile {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-.btn-show-menu-mobile {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
+    .btn-show-menu-mobile {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
 
-.btn-auth-mobile {
-    display: none; /* Hide logout button by default on mobile */
-}
-
-/* Display logout button only on mobile and align it to the right */
-@media (max-width: 768px) {
     .btn-auth-mobile {
-        display: block;
-        margin-left: auto; /* Align to the right */
-        padding: 0 15px;
-        color: #007BFF;
-        font-weight: bold;
-        text-decoration: none;
+        display: none;
+        /* Hide logout button by default on mobile */
+    }
+
+    /* Display logout button only on mobile and align it to the right */
+    @media (max-width: 768px) {
+        .btn-auth-mobile {
+            display: block;
+            margin-left: auto;
+            /* Align to the right */
+            padding: 0 15px;
+            color: #007BFF;
+            font-weight: bold;
+            text-decoration: none;
+        }
     }
 }
 @media (min-width: 769px) {
@@ -32,7 +35,6 @@
         display: none;
     }
 }
-
 </style>
 
 <header class="header-v2">
@@ -54,36 +56,37 @@
                         <li>
                             <a href="{{ route('yourorder.index') }}">My Order</a>
                         </li>
-
+                        @if($member->status == 'active' )
                         <li>
-                            <a href="{{ route('landing.index') }}">Membership</a>
-
+                            <a href="{{ route('membership.index') }}">Membership</a>
                         </li>
+                        @endif
                     </ul>
-                </div>	
+                </div>
 
                 <div class="wrap-icon-header flex-w flex-r-m h-full">
                     @auth
-                    <a href="{{route('landing.profile')}}" class="flex-c-m trans-04 p-lr-25" >
-                        {{ Auth::user()->name }}
-                    </a>
-                    <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        Logout
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form>
+                        <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25">
+                            {{ Auth::user()->name }}
+                        </a>
+                        <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                            @csrf
+                        </form>
                     @else
-                    <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25">
-                        Login
-                    </a>
-                    <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25">
-                        Register
-                    </a>
+                        <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25">
+                            Login
+                        </a>
+                        <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25">
+                            Register
+                        </a>
                     @endauth
                 </div>
             </nav>
-        </div>	
+        </div>
     </div>
 
     <!-- Header Mobile -->
@@ -95,22 +98,22 @@
             </span>
         </div>
         @auth
-        <li>
-            <a href="{{ route('logout')}}" class="btn-auth-mobile" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                Logout
-            </a>
-        </li>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-            @csrf
-        </form>
+            <li>
+                <a href="{{ route('logout') }}" class="btn-auth-mobile"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    Logout
+                </a>
+            </li>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
         @else
+            <li>
+                <a href="{{ route('login') }}" class="btn-auth-mobile">Login</a>
+            </li>
 
-        <li>
-            <a href="{{ route('login')}}" class="btn-auth-mobile">Login</a>
-        </li>
-        
         @endauth
-        
+
     </div>
 
 
@@ -119,7 +122,7 @@
         <ul class="main-menu-m">
 
             <li>
-                <a href="{{route('landing.profile')}}">profile</a>
+                <a href="{{ route('landing.profile') }}">profile</a>
             </li>
             <li>
                 <a href="{{ route('landing.index') }}">Home</a>
@@ -129,7 +132,7 @@
             </li>
 
             <li>
-                <a href="product.html">Membership</a>
+                <a href="{{ route('membership.index') }}">Membership</a>
             </li>
         </ul>
     </div>
