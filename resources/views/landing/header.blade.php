@@ -56,13 +56,11 @@
                         <li>
                             <a href="{{ route('yourorder.index') }}">My Order</a>
                         </li>
-                        @if($member->status == 'active' )
                         <li>
                             @auth
                             @if($member)
                                 <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
                             @else
-                            @endif
                         @endauth
                         </li>
                         @endif
