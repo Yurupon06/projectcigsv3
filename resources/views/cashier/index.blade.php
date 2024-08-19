@@ -1,10 +1,10 @@
 @extends('dashboard.master')
-@section('title', 'order')
+@section('title', 'Cashier')
 @section('sidebar')
     @include('cashier.sidebar')
 @endsection
-@section('page-title', 'order')
-@section('page', 'order')
+@section('page-title', 'Cashier')
+@section('page', 'Cashier')
 @section('main')
     @include('cashier.main')
 
