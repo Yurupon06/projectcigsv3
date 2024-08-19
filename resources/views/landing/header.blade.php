@@ -4,11 +4,35 @@
     @include('landing.master')
 
 <style>
-.wrap-header-mobile {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
+    .wrap-header-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .btn-show-menu-mobile {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .btn-auth-mobile {
+        display: none;
+        /* Hide logout button by default on mobile */
+    }
+
+    /* Display logout button only on mobile and align it to the right */
+    @media (max-width: 768px) {
+        .btn-auth-mobile {
+            display: block;
+            margin-left: auto;
+            /* Align to the right */
+            padding: 0 15px;
+            color: #007BFF;
+            font-weight: bold;
+            text-decoration: none;
+        }
+    }
 
 .btn-show-menu-mobile {
     display: flex;

@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\ApplicationSetting;
 use App\Models\Payment;
 use App\Models\Product_categorie;
+use App\Models\MemberCheckin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -207,7 +208,7 @@ class CashierController extends Controller
         $order = Order::create([
             'customer_id' => $request->customer_id,
             'product_id' => $request->product_id,
-            'order_date' => Carbon::now('Asia/Jakarta'),
+            'order_date' => Carbon::now('Asia/Jakarta') ,
             'total_amount' => $request->price,
             'status' => 'unpaid',
             'qr_token' => $qrToken,
@@ -299,8 +300,16 @@ class CashierController extends Controller
         return redirect()->route('cashier.order');
     }
 
+
     public function showCheckIn()
     {
         return view('cashier.checkinscanner');  
+
+    }
+    public function membercheckin()
+    {
+        $payment = Payment::with('order')->get();
+        return view('membercheckin.index');
+
     }
 }
