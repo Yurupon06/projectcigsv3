@@ -298,4 +298,9 @@ class CashierController extends Controller
         }
         return redirect()->route('cashier.order');
     }
+
+    public function showCheckIn()
+    {
+        return view('cashier.checkinscanner');  
+    }
 }
