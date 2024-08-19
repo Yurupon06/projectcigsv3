@@ -89,6 +89,7 @@
                                         {{ $order->status }}
                                     </td>
                                 </tr>
+                                @if ($order->status === 'unpaid')
                                 <tr>
                                     <td colspan="2">
                                         <form action="{{ route('payments.store', $order->id) }}" method="POST" class="text-end">
@@ -104,6 +105,10 @@
                                             <button type="submit" name="action" value="process" class="btn btn-success">Process Payment</button>
                                         </form>
                                     </td>
+                                </tr>
+                                @endif
+                                <tr>
+                                    
                                 </tr>
                             </table>
                         </div>

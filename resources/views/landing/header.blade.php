@@ -47,7 +47,12 @@
                         </li>
 
                         <li>
-                            <a href="{{ route('landing.index') }}">Membership</a>
+                            @auth
+                            @if($member)
+                                <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                            @else
+                            @endif
+                        @endauth
 
                         </li>
                     </ul>
@@ -87,8 +92,8 @@
         </div>
         @auth
         <li>
-            <a href="{{ route('logout')}}" class="btn-auth-mobile" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                Logout
+            <a href="{{route('landing.profile')}}" class="btn-auth-mobile">
+                {{ Auth::user()->name }}
             </a>
         </li>
         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
@@ -108,10 +113,6 @@
     <!-- Menu Mobile -->
     <div class="menu-mobile">
         <ul class="main-menu-m">
-
-            <li>
-                <a href="{{route('landing.profile')}}">profile</a>
-            </li>
             <li>
                 <a href="{{ route('landing.index') }}">Home</a>
             </li>
@@ -119,8 +120,13 @@
                 <a href="{{ route('yourorder.index') }}">My Order</a>
             </li>
 
-            <li>
-                <a href="product.html">Membership</a>
+            <li >
+                @auth
+                @if($member)
+                    <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                @else
+                @endif
+            @endauth
             </li>
         </ul>
     </div>
