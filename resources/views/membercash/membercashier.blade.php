@@ -6,10 +6,15 @@
 @section('page-title', 'order')
 @section('page', 'order')
 @section('main')
-    @include('dashboard.main')
+    @include('cashier.main')
 
     <div class="container-fluid py-4">
         <div class="row">
+            @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+            @endif
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-header pb-0">
@@ -25,28 +30,31 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @foreach ($members as $i => $member)
-                                        @php
-                                            $startDate = \Carbon\Carbon::parse($member->order_date); 
-                                            $cycle = 30; 
-                                            $endDate = $startDate->copy()->addDays($cycle);
-                                            $formattedStartDate = $startDate->translatedFormat('d F Y H:i');
-                                            $formattedEndDate = $endDate->translatedFormat('d F Y H:i');
-                                        @endphp
+                                    @foreach ($member as $i => $member)
                                         <tr>
                                             <td class="text-center">
                                                 <div class="d-flex px-2 py-1">
-                                                    {{ $i + 1 }}
+                                                    {{ $i + 1 . " . " }}
                                                 </div>
                                             </td>
-                                            <td>{{ $member->customer ? $member->customer->user->name : ''}}</td>
-                                            <td>{{ $formattedStartDate }}</td>
-                                            <td>{{ $formattedEndDate }}</td>
-                                            <td style="color: {{ $member->status === 'unpaid' ? 'red' : ($member->status === 'paid' ? 'green' : 'black') }}">
+                                            <td>{{ $member->customer->user->name}}</td>
+                                            <td style="color:{{ $member->status === 'inactive' ? 'red' : ($member->status === 'active' ? 'blue' : 'black') }}">
+                                                {{ \Carbon\Carbon::parse($member->start_date)->translatedFormat('d F Y') }}
+                                            </td>
+                                            <td style="color:{{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'red') }}">
+                                                {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d F Y') }}
+                                            </td>
+                                            <td style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
                                                 {{ $member->status }}
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <a href="{{ route('cashier.member', $member->id) }}">
+                                                    <span class="badge badge-sm bg-gradient-info">Detail</span>
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach
