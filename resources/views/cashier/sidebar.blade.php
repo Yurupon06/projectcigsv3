@@ -111,7 +111,7 @@
             </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white {{ request()->is('membercashier') ? 'active' : '' }}" href="{{ route('membercashier.membercash') }}">
+          <a class="nav-link text-white {{ request()->is('/membercash/membercashier') ? 'active' : '' }}" href="{{ route('membercashier.membercash') }}">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">groups</i>
             </div>
