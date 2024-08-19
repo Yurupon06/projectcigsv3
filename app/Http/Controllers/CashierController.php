@@ -131,7 +131,7 @@ class CashierController extends Controller
         }
     
         $order = Order::create([
-            'customer_id' => $customer->id,
+            'customer_id' => Auth::user()->id,
             'product_id' => $request->product_id,
             'order_date' => Carbon::now('Asia/Jakarta'),
             'total_amount' => $request->price,

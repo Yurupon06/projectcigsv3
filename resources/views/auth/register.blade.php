@@ -161,6 +161,13 @@
                                 @enderror
                             </div>
                             <div class="form-floating mb-3">
+                                <input type="number" class="form-control @error('phone') is-invalid @enderror" id="floatingPhone" name="phone" value="{{ old('phone') }}" required autocomplete="phone">
+                                <label for="floatingEmail">Phone</label>
+                                @error('phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="form-floating mb-3">
                                 <input type="password" class="form-control @error('password') is-invalid @enderror" id="floatingPassword" name="password" required autocomplete="new-password">
                                 <label for="floatingPassword">Password</label>
                                 @error('password')

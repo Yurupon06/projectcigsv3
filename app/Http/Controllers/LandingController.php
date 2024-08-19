@@ -25,8 +25,8 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         
-        $member = Member::where('customer_id', $customer->id)->first();
-        return view('landing.index', compact('products', 'user', 'customer', 'member'));
+        // $member = Member::where('customer_id', $customer->id)->first();
+        return view('landing.index', compact('products', 'user', 'customer'));
     }
 
     public function profile()
