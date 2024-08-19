@@ -87,6 +87,10 @@
             margin-top: 10px;
         }
 
+        img {
+            filter:grayscale(100%);
+        }
+
 	</style>
 </head>
 

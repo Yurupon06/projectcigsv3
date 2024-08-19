@@ -26,8 +26,8 @@
                       <thead>
                         <tr>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">order id</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Customer Name</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">order id</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Product</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">amount</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">amount Given</th>
@@ -47,12 +47,12 @@
                                 {{ $i + 1 . " . " }}
                             </div>
                           </td>
+                          <td>{{ $dt->order->customer->user->name }}</td>
                           <td>
                             <div class="d-flex px-2 py-1">
                               {{ $dt->order->id }}
                             </div>
                           </td>
-                          <td>{{ $dt->order->customer->user->name }}</td>
                           <td>{{ $dt->order->product->product_name }}</td>
                           <td>
                             Rp {{ number_format($dt->amount) }}

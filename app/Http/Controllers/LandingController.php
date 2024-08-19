@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Models\Member;
 use App\Models\Order;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -23,10 +24,13 @@ class LandingController extends Controller
         $products = Product::with('productcat')->get();
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
-        return view('landing.index', compact('products', 'user', 'customer'));
+        
+        $member = Member::where('customer_id', $customer->id)->first();
+        return view('landing.index', compact('products', 'user', 'customer', 'member'));
     }
 
-    public function profile(){
+    public function profile()
+    {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         return view('landing.profile', compact('user', 'customer'));
@@ -60,7 +64,7 @@ class LandingController extends Controller
         return redirect()->route('landing.profile')->with('success', 'Profile updated successfully.');
     }
 
-        public function updatePassword(Request $request)
+    public function updatePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required',
@@ -85,9 +89,9 @@ class LandingController extends Controller
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
-    
+
         $orders = $customer ? Order::where('customer_id', $customer->id)->get() : collect([]);
-    
+
         return view('landing.order', compact('orders', 'customer'));
     }
 
@@ -122,7 +126,8 @@ class LandingController extends Controller
         return redirect()->route('checkout', ['id' => $order->id])->with('success', 'Order created successfully.');
     }
 
-    public function orderCancel($id){
+    public function orderCancel($id)
+    {
         $order = Order::findOrFail($id);
         $order->update(['status' => 'canceled']);
         return redirect()->route('yourorder.index')->with('success', 'Successfully Cancel The Order.');
@@ -131,20 +136,32 @@ class LandingController extends Controller
 
 
 
-    public function checkout($id){
+    public function checkout($id)
+    {
         $order = Order::with('customer', 'product')->find($id);
         return view('landing.checkout', compact('order'));
     }
 
 
-    public function beforeOrder(Request $request){
+    public function beforeOrder(Request $request)
+    {
         $product = $request->only(['product_id', 'product_name', 'description', 'price']);
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         if (!$customer || !$customer->phone || !$customer->born || !$customer->gender) {
             return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
         }
-    
-        return view('landing.beforeOrder', compact('product', 'user', 'customer' ));
+
+        return view('landing.beforeOrder', compact('product', 'user', 'customer'));
     }
+
+    public function membership()
+    {
+        $user = Auth::user();
+        $customer = Customer::where('user_id', auth()->user()->id)->first();
+        $member = Member::where('customer_id', $customer->id)->first();
+
+        return view('landing.membership', compact('customer','user', 'member'));
+    }
+    
 }

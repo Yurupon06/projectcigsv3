@@ -24,6 +24,7 @@ Route::middleware((['auth', 'customer']))->group(function (){
     Route::patch('/myorder/{id}', [\App\Http\Controllers\LandingController::class, 'orderCancel'])->name('yourorder.cancel');
     Route::get('/checking', [\App\Http\Controllers\LandingController::class, 'beforeOrder'])->name('beforeorder.index');
     Route::get('/checkout/{id}', [\App\Http\Controllers\LandingController::class, 'checkout'])->name('checkout');
+    Route::get('/membership', [\App\Http\Controllers\LandingController::class, 'membership'])->name('membership.index');
     
     
 });
@@ -39,8 +40,9 @@ Route::middleware((['auth', 'admin']))->group(function (){
     Route::resource('order', \App\Http\Controllers\OrderController::class);
     Route::get('scanner', function () {return view('order.scanner');})->name('scanner');
     Route::get('/order/qrscan/{qr_token}', [\App\Http\Controllers\OrderController::class, 'qrscan'])->name('order.qrscan');
-    Route::get('/profil', [\App\Http\Controllers\DashboardController::class, 'profile'])->name('dashboard.profil');
-    Route::post('/profil/update', [\App\Http\Controllers\DashboardController::class, 'profileUpdate'])->name('update.profil');
+    Route::get('/admin/profil', [\App\Http\Controllers\DashboardController::class, 'profile'])->name('dashboard.profil');
+    Route::post('/admin/profile', [\App\Http\Controllers\DashboardController::class, 'profileUpdate'])->name('update.profile.admin');
+    Route::post('/admin/profile/password', [\App\Http\Controllers\DashboardController::class, 'updatePassword'])->name('update.password.admin');
     Route::resource('application-setting', \App\Http\Controllers\ApplicationSettingController::class);
 });
 Route::resource('payment', \App\Http\Controllers\PaymentController::class);
@@ -50,22 +52,23 @@ Route::resource('payment', \App\Http\Controllers\PaymentController::class);
 Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier', [\App\Http\Controllers\CashierController::class, 'index'])->name('cashier.index');
     Route::get('/cashier/show', [\App\Http\Controllers\CashierController::class, 'show'])->name('cashier.show');
+    Route::get('/cashier/checkin-scanner', [App\Http\Controllers\CashierController::class, 'showCheckIn'])->name('cashier.checkin');
+    Route::get('/cashier/profile', [\App\Http\Controllers\CashierController::class, 'profile'])->name('cashier.profile');
     Route::get('/cashier/scanner', function () {return view('cashier.scanner');})->name('scanner.cashier');
     Route::get('/cashier/qrscan/{qr_token}', [\App\Http\Controllers\CashierController::class, 'qrscan'])->name('cashier.qrscan');
     Route::get('/cashier/payment', [\App\Http\Controllers\CashierController::class, 'payment'])->name('cashier.payment');
     Route::post('/payments/{order}', [\App\Http\Controllers\CashierController::class, 'store'])->name('payments.store');
+
     Route::get('/struk-gym/{id}', [\App\Http\Controllers\CashierController::class, 'showStruk'])->name('struk_gym');
 
 
     Route::get('/membercash/membercashier', [\App\Http\Controllers\CashierController::class, 'membercashier'])->name('membercashier.membercash');
     Route::get('/cashier/order', [\App\Http\Controllers\CashierController::class, 'order'])->name('cashier.order');
     Route::get('/membercash/membercashier', [\App\Http\Controllers\CashierController::class, 'membercashier'])->name('membercashier.membercash');
-
     Route::resource('members', MemberController::class);
-
-
-    Route::get('/profill', [\App\Http\Controllers\CashierController::class, 'profile'])->name('cashier.profill');
-    Route::post('/profill/update', [\App\Http\Controllers\CashierController::class, 'profileUpdate'])->name('update.profill');
+    Route::get('/cashier/profill', [\App\Http\Controllers\CashierController::class, 'profile'])->name('cashier.profill');
+    Route::post('/cashier/profile', [\App\Http\Controllers\CashierController::class, 'profileUpdate'])->name('update.profile.cashier');
+    Route::post('/cashier/profile/password', [\App\Http\Controllers\CashierController::class, 'updatePassword'])->name('update.password.cashier');
     Route::post('/cashier/makeorder', [\App\Http\Controllers\CashierController::class, 'makeOrder'])->name('make.order');
     Route::get('/cashier/receipt/{paymentId}', [\App\Http\Controllers\CashierController::class, 'struk'])->name('cashier.receipt');
 
