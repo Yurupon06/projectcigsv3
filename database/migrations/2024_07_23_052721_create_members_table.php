@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers')->ondelete('cascade')->onupdate('cascade');
+            $table->enum('visit', ['1','30']);
             $table->datetime('start_date');
             $table->datetime('end_date');
             $table->enum('status', ['active', 'inactive', 'expired'])->default('inactive');
