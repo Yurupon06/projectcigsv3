@@ -162,7 +162,7 @@
                 <tr>
                     <td colspan="2">
                         <div class="qr-code">
-                            {!! QrCode::size(100)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
+                            {!! QrCode::size(200)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
                             <p>Thank you, please come again</p>
                         </div>
                     </td>
