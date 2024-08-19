@@ -11,6 +11,7 @@ class Member extends Model
     protected $table = 'members';
     protected $fillable = [
         'customer_id',
+        'visit',
         'start_date',	
         'end_date',
         'status',	
