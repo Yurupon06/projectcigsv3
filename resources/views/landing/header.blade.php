@@ -58,7 +58,12 @@
                         </li>
                         @if($member->status == 'active' )
                         <li>
-                            <a href="{{ route('membership.index') }}">Membership</a>
+                            @auth
+                            @if($member)
+                                <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                            @else
+                            @endif
+                        @endauth
                         </li>
                         @endif
                     </ul>
@@ -98,15 +103,14 @@
             </span>
         </div>
         @auth
-            <li>
-                <a href="{{ route('logout') }}" class="btn-auth-mobile"
-                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                    Logout
-                </a>
-            </li>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                @csrf
-            </form>
+        <li>
+            <a href="{{route('landing.profile')}}" class="btn-auth-mobile">
+                {{ Auth::user()->name }}
+            </a>
+        </li>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
         @else
             <li>
                 <a href="{{ route('login') }}" class="btn-auth-mobile">Login</a>
@@ -120,19 +124,19 @@
     <!-- Menu Mobile -->
     <div class="menu-mobile">
         <ul class="main-menu-m">
-
-            <li>
-                <a href="{{ route('landing.profile') }}">profile</a>
-            </li>
             <li>
                 <a href="{{ route('landing.index') }}">Home</a>
             </li>
             <li>
                 <a href="{{ route('yourorder.index') }}">My Order</a>
             </li>
-
-            <li>
-                <a href="{{ route('membership.index') }}">Membership</a>
+            <li >
+                @auth
+                @if($member)
+                    <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                @else
+                @endif
+            @endauth
             </li>
         </ul>
     </div>

@@ -24,7 +24,7 @@ Route::middleware((['auth', 'customer']))->group(function (){
     Route::patch('/myorder/{id}', [\App\Http\Controllers\LandingController::class, 'orderCancel'])->name('yourorder.cancel');
     Route::get('/checking', [\App\Http\Controllers\LandingController::class, 'beforeOrder'])->name('beforeorder.index');
     Route::get('/checkout/{id}', [\App\Http\Controllers\LandingController::class, 'checkout'])->name('checkout');
-    Route::get('/membership', [\App\Http\Controllers\LandingController::class, 'membership'])->name('membership.index');
+    Route::get('/membership/{id}', [\App\Http\Controllers\LandingController::class, 'membership'])->name('customer.membership');
     
     
 });
@@ -61,8 +61,8 @@ Route::middleware((['auth', 'cashier']))->group(function (){
 
     Route::get('/struk-gym/{id}', [\App\Http\Controllers\CashierController::class, 'showStruk'])->name('struk_gym');
 
+    Route::post('/customer/store', [\App\Http\Controllers\CashierController::class, 'storeCustomer'])->name('customer.store');
 
-    Route::get('/membercash/membercashier', [\App\Http\Controllers\CashierController::class, 'membercashier'])->name('membercashier.membercash');
     Route::get('/cashier/order', [\App\Http\Controllers\CashierController::class, 'order'])->name('cashier.order');
     Route::get('/membercash/membercashier', [\App\Http\Controllers\CashierController::class, 'membercashier'])->name('membercashier.membercash');
     Route::resource('members', MemberController::class);
@@ -71,6 +71,8 @@ Route::middleware((['auth', 'cashier']))->group(function (){
     Route::post('/cashier/profile/password', [\App\Http\Controllers\CashierController::class, 'updatePassword'])->name('update.password.cashier');
     Route::post('/cashier/makeorder', [\App\Http\Controllers\CashierController::class, 'makeOrder'])->name('make.order');
     Route::get('/cashier/receipt/{paymentId}', [\App\Http\Controllers\CashierController::class, 'struk'])->name('cashier.receipt');
+    Route::get('/cashier/member/{id}', [\App\Http\Controllers\CashierController::class, 'detailMember'])->name('cashier.member');
+    Route::post('/cashier/member/action/{id}', [\App\Http\Controllers\CashierController::class, 'actionMember'])->name('action.member');
 
 
 });

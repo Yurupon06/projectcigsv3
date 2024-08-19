@@ -36,94 +36,143 @@
         text-align: center;
         margin-top: 30px;
     }
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+    .card-title {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .card-subtitle {
+        font-size: 16px;
+        color: #6c757d;
+    }
+    .card-text {
+        font-size: 14px;
+    }
+    .status-badge {
+        font-weight: bold;
+    }
+    .custom-button {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    .custom-button:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+    @media (max-width: 576px) {
+        .card-title {
+            font-size: 16px;
+        }
+        .card-subtitle {
+            font-size: 14px;
+        }
+        .card-text {
+            font-size: 12px;
+        }
+        .navigation-links {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+    @media (min-width: 992px) {
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+        .row {
+            max-width: 900px;
+            width: 100%;
+        }
+    }
 </style>
 
-<br>
-<div class="mb-50">
+<div class="container mt-4">
     <div class="row">
-        <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-            <div>
-                <div class="navigation-links">
-                    <a href="{{ route('landing.index') }}">Back</a>
+        <!-- Navigation Back Link -->
+        <div class="col-12 mb-3">
+            <div class="navigation-links">
+                <a href="{{ route('yourorder.index') }}">Back</a>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <h5 class="card-title">Profile</h5>
+                <div class="card-text">
+                    <p>{{ $order->customer->user->name }} ( {{ $order->customer->phone }} )</p>
+                    <p>{{ $order->customer->user->email }}</p>
                 </div>
-                <br>
-                <table>
-                    <tr class="table_head">
-                        <th class="column-1">Profile</th>
-                    </tr>
-                    <tr class="table_row">
-                        <td>
-                            {{ $order->customer->user->name }} ( {{ $order->customer->phone }} )
-                        </td>
-                        <td class="cell-padding">
-                            {{ $order->customer->user->email }}
-                        </td>
-                    </tr>
+            </div>
+        </div>
+
+        <!-- Order Details Section -->
+        <div class="col-12 mb-4">
+            <div class="card">
+                <h5 class="card-title">Order Details</h5>
+                <table class="table table-responsive">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Order Date</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ $order->product->product_name }}</td>
+                            <td>{{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d/m/Y H:i') }}</td>
+                            <td>Rp {{ number_format($order->total_amount) }}</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         </div>
-        <br>
-        <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-            <div class="wrap-table-shopping-cart">
-                <table class="table-shopping-cart">
-                    <tr class="table_head">
-                        <th class="column-1">Name</th>
-                        <th class="column-1">Product Name</th>
-                        <th class="column-1">Order Date</th>
-                        <th class="column-1">Total</th>
-                    </tr>
-                    <tr class="table_row">
-                        <td class="column-1">
-                            {{ $order->customer->user->name }}
-                        </td>
-                        <td class="column-1">
-                            {{ $order->product->product_name }}
-                        </td>
-                        <td class="column-1">
-                            {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d/m/Y H:i') }}
 
-                        </td>
-                        <td class="column-1">
-                            Rp {{ number_format($order->total_amount) }}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <br>
-            
+        <!-- QR Code and Total Section -->
+        <div class="col-12 mb-4">
             @if ($order->status === 'unpaid')
                 <div class="qr-code-container">
                     <div class="mt-3">Go To Cashier And Show The QrCode To Pay</div>
                     <br>
                     {!! QrCode::size(200)->generate(route('cashier.qrscan', ['qr_token' => $order->qr_token])) !!}
-                    
                 </div>
                 <br>
             @endif
 
             <div class="flex-w flex-t p-t-27 p-b-33">
-                <div class="size-208">
-                    <span class="mtext-101 cl2">
-                        Total:
-                    </span>
+                    <div class="size-208">
+                        <span class="mtext-101 cl2">
+                            Total:
+                        </span>
+                    </div>
+                    <div class="size-209 p-t-1 flex-w flex-sb">
+                        <span class="mtext-110 cl2">
+                            Rp {{ number_format($order->total_amount) }}
+                        </span>
+                        <span class="mtext-110 cl2" style="color: {{ $order->status == 'unpaid' ? 'red' : ($order->status == 'canceled' ? 'gray' : 'green') }}; font-weight: bold;">
+                            {{ ucfirst($order->status) }}
+                        </span>
+                        @if ($order->status === 'unpaid')
+                        <form action="{{ route('yourorder.cancel', $order->id) }}" method="POST" class="mt-3">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="flex-c-m stext-101 cl0 size-11 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel Order</button>
+                        </form>
+                        @endif
+                    </div>
                 </div>
-                <div class="size-209 p-t-1 flex-w flex-sb">
-                    
-                    <span class="mtext-110 cl2">
-                        Rp {{ number_format($order->total_amount) }}
-                    </span>
-                    <span class="mtext-110 cl2" style="color: {{ $order->status == 'unpaid' ? 'red' : ($order->status == 'canceled' ? 'gray' : 'green') }}; font-weight: bold;">
-                        {{ ucfirst($order->status) }}
-                    </span>
-                    @if ($order->status === 'unpaid')
-                    <form action="{{ route('yourorder.cancel', $order->id) }}" method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="flex-c-m stext-101 cl0 size-11 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel Order</button>
-                    </form>
-                    @endif
-                </div>
-            </div>
         </div>
     </div>
 </div>

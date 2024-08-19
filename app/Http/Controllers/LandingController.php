@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Member;
 use App\Models\Order;
+use App\Models\Member;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
@@ -20,20 +21,20 @@ class LandingController extends Controller
      */
     public function index()
     {
-        //
         $products = Product::with('productcat')->get();
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
-        
-        $member = Member::where('customer_id', $customer->id)->first();
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         return view('landing.index', compact('products', 'user', 'customer', 'member'));
     }
+    
 
     public function profile()
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
-        return view('landing.profile', compact('user', 'customer'));
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        return view('landing.profile', compact('user', 'customer', 'member'));
     }
 
     public function profileUpdate(Request $request)
@@ -89,15 +90,14 @@ class LandingController extends Controller
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
-
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         $orders = $customer ? Order::where('customer_id', $customer->id)->get() : collect([]);
-
-        return view('landing.order', compact('orders', 'customer'));
+    
+        return view('landing.order', compact('orders', 'customer', 'member'));
     }
 
     public function orderStore(Request $request)
     {
-        // Validate the request data
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
@@ -139,7 +139,11 @@ class LandingController extends Controller
     public function checkout($id)
     {
         $order = Order::with('customer', 'product')->find($id);
-        return view('landing.checkout', compact('order'));
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+    
+        return view('landing.checkout', compact('order', 'member'));
     }
 
 
@@ -148,20 +152,18 @@ class LandingController extends Controller
         $product = $request->only(['product_id', 'product_name', 'description', 'price']);
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         if (!$customer || !$customer->phone || !$customer->born || !$customer->gender) {
             return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
         }
-
-        return view('landing.beforeOrder', compact('product', 'user', 'customer'));
+    
+        return view('landing.beforeOrder', compact('product', 'user', 'customer', 'member' ));
     }
 
-    public function membership()
+    public function membership($id)
     {
-        $user = Auth::user();
-        $customer = Customer::where('user_id', auth()->user()->id)->first();
-        $member = Member::where('customer_id', $customer->id)->first();
-
-        return view('landing.membership', compact('customer','user', 'member'));
+        $member = Member::with('customer.user')->findOrFail($id);
+        return view('landing.membership', compact('member'));
     }
     
 }

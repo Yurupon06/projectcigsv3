@@ -2,111 +2,187 @@
 @include('landing.header')
 
 <style>
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    .navigation-links {
+    .iphone-SE {
+        background-color: #ffffff;
         display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-    }
-
-    .navigation-links a {
-        text-decoration: none;
-        color: #007BFF;
-        font-weight: bold;
-    }
-
-    .navigation-links a:hover {
-        text-decoration: underline;
-    }
-
-    .profile-section {
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .profile-section h1 {
-        margin-bottom: 20px;
-        font-size: 24px;
-        color: #333;
-    }
-
-    .profile-field {
-        display: flex;
-        justify-content: space-between;
+        justify-content: center;
+        width: 100%;
+        height: 100vh;
         align-items: center;
-        margin-bottom: 15px;
     }
 
-    .profile-field span {
-        font-size: 18px;
-        color: #555;
+    .iphone-SE .div {
+        background-color: #ffffff;
+        width: 90%;
+        max-width: 320px;
+        height: auto;
+        position: relative;
+        padding: 20px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
     }
 
-    .profile-field a {
-        text-decoration: none;
-        color: #007BFF;
-        font-weight: bold;
-        font-size: 16px;
+    .iphone-SE .group {
+        width: 100%;
+        height: auto;
+        margin-bottom: 20px;
     }
 
-    .profile-field a:hover {
-        text-decoration: underline;
+    .iphone-SE .overlap-group {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        background: linear-gradient(180deg, rgb(0, 0, 0) 0.82%, rgb(53, 34, 0) 30.15%, rgb(104, 68, 0) 68.63%, rgb(132, 86, 0) 87.22%, rgb(195, 127, 0) 94.98%, rgb(255, 165, 0) 100%);
+        padding: 20px;
+        color: #ffffff;
+    }
+    .iphone-SE .logo-gym {
+        width: 20%;
+        max-width: 68px;
+        height: auto;
+        float: right;
+    }
+
+    .iphone-SE .text-wrapper,
+    .iphone-SE .text-wrapper-2,
+    .iphone-SE .text-wrapper-3,
+    .iphone-SE .text-wrapper-4 {
+        font-family: "Inria Sans-Bold", Helvetica;
+        font-weight: 700;
+        color: #ffffff;
+        margin-bottom: 10px;
+        font-size: 3vw;
+        max-width: 100%;
+        white-space: nowrap;
+    }
+
+    .iphone-SE .text-wrapper-3,
+    .iphone-SE .text-wrapper-4 {
+        font-size: 3vw;
+    }
+
+    .iphone-SE .overlap-wrapper {
+        width: 100%;
+        height: auto;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .iphone-SE .overlap {
+        display: inline-block;
+        width: 70%;
+        height: auto;
+        padding: 10px 0;
+        background-color: #ffffff;
+        border-radius: 23px;
+        border: 5px solid #000000;
+        font-family: "Inria Sans-Bold", Helvetica;
+        font-weight: 700;
+        color: #000000;
+        font-size: 6vw;
+    }
+
+    .iphone-SE .overlap-2 {
+        position: absolute;
+        width: 100%;
+        height: 50px;
+        top: 0;
+        left: 0;
+        background-color: #ffffff;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+        text-align: right;
+        padding: 15px 20px;
+    }
+
+    .iphone-SE .group-2 {
+        position: absolute;
+        width: 20px;
+        height: 9px;
+        top: 22px;
+        left: 25px;
+    }
+
+    .iphone-SE .text-wrapper-6 {
+        font-family: "Inria Sans-Bold", Helvetica;
+        font-weight: 700;
+        color: #0019ff;
+        font-size: 14px;
+    }
+
+    @media (min-width: 768px) {
+        .iphone-SE .div {
+            max-width: 600px; /* Increase the width of the card on desktop */
+            padding: 40px; /* Increase padding on desktop */
+        }
+
+        .iphone-SE .group {
+            margin-bottom: 30px; /* Increase spacing at the bottom of the group */
+        }
+
+        .iphone-SE .overlap-group {
+            padding: 30px; /* Increase padding within the group */
+        }
+
+        .iphone-SE .text-wrapper,
+        .iphone-SE .text-wrapper-2,
+        .iphone-SE .text-wrapper-3,
+        .iphone-SE .text-wrapper-4 {
+            font-size: 24px; /* Increase font size on desktop */
+        }
+
+        .iphone-SE .overlap {
+            font-size: 20px; /* Adjust the font size of the button */
+        }
     }
 </style>
 
-<div class="container">
-    <div class="navigation-links">
-        <a href="{{ route('landing.index') }}">Back</a>
-    </div>
+<div class="iphone-SE">
+    <div class="div">
+        <div class="group">
+            <div class="overlap-group">
+                <img class="logo-gym" src="../../assets/images/logo_gym.png" alt="Gym Logo" />
+                @if ($member->status == 'inactive')
+                
+                <div class="text-wrapper">
+                    NAME : 
+                    <span title="{{ $member->customer->user->name }}">
+                        {{ Str::limit($member->customer->user->name, 9, '...') }}
+                    </span>
+                </div>
+                
+                <div class="text-wrapper-2">MEMBER ID : {{ $member->id }}</div>
+                <div class="text-wrapper-3" style="color: 
+                {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
+                {{ $member->status }}
+                </div>
 
-    <div class="profile-section">
-        <div class="text-center">
-            <h1>Membership</h1>
-            <h1>Status: {{ $member->status ?? 'Not filled' }}</h1>
+                @else
+                <div class="text-wrapper" style="color: 
+                    {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
+                    {{ $member->status }}
+                </div>
+                <div class="text-wrapper-2">
+                    NAME : 
+                    <span title="{{ $member->customer->user->name }}">
+                        {{ Str::limit($member->customer->user->name, 9, '...') }}
+                    </span>
+                </div>
+                
+                <div class="text-wrapper-3">MEMBER ID : {{ $member->id }}</div>
+                <div class="text-wrapper-4">EXPIRED : {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d/M/Y') }}</div>
+                @endif
+                
+                
+            </div>
         </div>
-        <div class="profile-field">
-            <span>Name:</span>
-            <span>{{ $user->name }}</span>
+        @if ($member->status == 'active')
+        <div class="overlap-wrapper">
+            <div class="overlap">
+                <div class="text-wrapper-6">
+                    <button>GET IN</button>
+                </div>
+            </div>
         </div>
-        <div class="profile-field">
-            <span>Email:</span>
-            <span>{{ $user->email }}</span>
-        </div>
-        <div class="profile-field">
-            <span>Phone:</span>
-            <span>{{ $customer->phone ?? 'Not filled' }}</span>
-        </div>
-
-        <div class="profile-field">
-            <span>Date of Birth:</span>
-            <span>{{ $customer->born ?? 'Not filled' }}</span>
-        </div>
-
-        <div class="profile-field">
-            <span>Gender:</span>
-            <span>{{ $customer->gender ?? 'Not filled' }}</span>
-        </div>
-
-        <div class="profile-field">
-            <span>Start Date:</span>
-            <span>{{ $member->start_date ?? 'Not filled' }}</span>
-        </div>
-
-        <div class="profile-field">
-            <span>Expiration Date:</span>
-            <span>{{ $member->end_date ?? 'Not filled' }}</span>
-        </div>
-        {{-- @if ($last30DaysVisits < 30) --}}
-        <a href="#" type="button" class="btn btn-primary">
-            Check In
-        </a>
-        {{-- @endif --}}
+        @endif
     </div>
 </div>

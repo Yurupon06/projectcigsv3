@@ -94,22 +94,12 @@
 </head>
 
 <body>
-	<?php
-	// Data struk dummy
-	$receipt = [
-		"member_name" => "John Doe",
-		"date" => "2024-08-07",
-		"cashier_name" => "John Doe",
-		"items" => [
-			["description" => "Monthly Membership", "price" => 123456700],
-		],
-		"total" => 123456700,
-		"cash" => 125000000,
-		"change" => 1543300
-	];
-	?>
+
 
 	<div class="container">
+
+        
+
         <table class="table">
             <tr>
                 <td colspan="2" class="align-center">
@@ -131,7 +121,7 @@
         <table class="table">
         <tr>
             <td>Cashier</td>
-            <td class="align-right">{{ $payment->cashier_name }}</td>
+            <td class="align-right">{{ $user->name }}</td>
         </tr>
         <tr>
             <td>Order ID</td>
@@ -205,10 +195,16 @@
     <div class="print-button">
         <button onclick="window.print()">Print Struk</button>
     </div>
-    <script>
-        window.onload = function() {
-            window.print();
-        };
-    </script>
+    <div class="print-button">
+        <a href="{{route('cashier.index')}}">
+            <button>Back</button>
+        </a>
+    </div>
+
+    
+{{-- 
+	<script type="text/javascript">
+		window.print();
+	</script> --}}
 </body>
 </html>

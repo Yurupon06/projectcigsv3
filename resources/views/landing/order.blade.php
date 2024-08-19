@@ -1,5 +1,4 @@
 
-@extends('dashboard.master')
 @extends('landing.master')
 @include('landing.header')
 
@@ -8,46 +7,75 @@
         {{ session('success') }}
     </div>
 @endif
-<table class="table align-items-center mb-0">
-    <thead>
-        <tr>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Product Name</th>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Order Date</th>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Total Amount</th>
-            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
-            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($orders as $order)
-        <tr>
-            <td>
-                <div class="d-flex px-2 py-1">
-                    {{ $loop->iteration }}.
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Full Width Content on Desktop -->
+        <div class="col-12 d-none d-lg-block">
+            <div class="row">
+                <!-- Main Content: Full Width on Desktop -->
+                <div class="col-lg-12 mb-4">
+                    @foreach ($orders as $i => $order)
+                    <a href="{{ route('checkout', $order->id) }}" class="card mb-4 text-decoration-none text-dark">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $order->customer->user->name }}</h5>
+                            <h6 class="card-subtitle mb-2 text-muted">{{ $order->product->product_name }}</h6>
+                            <p class="card-text">
+                                <strong>Order Date:</strong> {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}
+                                <br>
+                                <strong>Total Amount:</strong> Rp {{ number_format($order->total_amount) }}
+                                <br>
+                                <strong>Status:</strong> 
+                                <span class="status-badge" style="color: {{ $order->status == 'unpaid' ? 'red' : ($order->status == 'canceled' ? 'gray' : 'green') }}; font-weight: bold;">
+                                    {{ ucfirst($order->status) }}
+                                </span>
+                            </p>
+                        </div>
+                    </a>
+                    @endforeach
                 </div>
-            </td>
-            <td>
-                {{ $order->customer->user->name }}
-            </td>
-            <td>
-                {{ $order->product->product_name }}
-            </td>
-            <td>
-                {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}
-            </td>
-            <td>
-                Rp {{ number_format($order->total_amount) }}
-            </td>
-            <td>
-                <span style="color: {{ $order->status == 'unpaid' ? 'red' : ($order->status == 'canceled' ? 'gray' : 'green') }}; font-weight: bold;">
-                    {{ ucfirst($order->status) }}
-                </span>
-            </td>
-            <td class="align-middle text-center text-sm">
-                <a href="{{ route('checkout', $order->id) }}"><span class="badge badge-sm bg-gradient-info">Detail</span></a>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+            </div>
+        </div>
+
+        <!-- Mobile Layout: Full Width -->
+        <div class="col-12 d-lg-none">
+            @foreach ($orders as $i => $order)
+            <a href="{{ route('checkout', $order->id) }}" class="card mb-4 text-decoration-none text-dark">
+                <div class="card-body">
+                    <h5 class="card-title">{{ $order->customer->user->name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ $order->product->product_name }}</h6>
+                    <p class="card-text">
+                        <strong>Order Date:</strong> {{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}
+                        <br>
+                        <strong>Total Amount:</strong> Rp {{ number_format($order->total_amount) }}
+                        <br>
+                        <strong>Status:</strong> 
+                        <span class="status-badge" style="color: {{ $order->status == 'unpaid' ? 'red' : ($order->status == 'canceled' ? 'gray' : 'green') }}; font-weight: bold;">
+                            {{ ucfirst($order->status) }}
+                        </span>
+                    </p>
+                </div>
+            </a>
+            @endforeach
+        </div>
+    </div>
+</div>
+
+<style>
+    .status-badge {
+        font-weight: bold;
+    }
+    .card {
+        cursor: pointer;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        transform: scale(1.02); /* Slightly enlarges the card */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds shadow on hover */
+    }
+    @media (max-width: 576px) {
+        .card-text {
+            font-size: 14px;
+        }
+    }
+</style>
