@@ -75,6 +75,18 @@
 			border: 1px solid #000;
 			margin: 7px 0;
 		}
+
+        .line {
+            border: none;
+            border-top: 1px solid #000; /* Adjust the color if needed */
+            margin: 7px 0;
+        }
+
+        .margin{
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
 	</style>
 </head>
 
@@ -98,17 +110,17 @@
         <table class="table">
             <tr>
                 <td colspan="2" class="align-center">
-                    <img width='100' src='../../assets/images/2.png'>
+                    <img width='100' src={{ asset('assets/images/2.png') }} alt={{ $appSetting->app_logo }}>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" class="align-center">
-                    <h1>{{ $appSetting->app_name }}</h1>
+                    <h1>{{isset($appSetting) ? $appSetting->app_name : 'FAYBAL'}}</h1>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" class="align-center">
-                    {{ $appSetting->app_address }}<br>
+                    {{isset($appSetting->app_address) ? $appSetting->app_address : 'Jl. Pemuda No. 1' }}<br>
                 </td>
             </tr>
         </table>
@@ -138,25 +150,24 @@
         <hr>
         <table class="table">
             <tr>
-                <td><b>Total</b></td>
+                <td><b>Total Rp</b></td>
                 <td class="align-right">
-                    <h1><b>Rp {{ number_format($payment->amount, 0, ',', '.') }}</b></h1>
+                    <h1><b>{{ number_format($payment->amount, 0, ',', '.') }}</b></h1>
                 </td>
             </tr>
         </table>
         <hr>
         <table class="table">
             <tr>
-                <td>Cash</td>
-                <td class="align-right">Rp {{ number_format($payment->amount_given, 0, ',', '.') }}</td>
+                <td>Cash Rp</td>
+                <td class="align-right"> {{ number_format($payment->amount_given, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td>Change</td>
-                <td class="align-right"><b>Rp {{ number_format($payment->change, 0, ',', '.') }}</b></td>
+                <td>Change Rp</td>
+                <td class="align-right"><b> {{ number_format($payment->change, 0, ',', '.') }}</b></td>
             </tr>
         </table>
         <hr>
-        @if($visit == 30)
             <table class="table">
                 <tr>
                     <td>Member</td>
@@ -164,31 +175,37 @@
                 </tr>
                 <tr>
                     <td>No Hp</td>
-                    <td class="align-right">{{ $payment->order->customer->phone }}</td>
+                    <td class="align-right">
+                        {{ substr($payment->order->customer->phone, 0, 4) . '****' . substr($payment->order->customer->phone, -4) }}
+                    </td>
                 </tr>
             </table>
-        @elseif($visit == 1)
+            <h6 style="text-align: right;margin-top: 10px"><i>Print 
+            {{ now()->format('Y-m-d H:i:s') }}</i></h6>
+            <hr>
+            <div style="margin-bottom: 200px;"></div>
+            <br>
+            <hr class="line">
             <table class="table">
                 <tr>
                     <td colspan="2">
                         <div class="qr-code">
-                            {!! QrCode::size(100)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
-                            <p>Thank you, please come again</p>
+                            <p class="margin">For single visitors, please check-in with this QR.</p>
+                            {!! QrCode::size(150)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
+                            <p class="margin">Thank you, please come again</p>
                         </div>
                     </td>
                 </tr>
             </table>
-        @endif
-        <h6 style="text-align: right;margin-top: 10px"><i>Print 
-            {{ now()->format('Y-m-d H:i:s') }}</i></h6>
+            <hr>
     </div>
     <div class="print-button">
         <button onclick="window.print()">Print Struk</button>
     </div>
-{{-- 
-	<script type="text/javascript">
-		window.print();
-	</script> --}}
+    <script>
+        window.onload = function() {
+            window.print();
+        };
+    </script>
 </body>
-
 </html>

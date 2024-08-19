@@ -1,10 +1,10 @@
 @extends('dashboard.master')
-@section('title', 'customer')
+@section('title', 'Profile')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
 @section('page-title', 'Profile')
-@section('page', 'customer')
+@section('page', 'Profile')
 @section('main')
     @include('dashboard.main')
 

@@ -26,6 +26,13 @@
         text-decoration: none;
     }
 }
+@media (min-width: 769px) {
+    .btn-show-menu-mobile,
+    .wrap-header-mobile {
+        display: none;
+    }
+}
+
 </style>
 
 <header class="header-v2">
@@ -37,7 +44,9 @@
                 <!-- Menu desktop -->
                 <div class="menu-desktop">
                     <ul class="main-menu">
-
+                        <li>
+                            <img src="{{ asset('storage/' . $setting->app_logo) }}" alt="logo" width="50px" height="50px">
+                        </li>
                         <li>
                             <a href="{{ route('landing.index') }}">Home</a>
                         </li>

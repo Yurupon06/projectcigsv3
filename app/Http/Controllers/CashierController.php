@@ -108,21 +108,30 @@ class CashierController extends Controller
     public function makeOrder(Request $request)
     {
         $request->validate([
-            'customer_id' => 'required|exists:customers,id',
             'product_id' => 'required|exists:products,id',
+            'price' => 'required|numeric',
         ]);
-
+    
         $qrToken = Str::random(10);
-
+    
+        $customer = Customer::where('user_id', Auth::user()->id)->first();
+    
+        if (!$customer) {
+            $customer = Customer::create([
+                'user_id' => Auth::user()->id,
+                'name' => Auth::user()->name,
+            ]);
+        }
+    
         $order = Order::create([
-            'customer_id' => $request->customer_id,
+            'customer_id' => $customer->id,
             'product_id' => $request->product_id,
             'order_date' => Carbon::now('Asia/Jakarta'),
             'total_amount' => $request->price,
-            'status' => 'unpaid', 
-            'qr_token' => $qrToken, 
+            'status' => 'unpaid',
+            'qr_token' => $qrToken,
         ]);
-
+    
         return redirect()->route('cashier.qrscan', ['qr_token' => $order->qr_token]);
     }
 
