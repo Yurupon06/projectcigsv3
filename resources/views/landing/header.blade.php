@@ -47,7 +47,7 @@
                 <div class="menu-desktop">
                     <ul class="main-menu">
                         <li>
-                            <img src="{{ asset('storage/' . $setting->app_logo) }}" alt="logo" width="50px" height="50px">
+                            <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" width="50px" height="50px">
                         </li>
                         <li>
                             <a href="{{ route('landing.index') }}">Home</a>

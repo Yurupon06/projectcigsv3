@@ -80,33 +80,33 @@
 <!-- Add Customer Modal -->
 <div class="modal fade" id="addCustomerModal" tabindex="-1" aria-labelledby="addCustomerModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addCustomerModalLabel">Add Customer</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="addCustomerForm" action="{{ route('customer.store') }}" method="POST">
-            @csrf
-            <div class="mb-3">
-              <label for="user_id" class="form-label">Select User</label>
-              <select id="user_id" name="user_id" class="form-select" required>
-                <option selected disabled>Select User</option>
-                @foreach($usersWithoutCustomer as $user)
-                  <option value="{{ $user->id }}">{{ $user->name }}</option>
-                @endforeach
-              </select>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCustomerModalLabel">Register User and Add Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="mb-3">
-              <label for="phone" class="form-label">Phone</label>
-              <input type="text" id="phone" name="phone" class="form-control" required>
+            <div class="modal-body">
+                <form id="addCustomerForm" action="{{ route('customer.store') }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" id="phone" name="phone" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Customer</button>
+                </form>
             </div>
-            <button type="submit" class="btn btn-primary">Add Customer</button>
-          </form>
         </div>
-      </div>
     </div>
-  </div>
+</div>
+
 
 <script>
     document.getElementById('product_id').addEventListener('change', function() {

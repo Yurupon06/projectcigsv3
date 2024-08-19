@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\Customer;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -34,12 +35,17 @@ class AuthController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => $request->password,
             'role' => 'customer'
+        ]);
+
+        Customer::create([
+            'user_id' => $user->id,
+            'phone' => $user->phone,  // Ambil nomor telepon dari user
         ]);
 
         return redirect()->route('login');

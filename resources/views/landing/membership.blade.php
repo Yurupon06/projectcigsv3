@@ -134,31 +134,39 @@
             font-size: 20px; /* Adjust the font size of the button */
         }
     }
+
+    .overlap-btn {
+    display: block;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    }   
+    .overlap {
+    display: inline-block;
+    width: 70%;
+    height: auto;
+    padding: 10px 0;
+    background-color: #ffffff;
+    border-radius: 23px;
+    border: 5px solid #000000;
+    font-family: "Inria Sans-Bold", Helvetica;
+    font-weight: 700;
+    color: #000000;
+    font-size: 6vw;
+    text-align: center;
+    }
 </style>
 
 <div class="iphone-SE">
     <div class="div">
         <div class="group">
             <div class="overlap-group">
-                <img class="logo-gym" src="../../assets/images/logo_gym.png" alt="Gym Logo" />
-                @if ($member->status == 'inactive')
+                <img class="logo-gym" src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
                 
-                <div class="text-wrapper">
-                    NAME : 
-                    <span title="{{ $member->customer->user->name }}">
-                        {{ Str::limit($member->customer->user->name, 9, '...') }}
-                    </span>
-                </div>
-                
-                <div class="text-wrapper-2">MEMBER ID : {{ $member->id }}</div>
-                <div class="text-wrapper-3" style="color: 
-                {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
-                {{ $member->status }}
-                </div>
-
-                @else
-                <div class="text-wrapper" style="color: 
-                    {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
+                <!-- Bagian informasi member -->
+                <div class="text-wrapper" style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
                     {{ $member->status }}
                 </div>
                 <div class="text-wrapper-2">
@@ -168,21 +176,45 @@
                     </span>
                 </div>
                 
-                <div class="text-wrapper-3">MEMBER ID : {{ $member->id }}</div>
+                <div class="text-wrapper-3">MEMBER ID : GYM.{{ $member->id }}</div>
+                
+                @if ($member->status == 'active')
                 <div class="text-wrapper-4">EXPIRED : {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d/M/Y') }}</div>
+                <div class="text-wrapper-5">Visit Left : {{$member->visit}}</div>
                 @endif
-                
-                
             </div>
         </div>
+        
+        <!-- Tombol GET IN -->
         @if ($member->status == 'active')
-        <div class="overlap-wrapper">
-            <div class="overlap">
-                <div class="text-wrapper-6">
-                    <button>GET IN</button>
-                </div>
+            <div class="overlap-wrapper">
+                <button type="button" class="overlap-btn" data-bs-toggle="modal" data-bs-target="#qrModal">
+                    <div class="overlap">
+                        <div class="text-wrapper-6">
+                            GET IN
+                        </div>
+                    </div>
+                </button>
+            </div>
+        @endif
+
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Tambahkan 'modal-dialog-centered' -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrModalLabel">Your QR Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body d-flex justify-content-center align-items-center">
+                {!! QrCode::size(200)->generate(route('cashier.qrscan', ['qr_token' => $member->qr_token])) !!}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
-        @endif
     </div>
 </div>

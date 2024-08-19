@@ -27,7 +27,8 @@ Route::middleware((['auth', 'customer']))->group(function (){
     Route::get('/checking', [\App\Http\Controllers\LandingController::class, 'beforeOrder'])->name('beforeorder.index');
     Route::get('/checkout/{id}', [\App\Http\Controllers\LandingController::class, 'checkout'])->name('checkout');
     Route::get('/membership/{id}', [\App\Http\Controllers\LandingController::class, 'membership'])->name('customer.membership');
-    
+
+
     
 });
 
