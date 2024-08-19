@@ -90,7 +90,6 @@
         img {
             filter:grayscale(100%);
         }
-
 	</style>
 </head>
 
@@ -206,10 +205,10 @@
     <div class="print-button">
         <button onclick="window.print()">Print Struk</button>
     </div>
-{{-- 
-	<script type="text/javascript">
-		window.print();
-	</script> --}}
+    <script>
+        window.onload = function() {
+            window.print();
+        };
+    </script>
 </body>
-
 </html>
