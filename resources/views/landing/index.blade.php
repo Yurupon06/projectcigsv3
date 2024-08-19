@@ -1,6 +1,6 @@
 @extends('landing.master')
-@include('landing.header')
-
+@section('main')
+	@include('landing.header')
 <style>
     .boxed-btn3 {
         display: inline-block;
@@ -86,8 +86,7 @@
     }
 </style>
 
-<body class="animsition">
-
+	<div class="animsition">
     <!-- Slider -->
     <section class="section-slide">
         <div class="wrap-slick1 rs1-slick1">

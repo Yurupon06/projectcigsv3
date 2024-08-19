@@ -79,6 +79,7 @@
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
       <a class="navbar-brand m-0" href="">
+        <img src="{{ asset('storage/' . $setting->app_logo) }}" alt="logo" height="80px" width="40px">
         <span class="ms-1 font-weight-bold text-white">CASHIER</span>
       </a>
     </div>
@@ -91,6 +92,14 @@
               <i class="material-icons opacity-10">store</i>
             </div>
             <span class="nav-link-text ms-1">Cashier</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white {{ request()->is('checkin') ? 'active' : '' }}" href="{{route('cashier.checkin')}}">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">qr_code_scanner</i>
+            </div>
+            <span class="nav-link-text ms-1">Check In Scanner</span>
           </a>
         </li>
         <li class="nav-item">

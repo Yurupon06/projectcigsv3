@@ -52,6 +52,8 @@ Route::resource('payment', \App\Http\Controllers\PaymentController::class);
 Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier', [\App\Http\Controllers\CashierController::class, 'index'])->name('cashier.index');
     Route::get('/cashier/show', [\App\Http\Controllers\CashierController::class, 'show'])->name('cashier.show');
+    Route::get('/cashier/checkin-scanner', [App\Http\Controllers\CashierController::class, 'showCheckIn'])->name('cashier.checkin');
+    Route::get('/cashier/profile', [\App\Http\Controllers\CashierController::class, 'profile'])->name('cashier.profile');
     Route::get('/cashier/scanner', function () {return view('cashier.scanner');})->name('scanner.cashier');
     Route::get('/cashier/qrscan/{qr_token}', [\App\Http\Controllers\CashierController::class, 'qrscan'])->name('cashier.qrscan');
     Route::get('/cashier/payment', [\App\Http\Controllers\CashierController::class, 'payment'])->name('cashier.payment');

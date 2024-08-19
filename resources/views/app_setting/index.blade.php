@@ -41,6 +41,7 @@
                                     @error('app_logo')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    <small class="text-muted">Better format file is PNG.</small>
                                 </div>
                                 <div class="mb-3 ms-3 me-3">
                                     <label for="app_address" class="form-label">Address</label>
@@ -76,6 +77,7 @@
                                 @error('app_logo')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
+                                <small class="text-muted">Better format file is PNG.</small>
                             </div>
                             <div class="mb-3 ms-3 me-3">
                                 <label for="app_address" class="form-label">Address</label>

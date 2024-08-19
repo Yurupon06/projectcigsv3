@@ -23,6 +23,7 @@
   <title>
     @yield('title')
   </title>
+  <link rel="icon" type="image/png" href="{{ asset('storage/' . $setting->app_logo) }}">
   <!--     Fonts and icons     -->
   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
   <!-- Nucleo Icons -->
