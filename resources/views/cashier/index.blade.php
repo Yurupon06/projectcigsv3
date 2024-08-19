@@ -20,7 +20,7 @@
                     <i class="material-icons opacity-10">qr_code_scanner</i>
                   </span>
                 </a>
-                <h6>Order</h6>
+                <h6>Cashier</h6>
               </div>
                 <div class="card-body px-0 pb-2">
                   <div class="table-responsive p-0">

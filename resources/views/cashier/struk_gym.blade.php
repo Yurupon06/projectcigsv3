@@ -90,31 +90,20 @@
         img {
             filter:grayscale(100%);
         }
-
 	</style>
 </head>
 
 <body>
-	<?php
-	// Data struk dummy
-	$receipt = [
-		"member_name" => "John Doe",
-		"date" => "2024-08-07",
-		"cashier_name" => "John Doe",
-		"items" => [
-			["description" => "Monthly Membership", "price" => 123456700],
-		],
-		"total" => 123456700,
-		"cash" => 125000000,
-		"change" => 1543300
-	];
-	?>
+
 
 	<div class="container">
+
+        
+
         <table class="table">
             <tr>
                 <td colspan="2" class="align-center">
-                    <img width='100' src={{ asset('assets/images/2.png') }} alt={{ $appSetting->app_logo }}>
+                    <img width='100' src={{ isset($appSetting) ? asset('storage/' . $appSetting->app_logo) : asset('assets/images/2.png') }}>
                 </td>
             </tr>
             <tr>
@@ -124,7 +113,7 @@
             </tr>
             <tr>
                 <td colspan="2" class="align-center">
-                    {{isset($appSetting->app_address) ? $appSetting->app_address : 'Jl. Pemuda No. 1' }}<br>
+                    {{isset($appSetting->app_address) ? $appSetting->app_address : 'Jl. Pemuda No. 1, Bandung, Jawa Barat, Indonesia' }}<br>
                 </td>
             </tr>
         </table>
@@ -132,7 +121,7 @@
         <table class="table">
         <tr>
             <td>Cashier</td>
-            <td class="align-right">{{ $payment->cashier_name }}</td>
+            <td class="align-right">{{ $user->name }}</td>
         </tr>
         <tr>
             <td>Order ID</td>
@@ -180,14 +169,14 @@
                 <tr>
                     <td>No Hp</td>
                     <td class="align-right">
-                        {{ substr($payment->order->customer->phone, 0, 4) . '****' . substr($payment->order->customer->phone, -4) }}
+                        {{ substr($payment->order->customer->phone, 0, 4) . '**' . substr($payment->order->customer->phone, -4) }}
                     </td>
                 </tr>
             </table>
             <h6 style="text-align: right;margin-top: 10px"><i>Print 
             {{ now()->format('Y-m-d H:i:s') }}</i></h6>
             <hr>
-            <div style="margin-bottom: 200px;"></div>
+            <div style="margin-bottom: 20px;"></div>
             <br>
             <hr class="line">
             <table class="table">
@@ -195,7 +184,7 @@
                     <td colspan="2">
                         <div class="qr-code">
                             <p class="margin">For single visitors, please check-in with this QR.</p>
-                            {!! QrCode::size(150)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
+                            {!! QrCode::size(200)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
                             <p class="margin">Thank you, please come again</p>
                         </div>
                     </td>
@@ -206,10 +195,16 @@
     <div class="print-button">
         <button onclick="window.print()">Print Struk</button>
     </div>
-    <script>
-        window.onload = function() {
-            window.print();
-        };
-    </script>
+    <div class="print-button">
+        <a href="{{route('cashier.index')}}">
+            <button>Back</button>
+        </a>
+    </div>
+
+    
+{{-- 
+	<script type="text/javascript">
+		window.print();
+	</script> --}}
 </body>
 </html>
