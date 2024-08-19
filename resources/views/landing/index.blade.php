@@ -1,6 +1,7 @@
 @extends('landing.master')
 @section('main')
 	@include('landing.header')
+
 <style>
     .boxed-btn3 {
         display: inline-block;
@@ -134,3 +135,4 @@
         </span>
     </div>
 </body>
+

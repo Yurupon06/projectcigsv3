@@ -63,7 +63,6 @@
                             @else
                         @endauth
                         </li>
-                        @endif
                     </ul>
                 </div>
 
