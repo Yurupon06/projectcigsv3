@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+<link rel="icon" type="image/png" href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 <head>
 	<title>Struk Gym</title>
 	<style>

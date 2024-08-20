@@ -141,6 +141,7 @@ class CashierController extends Controller
     {
         $order = Order::with('customer', 'product')->findOrFail($id);
         $payment = Payment::where('order_id', $id)->first();
+        $member = Member::where('customer_id', $order->customer_id)->first();
         $product = $order->product;
         $productcat = $product->productcat;
         $visit = $productcat->visit;
@@ -148,7 +149,7 @@ class CashierController extends Controller
 
         $appSetting = ApplicationSetting::first();
 
-        return view('cashier.struk_gym', compact('order', 'payment', 'appSetting', 'visit', 'user'));
+        return view('cashier.struk_gym', compact('order', 'payment', 'appSetting', 'visit', 'user', 'member'));
     }
 
 

@@ -58,31 +58,30 @@
 
     @media (max-width: 768px) {
         .card-header h3 {
-            font-size: 16px; /* Smaller font size on tablets */
+            font-size: 16px; 
         }
         .card-body ul {
-            font-size: 14px; /* Adjust list font size */
+            font-size: 14px; 
         }
         .boxed-btn3 {
-            padding: 10px 15px; /* Adjust button padding for smaller screens */
-            font-size: 12px; /* Smaller font size for button */
+            padding: 10px 15px; 
+            font-size: 12px; 
         }
     }
 
     @media (max-width: 576px) {
         .card {
-            width: 100%; /* Full width on small screens */
+            width: 100%; 
             margin-bottom: 20px;
         }
         .card-header h3 {
-            font-size: 14px; /* Smaller font size on mobile */
+            font-size: 14px; 
         }
         .card-body ul {
-            font-size: 12px; /* Further adjust font size */
+            font-size: 12px; 
         }
         .boxed-btn3 {
-            padding: 12px 10px; /* Increase button height for better touch */
-            font-size: 14px; /* Slightly larger font size for readability */
+            padding: 12px 10px; 
         }
     }
 </style>

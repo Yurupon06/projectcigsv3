@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>membercashier</title>
 </head>
 <body>
     <h1>membercashier</h1>
 </body>
-</html>@extends('dashboard.master')
+</html>
+@extends('dashboard.master')
 @section('title', 'order')
 @section('sidebar')
     @include('cashier.sidebar')
