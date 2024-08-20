@@ -184,7 +184,7 @@
                     <td colspan="2">
                         <div class="qr-code">
                             <p class="margin">For single visitors, please check-in with this QR.</p>
-                            {!! QrCode::size(150)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
+                            {!! QrCode::size(150)->generate($memberQrToken) !!}
                             <p class="margin">Thank you, please come again</p>
                         </div>
                     </td>

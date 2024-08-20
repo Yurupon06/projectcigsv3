@@ -55,13 +55,12 @@ Route::resource('payment', \App\Http\Controllers\PaymentController::class);
 Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier', [\App\Http\Controllers\CashierController::class, 'index'])->name('cashier.index');
     Route::get('/cashier/show', [\App\Http\Controllers\CashierController::class, 'show'])->name('cashier.show');
-    Route::get('/cashier/checkin-scanner', [App\Http\Controllers\CashierController::class, 'showCheckIn'])->name('cashier.checkin');
     Route::get('/cashier/profile', [\App\Http\Controllers\CashierController::class, 'profile'])->name('cashier.profile');
     Route::get('/cashier/scanner', function () {return view('cashier.scanner');})->name('scanner.cashier');
     Route::get('/cashier/qrscan/{qr_token}', [\App\Http\Controllers\CashierController::class, 'qrscan'])->name('cashier.qrscan');
     Route::get('/cashier/payment', [\App\Http\Controllers\CashierController::class, 'payment'])->name('cashier.payment');
     Route::post('/payments/{order}', [\App\Http\Controllers\CashierController::class, 'store'])->name('payments.store');
-    Route::get('/cashier/membercheckin', [\App\Http\Controllers\MemberCheckinController::class, 'index'])->name('cashier.membercheckin');
+    Route::get('/cashier/membercheckin', [\App\Http\Controllers\CashierController::class, 'membercheckin'])->name('cashier.membercheckin');
     Route::get('/cashier/qrcheckin', function () {return view('cashier.qrcheckin');})->name('qrcheckin.cashier');
     Route::get('/cashier/qrcheckin/{qr_token}', [\App\Http\Controllers\MemberCheckinController::class, 'qrcheckin'])->name('cashier.qrcheckin');
 
@@ -79,7 +78,12 @@ Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier/receipt/{paymentId}', [\App\Http\Controllers\CashierController::class, 'struk'])->name('cashier.receipt');
     Route::get('/cashier/member/{id}', [\App\Http\Controllers\CashierController::class, 'detailMember'])->name('cashier.member');
     Route::post('/cashier/member/action/{id}', [\App\Http\Controllers\CashierController::class, 'actionMember'])->name('action.member');
+    
+    Route::get('/cashier/checkin-scanner', [App\Http\Controllers\CashierController::class, 'showCheckIn'])->name('cashier.checkin');
+    Route::get('/member-details/{qr_token}', [\App\Http\Controllers\CashierController::class, 'getMemberDetails']);
+    Route::post('/store-checkin', [\App\Http\Controllers\CashierController::class, 'storeCheckIn']);
 
+    
 
 });
 

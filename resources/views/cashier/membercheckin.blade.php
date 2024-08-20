@@ -28,12 +28,15 @@
                                 <thead>
                                     <tr>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Member ID</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">name</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Phone</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Qr Token</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Image</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Time</th>
                                     </tr>
                                 </thead>
                                 <tbody id="checkin-list">
-                                    @foreach ($membercheckin as $i => $dt)
+                                    @foreach ($memberckin as $i => $dt)
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
@@ -41,14 +44,19 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                {{ $dt->member->member_id }}
+                                                {{ $dt->member->customer->user->name }}
                                             </td>
-                                            <td style="color: {{ $dt->status === 'use' ? 'red' : 'green' }}">
-                                            @if ($dt->image)
-                                                <img src="{{ Storage::url($dt->image) }}" alt="Member Image" style="width: 50px; height: auto;">
-                                            @else
-                                                No Image
-                                            @endif
+                                            <td>
+                                                {{ $dt->member->customer->phone }}
+                                            </td>
+                                            <td>
+                                                {{ $dt->qr_token }}
+                                            </td>
+                                            <td>
+                                                {{ $dt->image }}
+                                            </td>
+                                            <td>
+                                                {{ $dt->created_at->setTimezone('Asia/Jakarta') }} 
                                             </td>
                                         </tr>
                                     @endforeach

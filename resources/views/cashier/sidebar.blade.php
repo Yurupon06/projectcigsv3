@@ -95,14 +95,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white {{ request()->is('checkin') ? 'active' : '' }}" href="{{route('cashier.checkin')}}">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">qr_code_scanner</i>
-            </div>
-            <span class="nav-link-text ms-1">Check In Scanner</span>
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link text-white {{ request()->is('cashier/order') ? 'active' : '' }}" href="{{ route('cashier.order') }}">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">add_shopping_cart</i>
@@ -129,9 +121,17 @@
         <li class="nav-item">
           <a class="nav-link text-white {{ request()->is('cashier/membercheckin') ? 'active' : '' }}" href="{{ route('cashier.membercheckin') }}">
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">groups</i>
+              <i class="material-icons opacity-10">cyclone</i>
             </div>
             <span class="nav-link-text ms-1">Member Check In</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white {{ request()->is('checkin') ? 'active' : '' }}" href="{{route('cashier.checkin')}}">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">qr_code_scanner</i>
+            </div>
+            <span class="nav-link-text ms-1">Check In Scanner</span>
           </a>
         </li>
         
