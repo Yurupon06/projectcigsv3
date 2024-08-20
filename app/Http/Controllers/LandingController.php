@@ -25,6 +25,7 @@ class LandingController extends Controller
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         return view('landing.index', compact('products', 'user', 'customer', 'member'));
+
     }
     
 
@@ -164,5 +165,5 @@ class LandingController extends Controller
         $member = Member::with('customer.user')->findOrFail($id);
         return view('landing.membership', compact('member'));
     }
-    
+
 }

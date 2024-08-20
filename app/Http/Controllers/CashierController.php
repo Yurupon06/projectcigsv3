@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\ApplicationSetting;
 use App\Models\Payment;
 use App\Models\Product_categorie;
+use App\Models\MemberCheckin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -79,9 +80,10 @@ class CashierController extends Controller
         // Update order status to paid
         $order->update(['status' => 'paid']);
     
-        // Get the product category cycle and ensure it's an integer
+        // Get the product category cycle and visit
         $productCategory = $order->product->productcat;
         $cycle = (int) $productCategory->cycle; // Convert to integer if it's a string
+        $visit = (int) $productCategory->visit; // Convert to integer if it's a string
     
         // Calculate start and end dates based on the cycle
         $startDate = Carbon::now('Asia/Jakarta');
@@ -92,27 +94,31 @@ class CashierController extends Controller
     
         if ($existingMember) {
             if ($existingMember->status === 'expired') {
-                // Update existing member's start_date and end_date if status is expired
+                // Update existing member's start_date, end_date, and visit if status is expired
                 $existingMember->update([
                     'start_date' => $startDate,
                     'end_date' => $endDate,
                     'status' => 'active',
                     'qr_token' => $memberQrToken,
+                    'visit' => $visit, // Reset visit for new active status
                 ]);
             } elseif ($existingMember->status === 'inactive') {
-                // Update start_date and end_date if status is inactive
+                // Update start_date, end_date, and visit if status is inactive
                 $existingMember->update([
                     'start_date' => $startDate,
                     'end_date' => $endDate,
                     'status' => 'active',
                     'qr_token' => $memberQrToken,
+                    'visit' => $visit, // Reset visit for new active status
                 ]);
             } elseif ($existingMember->status === 'active') {
-                // Convert end_date to Carbon instance before using copy()
+                // Add visit from the product category to the existing visit
+                $newVisit = $existingMember->visit + $visit;
                 $existingEndDate = Carbon::parse($existingMember->end_date);
                 $newEndDate = $existingEndDate->copy()->addDays($cycle);
                 $existingMember->update([
                     'end_date' => $newEndDate,
+                    'visit' => $newVisit, // Update visit with the added value
                 ]);
             }
         } else {
@@ -123,12 +129,14 @@ class CashierController extends Controller
                 'end_date' => $endDate,
                 'status' => 'active',
                 'qr_token' => $memberQrToken,
+                'visit' => $visit, // Set initial visit value
                 'product_category_id' => $order->product->product_category_id, // Assuming this is needed
             ]);
         }
     
-        return redirect()->route('struk_gym', ['id' => $order->id])->with('success', 'Payment processed successfully!');
+        return redirect()->route('struk_gym', ['id' => $order->id])->with('success', 'Payment processed and membership created successfully!');
     }
+    
     
     
 
@@ -158,26 +166,49 @@ class CashierController extends Controller
     Member::where('end_date', '<', $currentDate)
           ->where('status', '<>', 'expired') 
           ->update(['status' => 'expired']);
+          
+    Member::where('visit', 0)
+          ->where('status', '<>', 'expired')
+          ->update(['status' => 'expired']);
+
 
     $member = Member::with('customer')->get();
 
     return view('membercash.membercashier', compact('member'));
     }
 
-    public function storeCustomer(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'phone' => 'required|string|max:15',
-        ]);
-        
-        $customer = Customer::create($request->only(['user_id', 'phone']));
-        
-        return redirect()->route('cashier.order')->with([
-            'success' => 'Customer added successfully.',
-            'new_customer_id' => $customer->id
-        ]);
-    }
+public function storeCustomer(Request $request)
+{
+    // Validasi input untuk User dan Customer
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'phone' => 'required|string|max:15',
+    ]);
+    
+    // Membuat user baru tanpa password
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'role' => 'customer', // Tentukan role jika ada, misalnya 'customer'
+    ]);
+    
+    // Membuat data customer terkait dengan user_id
+    $customer = Customer::create([
+        'user_id' => $user->id,
+        'phone' => $user->phone,  // Menggunakan phone dari User
+        'born' => $request->born,  // Sesuaikan dengan field lain yang ada
+        'gender' => $request->gender, // Sesuaikan dengan field lain yang ada
+    ]);
+    
+    // Redirect ke route cashier.order dengan pesan sukses
+    return redirect()->route('cashier.order')->with([
+        'success' => 'Customer added successfully.',
+        'new_customer_id' => $customer->id
+    ]);
+}
+
 
 
     public function order()
@@ -207,7 +238,7 @@ class CashierController extends Controller
         $order = Order::create([
             'customer_id' => $request->customer_id,
             'product_id' => $request->product_id,
-            'order_date' => Carbon::now('Asia/Jakarta'),
+            'order_date' => Carbon::now('Asia/Jakarta') ,
             'total_amount' => $request->price,
             'status' => 'unpaid',
             'qr_token' => $qrToken,
@@ -302,5 +333,16 @@ class CashierController extends Controller
     public function showCheckIn()
     {
         return view('cashier.checkinscanner');  
+
+    public function showCheckIn()
+    {
+        return view('cashier.checkinscanner');  
+
+    }
+    public function membercheckin()
+    {
+        $payment = Payment::with('order')->get();
+        return view('membercheckin.index');
+
     }
 }

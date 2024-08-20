@@ -4,6 +4,8 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CashierController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\MemberCheckinController;
+
 
 
 Route::get('struk', function () {
@@ -25,7 +27,8 @@ Route::middleware((['auth', 'customer']))->group(function (){
     Route::get('/checking', [\App\Http\Controllers\LandingController::class, 'beforeOrder'])->name('beforeorder.index');
     Route::get('/checkout/{id}', [\App\Http\Controllers\LandingController::class, 'checkout'])->name('checkout');
     Route::get('/membership/{id}', [\App\Http\Controllers\LandingController::class, 'membership'])->name('customer.membership');
-    
+
+
     
 });
 
@@ -58,6 +61,9 @@ Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier/qrscan/{qr_token}', [\App\Http\Controllers\CashierController::class, 'qrscan'])->name('cashier.qrscan');
     Route::get('/cashier/payment', [\App\Http\Controllers\CashierController::class, 'payment'])->name('cashier.payment');
     Route::post('/payments/{order}', [\App\Http\Controllers\CashierController::class, 'store'])->name('payments.store');
+    Route::get('/cashier/membercheckin', [\App\Http\Controllers\MemberCheckinController::class, 'index'])->name('cashier.membercheckin');
+    Route::get('/cashier/qrcheckin', function () {return view('cashier.qrcheckin');})->name('qrcheckin.cashier');
+    Route::get('/cashier/qrcheckin/{qr_token}', [\App\Http\Controllers\MemberCheckinController::class, 'qrcheckin'])->name('cashier.qrcheckin');
 
     Route::get('/struk-gym/{id}', [\App\Http\Controllers\CashierController::class, 'showStruk'])->name('struk_gym');
 
