@@ -330,6 +330,9 @@ public function storeCustomer(Request $request)
         return redirect()->route('cashier.order');
     }
 
+    public function showCheckIn()
+    {
+        return view('cashier.checkinscanner');  
 
     public function showCheckIn()
     {

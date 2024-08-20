@@ -1,34 +1,39 @@
+@extends('landing.master')
+@section('title', 'Landing')
+@section('main')
+    @include('landing.master')
+
 <style>
-    .wrap-header-mobile {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+.wrap-header-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
-    .btn-show-menu-mobile {
-        display: flex;
-        align-items: center;
-        position: relative;
-    }
+.btn-show-menu-mobile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
 
+.btn-auth-mobile {
+    display: none;
+    /* Hide logout button by default on mobile */
+}
+
+/* Display logout button only on mobile and align it to the right */
+@media (max-width: 768px) {
     .btn-auth-mobile {
-        display: none;
-        /* Hide logout button by default on mobile */
-    }
-
-    /* Display logout button only on mobile and align it to the right */
-    @media (max-width: 768px) {
-        .btn-auth-mobile {
-            display: block;
-            margin-left: auto;
-            /* Align to the right */
-            padding: 0 15px;
-            color: #007BFF;
-            font-weight: bold;
-            text-decoration: none;
-        }
+        display: block;
+        margin-left: auto;
+        /* Align to the right */
+        padding: 0 15px;
+        color: #007BFF;
+        font-weight: bold;
+        text-decoration: none;
     }
 }
+
 @media (min-width: 769px) {
     .btn-show-menu-mobile,
     .wrap-header-mobile {
@@ -42,7 +47,6 @@
     <div class="container-menu-desktop trans-03">
         <div class="wrap-menu-desktop">
             <nav class="limiter-menu-desktop p-l-45">
-
                 <!-- Menu desktop -->
                 <div class="menu-desktop">
                     <ul class="main-menu">
@@ -52,17 +56,16 @@
                         <li>
                             <a href="{{ route('landing.index') }}">Home</a>
                         </li>
-
                         <li>
                             <a href="{{ route('yourorder.index') }}">My Order</a>
                         </li>
                         <li>
                             @auth
-                            @if($member)
-                                <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
-                            @else
-                            @endif
-                        @endauth
+                                @if($member)
+                                    <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                                @else
+                                @endif
+                            @endauth
                         </li>
                     </ul>
                 </div>
@@ -100,24 +103,26 @@
                 <span class="hamburger-inner"></span>
             </span>
         </div>
+
         @auth
-        <li>
-            <a href="{{route('landing.profile')}}" class="btn-auth-mobile">
-                {{ Auth::user()->name }}
+            <li>
+                <a href="{{ route('landing.profile') }}" class="btn-auth-mobile">
+                    {{ Auth::user()->name }}
+                </a>
+            </li>
+            <a href="{{ route('logout') }}" class="btn-auth-mobile"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
             </a>
-        </li>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-            @csrf
-        </form>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                @csrf
+            </form>
         @else
             <li>
                 <a href="{{ route('login') }}" class="btn-auth-mobile">Login</a>
             </li>
-
         @endauth
-
     </div>
-
 
     <!-- Menu Mobile -->
     <div class="menu-mobile">
@@ -128,14 +133,14 @@
             <li>
                 <a href="{{ route('yourorder.index') }}">My Order</a>
             </li>
-            <li >
-                @auth
+            @auth
                 @if($member)
-                    <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                    <li>
+                        <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                    </li>
                 @else
                 @endif
             @endauth
-            </li>
         </ul>
     </div>
 </header>
