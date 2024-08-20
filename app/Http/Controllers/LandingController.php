@@ -165,5 +165,7 @@ class LandingController extends Controller
         $member = Member::with('customer.user')->findOrFail($id);
         return view('landing.membership', compact('member'));
     }
+
     
+
 }

@@ -29,6 +29,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Visit</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
                                         <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                                     </tr>
@@ -48,6 +49,7 @@
                                             <td style="color:{{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'red') }}">
                                                 {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d F Y') }}
                                             </td>
+                                            <td>{{$member->visit}}</td>
                                             <td style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
                                                 {{ $member->status }}
                                             </td>
