@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Check In Scanner</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 
     <style>
         #reader {
-            width: 500px;
+            width: 100%;
             height: 500px;
             margin: auto;
         }
@@ -18,15 +19,24 @@
             transform: scaleX(-1);
         }
 
-        table td{
+        table td {
             text-align: left;
             font-size: 1.4rem;
             padding: 5px;
+        }
+
+        #success-message, #error-message, #countdown {
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container mt-5 text-center">
+        @if (session('message'))
+            <script>
+                alert('{{ session('message') }}');
+            </script>
+        @endif
         <h1>Scan QR Code</h1>
         <div class="row">
             <div class="col-md-6">
@@ -34,49 +44,114 @@
             </div>
             <div class="col-md-6">
                 <div id="result">
-                    <table>
+                    <table class="table table-bordered">
                         <tr>
                             <td><b>Nama</b></td>
-                            <td>:</td>
-                            <td></td>
+                            <td id="name"></td>
                         </tr>
                         <tr>
                             <td><b>No. Hp</b></td>
-                            <td>:</td>
-                            <td></td>
+                            <td id="phone"></td>
                         </tr>
                         <tr>
                             <td><b>Expiration Date</b></td>
-                            <td>:</td>
-                            <td></td>
+                            <td id="expiration"></td>
                         </tr>
                     </table>
                 </div>
+                <div id="success-message" class="alert alert-success">
+                    Scan Successfully!
+                </div>
+                <div id="error-message" class="alert alert-danger"></div>
+                <div id="countdown" class="alert alert-info"></div>
             </div>
         </div>
-        <a class="btn btn-outline-primary" href="{{route('cashier.index')}}" role="button">Back</a>
+        <a class="btn btn-outline-primary" href="{{ route('cashier.index') }}" role="button">Back</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
     <script>
-        function onScanSuccess(decodedText, decodedResult) {
-            // Redirect to the URL decoded from the QR code
-            window.location.href = decodedText;
-        }
-
-        function onScanFailure(error) {
-            console.warn(`Code scan error = ${error}`);
-        }
-
+        let scanCompleted = false;
         let html5QrcodeScanner = new Html5Qrcode("reader");
+    
+        function onScanSuccess(decodedText) {
+    if (scanCompleted) return; 
+
+    scanCompleted = true; 
+
+    fetch(`/member-details/${decodedText}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                document.getElementById('name').textContent = data.name;
+                document.getElementById('phone').textContent = data.phone;
+                document.getElementById('expiration').textContent = data.expired_date;
+
+                
+                const successMessage = document.getElementById('success-message');
+                const countdown = document.getElementById('countdown');
+                const errorMessage = document.getElementById('error-message');
+                successMessage.style.display = 'block';
+                countdown.style.display = 'block';
+                errorMessage.style.display = 'none';
+
+                let countdownValue = 2;
+
+                const interval = setInterval(() => {
+                    countdown.textContent = `Refreshing in ${countdownValue} seconds...`;
+                    countdownValue--;
+
+                    if (countdownValue < 0) {
+                        clearInterval(interval);
+                        countdown.style.display = 'none';
+                        location.reload(); 
+                    }
+                }, 1000);
+
+                fetch('/store-checkin', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        qr_token: decodedText,
+                        image: null
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        console.log('Check-in recorded successfully');
+                        console.log('New QR token:', result.new_qr_token);
+                    } else {
+                        const errorMessage = document.getElementById('error-message');
+                        errorMessage.textContent = result.message;
+                        errorMessage.style.display = 'block';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+
+                html5QrcodeScanner.stop().then(ignore => {
+                    console.log("QR code scanning stopped.");
+                }).catch(err => {
+                    console.error("Error stopping QR code scanning:", err);
+                });
+            }
+        })
+        .catch(error => console.error('Error fetching member details:', error));
+}
+
+    
         html5QrcodeScanner.start(
             { facingMode: "environment" },
             {
                 fps: 30,
                 qrbox: 500
             },
-            onScanSuccess,
-            onScanFailure
+            onScanSuccess
         ).catch(err => {
             console.error("Error starting QR code scanner: ", err);
         });

@@ -4,35 +4,11 @@
     @include('landing.master')
 
 <style>
-    .wrap-header-mobile {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .btn-show-menu-mobile {
-        display: flex;
-        align-items: center;
-        position: relative;
-    }
-
-    .btn-auth-mobile {
-        display: none;
-        /* Hide logout button by default on mobile */
-    }
-
-    /* Display logout button only on mobile and align it to the right */
-    @media (max-width: 768px) {
-        .btn-auth-mobile {
-            display: block;
-            margin-left: auto;
-            /* Align to the right */
-            padding: 0 15px;
-            color: #007BFF;
-            font-weight: bold;
-            text-decoration: none;
-        }
-    }
+.wrap-header-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
 .btn-show-menu-mobile {
     display: flex;
@@ -75,7 +51,7 @@
                 <div class="menu-desktop">
                     <ul class="main-menu">
                         <li>
-                            <img src="{{ asset('storage/' . $setting->app_logo) }}" alt="logo" width="50px" height="50px">
+                            <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" width="50px" height="50px">
                         </li>
                         <li>
                             <a href="{{ route('landing.index') }}">Home</a>

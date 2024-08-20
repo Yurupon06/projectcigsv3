@@ -98,6 +98,10 @@
                                     </td>
                                 </tr>
                                 <tr>
+                                    <th>Visit Left</th>
+                                    <td>{{$member->visit}}</td>
+                                </tr>
+                                <tr>
                                     <th>Status</th>
                                     <td style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
                                         {{ $member->status }}

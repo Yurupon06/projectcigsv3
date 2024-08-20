@@ -15,7 +15,7 @@ class MemberCheckin extends Model
         'image',
     ];
 
-    public function members()
+    public function member()
     {
         return $this->belongsTo(Member::class, 'member_id');
     }

@@ -62,12 +62,11 @@ class CashierController extends Controller
             'amount_given' => 'required|numeric|min:0',
         ]);
     
-        $paymentQrToken = Str::random(10); // Token for payment
-        $memberQrToken = Str::random(10); // Token for member
+        $paymentQrToken = Str::random(10); 
+        $memberQrToken = Str::random(10); 
         $amountGiven = $request->input('amount_given');
         $change = $amountGiven - $order->total_amount;
     
-        // Create payment record
         Payment::create([
             'order_id' => $order->id,
             'payment_date' => Carbon::now('Asia/Jakarta'),
@@ -77,59 +76,58 @@ class CashierController extends Controller
             'qr_token' => $paymentQrToken,
         ]);
     
-        // Update order status to paid
         $order->update(['status' => 'paid']);
     
-        // Get the product category cycle and ensure it's an integer
         $productCategory = $order->product->productcat;
-        $cycle = (int) $productCategory->cycle; // Convert to integer if it's a string
+        $cycle = (int) $productCategory->cycle; 
+        $visit = (int) $productCategory->visit; 
     
-        // Calculate start and end dates based on the cycle
         $startDate = Carbon::now('Asia/Jakarta');
         $endDate = $startDate->copy()->addDays($cycle);
     
-        // Find existing member
         $existingMember = Member::where('customer_id', $order->customer_id)->first();
     
         if ($existingMember) {
             if ($existingMember->status === 'expired') {
-                // Update existing member's start_date and end_date if status is expired
                 $existingMember->update([
                     'start_date' => $startDate,
                     'end_date' => $endDate,
                     'status' => 'active',
                     'qr_token' => $memberQrToken,
+                    'visit' => $visit, 
                 ]);
             } elseif ($existingMember->status === 'inactive') {
-                // Update start_date and end_date if status is inactive
                 $existingMember->update([
                     'start_date' => $startDate,
                     'end_date' => $endDate,
                     'status' => 'active',
                     'qr_token' => $memberQrToken,
+                    'visit' => $visit, 
                 ]);
             } elseif ($existingMember->status === 'active') {
-                // Convert end_date to Carbon instance before using copy()
+                $newVisit = $existingMember->visit + $visit;
                 $existingEndDate = Carbon::parse($existingMember->end_date);
                 $newEndDate = $existingEndDate->copy()->addDays($cycle);
                 $existingMember->update([
                     'end_date' => $newEndDate,
+                    'visit' => $newVisit, 
                 ]);
             }
         } else {
-            // Create new member record if no existing membership
             Member::create([
                 'customer_id' => $order->customer_id,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
                 'status' => 'active',
                 'qr_token' => $memberQrToken,
-                'product_category_id' => $order->product->product_category_id, // Assuming this is needed
+                'visit' => $visit, 
+                'product_category_id' => $order->product->product_category_id, 
             ]);
         }
     
-        return redirect()->route('struk_gym', ['id' => $order->id])->with('success', 'Payment processed successfully!');
+        return redirect()->route('struk_gym', ['id' => $order->id])->with('success', 'Payment processed and membership created successfully!');
     }
+    
     
     
 
@@ -146,11 +144,14 @@ class CashierController extends Controller
         $productcat = $product->productcat;
         $visit = $productcat->visit;
         $user = Auth::user();
-
         $appSetting = ApplicationSetting::first();
-
-        return view('cashier.struk_gym', compact('order', 'payment', 'appSetting', 'visit', 'user', 'member'));
+    
+        $member = Member::where('customer_id', $order->customer_id)->first();
+        $memberQrToken = $member ? $member->qr_token : null;
+    
+        return view('cashier.struk_gym', compact('order', 'payment', 'appSetting', 'visit', 'user', 'memberQrToken'));
     }
+    
 
 
     public function membercashier()
@@ -160,26 +161,45 @@ class CashierController extends Controller
     Member::where('end_date', '<', $currentDate)
           ->where('status', '<>', 'expired') 
           ->update(['status' => 'expired']);
+          
+    Member::where('visit', 0)
+          ->where('status', '<>', 'expired')
+          ->update(['status' => 'expired']);
+
 
     $member = Member::with('customer')->get();
 
     return view('membercash.membercashier', compact('member'));
     }
 
-    public function storeCustomer(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'phone' => 'required|string|max:15',
-        ]);
-        
-        $customer = Customer::create($request->only(['user_id', 'phone']));
-        
-        return redirect()->route('cashier.order')->with([
-            'success' => 'Customer added successfully.',
-            'new_customer_id' => $customer->id
-        ]);
-    }
+public function storeCustomer(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'phone' => 'required|string|max:15',
+    ]);
+
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'phone' => $request->phone,
+        'role' => 'customer', 
+    ]);
+    
+    $customer = Customer::create([
+        'user_id' => $user->id,
+        'phone' => $user->phone,  
+        'born' => $request->born,  
+        'gender' => $request->gender, 
+    ]);
+    
+    return redirect()->route('cashier.order')->with([
+        'success' => 'Customer added successfully.',
+        'new_customer_id' => $customer->id
+    ]);
+}
+
 
 
     public function order()
@@ -301,16 +321,87 @@ class CashierController extends Controller
         return redirect()->route('cashier.order');
     }
 
+    public function showCheckIn()
+    {
+        return view('cashier.checkinscanner');  
+
+   
+    public function membercheckin()
+    {
+        $memberckin = MemberCheckin::with('member.customer')->get();
+        return view('cashier.membercheckin', compact('memberckin'));
+
+    }
 
     public function showCheckIn()
     {
         return view('cashier.checkinscanner');  
 
     }
-    public function membercheckin()
-    {
-        $payment = Payment::with('order')->get();
-        return view('membercheckin.index');
 
+    public function getMemberDetails($qr_token)
+    {
+        $member = Member::where('qr_token', $qr_token)
+            ->with('customer.user')
+            ->first();
+    
+        if (!$member) {
+            return response()->json(['error' => 'Qr Code Already Used'], 404);
+        }
+    
+        return response()->json([
+            'name' => $member->customer->user->name,
+            'phone' => $member->customer->phone,
+            'expired_date' => Carbon::parse($member->end_date)->format('d/M/Y'),
+        ]);
     }
+    
+
+    public function storeCheckin(Request $request)
+    {
+        $request->validate([
+            'qr_token' => 'required|string',
+            'image' => 'nullable|string',
+        ]);
+    
+        $qrToken = $request->input('qr_token');
+    
+        $existingCheckin = MemberCheckin::where('qr_token', $qrToken)->first();
+    
+        if ($existingCheckin) {
+            return response()->json(['success' => false, 'message' => 'QR code has already been used.']);
+        }
+    
+        $member = Member::where('qr_token', $qrToken)->first();
+    
+        if (!$member) {
+            return response()->json(['success' => false, 'message' => 'Member not found.']);
+        }
+    
+        // Mengurangi visit dengan 1
+        $member->decrement('visit');
+    
+        $checkin = MemberCheckin::create([
+            'member_id' => $member->id,
+            'qr_token' => $qrToken,
+            'image' => $request->input('image'),
+        ]);
+    
+        // Generate QR Token baru
+        $newQrToken = Str::random(10);
+        $member->update([
+            'qr_token' => $newQrToken
+        ]);
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Check-in recorded successfully',
+            'new_qr_token' => $newQrToken
+        ]);
+    }
+    
+    
+
+    
+    
 }
