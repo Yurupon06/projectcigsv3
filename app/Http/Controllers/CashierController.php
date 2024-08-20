@@ -304,7 +304,7 @@ class CashierController extends Controller
     public function showCheckIn()
     {
         return view('cashier.checkinscanner');  
-
+    }
 
     public function membercheckin()
     {

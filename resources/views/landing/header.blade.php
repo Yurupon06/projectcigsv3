@@ -61,6 +61,7 @@
                             @if($member)
                                 <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
                             @else
+                            @endif
                         @endauth
                         </li>
                     </ul>
