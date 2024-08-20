@@ -210,7 +210,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body d-flex justify-content-center align-items-center">
-                {!! QrCode::size(200)->generate(route('cashier.qrscan', ['qr_token' => $member->qr_token])) !!}
+                {!! QrCode::size(200)->generate($member->qr_token) !!}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

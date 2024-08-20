@@ -166,4 +166,6 @@ class LandingController extends Controller
         return view('landing.membership', compact('member'));
     }
 
+    
+
 }
