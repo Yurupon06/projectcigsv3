@@ -183,7 +183,7 @@
                 <tr>
                     <td colspan="2">
                         <div class="qr-code">
-                            <p class="margin">For single visitors, please check-in with this QR.</p>
+                            <p class="margin">You can check-in with this QR if you dont have account or not bring a phone.</p>
                             {!! QrCode::size(150)->generate($memberQrToken) !!}
                             <p class="margin">Thank you, please come again</p>
                         </div>

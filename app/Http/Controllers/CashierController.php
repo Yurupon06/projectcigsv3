@@ -57,16 +57,21 @@ class CashierController extends Controller
             $order->update(['status' => 'canceled']);
             return redirect()->route('cashier.index')->with('success', 'Order canceled successfully.');
         }
-    
+
         $request->validate([
             'amount_given' => 'required|numeric|min:0',
         ]);
-    
+
+        $amountGiven = $request->input('amount_given');
+
+        if ($amountGiven < $order->total_amount) {
+            return redirect()->back()->with('error', 'The amount given is less than the total amount.');
+        }
+
         $paymentQrToken = Str::random(10); 
         $memberQrToken = Str::random(10); 
-        $amountGiven = $request->input('amount_given');
         $change = $amountGiven - $order->total_amount;
-    
+
         Payment::create([
             'order_id' => $order->id,
             'payment_date' => Carbon::now('Asia/Jakarta'),
@@ -75,18 +80,18 @@ class CashierController extends Controller
             'change' => $change,
             'qr_token' => $paymentQrToken,
         ]);
-    
+
         $order->update(['status' => 'paid']);
-    
+
         $productCategory = $order->product->productcat;
         $cycle = (int) $productCategory->cycle; 
         $visit = (int) $productCategory->visit; 
-    
+
         $startDate = Carbon::now('Asia/Jakarta');
         $endDate = $startDate->copy()->addDays($cycle);
-    
+
         $existingMember = Member::where('customer_id', $order->customer_id)->first();
-    
+
         if ($existingMember) {
             if ($existingMember->status === 'expired') {
                 $existingMember->update([
@@ -124,15 +129,10 @@ class CashierController extends Controller
                 'product_category_id' => $order->product->product_category_id, 
             ]);
         }
-    
+
         return redirect()->route('struk_gym', ['id' => $order->id])->with('success', 'Payment processed and membership created successfully!');
     }
-    
-    
-    
 
-    
-    
     
 
     public function showStruk($id)
@@ -342,7 +342,13 @@ public function storeCustomer(Request $request)
             ->first();
     
         if (!$member) {
-            return response()->json(['error' => 'Qr Code Already Used'], 404);
+            $checkin = MemberCheckin::where('qr_token', $qr_token)->first();
+    
+            if ($checkin) {
+                return response()->json(['error' => 'QR Code already used'], 404);
+            }
+    
+            return response()->json(['error' => 'Invalid QR Code'], 404);
         }
     
         return response()->json([
@@ -351,6 +357,7 @@ public function storeCustomer(Request $request)
             'expired_date' => Carbon::parse($member->end_date)->format('d/M/Y'),
         ]);
     }
+    
     
 
     public function storeCheckin(Request $request)
@@ -374,7 +381,6 @@ public function storeCustomer(Request $request)
             return response()->json(['success' => false, 'message' => 'Member not found.']);
         }
     
-        // Mengurangi visit dengan 1
         $member->decrement('visit');
     
         $checkin = MemberCheckin::create([
@@ -383,7 +389,6 @@ public function storeCustomer(Request $request)
             'image' => $request->input('image'),
         ]);
     
-        // Generate QR Token baru
         $newQrToken = Str::random(10);
         $member->update([
             'qr_token' => $newQrToken

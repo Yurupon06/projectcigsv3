@@ -13,11 +13,6 @@
             <div class="col-12">
             <div class="card my-4">
               <div class="card-header pb-0">
-                <a href="{{route('qrcheckin.cashier')}}">
-                  <span class="badge badge-sm bg-gradient-primary mb-3 fs-6 ">
-                    <i class="material-icons opacity-10">qr_code_scanner</i>
-                  </span>
-                </a>
                         <h6>Member Check-In</h6>
                     </div>
                     <div class="card-body px-0 pb-2">
@@ -50,12 +45,12 @@
                                                 {{ $dt->member->customer->phone }}
                                             </td>
                                             <td>
-                                                {{ $dt->qr_token }}
+                                                {!! QrCode::size(50)->generate($dt->qr_token) !!} ({{ $dt->qr_token}} )
                                             </td>
                                             <td>
                                                 {{ $dt->image }}
                                             </td>
-                                            <td>
+                                            <td style="color: rgb(0, 223, 0)">
                                                 {{ $dt->created_at->setTimezone('Asia/Jakarta') }} 
                                             </td>
                                         </tr>
@@ -69,6 +64,4 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('qr_token').addEventListener('change', function())
 @endsection

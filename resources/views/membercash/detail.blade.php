@@ -1,10 +1,10 @@
 @extends('dashboard.master')
-@section('title', 'Order Details')
+@section('title', 'Membership Details')
 @section('sidebar')
     @include('cashier.sidebar')
 @endsection
-@section('page-title', 'Order Detail')
-@section('page', 'Order Details')
+@section('page-title', 'Membership Detail')
+@section('page', 'Membership Details')
 @section('main')
     @include('cashier.main')
 
@@ -62,7 +62,7 @@
                         <a href="{{ route('membercashier.membercash') }}">Back</a>
                     </div>
                     <div class="card-header pb-0">
-                        <h6>Order Details</h6>
+                        <h6>Membership Details</h6>
                     </div>
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0">
@@ -99,7 +99,9 @@
                                 </tr>
                                 <tr>
                                     <th>Visit Left</th>
-                                    <td>{{$member->visit}}</td>
+                                    <td style="color:{{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
+                                        {{$member->visit}}
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>Status</th>

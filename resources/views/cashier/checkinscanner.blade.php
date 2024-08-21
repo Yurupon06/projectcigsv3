@@ -64,7 +64,7 @@
                 <div id="countdown" class="alert alert-info"></div>
             </div>
         </div>
-        <a class="btn btn-outline-primary" href="{{ route('cashier.index') }}" role="button">Back</a>
+        <a class="btn btn-outline-primary" href="{{ route('cashier.membercheckin') }}" role="button">Back</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
@@ -73,74 +73,100 @@
         let html5QrcodeScanner = new Html5Qrcode("reader");
     
         function onScanSuccess(decodedText) {
-    if (scanCompleted) return; 
+            if (scanCompleted) return;
 
-    scanCompleted = true; 
+            scanCompleted = true;
 
-    fetch(`/member-details/${decodedText}`)
-        .then(response => response.json())
-        .then(data => {
-            if (data.error) {
-                alert(data.error);
-            } else {
-                document.getElementById('name').textContent = data.name;
-                document.getElementById('phone').textContent = data.phone;
-                document.getElementById('expiration').textContent = data.expired_date;
-
-                
-                const successMessage = document.getElementById('success-message');
-                const countdown = document.getElementById('countdown');
-                const errorMessage = document.getElementById('error-message');
-                successMessage.style.display = 'block';
-                countdown.style.display = 'block';
-                errorMessage.style.display = 'none';
-
-                let countdownValue = 2;
-
-                const interval = setInterval(() => {
-                    countdown.textContent = `Refreshing in ${countdownValue} seconds...`;
-                    countdownValue--;
-
-                    if (countdownValue < 0) {
-                        clearInterval(interval);
-                        countdown.style.display = 'none';
-                        location.reload(); 
-                    }
-                }, 1000);
-
-                fetch('/store-checkin', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: JSON.stringify({
-                        qr_token: decodedText,
-                        image: null
-                    })
-                })
+            fetch(`/member-details/${decodedText}`)
                 .then(response => response.json())
-                .then(result => {
-                    if (result.success) {
-                        console.log('Check-in recorded successfully');
-                        console.log('New QR token:', result.new_qr_token);
-                    } else {
+                .then(data => {
+                    if (data.error) {
                         const errorMessage = document.getElementById('error-message');
-                        errorMessage.textContent = result.message;
+                        errorMessage.textContent = data.error;
                         errorMessage.style.display = 'block';
+                        scanCompleted = false; // Allow re-scanning if an error occurs
+
+                        // Hide the error message after 3 seconds
+                        setTimeout(() => {
+                            errorMessage.style.display = 'none';
+                        }, 3000);
+                    } else {
+                        document.getElementById('name').textContent = data.name;
+                        document.getElementById('phone').textContent = data.phone;
+                        document.getElementById('expiration').textContent = data.expired_date;
+
+                        const successMessage = document.getElementById('success-message');
+                        const countdown = document.getElementById('countdown');
+                        const errorMessage = document.getElementById('error-message');
+                        successMessage.style.display = 'block';
+                        countdown.style.display = 'block';
+                        errorMessage.style.display = 'none';
+
+                        let countdownValue = 3;
+
+                        const interval = setInterval(() => {
+                            countdown.textContent = `Refreshing in ${countdownValue} seconds...`;
+                            countdownValue--;
+
+                            if (countdownValue < 0) {
+                                clearInterval(interval);
+                                countdown.style.display = 'none';
+                                location.reload();
+                            }
+                        }, 1000);
+
+                        fetch('/store-checkin', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                qr_token: decodedText,
+                                image: null
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                console.log('Check-in recorded successfully');
+                                console.log('New QR token:', result.new_qr_token);
+                            } else {
+                                const errorMessage = document.getElementById('error-message');
+                                errorMessage.textContent = result.message;
+                                errorMessage.style.display = 'block';
+                                
+                                // Hide the error message after 3 seconds
+                                setTimeout(() => {
+                                    errorMessage.style.display = 'none';
+                                }, 3000);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+
+                        html5QrcodeScanner.stop().then(ignore => {
+                            console.log("QR code scanning stopped.");
+                        }).catch(err => {
+                            console.error("Error stopping QR code scanning:", err);
+                        });
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error fetching member details:', error);
+                    const errorMessage = document.getElementById('error-message');
+                    errorMessage.textContent = 'An error occurred while processing your request. Please try again.';
+                    errorMessage.style.display = 'block';
+                    scanCompleted = false; // Allow re-scanning if an error occurs
 
-                html5QrcodeScanner.stop().then(ignore => {
-                    console.log("QR code scanning stopped.");
-                }).catch(err => {
-                    console.error("Error stopping QR code scanning:", err);
+                    // Hide the error message after 3 seconds
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 3000);
                 });
-            }
-        })
-        .catch(error => console.error('Error fetching member details:', error));
-}
+        }
+
+
+
 
     
         html5QrcodeScanner.start(
@@ -153,6 +179,7 @@
         ).catch(err => {
             console.error("Error starting QR code scanner: ", err);
         });
+
     </script>
 </body>
 </html>
