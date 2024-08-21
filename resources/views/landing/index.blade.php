@@ -1,6 +1,6 @@
 @extends('landing.master')
-@section('main')
-	@include('landing.header')
+@section('title', 'Home')
+@include('landing.header')
 
 <style>
     .boxed-btn3 {

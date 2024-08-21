@@ -23,6 +23,7 @@
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">name</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">email</th>
+                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">phonr</th>
                           <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">role</th>
                           <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                         </tr>
@@ -43,6 +44,9 @@
                           </td>
                           <td>
                             {{$dt->email}}
+                          </td>
+                          <td>
+                            {{$dt->phone}}
                           </td>
                           <td>
                             {{$dt->role}}

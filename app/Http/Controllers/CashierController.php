@@ -325,17 +325,11 @@ public function storeCustomer(Request $request)
     {
         return view('cashier.checkinscanner');  
 
-   
+    }
     public function membercheckin()
     {
         $memberckin = MemberCheckin::with('member.customer')->get();
         return view('cashier.membercheckin', compact('memberckin'));
-
-    }
-
-    public function showCheckIn()
-    {
-        return view('cashier.checkinscanner');  
 
     }
 
@@ -398,10 +392,5 @@ public function storeCustomer(Request $request)
             'message' => 'Check-in recorded successfully',
             'new_qr_token' => $newQrToken
         ]);
-    }
-    
-    
-
-    
-    
+    } 
 }

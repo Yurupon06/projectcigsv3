@@ -1,13 +1,11 @@
-@extends('landing.master')
-@section('title', 'Landing')
-@section('main')
-    @include('landing.master')
+
 
 <style>
 .wrap-header-mobile {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 }
 
 .btn-show-menu-mobile {
@@ -18,19 +16,23 @@
 
 .btn-auth-mobile {
     display: none;
-    /* Hide logout button by default on mobile */
+    margin-left: auto;
+    /* Align to the right */
+    padding: 0 15px;
+    color: #007BFF;
+    font-weight: bold;
+    text-decoration: none;
 }
 
-/* Display logout button only on mobile and align it to the right */
+/* Adjust position and visibility for mobile */
 @media (max-width: 768px) {
     .btn-auth-mobile {
         display: block;
-        margin-left: auto;
+        padding-right: 15px;
         /* Align to the right */
-        padding: 0 15px;
-        color: #007BFF;
-        font-weight: bold;
-        text-decoration: none;
+    }
+    .menu-mobile {
+        display: none;
     }
 }
 
@@ -105,22 +107,12 @@
         </div>
 
         @auth
-            <li>
-                <a href="{{ route('landing.profile') }}" class="btn-auth-mobile">
-                    {{ Auth::user()->name }}
-                </a>
-            </li>
-            <a href="{{ route('logout') }}" class="btn-auth-mobile"
-                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                Logout
+            <a href="{{ route('landing.profile') }}" class="btn-auth-mobile">
+                {{ Auth::user()->name }}
             </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                @csrf
-            </form>
+            <!-- Hide logout button on mobile -->
         @else
-            <li>
-                <a href="{{ route('login') }}" class="btn-auth-mobile">Login</a>
-            </li>
+            <a href="{{ route('login') }}" class="btn-auth-mobile">Login</a>
         @endauth
     </div>
 
@@ -144,3 +136,4 @@
         </ul>
     </div>
 </header>
+
