@@ -80,7 +80,7 @@
     <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
     <a class="navbar-brand m-0" href="">
       <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" height="80px">
-      <span class="ms-1 font-weight-bold text-white">{{$setting->app_name}}</span>
+      <span class="ms-1 font-weight-bold text-white">{{ isset ($setting) ? $setting->app_name : 'Faybaal GYM' }}</span>
     </a>
   </div>
   <hr class="horizontal light mt-0 mb-2">
