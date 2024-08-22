@@ -208,13 +208,15 @@
             </div>
         @endif
         <div class="overlap-wrapper">
-            <button type="button" class="overlap-btn" data-bs-toggle="modal" data-bs-target="#qrModal">
-                <div class="overlap">
-                    <div class="text-wrapper-6">
-                        History
+            <a href="{{route('landing.history')}}">
+                <button type="button" class="overlap-btn">
+                    <div class="overlap">
+                        <div class="text-wrapper-6">
+                            History
+                        </div>
                     </div>
-                </div>
-            </button>
+                </button>
+            </a>
         </div>
 
     </div>
