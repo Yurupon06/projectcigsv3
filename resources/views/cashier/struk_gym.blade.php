@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+<link rel="icon" type="image/png" href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 <head>
 	<title>Struk Gym</title>
 	<style>
@@ -103,7 +103,7 @@
         <table class="table">
             <tr>
                 <td colspan="2" class="align-center">
-                    <img width='100' src={{ asset('assets/images/2.png') }} alt={{ $appSetting->app_logo }}>
+                    <img width='100' src={{ isset($appSetting) ? asset('storage/' . $appSetting->app_logo) : asset('assets/images/2.png') }}>
                 </td>
             </tr>
             <tr>

@@ -139,6 +139,7 @@ class CashierController extends Controller
     {
         $order = Order::with('customer', 'product')->findOrFail($id);
         $payment = Payment::where('order_id', $id)->first();
+        $member = Member::where('customer_id', $order->customer_id)->first();
         $product = $order->product;
         $productcat = $product->productcat;
         $visit = $productcat->visit;
@@ -324,17 +325,11 @@ public function storeCustomer(Request $request)
     {
         return view('cashier.checkinscanner');  
 
-   
+    }
     public function membercheckin()
     {
         $memberckin = MemberCheckin::with('member.customer')->get();
         return view('cashier.membercheckin', compact('memberckin'));
-
-    }
-
-    public function showCheckIn()
-    {
-        return view('cashier.checkinscanner');  
 
     }
 
@@ -397,10 +392,5 @@ public function storeCustomer(Request $request)
             'message' => 'Check-in recorded successfully',
             'new_qr_token' => $newQrToken
         ]);
-    }
-    
-    
-
-    
-    
+    } 
 }
