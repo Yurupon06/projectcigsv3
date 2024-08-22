@@ -19,19 +19,24 @@
         }
     </style>
 
-
     <div class="container mt-5 text-center">
         <h1>Scan QR Code</h1>
         <div id="reader"></div>
         <p id="result"></p>
-        <a class="btn btn-outline-primary" href="{{route('cashier.index')}}" role="button">Back</a>
+        <a class="btn btn-outline-primary" href="{{ route('cashier.index') }}" role="button">Back</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
     <script>
         function onScanSuccess(decodedText, decodedResult) {
-            // Redirect to the URL decoded from the QR code
-            window.location.href = decodedText;
+            // Trim the decoded text to avoid extra spaces
+            let qrToken = decodedText.trim();
+
+            // Construct the URL using the scanned QR token
+            let url = `{{ route('cashier.qrscan', ['qr_token' => '__TOKEN__']) }}`.replace('__TOKEN__', qrToken);
+
+            // Redirect to the constructed URL
+            window.location.href = url;
         }
 
         function onScanFailure(error) {
@@ -51,5 +56,4 @@
             console.error("Error starting QR code scanner: ", err);
         });
     </script>
-
 @endsection
