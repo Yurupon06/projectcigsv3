@@ -1,34 +1,41 @@
+
+
 <style>
-    .wrap-header-mobile {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
+.wrap-header-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
 
-    .btn-show-menu-mobile {
-        display: flex;
-        align-items: center;
-        position: relative;
-    }
+.btn-show-menu-mobile {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
 
+.btn-auth-mobile {
+    display: none;
+    margin-left: auto;
+    /* Align to the right */
+    padding: 0 15px;
+    color: #007BFF;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Adjust position and visibility for mobile */
+@media (max-width: 768px) {
     .btn-auth-mobile {
-        display: none;
-        /* Hide logout button by default on mobile */
+        display: block;
+        padding-right: 15px;
+        /* Align to the right */
     }
-
-    /* Display logout button only on mobile and align it to the right */
-    @media (max-width: 768px) {
-        .btn-auth-mobile {
-            display: block;
-            margin-left: auto;
-            /* Align to the right */
-            padding: 0 15px;
-            color: #007BFF;
-            font-weight: bold;
-            text-decoration: none;
-        }
+    .menu-mobile {
+        display: none;
     }
 }
+
 @media (min-width: 769px) {
     .btn-show-menu-mobile,
     .wrap-header-mobile {
@@ -42,7 +49,6 @@
     <div class="container-menu-desktop trans-03">
         <div class="wrap-menu-desktop">
             <nav class="limiter-menu-desktop p-l-45">
-
                 <!-- Menu desktop -->
                 <div class="menu-desktop">
                     <ul class="main-menu">
@@ -52,17 +58,16 @@
                         <li>
                             <a href="{{ route('landing.index') }}">Home</a>
                         </li>
-
                         <li>
                             <a href="{{ route('yourorder.index') }}">My Order</a>
                         </li>
                         <li>
                             @auth
-                            @if($member)
-                                <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
-                            @else
-                            @endif
-                        @endauth
+                                @if($member)
+                                    <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                                @else
+                                @endif
+                            @endauth
                         </li>
                     </ul>
                 </div>
@@ -100,24 +105,16 @@
                 <span class="hamburger-inner"></span>
             </span>
         </div>
+
         @auth
-        <li>
-            <a href="{{route('landing.profile')}}" class="btn-auth-mobile">
+            <a href="{{ route('landing.profile') }}" class="btn-auth-mobile">
                 {{ Auth::user()->name }}
             </a>
-        </li>
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-            @csrf
-        </form>
+            <!-- Hide logout button on mobile -->
         @else
-            <li>
-                <a href="{{ route('login') }}" class="btn-auth-mobile">Login</a>
-            </li>
-
+            <a href="{{ route('login') }}" class="btn-auth-mobile">Login</a>
         @endauth
-
     </div>
-
 
     <!-- Menu Mobile -->
     <div class="menu-mobile">
@@ -128,14 +125,15 @@
             <li>
                 <a href="{{ route('yourorder.index') }}">My Order</a>
             </li>
-            <li >
-                @auth
+            @auth
                 @if($member)
-                    <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                    <li>
+                        <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                    </li>
                 @else
                 @endif
             @endauth
-            </li>
         </ul>
     </div>
 </header>
+

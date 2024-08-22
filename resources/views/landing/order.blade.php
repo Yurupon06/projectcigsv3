@@ -1,5 +1,6 @@
 
 @extends('landing.master')
+@section('title', 'Order')
 @include('landing.header')
 
 @if(session('success'))

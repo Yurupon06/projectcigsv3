@@ -1,4 +1,5 @@
 @extends('landing.master')
+@section('title', 'Before Order')
 @include('landing.header')
 
 <div class="container">

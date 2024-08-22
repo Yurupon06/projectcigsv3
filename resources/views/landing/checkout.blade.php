@@ -1,4 +1,5 @@
 @extends('landing.master')
+@section('title', 'Checkout')
 @include('landing.header')
 
 <style>
