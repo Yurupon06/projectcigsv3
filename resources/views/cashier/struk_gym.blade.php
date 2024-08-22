@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+<link rel="icon" type="image/png" href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 <head>
 	<title>Struk Gym</title>
 	<style>
@@ -103,7 +103,7 @@
         <table class="table">
             <tr>
                 <td colspan="2" class="align-center">
-                    <img width='100' src={{ asset('assets/images/2.png') }} alt={{ $appSetting->app_logo }}>
+                    <img width='100' src={{ isset($appSetting) ? asset('storage/' . $appSetting->app_logo) : asset('assets/images/2.png') }}>
                 </td>
             </tr>
             <tr>
@@ -183,7 +183,7 @@
                 <tr>
                     <td colspan="2">
                         <div class="qr-code">
-                            <p class="margin">For single visitors, please check-in with this QR.</p>
+                            <p class="margin">You can check-in with this QR if you dont have account or not bring a phone.</p>
                             {!! QrCode::size(150)->generate($memberQrToken) !!}
                             <p class="margin">Thank you, please come again</p>
                         </div>

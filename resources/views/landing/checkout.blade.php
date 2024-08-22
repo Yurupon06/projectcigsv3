@@ -1,4 +1,5 @@
 @extends('landing.master')
+@section('title', 'Checkout')
 @include('landing.header')
 
 <style>
@@ -146,7 +147,7 @@
                 <div class="qr-code-container">
                     <div class="mt-3">Go To Cashier And Show The QrCode To Pay</div>
                     <br>
-                    {!! QrCode::size(200)->generate(route('cashier.qrscan', ['qr_token' => $order->qr_token])) !!}
+                    {!! QrCode::size(200)->generate($order->qr_token) !!}
                 </div>
                 <br>
             @endif

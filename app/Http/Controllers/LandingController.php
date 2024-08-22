@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Member;
+use App\Models\membercheckin;
 use App\Models\Order;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -25,7 +26,6 @@ class LandingController extends Controller
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         return view('landing.index', compact('products', 'user', 'customer', 'member'));
-
     }
     
 
@@ -162,9 +162,35 @@ class LandingController extends Controller
 
     public function membership($id)
     {
+        $currentDate = Carbon::now('Asia/Jakarta');
+
+        Member::where('end_date', '<', $currentDate)
+            ->where('status', '<>', 'expired') 
+            ->update(['status' => 'expired']);
+            
+        Member::where('visit', 0)
+            ->where('status', '<>', 'expired')
+            ->update(['status' => 'expired']);
+
         $member = Member::with('customer.user')->findOrFail($id);
         return view('landing.membership', compact('member'));
     }
+
+    public function history()
+    {
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        
+        if ($member) {
+            $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->get();
+        } else {
+            $memberckin = collect(); // empty collection if no member is found
+        }
+    
+        return view('landing.history', compact('memberckin', 'member'));
+    }
+    
 
     
 

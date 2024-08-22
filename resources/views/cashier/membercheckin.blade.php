@@ -50,12 +50,12 @@
                                                 {{ $dt->member->customer->phone }}
                                             </td>
                                             <td>
-                                                {{ $dt->qr_token }}
+                                                {!! QrCode::size(50)->generate($dt->qr_token) !!} ({{ $dt->qr_token}} )
                                             </td>
                                             <td>
                                                 {{ $dt->image }}
                                             </td>
-                                            <td>
+                                            <td style="color: rgb(0, 223, 0)">
                                                 {{ $dt->created_at->setTimezone('Asia/Jakarta') }} 
                                             </td>
                                         </tr>
@@ -69,6 +69,4 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById('qr_token').addEventListener('change', function())
 @endsection
