@@ -179,9 +179,19 @@
                 
                 <div class="text-wrapper-3">MEMBER ID : GYM.{{ $member->id }}</div>
                 
-                @if ($member->status == 'active')
-                <div class="text-wrapper-4">EXPIRED : {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d/M/Y') }}</div>
-                <div class="text-wrapper-5">Visit Left : {{$member->visit}}</div>
+                @if ($member->status === 'inactive')
+                
+                @else
+                <div class="text-wrapper-4">
+                    EXPIRED : <span style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
+                    {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d/M/Y') }}
+                    </span>
+                </div>
+                <div class="text-wrapper-5">
+                    Visit Left : <span style="color: {{ $member->status === 'active' ? 'white' : ($member->status === 'expired' ? 'red' : 'green') }}">
+                        {{$member->visit}}
+                    </span>
+                </div>
                 @endif
             </div>
         </div>
@@ -198,6 +208,15 @@
                 </button>
             </div>
         @endif
+        <div class="overlap-wrapper">
+            <button type="button" class="overlap-btn" data-bs-toggle="modal" data-bs-target="#qrModal">
+                <div class="overlap">
+                    <div class="text-wrapper-6">
+                        History
+                    </div>
+                </div>
+            </button>
+        </div>
 
     </div>
 </div>

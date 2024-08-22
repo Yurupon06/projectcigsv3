@@ -1,21 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>membercashier</title>
-</head>
-<body>
-    <h1>membercashier</h1>
-</body>
-</html>
+
 @extends('dashboard.master')
-@section('title', 'order')
+@section('title', 'Membership')
 @section('sidebar')
     @include('cashier.sidebar')
 @endsection
-@section('page-title', 'order')
-@section('page', 'order')
+@section('page-title', 'Membership')
+@section('page', 'Membership')
 @section('main')
     @include('dashboard.main')
 
@@ -24,7 +14,7 @@
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-header pb-0">
-                        <h6>Member</h6>
+                        <h6>member</h6>
                     </div>
                     <div class="card-body px-0 pb-2">
                         <div class="table-responsive p-0">
