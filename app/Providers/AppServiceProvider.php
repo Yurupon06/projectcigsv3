@@ -21,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::share('setting', ApplicationSetting::first());
+        try {
+            View::share('setting', ApplicationSetting::first());
+        } catch (\Exception $e) {
+            dd($e);
+        }
     }
 }
