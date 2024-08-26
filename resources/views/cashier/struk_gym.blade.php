@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-
+<link rel="icon" type="image/png" href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 <head>
 	<title>Struk Gym</title>
 	<style>
@@ -75,40 +75,45 @@
 			border: 1px solid #000;
 			margin: 7px 0;
 		}
+
+        .line {
+            border: none;
+            border-top: 1px solid #000; /* Adjust the color if needed */
+            margin: 7px 0;
+        }
+
+        .margin{
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        img {
+            filter:grayscale(100%);
+        }
 	</style>
 </head>
 
 <body>
-	<?php
-	// Data struk dummy
-	$receipt = [
-		"member_name" => "John Doe",
-		"date" => "2024-08-07",
-		"cashier_name" => "John Doe",
-		"items" => [
-			["description" => "Monthly Membership", "price" => 123456700],
-		],
-		"total" => 123456700,
-		"cash" => 125000000,
-		"change" => 1543300
-	];
-	?>
+
 
 	<div class="container">
+
+        
+
         <table class="table">
             <tr>
                 <td colspan="2" class="align-center">
-                    <img width='100' src='../../assets/images/2.png'>
+                    <img width='100' src={{ isset($appSetting) ? asset('storage/' . $appSetting->app_logo) : asset('assets/images/2.png') }}>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" class="align-center">
-                    <h1>{{ $appSetting->app_name }}</h1>
+                    <h1>{{isset($appSetting) ? $appSetting->app_name : 'FAYBAL'}}</h1>
                 </td>
             </tr>
             <tr>
                 <td colspan="2" class="align-center">
-                    {{ $appSetting->app_address }}<br>
+                    {{isset($appSetting->app_address) ? $appSetting->app_address : 'Jl. Pemuda No. 1' }}<br>
                 </td>
             </tr>
         </table>
@@ -116,7 +121,7 @@
         <table class="table">
         <tr>
             <td>Cashier</td>
-            <td class="align-right">{{ $payment->cashier_name }}</td>
+            <td class="align-right">{{ $user->name }}</td>
         </tr>
         <tr>
             <td>Order ID</td>
@@ -138,25 +143,24 @@
         <hr>
         <table class="table">
             <tr>
-                <td><b>Total</b></td>
+                <td><b>Total Rp</b></td>
                 <td class="align-right">
-                    <h1><b>Rp {{ number_format($payment->amount, 0, ',', '.') }}</b></h1>
+                    <h1><b>{{ number_format($payment->amount, 0, ',', '.') }}</b></h1>
                 </td>
             </tr>
         </table>
         <hr>
         <table class="table">
             <tr>
-                <td>Cash</td>
-                <td class="align-right">Rp {{ number_format($payment->amount_given, 0, ',', '.') }}</td>
+                <td>Cash Rp</td>
+                <td class="align-right"> {{ number_format($payment->amount_given, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td>Change</td>
-                <td class="align-right"><b>Rp {{ number_format($payment->change, 0, ',', '.') }}</b></td>
+                <td>Change Rp</td>
+                <td class="align-right"><b> {{ number_format($payment->change, 0, ',', '.') }}</b></td>
             </tr>
         </table>
         <hr>
-        @if($visit == 30)
             <table class="table">
                 <tr>
                     <td>Member</td>
@@ -164,31 +168,43 @@
                 </tr>
                 <tr>
                     <td>No Hp</td>
-                    <td class="align-right">{{ $payment->order->customer->phone }}</td>
+                    <td class="align-right">
+                        {{ substr($payment->order->customer->phone, 0, 4) . '****' . substr($payment->order->customer->phone, -4) }}
+                    </td>
                 </tr>
             </table>
-        @elseif($visit == 1)
+            <h6 style="text-align: right;margin-top: 10px"><i>Print 
+            {{ now()->format('Y-m-d H:i:s') }}</i></h6>
+            <hr>
+            <div style="margin-bottom: 200px;"></div>
+            <br>
+            <hr class="line">
             <table class="table">
                 <tr>
                     <td colspan="2">
                         <div class="qr-code">
-                            {!! QrCode::size(100)->generate(route('cashier.qrscan', ['qr_token' => $payment->qr_token])) !!}
-                            <p>Thank you, please come again</p>
+                            <p class="margin">You can check-in with this QR if you dont have account or not bring a phone.</p>
+                            {!! QrCode::size(150)->generate($memberQrToken) !!}
+                            <p class="margin">Thank you, please come again</p>
                         </div>
                     </td>
                 </tr>
             </table>
-        @endif
-        <h6 style="text-align: right;margin-top: 10px"><i>Print 
-            {{ now()->format('Y-m-d H:i:s') }}</i></h6>
+            <hr>
     </div>
     <div class="print-button">
         <button onclick="window.print()">Print Struk</button>
     </div>
+    <div class="print-button">
+        <a href="{{route('cashier.index')}}">
+            <button>Back</button>
+        </a>
+    </div>
+
+    
 {{-- 
 	<script type="text/javascript">
 		window.print();
 	</script> --}}
 </body>
-
 </html>

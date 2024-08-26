@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Customer;
+use App\Models\Member;
+use App\Models\membercheckin;
 use App\Models\Order;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -19,17 +21,20 @@ class LandingController extends Controller
      */
     public function index()
     {
-        //
         $products = Product::with('productcat')->get();
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
-        return view('landing.index', compact('products', 'user', 'customer'));
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        return view('landing.index', compact('products', 'user', 'customer', 'member'));
     }
+    
 
-    public function profile(){
+    public function profile()
+    {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
-        return view('landing.profile', compact('user', 'customer'));
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        return view('landing.profile', compact('user', 'customer', 'member'));
     }
 
     public function profileUpdate(Request $request)
@@ -60,7 +65,7 @@ class LandingController extends Controller
         return redirect()->route('landing.profile')->with('success', 'Profile updated successfully.');
     }
 
-        public function updatePassword(Request $request)
+    public function updatePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required',
@@ -85,15 +90,14 @@ class LandingController extends Controller
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
-    
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         $orders = $customer ? Order::where('customer_id', $customer->id)->get() : collect([]);
     
-        return view('landing.order', compact('orders', 'customer'));
+        return view('landing.order', compact('orders', 'customer', 'member'));
     }
 
     public function orderStore(Request $request)
     {
-        // Validate the request data
         $request->validate([
             'product_id' => 'required|exists:products,id',
         ]);
@@ -122,7 +126,8 @@ class LandingController extends Controller
         return redirect()->route('checkout', ['id' => $order->id])->with('success', 'Order created successfully.');
     }
 
-    public function orderCancel($id){
+    public function orderCancel($id)
+    {
         $order = Order::findOrFail($id);
         $order->update(['status' => 'canceled']);
         return redirect()->route('yourorder.index')->with('success', 'Successfully Cancel The Order.');
@@ -131,20 +136,62 @@ class LandingController extends Controller
 
 
 
-    public function checkout($id){
+    public function checkout($id)
+    {
         $order = Order::with('customer', 'product')->find($id);
-        return view('landing.checkout', compact('order'));
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+    
+        return view('landing.checkout', compact('order', 'member'));
     }
 
 
-    public function beforeOrder(Request $request){
+    public function beforeOrder(Request $request)
+    {
         $product = $request->only(['product_id', 'product_name', 'description', 'price']);
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         if (!$customer || !$customer->phone || !$customer->born || !$customer->gender) {
             return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
         }
     
-        return view('landing.beforeOrder', compact('product', 'user', 'customer' ));
+        return view('landing.beforeOrder', compact('product', 'user', 'customer', 'member' ));
     }
+
+    public function membership($id)
+    {
+        $currentDate = Carbon::now('Asia/Jakarta');
+
+        Member::where('end_date', '<', $currentDate)
+            ->where('status', '<>', 'expired') 
+            ->update(['status' => 'expired']);
+            
+        Member::where('visit', 0)
+            ->where('status', '<>', 'expired')
+            ->update(['status' => 'expired']);
+
+        $member = Member::with('customer.user')->findOrFail($id);
+        return view('landing.membership', compact('member'));
+    }
+
+    public function history()
+    {
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        
+        if ($member) {
+            $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->get();
+        } else {
+            $memberckin = collect(); // empty collection if no member is found
+        }
+    
+        return view('landing.history', compact('memberckin', 'member'));
+    }
+    
+
+    
+
 }

@@ -28,11 +28,18 @@
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-                    </div>
+                      </div>
                       <div class="mb-3 ms-3 me-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="text" class="ps-2 form-control border border-secondary-subtle @error('email') is-invalid @enderror" placeholder="Email" aria-label="email" id="email" name="email" value="{{ old('email', $user->email) }}">
                         @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                      </div>
+                      <div class="mb-3 ms-3 me-3">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="number" class="ps-2 form-control border border-secondary-subtle @error('phone') is-invalid @enderror" placeholder="Phone" aria-label="phone" id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
+                        @error('phone')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                       </div>

@@ -1,64 +1,90 @@
 @extends('landing.master')
+@section('title', 'Profile')
 @include('landing.header')
 
 <style>
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-.navigation-links {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
+    .navigation-links {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
 
-.navigation-links a {
-    text-decoration: none;
-    color: #007BFF;
-    font-weight: bold;
-}
+    .navigation-links a {
+        text-decoration: none;
+        color: #007BFF;
+        font-weight: bold;
+    }
 
-.navigation-links a:hover {
-    text-decoration: underline;
-}
-.profile-section {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+    .navigation-links a:hover {
+        text-decoration: underline;
+    }
 
-.profile-section h1 {
-    margin-bottom: 20px;
-    font-size: 24px;
-    color: #333;
-}
+    .profile-section {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
 
-.profile-field {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
+    .profile-section h1 {
+        margin-bottom: 20px;
+        font-size: 24px;
+        color: #333;
+    }
 
-.profile-field span {
-    font-size: 18px;
-    color: #555;
-}
+    .profile-field {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
 
-.profile-field a {
-    text-decoration: none;
-    color: #007BFF;
-    font-weight: bold;
-    font-size: 16px;
-}
+    .profile-field span {
+        font-size: 18px;
+        color: #555;
+    }
 
-.profile-field a:hover {
-    text-decoration: underline;
-}
+    .profile-field a {
+        text-decoration: none;
+        color: #007BFF;
+        font-weight: bold;
+        font-size: 16px;
+    }
 
+    .profile-field a:hover {
+        text-decoration: underline;
+    }
+
+    /* Mobile Logout Button Styles */
+    .btn-logout-mobile {
+        display: none; /* Hide by default */
+        color: #007BFF;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #007BFF;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+
+    .btn-logout-mobile:hover {
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+        .btn-logout-mobile {
+            display: block; /* Show on mobile */
+        }
+    }
 </style>
 
 <div class="container">
@@ -107,6 +133,16 @@
         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#changePasswordModal">
             Change Password
         </button>
+
+        <!-- Mobile Logout Button -->
+        @auth
+        <a href="{{ route('logout') }}" class="btn-logout-mobile" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            Logout
+        </a>
+        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+            @csrf
+        </form>
+        @endauth
     </div>
 </div>
 
@@ -193,13 +229,13 @@
 
 <script>
     document.querySelector('form').addEventListener('submit', function(event) {
-    var currentPassword = document.getElementById('current_password').value;
-    var newPassword = document.getElementById('password').value;
-    var confirmPassword = document.getElementById('password_confirmation').value;
+        var currentPassword = document.getElementById('current_password').value;
+        var newPassword = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('password_confirmation').value;
 
-    if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
-        event.preventDefault();
-        alert('Please fill in all fields if you are changing your password.');
-    }
-});
+        if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
+            event.preventDefault();
+            alert('Please fill in all fields if you are changing your password.');
+        }
+    });
 </script>

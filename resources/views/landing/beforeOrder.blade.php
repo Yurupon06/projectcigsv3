@@ -1,4 +1,5 @@
 @extends('landing.master')
+@section('title', 'Before Order')
 @include('landing.header')
 
 <div class="container">
@@ -29,7 +30,7 @@
                         </tr>
                         <tr>
                             <th>Product Price</th>
-                            <td>Rp.{{ number_format($product['price']) }}</td>
+                            <td>Rp {{ number_format($product['price']) }}</td>
                         </tr>
                     </table>
                 </div>
@@ -73,7 +74,7 @@
 
                         <div class="size-209 p-t-1">
                             <span class="mtext-110 cl2">
-                                Rp.{{ number_format($product['price']) }}
+                                Rp {{ number_format($product['price']) }}
                             </span>
                         </div>
                     </div>

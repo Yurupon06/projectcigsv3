@@ -10,8 +10,8 @@
 
     <style>
         .navigation-links {
-        display: flex;
-        justify-content: space-between;
+            display: flex;
+            justify-content: space-between;
         }
 
         .navigation-links a {
@@ -23,6 +23,7 @@
         .navigation-links a:hover {
             text-decoration: underline;
         }
+
         .change-display {
             margin-bottom: 1rem;
             text-align: right;
@@ -32,6 +33,7 @@
         .change-display span {
             color: green;
         }
+
         .amount-input {
             margin-bottom: 1rem;
             display: flex;
@@ -51,8 +53,6 @@
             font-weight: bold;
         }
     </style>
-
-
 
     <div class="container-fluid py-4">
         <div class="row">
@@ -90,21 +90,26 @@
                                     </td>
                                 </tr>
                                 <tr>
+
+                                </tr>
+                                @if ($order->status === 'unpaid')
+                                <tr>
                                     <td colspan="2">
                                         <form action="{{ route('payments.store', $order->id) }}" method="POST" class="text-end">
                                             @csrf
                                             <div class="amount-input">
                                                 <label for="amount_given">Amount Given:</label>
-                                                <input type="number" name="amount_given" id="amount_given" min="0" step="0.01"  oninput="calculateChange()">
+                                                <input type="number" name="amount_given" id="amount_given" min="0" step="0.01" oninput="calculateChange()">
                                             </div>
                                             <div class="change-display" id="change-display">
                                                 Change: <span id="change-amount">Rp 0</span>
                                             </div>
-                                            <button type="submit" name="action" value="cancel" class="btn btn-danger">Cancel Order</button>
+                                            <button type="submit" name="action" value="cancel" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this Order ?')">Cancel Order</button>
                                             <button type="submit" name="action" value="process" class="btn btn-success">Process Payment</button>
                                         </form>
                                     </td>
                                 </tr>
+                                @endif
                             </table>
                         </div>
                     </div>
@@ -113,7 +118,37 @@
         </div>
     </div>
 
-        <script>
+    <!-- Include SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Display SweetAlert based on session flash data or validation errors -->
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ session('success') }}',
+            });
+        @endif
+
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ $errors->first() }}',
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+            });
+        @endif
+    </script>
+
+    <script>
         function calculateChange() {
             const amountGiven = parseFloat(document.getElementById('amount_given').value) || 0;
             const totalAmount = {{ $order->total_amount }};
