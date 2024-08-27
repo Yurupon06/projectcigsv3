@@ -10,9 +10,14 @@
 
     <div class="container-fluid py-4">
         <div class="row">
-            <div class="col-12">
+        <div class="col-12">
             <div class="card my-4">
               <div class="card-header pb-0">
+                <a href="{{route('qrcheckin.cashier')}}">   
+                  <span class="badge badge-sm bg-gradient-primary mb-3 fs-6 ">
+                    <i class="material-icons opacity-10">qr_code_scanner</i>
+                  </span>
+                </a>
                         <h6>Member Check-In</h6>
                     </div>
                     <div class="card-body px-0 pb-2">

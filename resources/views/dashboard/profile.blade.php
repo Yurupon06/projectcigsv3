@@ -1,12 +1,11 @@
 @extends('dashboard.master')
-@section('sidebar')
+
 @section('page-title', 'Profile Admin')
-@extends('landing.master')
+@section('title', 'Profile Admin')
+
 @section('main')
     @include('dashboard.main')
-<head>
-    <title>Profile</title>
-</head>
+
     
     <style>
         .container {
@@ -210,3 +209,4 @@
         }
     });
     </script>
+@endsection

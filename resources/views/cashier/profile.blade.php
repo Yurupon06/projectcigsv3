@@ -1,12 +1,10 @@
 @extends('dashboard.master')
-@section('sidebar')
+
 @section('page-title', 'Profile Cashier')
-@extends('landing.master')
+@section('title', 'Profile Cashier')
 @section('main')
     @include('cashier.main')
-<head>
-    <title>Profile</title>
-</head>
+
 <style>
     .container {
         max-width: 800px;
@@ -209,3 +207,4 @@
         }
     });
     </script>
+@endsection
