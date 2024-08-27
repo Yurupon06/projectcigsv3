@@ -351,6 +351,11 @@ public function storeCustomer(Request $request)
             'expired_date' => Carbon::parse($member->end_date)->format('d/M/Y'),
         ]);
     }
+
+    public function showCheckIn()
+    {
+        return view('cashier.checkinscanner');
+    }
     
     
 
