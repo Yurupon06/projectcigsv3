@@ -1,6 +1,7 @@
 @extends('landing.master')
-@section('title', 'Profile')
-@include('landing.header')
+@section('title', 'Home')
+@section('main')
+    @include('landing.header')
 
 <style>
     .container {
@@ -239,3 +240,4 @@
         }
     });
 </script>
+@endsection

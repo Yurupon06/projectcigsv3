@@ -321,11 +321,7 @@ public function storeCustomer(Request $request)
         return redirect()->route('cashier.order');
     }
 
-    public function showCheckIn()
-    {
-        return view('cashier.checkinscanner');  
-
-    }
+   
     public function membercheckin()
     {
         $memberckin = MemberCheckin::with('member.customer')->orderBy('created_at', 'desc')->get();

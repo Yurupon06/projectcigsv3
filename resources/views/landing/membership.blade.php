@@ -1,6 +1,7 @@
 @extends('landing.master')
-@section('title', 'Membership')
-@include('landing.header')
+@section('title', 'Home')
+@section('main')
+    @include('landing.header')
 
 <style>
     .iphone-SE {
@@ -240,3 +241,4 @@
         </div>
     </div>
 </div>
+@endsection
