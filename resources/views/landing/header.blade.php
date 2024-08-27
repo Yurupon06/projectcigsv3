@@ -74,6 +74,18 @@
 
                 <div class="wrap-icon-header flex-w flex-r-m h-full">
                     @auth
+                        @if(auth()->user()->role== 'cashier')
+                        <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25">
+                            {{ Auth::user()->name }}
+                        </a>
+                        <a href="{{ route('cashier.index') }}" class="flex-c-m trans-04 p-lr-25">
+                            {{ Auth::user()->role }}
+                        </a>
+                        <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                        @else
                         <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25">
                             {{ Auth::user()->name }}
                         </a>
@@ -81,6 +93,8 @@
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Logout
                         </a>
+                        @endif
+                        
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
@@ -107,9 +121,9 @@
         </div>
 
         @auth
-            <a href="{{ route('landing.profile') }}" class="btn-auth-mobile">
-                {{ Auth::user()->name }}
-            </a>
+                <a href="{{ route('landing.profile') }}" class="btn-auth-mobile">
+                    {{ Auth::user()->name }}
+                </a>
             <!-- Hide logout button on mobile -->
         @else
             <a href="{{ route('login') }}" class="btn-auth-mobile">Login</a>

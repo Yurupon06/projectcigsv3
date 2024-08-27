@@ -24,7 +24,7 @@ class CashierController extends Controller
      */
     public function index()
     {
-        $order = order::with('customer', 'product')->get();
+        $order = order::with('customer', 'product')->orderBy('created_at', 'desc')->get();
         return view('cashier.index', compact('order'));
     }
 
@@ -47,7 +47,7 @@ class CashierController extends Controller
 
     public function payment()
     {
-        $payment = Payment::with('order')->get();
+        $payment = Payment::with('order')->orderBy('created_at', 'desc')->get();
         return view('cashier.payment', compact('payment'));
     }
 
@@ -208,7 +208,7 @@ public function storeCustomer(Request $request)
             $role->where('role', 'customer');
         })->with('user')->get();
     
-        $product = Product::all();
+        $product = Product::with('productcat')->get();
     
         $usersWithoutCustomer = User::whereDoesntHave('customer')->where('role', 'customer')->get();
     
@@ -324,7 +324,7 @@ public function storeCustomer(Request $request)
    
     public function membercheckin()
     {
-        $memberckin = MemberCheckin::with('member.customer')->get();
+        $memberckin = MemberCheckin::with('member.customer')->orderBy('created_at', 'desc')->get();
         return view('cashier.membercheckin', compact('memberckin'));
 
     }

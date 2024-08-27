@@ -99,7 +99,7 @@
                                             @csrf
                                             <div class="amount-input">
                                                 <label for="amount_given">Amount Given:</label>
-                                                <input type="number" name="amount_given" id="amount_given" min="0" step="0.01" oninput="calculateChange()">
+                                                <input type="number" name="amount_given" id="amount_given" min="0" step="0.01" oninput="calculateChange()" onkeydown="inputE(event)">
                                             </div>
                                             <div class="change-display" id="change-display">
                                                 Change: <span id="change-amount">Rp 0</span>
@@ -157,4 +157,12 @@
             document.getElementById('change-amount').textContent = 'Rp ' + change.toLocaleString('id-ID');
         }
     </script>
+
+<script>
+    function inputE(e) {
+      if (e.key === 'e' || e.key === 'E' || e.key === '-') {
+        e.preventDefault();
+      }
+    }
+  </script>
 @endsection
