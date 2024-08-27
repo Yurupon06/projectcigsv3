@@ -69,6 +69,10 @@
         <a class="btn btn-outline-primary" href="{{ route('cashier.membercheckin') }}" role="button">Back</a>
     </div>
 
+    <!-- Success and error sounds -->
+    <audio id="success-sound" src="../../assets/sound/success.mp3"></audio>
+    <audio id="error-sound" src="../../assets/sound/Error2.mp3"></audio>
+
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
     <script>
         let scanCompleted = false;
@@ -86,9 +90,10 @@
                         const errorMessage = document.getElementById('error-message');
                         errorMessage.textContent = data.error;
                         errorMessage.style.display = 'block';
-                        scanCompleted = false; // Allow re-scanning if an error occurs
+                        scanCompleted = false; 
 
-                        // Hide the error message after 3 seconds
+                        document.getElementById('error-sound').play();
+
                         setTimeout(() => {
                             errorMessage.style.display = 'none';
                         }, 3000);
@@ -104,7 +109,9 @@
                         countdown.style.display = 'block';
                         errorMessage.style.display = 'none';
 
-                        let countdownValue = 3;
+                        document.getElementById('success-sound').play();
+
+                        let countdownValue = 5;
 
                         const interval = setInterval(() => {
                             countdown.textContent = `Refreshing in ${countdownValue} seconds...`;
@@ -137,8 +144,9 @@
                                 const errorMessage = document.getElementById('error-message');
                                 errorMessage.textContent = result.message;
                                 errorMessage.style.display = 'block';
+
+                                document.getElementById('error-sound').play();
                                 
-                                // Hide the error message after 3 seconds
                                 setTimeout(() => {
                                     errorMessage.style.display = 'none';
                                 }, 3000);
@@ -156,21 +164,19 @@
                 .catch(error => {
                     console.error('Error fetching member details:', error);
                     const errorMessage = document.getElementById('error-message');
-                    errorMessage.textContent = 'An error occurred while processing your request. Please try again.';
+                    errorMessage.textContent = 'Invalid Qr.';
                     errorMessage.style.display = 'block';
-                    scanCompleted = false; // Allow re-scanning if an error occurs
 
-                    // Hide the error message after 3 seconds
+                    document.getElementById('error-sound').play();
+
+                    scanCompleted = false;
+
                     setTimeout(() => {
                         errorMessage.style.display = 'none';
                     }, 3000);
                 });
         }
 
-
-
-
-    
         html5QrcodeScanner.start(
             { facingMode: "environment" },
             {

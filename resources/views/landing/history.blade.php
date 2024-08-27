@@ -27,7 +27,7 @@
                         <td>{{ $dt->member->customer->phone }}</td>
                         <td>{!! QrCode::size(50)->generate($dt->qr_token) !!} ({{ $dt->qr_token}})</td>
                         <td>{{ $dt->image }}</td>
-                        <td style="color: rgb(0, 223, 0)">{{ $dt->created_at->setTimezone('Asia/Jakarta') }}</td>
+                        <td style="color: rgb(0, 223, 0)">{{ $dt->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y, H:i')  }}</td>
                     </tr>
                 @endforeach
             </tbody>

@@ -165,8 +165,7 @@
         <div class="group">
             <div class="overlap-group">
                 <img class="logo-gym" src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
-                
-                <!-- Bagian informasi member -->
+            
                 <div class="text-wrapper" style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
                     {{ $member->status }}
                 </div>
@@ -176,27 +175,28 @@
                         {{ Str::limit($member->customer->user->name, 9, '...') }}
                     </span>
                 </div>
-                
+            
                 <div class="text-wrapper-3">MEMBER ID : GYM.{{ $member->id }}</div>
-                
-                @if ($member->status === 'inactive')
-                
-                @else
-                <div class="text-wrapper-4">
-                    EXPIRED : <span style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
-                    {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d/M/Y') }}
-                    </span>
-                </div>
-                <div class="text-wrapper-5">
-                    Visit Left : <span style="color: {{ $member->status === 'active' ? 'white' : ($member->status === 'expired' ? 'red' : 'green') }}">
-                        {{$member->visit}}
-                    </span>
-                </div>
+            
+                @if ($member->status !== 'inactive')
+                    <div class="text-wrapper-4">
+                        EXPIRED : <span style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
+                        {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d/M/Y') }}
+                        </span>
+                    </div>
+                    <div class="text-wrapper-5">
+                        Visit Left : <span style="color: {{ $member->status === 'active' ? 'white' : ($member->status === 'expired' ? 'red' : 'green') }}">
+                            {{ $member->visit }}
+                            @if ($member->visit == 0)
+                                <span>visit habis</span>
+                            @endif
+                        </span>
+                    </div>
                 @endif
             </div>
+            
         </div>
         
-        <!-- Tombol GET IN -->
         @if ($member->status == 'active')
             <div class="overlap-wrapper">
                 <button type="button" class="overlap-btn" data-bs-toggle="modal" data-bs-target="#qrModal">
@@ -225,7 +225,7 @@
 
 <!-- Modal -->
 <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered"> <!-- Tambahkan 'modal-dialog-centered' -->
+    <div class="modal-dialog modal-dialog-centered"> 
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="qrModalLabel">Your QR Code</h5>
