@@ -75,7 +75,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/membercheckin', [CashierController::class, 'membercheckin'])->name('cashier.membercheckin');
             Route::view('/qrcheckin', 'cashier.qrcheckin')->name('qrcheckin.cashier');
             Route::get('/qrcheckin/{qr_token}', [MemberCheckinController::class, 'qrcheckin'])->name('cashier.qrcheckin');
-            Route::get('/checkin-scanner', [App\Http\Controllers\CashierController::class, 'showCheckIn'])->name('cashier.checkin');
+            Route::get('/checkin-scanner', [CashierController::class, 'qrscanner'])->name('cashier.checkin');
             Route::get('/order', [CashierController::class, 'order'])->name('cashier.order');
             Route::get('/profill', [CashierController::class, 'profile'])->name('cashier.profill');
             Route::post('/profile', [CashierController::class, 'profileUpdate'])->name('update.profile.cashier');

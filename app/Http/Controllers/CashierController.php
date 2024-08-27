@@ -352,7 +352,7 @@ public function storeCustomer(Request $request)
         ]);
     }
 
-    public function showCheckIn()
+    public function qrscanner()
     {
         return view('cashier.checkinscanner');
     }
