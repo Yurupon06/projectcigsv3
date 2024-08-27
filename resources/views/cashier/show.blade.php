@@ -104,7 +104,7 @@
                                             <div class="change-display" id="change-display">
                                                 Change: <span id="change-amount">Rp 0</span>
                                             </div>
-                                            <button type="submit" name="action" value="cancel" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this Order ?')">Cancel Order</button>
+                                            <a href="{{route('cashier.index')}}" type="button" name="action" value="cancel" class="btn btn-danger" >Cancel Order</a>
                                             <button type="submit" name="action" value="process" class="btn btn-success">Process Payment</button>
                                         </form>
                                     </td>
