@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', 'Home')
+@section('title', 'History')
 @section('main')
     @include('landing.header')
   
