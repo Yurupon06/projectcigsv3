@@ -65,6 +65,8 @@ Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier/membercheckin', [\App\Http\Controllers\CashierController::class, 'membercheckin'])->name('cashier.membercheckin');
     Route::get('/cashier/qrcheckin', function () {return view('cashier.qrcheckin');})->name('qrcheckin.cashier');
     Route::get('/cashier/qrcheckin/{qr_token}', [\App\Http\Controllers\MemberCheckinController::class, 'qrcheckin'])->name('cashier.qrcheckin');
+    Route::post('/cashier/qr-checkin', [MemberCheckinController::class, 'scanQR'])->name('cashier.qrcheckin');
+
 
     Route::get('/struk-gym/{id}', [\App\Http\Controllers\CashierController::class, 'showStruk'])->name('struk_gym');
 

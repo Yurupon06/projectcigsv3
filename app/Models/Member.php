@@ -26,5 +26,10 @@ class Member extends Model
     {
         return $this->belongsTo(Product_categorie::class, 'product_category_id');
     }
+
+    public function checkins()
+    {
+        return $this->hasMany(MemberCheckin::class, 'member_id');
+    }
 }
 

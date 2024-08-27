@@ -18,11 +18,11 @@ class MemberCheckinController extends Controller
      */
         public function index()
         {
-            $membercheckin = MemberCheckin::with('member')->get();
+            $membercheckin = MemberCheckin::with('members')->get();
             return view('cashier.membercheckin', compact('membercheckin'));
         }
         
-        public function member()
+        public function members()
         {
             return $this->belongsTo(Member::class, 'member_id');
         }
