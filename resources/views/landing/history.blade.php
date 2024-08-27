@@ -1,10 +1,13 @@
 @extends('landing.master')
-
-@section('title', 'History')
-
+@section('title', 'Home')
 @section('main')
     @include('landing.header')
-
+  
+<style>
+    .text-xxs {
+        font-size: 11px; /* atau ukuran lain yang diinginkan */
+    }
+</style>
     <div class="card-body px-0 pt-0 pb-2">
         <div class="table-responsive p-0">
             <table class="table align-items-center mb-0">
@@ -38,9 +41,3 @@
         </div>
     </div>
 @endsection
-
-<style>
-    .text-xxs {
-        font-size: 11px; /* atau ukuran lain yang diinginkan */
-    }
-</style>

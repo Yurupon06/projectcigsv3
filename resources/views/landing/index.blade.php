@@ -1,6 +1,7 @@
 @extends('landing.master')
 @section('title', 'Home')
-@include('landing.header')
+@section('main')
+    @include('landing.header')
 
 <style>
     .boxed-btn3 {
@@ -29,12 +30,13 @@
     .wrap-slick1 {
         width: 100%;
     }
-    .slick1 .item-slick1 {
+    ..slick1 .item-slick1 {
         background-size: cover;
         background-position: center;
         width: 100%;
-        height: 300px; /* Adjust height for better view */
+        height: 500px; /* Ubah sesuai kebutuhan */
     }
+
 
     /* Responsive adjustments for product cards */
     .card {
@@ -133,5 +135,5 @@
             <i class="zmdi zmdi-chevron-up"></i>
         </span>
     </div>
-</body>
+@endsection
 

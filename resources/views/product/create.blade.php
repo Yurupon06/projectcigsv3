@@ -23,7 +23,7 @@
                       @csrf
                         <div class="mb-2 ms-3 me-3">
                             <label for="product_category_id" class="form-label">category</label>
-                            <select id="product_category_id" name="product_category_id" class="ps-2 form-select" aria-label="Default select example">
+                            <select id="product_category_id" name="product_category_id" class="ps-2 form-select @error('product_category_id') is-invalid @enderror" aria-label="Default select example">
                                 <option selected disabled>Select category</option>
                                 @foreach ($productcat as $dt)
                                     <option value="{{ $dt->id }}">{{ $dt->category_name }}</option>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="mb-3 ms-3 me-3">
                             <label for="description" class="form-label">description</label>
-                            <textarea class="ps-2 form-control border border-secondary-subtle" name="description" id="description" placeholder="Description"></textarea>
+                            <textarea class="ps-2 form-control border border-secondary-subtle @error('description') is-invalid @enderror" name="description" id="description" placeholder="Description"></textarea>
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
