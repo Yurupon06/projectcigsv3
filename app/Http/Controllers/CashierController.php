@@ -394,4 +394,9 @@ public function storeCustomer(Request $request)
             'new_qr_token' => $newQrToken
         ]);
     } 
+
+    public function showCheckIn()
+    {
+        return view('cashier.checkinscanner');  
+    }
 }
