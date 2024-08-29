@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\Auth;
 
 class LandingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $products = Product::with('productcat')->get();
@@ -85,7 +82,6 @@ class LandingController extends Controller
         return redirect()->route('landing.profile')->with('success', 'Password updated successfully.');
     }
 
-
     public function order()
     {
         $user = Auth::user();
@@ -132,9 +128,6 @@ class LandingController extends Controller
         $order->update(['status' => 'canceled']);
         return redirect()->route('yourorder.index')->with('success', 'Successfully Cancel The Order.');
     }
-
-
-
 
     public function checkout($id)
     {
@@ -190,8 +183,5 @@ class LandingController extends Controller
     
         return view('landing.history', compact('memberckin', 'member'));
     }
-    
-
-    
 
 }

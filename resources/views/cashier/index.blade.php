@@ -8,8 +8,6 @@
 @section('main')
     @include('cashier.main')
 
-
-
       <div class="container-fluid py-4">
         <div class="row">
           <div class="col-12">
@@ -17,7 +15,7 @@
               <div class="card-header pb-0">
                 <a href="{{route('scanner.cashier')}}">
                   <span class="badge badge-sm bg-gradient-primary mb-3 fs-6 ">
-                    <i class="material-icons opacity-10">qr_code_scanner</i>
+                    <i class="material-icons opacity-10">qr_code_scanner</i> Scanner QR Barcode
                   </span>
                 </a>
                 <h6>Cashier</h6>

@@ -28,10 +28,6 @@ Route::middleware((['auth', 'customer']))->group(function (){
     Route::get('/checkout/{id}', [\App\Http\Controllers\LandingController::class, 'checkout'])->name('checkout');
     Route::get('/membership/{id}', [\App\Http\Controllers\LandingController::class, 'membership'])->name('customer.membership');
     Route::get('/history', [\App\Http\Controllers\LandingController::class, 'history'])->name('landing.history');
-
-
-
-    
 });
 
 
@@ -51,8 +47,6 @@ Route::middleware((['auth', 'admin']))->group(function (){
     Route::resource('application-setting', \App\Http\Controllers\ApplicationSettingController::class);
 });
 Route::resource('payment', \App\Http\Controllers\PaymentController::class);
-
-
 
 Route::middleware((['auth', 'cashier']))->group(function (){
     Route::get('/cashier', [\App\Http\Controllers\CashierController::class, 'index'])->name('cashier.index');
