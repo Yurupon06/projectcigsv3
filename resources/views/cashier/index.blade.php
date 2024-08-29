@@ -15,9 +15,10 @@
           <div class="col-12">
             <div class="card my-4">
               <div class="card-header pb-0">
-                <a href="{{route('scanner.cashier')}}">
-                  <span class="badge badge-sm bg-gradient-primary mb-3 fs-6 ">
-                    <i class="material-icons opacity-10">qr_code_scanner</i>
+                <a href="{{ route('scanner.cashier') }}" class="d-flex align-items-center justify-content-left text-decoration-none text-white">
+                  <span class="badge badge-sm bg-gradient-primary mb-3 fs-6 d-flex align-items-center justify-content-center" style="width: 120px; height: 40px;">
+                    <i class="material-icons opacity-10" style="font-size: 20px; margin-right: 8px;">qr_code_scanner</i>
+                    <span style="font-size: 16px;">Scanner</span>
                   </span>
                 </a>
                 <h6>Cashier</h6>

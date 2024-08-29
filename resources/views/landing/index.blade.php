@@ -4,88 +4,148 @@
     @include('landing.header')
 
 <style>
-    .boxed-btn3 {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #842cff;
-        color: #fff;
-        border-radius: 5px;
-        text-decoration: none;
-        font-size: 14px; /* Ensure button text is readable */
-        transition: background-color 0.3s ease;
-    }
-    .boxed-btn3:hover {
-        background-color: #6f00b1; /* Darker shade on hover */
-    }
-
-    html {
-        scroll-behavior: smooth;
-    }
-
-    /* Ensure slider is full width and adjusts on mobile */
-    .section-slide {
-        width: 100%;
-        overflow: hidden;
-    }
-    .wrap-slick1 {
-        width: 100%;
-    }
-    ..slick1 .item-slick1 {
-        background-size: cover;
-        background-position: center;
-        width: 100%;
-        height: 500px; /* Ubah sesuai kebutuhan */
-    }
-
-
-    /* Responsive adjustments for product cards */
     .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        margin-bottom: 20px;
-        transition: box-shadow 0.3s ease;
+        border: none; /* Remove border */
+        border-radius: 12px; /* More rounded corners */
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Soft shadow */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .card:hover {
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        transform: translateY(-5px); /* Slight lift on hover */
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* More pronounced shadow */
     }
-    .card-header, .card-body, .card-footer {
-        padding: 15px;
+
+    /* Card Header */
+    .card-header {
+        background-color: #ffffff;
+        padding: 20px; 
     }
     .card-header h3 {
-        font-size: 18px;
+        font-size: 20px;
+        margin-bottom: 0;
     }
+    .card-header span {
+        font-size: 16px; /* Consistent font size */
+        color: #6c757d; /* Muted text color */
+    }
+
+    /* Card Footer */
     .card-footer {
-        text-align: center;
+        background-color: #ffffff; /* White background */
+        padding: 15px;
+        border-top: 1px solid #f1f1f1; /* Subtle divider */
+    }
+
+    /* Button Style */
+    .boxed-btn3 {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #FFA500;
+        color: #000;
+        border-radius: 30px; 
+        text-decoration: none;
+        font-size: 16px; 
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    .boxed-btn3:hover {
+        background-color: #000;
+        color: #fff;
+        transform: scale(1.05);
+    }
+
+    .item-slick1 {
+        position: relative;
+        height: 450px;
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .text-overlay {
+        position: absolute;
+        top: 80%;
+        left: 50%;
+        transform: translate(-60%, -50%);
+        text-align: justify;
+        color: #fff;
+        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.1); /* Background transparan di belakang teks */
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+    }
+    .text-overlay h1 {
+        font-size: 48px; /* Ukuran font untuk judul */
+        font-weight: bold;
+        margin-bottom: 15px;
+        letter-spacing: 1px;
+        line-height: 1.2;
+        animation: fadeInDown 1s ease-in-out;
+    }
+
+    .text-overlay p {
+        font-size: 20px; /* Ukuran font untuk paragraf */
+        margin-bottom: 20px;
+        animation: fadeInUp 1s ease-in-out;
+    }
+
+    /* Animasi */
+    @keyframes fadeInDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
     }
 
     @media (max-width: 768px) {
-        .card-header h3 {
-            font-size: 16px; 
-        }
-        .card-body ul {
-            font-size: 14px; 
-        }
-        .boxed-btn3 {
-            padding: 10px 15px; 
-            font-size: 12px; 
-        }
+    .item-slick1 {
+        height: 300px;
     }
 
-    @media (max-width: 576px) {
-        .card {
-            width: 100%; 
-            margin-bottom: 20px;
-        }
-        .card-header h3 {
-            font-size: 14px; 
-        }
-        .card-body ul {
-            font-size: 12px; 
-        }
-        .boxed-btn3 {
-            padding: 12px 10px; 
-        }
+    .text-overlay {
+        text-align: left;
+        width: 90%;
+        padding: 30px;
     }
+
+    .text-overlay h1 {
+        font-size: 40px; 
+    }
+
+    .text-overlay p {
+        font-size: 16px; /* Ukuran font paragraf lebih kecil */
+        margin-bottom: 15px; /* Mengurangi margin bawah */
+    }
+}
+
 </style>
 
 	<div class="animsition">
@@ -94,6 +154,10 @@
         <div class="wrap-slick1 rs1-slick1">
             <div class="slick1">
                 <div class="item-slick1" style="background-image: url(../../assets/images/banner/banner.png);">
+                    <div class="text-overlay">
+                        <h1>Transform Your Body, Elevate Your Life</h1>
+                        <p>Your Journey to a Stronger You Starts Here</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -107,7 +171,7 @@
                 <div class="card text-center mx-auto">
                     <div class="card-header">
                         <h3>{{$dt->product_name}}</h3>
-                        <span>Rp.{{$dt->price}}</span>
+                        <span class="text-black">Rp.{{$dt->price}}</span>
                     </div>
                     <div class="card-body">
                         <ul>
