@@ -2,6 +2,9 @@
 
 @section('page-title', 'Profile Cashier')
 @section('title', 'Profile Cashier')
+@section('sidebar')
+    @include('cashier.sidebar')
+@endsection
 @section('main')
     @include('cashier.main')
 
