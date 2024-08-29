@@ -8,7 +8,7 @@
     }
 
     .bg-gradient-primary {
-        background: linear-gradient(45deg, #ff4b2b, #ff1c1c);
+        background: linear-gradient(45deg, #2bf8ff, #1c60ff);
     }
 
     .bg-gradient-success {

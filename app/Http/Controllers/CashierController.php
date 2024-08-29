@@ -336,7 +336,7 @@ class CashierController extends Controller
         ]);
     }
 
-    public function showCheckIn()
+    public function qrscanner()
     {
         return view('cashier.checkinscanner');
     }
