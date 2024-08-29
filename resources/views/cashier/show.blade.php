@@ -99,12 +99,12 @@
                                             @csrf
                                             <div class="amount-input">
                                                 <label for="amount_given">Amount Given:</label>
-                                                <input type="number" name="amount_given" id="amount_given" min="0" step="0.01" oninput="calculateChange()">
+                                                <input type="number" name="amount_given" id="amount_given" min="0" step="0.01" oninput="calculateChange()" onkeydown="inputE(event)">
                                             </div>
                                             <div class="change-display" id="change-display">
                                                 Change: <span id="change-amount">Rp 0</span>
                                             </div>
-                                            <button type="submit" name="action" value="cancel" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this Order ?')">Cancel Order</button>
+                                            <a href="{{route('cashier.index')}}" type="button" name="action" value="cancel" class="btn btn-danger" >Cancel Order</a>
                                             <button type="submit" name="action" value="process" class="btn btn-success">Process Payment</button>
                                         </form>
                                     </td>
@@ -157,4 +157,12 @@
             document.getElementById('change-amount').textContent = 'Rp ' + change.toLocaleString('id-ID');
         }
     </script>
+
+<script>
+    function inputE(e) {
+      if (e.key === 'e' || e.key === 'E' || e.key === '-') {
+        e.preventDefault();
+      }
+    }
+  </script>
 @endsection

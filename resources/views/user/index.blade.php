@@ -53,7 +53,7 @@
                           </td>
                         
                           <td class="align-middle text-center text-sm">
-                            <a href="{{ route('user.edit', $dt->id) }}"><span class="badge badge-sm bg-gradient-success">edit</span></a>
+                            <a href="{{ route('user.edit', $dt->id) }}"><span class="btn btn-sm bg-gradient-success">edit</span></a>
                           </td>
                         
                           

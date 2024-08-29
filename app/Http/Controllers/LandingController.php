@@ -86,8 +86,8 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-        $orders = $customer ? Order::where('customer_id', $customer->id)->get() : collect([]);
-
+        $orders = $customer ? Order::where('customer_id', $customer->id)->orderBy('created_at', 'desc')->get() : collect([]);
+    
         return view('landing.order', compact('orders', 'customer', 'member'));
     }
 
@@ -170,9 +170,9 @@ class LandingController extends Controller
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
 
         if ($member) {
-            $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->get();
+            $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->orderBy('created_at', 'desc')->get();
         } else {
-            $memberckin = collect(); // empty collection if no member is found
+            $memberckin = collect();
         }
 
         return view('landing.history', compact('memberckin', 'member'));

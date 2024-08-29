@@ -268,7 +268,7 @@
                 labels: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
                 datasets: [{
                     label: 'Website Views',
-                    data: [50, 20, 10, 22, 50, 10, 40],
+                    data: [50, 40, 35, 30, 20, 15, 10],
                     backgroundColor: 'rgb(36, 111, 154)'
                 }]
             },
@@ -288,7 +288,7 @@
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                 datasets: [{
                     label: 'Daily Sales',
-                    data: [65, 59, 80, 81, 56, 55, 40],
+                    data: [100, 80, 50, 40, 30, 20, 10],
                     backgroundColor: 'rgba(40, 167, 69, 0.7)',
                     borderColor: 'rgba(40, 167, 69, 1)',
                     borderWidth: 1,
@@ -311,7 +311,7 @@
                 labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
                 datasets: [{
                     label: 'Completed Tasks',
-                    data: [20, 60, 50, 80, 90, 70, 50],
+                    data: [10, 20, 30, 50, 70, 80, 100],
                     backgroundColor: 'rgba(255, 145, 10, 0.4)',
                     borderColor: 'rgba(255, 99, 71, 0.6)',
                     borderWidth: 1,

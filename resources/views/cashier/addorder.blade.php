@@ -20,7 +20,7 @@
             <div class="card mb-4">
                 <div class="card-header pb-0">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
-                        <span class="badge badge-sm bg-gradient-primary mb-3 fs-6">
+                        <span class="btn btn-sm bg-gradient-primary mb-3 fs-6">
                           <i class="material-icons opacity-10">person_add</i>
                         </span>
                     </a>
@@ -37,7 +37,7 @@
                                         <option selected disabled>Select Name</option>
                                         @foreach($customer as $dt)
                                             <option value="{{ $dt->id }}" {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
-                                                {{ $dt->user->name }}
+                                                {{ $dt->user->name }} ( {{$dt->phone}} )
                                             </option>
                                         @endforeach
                                     </select>
@@ -47,9 +47,9 @@
                                     <select id="product_id" name="product_id" class="ps-2 form-select" aria-label="Select Product">
                                         <option selected disabled>Select Product</option>
                                         @foreach($product as $dt)
-                                            <option value="{{ $dt->id }}" data-description="{{ $dt->description }}" data-price="{{ $dt->price }}">
-                                                {{ $dt->product_name }}
-                                            </option>
+                                        <option value="{{ $dt->id }}" data-description="{{ $dt->description }}" data-price="{{ $dt->price }}" data-visit="{{$dt->productcat->visit}}">
+                                            {{ $dt->product_name }}
+                                        </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -63,6 +63,11 @@
                                     <label for="price" class="form-label">Product Price</label>
                                     <input type="text" id="price" name="price" class="ps-2 form-control" readonly>
                                 </div>
+                                <div class="mb-3 ms-3 me-3">
+                                    <label for="visit" class="form-label">Product visit</label>
+                                    <input type="text" id="visit" name="visit" class="ps-2 form-control" readonly>
+                                </div>
+                                
                                 <div class="ms-3 me-3 text-end">
                                     <a href="" type="button" class="btn bg-gradient-primary ws-15 my-4 mb-2">Cancel</a>
                                     <button type="submit" class="btn bg-gradient-success ws-15 my-4 mb-2">Make Order</button>
@@ -113,9 +118,11 @@
         var selectedOption = this.options[this.selectedIndex];
         var description = selectedOption.getAttribute('data-description');
         var price = selectedOption.getAttribute('data-price');
+        var visit = selectedOption.getAttribute('data-visit');
 
         document.getElementById('description').value = description;
         document.getElementById('price').value = price;
+        document.getElementById('visit').value = visit;
     });
 </script>
 

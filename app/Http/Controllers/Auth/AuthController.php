@@ -43,7 +43,7 @@ class AuthController extends Controller
 
         Customer::create([
             'user_id' => $user->id,
-            'phone' => $user->phone,  // Ambil nomor telepon dari user
+            'phone' => $user->phone,  
         ]);
 
         return redirect()->route('login');

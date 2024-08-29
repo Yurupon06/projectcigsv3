@@ -51,11 +51,11 @@
                           </td>
                         
                           <td class="align-middle text-center text-sm">
-                            <a href="{{ route('customer.edit', $dt->id) }}"><span class="badge badge-sm bg-gradient-success">edit</span></a>
+                            <a href="{{ route('customer.edit', $dt->id) }}"><span class="btn btn-sm bg-gradient-success">edit</span></a>
                             <form action="{{ route('customer.destroy', $dt->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="badge badge-sm bg-gradient-danger" onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
+                                <button type="submit" class="btn btn-sm bg-gradient-danger" onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
                             </form>
                           </td>
                         

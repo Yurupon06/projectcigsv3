@@ -65,6 +65,16 @@
 @yield('main')
 {{-- endMainBody --}}
 
+<!--===============================================================================================-->	
+<script src="../../assets/vendor/jquery/jquery-3.2.1.min.js"></script>
+<!--===============================================================================================-->
+	<script src="../../assets/vendor/animsition/js/animsition.min.js"></script>
+<!--===============================================================================================-->
+	<script src="../../assets/vendor/bootstrap/js/popper.js"></script>
+	<script src="../../assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+<!--===============================================================================================-->
+
+
 
   <!--   Core JS Files   -->
   <script src="../../assets/js/core/popper.min.js"></script>

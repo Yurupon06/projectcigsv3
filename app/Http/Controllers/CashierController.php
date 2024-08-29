@@ -21,7 +21,7 @@ class CashierController extends Controller
 {
     public function index()
     {
-        $order = order::with('customer', 'product')->get();
+        $order = order::with('customer', 'product')->orderBy('created_at', 'desc')->get();
         return view('cashier.index', compact('order'));
     }
 
@@ -44,7 +44,7 @@ class CashierController extends Controller
 
     public function payment()
     {
-        $payment = Payment::with('order')->get();
+        $payment = Payment::with('order')->orderBy('created_at', 'desc')->get();
         return view('cashier.payment', compact('payment'));
     }
 
@@ -197,8 +197,9 @@ class CashierController extends Controller
         $customer = Customer::whereHas('user', function ($role) {
             $role->where('role', 'customer');
         })->with('user')->get();
-
-        $product = Product::all();
+    
+        $product = Product::with('productcat')->get();
+    
         $usersWithoutCustomer = User::whereDoesntHave('customer')->where('role', 'customer')->get();
 
         return view('cashier.addorder', compact('customer', 'product', 'usersWithoutCustomer'));
@@ -306,13 +307,9 @@ class CashierController extends Controller
         return redirect()->route('cashier.order');
     }
 
-    public function showCheckIn()
-    {
-        return view('cashier.checkinscanner');
-    }
     public function membercheckin()
     {
-        $memberckin = MemberCheckin::with('member.customer')->get();
+        $memberckin = MemberCheckin::with('member.customer')->orderBy('created_at', 'desc')->get();
         return view('cashier.membercheckin', compact('memberckin'));
     }
 
@@ -337,6 +334,11 @@ class CashierController extends Controller
             'phone' => $member->customer->phone,
             'expired_date' => Carbon::parse($member->end_date)->format('d/M/Y'),
         ]);
+    }
+
+    public function showCheckIn()
+    {
+        return view('cashier.checkinscanner');
     }
 
     public function storeCheckin(Request $request)
@@ -378,5 +380,4 @@ class CashierController extends Controller
             'message' => 'Check-in recorded successfully',
             'new_qr_token' => $newQrToken
         ]);
-    }
 }

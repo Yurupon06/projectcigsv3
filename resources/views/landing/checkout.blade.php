@@ -141,7 +141,15 @@
             </div>
         </div>
 
-        <!-- QR Code and Total Section -->
+        <div class="col-12 mb-4">
+            @if ($order->status === 'unpaid')
+                <div class="alert alert-warning">
+                    Complete your payment.
+                    <br>
+                </div>
+            @endif
+        </div>
+
         <div class="col-12 mb-4">
             @if ($order->status === 'unpaid')
                 <div class="qr-code-container">
