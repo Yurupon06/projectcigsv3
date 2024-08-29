@@ -16,9 +16,6 @@ use Illuminate\Support\Facades\Auth;
 
 class LandingController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $products = Product::with('productcat')->get();
@@ -27,7 +24,6 @@ class LandingController extends Controller
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         return view('landing.index', compact('products', 'user', 'customer', 'member'));
     }
-    
 
     public function profile()
     {
@@ -85,14 +81,13 @@ class LandingController extends Controller
         return redirect()->route('landing.profile')->with('success', 'Password updated successfully.');
     }
 
-
     public function order()
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         $orders = $customer ? Order::where('customer_id', $customer->id)->get() : collect([]);
-    
+
         return view('landing.order', compact('orders', 'customer', 'member'));
     }
 
@@ -102,10 +97,6 @@ class LandingController extends Controller
             'product_id' => 'required|exists:products,id',
         ]);
         $qrToken = Str::random(10);
-
-        $user = Auth::user();
-        $customer = Customer::where('user_id', $user->id)->first();
-
 
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
@@ -133,19 +124,15 @@ class LandingController extends Controller
         return redirect()->route('yourorder.index')->with('success', 'Successfully Cancel The Order.');
     }
 
-
-
-
     public function checkout($id)
     {
         $order = Order::with('customer', 'product')->find($id);
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-    
+
         return view('landing.checkout', compact('order', 'member'));
     }
-
 
     public function beforeOrder(Request $request)
     {
@@ -156,8 +143,8 @@ class LandingController extends Controller
         if (!$customer || !$customer->phone || !$customer->born || !$customer->gender) {
             return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
         }
-    
-        return view('landing.beforeOrder', compact('product', 'user', 'customer', 'member' ));
+
+        return view('landing.beforeOrder', compact('product', 'user', 'customer', 'member'));
     }
 
     public function membership($id)
@@ -165,9 +152,9 @@ class LandingController extends Controller
         $currentDate = Carbon::now('Asia/Jakarta');
 
         Member::where('end_date', '<', $currentDate)
-            ->where('status', '<>', 'expired') 
+            ->where('status', '<>', 'expired')
             ->update(['status' => 'expired']);
-            
+
         Member::where('visit', 0)
             ->where('status', '<>', 'expired')
             ->update(['status' => 'expired']);
@@ -181,17 +168,13 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-        
+
         if ($member) {
             $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->get();
         } else {
             $memberckin = collect(); // empty collection if no member is found
         }
-    
+
         return view('landing.history', compact('memberckin', 'member'));
     }
-    
-
-    
-
 }
