@@ -68,7 +68,7 @@
     
     </style>
     
-    <div class="container">
+    <div class="container mt-8">
         <div class="navigation-links">
             <a href="{{ route('cashier.index') }}">Back</a>
         </div>

@@ -1,5 +1,4 @@
-
-@extends('dashboard.master')
+@extends('cashier.master')
 @section('title', 'Membership')
 @section('sidebar')
     @include('cashier.sidebar')
@@ -7,7 +6,7 @@
 @section('page-title', 'Membership')
 @section('page', 'Membership')
 @section('main')
-    @include('dashboard.main')
+    @include('cashier.main')
 
     <div class="container-fluid py-4">
         <div class="row">

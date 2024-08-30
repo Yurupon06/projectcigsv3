@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title', 'dashboard')
+@section('title', 'Dashboard')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection

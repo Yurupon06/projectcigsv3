@@ -118,40 +118,8 @@ Route::middleware((['auth', 'admin']))->group(function (){
 });
 Route::resource('payment', PaymentController::class);
 
-Route::middleware((['auth', 'cashier']))->group(function (){
-    Route::get('/cashier', [CashierController::class, 'index'])->name('cashier.index');
-    Route::get('/cashier/show', [CashierController::class, 'show'])->name('cashier.show');
-    Route::get('/cashier/profile', [CashierController::class, 'profile'])->name('cashier.profile');
-    Route::get('/cashier/scanner', function () {return view('cashier.scanner');})->name('scanner.cashier');
-    Route::get('/cashier/qrscan/{qr_token}', [CashierController::class, 'qrscan'])->name('cashier.qrscan');
-    Route::get('/cashier/payment', [CashierController::class, 'payment'])->name('cashier.payment');
-    Route::post('/payments/{order}', [CashierController::class, 'store'])->name('payments.store');
-    Route::get('/cashier/membercheckin', [CashierController::class, 'membercheckin'])->name('cashier.membercheckin');
-    Route::get('/cashier/qrcheckin', function () {return view('cashier.qrcheckin');})->name('qrcheckin.cashier');
-    Route::get('/cashier/qrcheckin/{qr_token}', [MemberCheckinController::class, 'qrcheckin'])->name('cashier.qrcheckin');
 
-    Route::get('/struk-gym/{id}', [CashierController::class, 'showStruk'])->name('struk_gym');
 
-    Route::post('/customer/store', [CashierController::class, 'storeCustomer'])->name('customer.store');
-
-    Route::get('/cashier/order', [CashierController::class, 'order'])->name('cashier.order');
-    Route::get('/membercash/membercashier', [CashierController::class, 'membercashier'])->name('membercashier.membercash');
-    Route::resource('members', MemberController::class);
-    Route::get('/cashier/profill', [CashierController::class, 'profile'])->name('cashier.profill');
-    Route::post('/cashier/profile', [CashierController::class, 'profileUpdate'])->name('update.profile.cashier');
-    Route::post('/cashier/profile/password', [CashierController::class, 'updatePassword'])->name('update.password.cashier');
-    Route::post('/cashier/makeorder', [CashierController::class, 'makeOrder'])->name('make.order');
-    Route::get('/cashier/receipt/{paymentId}', [CashierController::class, 'struk'])->name('cashier.receipt');
-    Route::get('/cashier/member/{id}', [CashierController::class, 'detailMember'])->name('cashier.member');
-    Route::post('/cashier/member/action/{id}', [CashierController::class, 'actionMember'])->name('action.member');
-    
-    Route::get('/cashier/checkin-scanner', [CashierController::class, 'showCheckIn'])->name('cashier.checkin');
-    Route::get('/member-details/{qr_token}', [CashierController::class, 'getMemberDetails']);
-    Route::post('/store-checkin', [CashierController::class, 'storeCheckIn']);
-
-    
-
-});
 
 Route::middleware('guest')->group(function (){
 

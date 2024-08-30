@@ -1,83 +1,72 @@
 @extends('dashboard.master')
-@section('title', 'productcategories')
+@section('title', 'Product Categories')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
-@section('page-title', 'productcategories')
-@section('page', 'productcategories')
+@section('page-title', 'Product Categories')
+@section('page', 'Product Categories')
 @section('main')
     @include('dashboard.main')
 
-      <div class="container-fluid py-4">
+    <div class="container-fluid py-4">
         <div class="row">
-          <div class="col-12">
-            <div class="card my-4">
-              <div class="card-header pb-0">
-                <a href="{{route('productcategories.create')}}"><span class="btn btn-sm bg-gradient-success mb-3 fs-6 ">add new item</span></a>
-                <h6>Product Categories</h6>
-            </div>
-
-                <div class="card-body px-0 pb-2">
-                  <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0" id="datatable">
-                      <thead>
-                        <tr>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">category name</th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">total visit</th>
-                          <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">cycle</th>
-                          <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                          @foreach ($productcat as $i => $dt)
-                              
-                          
-                        
-                        <tr>
-                          <td>
-                            <div class="d-flex px-2 py-1">
-                                {{ $i + 1 . " . " }}
-                            </div>
-                          </td>
-                          <td>{{ $dt->category_name }}</td>
-                          <td>
-                            {{$dt->visit}} visit
-                          </td>
-                          <td>
-                            {{$dt->cycle}} day
-                          </td>
-                          
-                        
-                          <td class="align-middle text-center text-sm">
-<<<<<<< HEAD
-                            <a href="{{ route('productcategories.edit', $dt->id) }}"><span class="btn btn-sm bg-gradient-success">edit</span></a>
-                            <form action="{{ route('productcategories.destroy', $dt->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm bg-gradient-danger" onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
-=======
-                            <a href="{{ route('productcategories.edit', $dt->id) }}"><span class="btn bg-gradient-success ws-15 my-4 mb-2 btn-sm">edit</span></a>
-                            <form action="{{ route('productcategories.destroy', $dt->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn bg-gradient-primary ws-15 my-4 mb-2 btn-sm" onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
->>>>>>> 3f1ebcbe8f0b41244807d3af2deadef49167a6ed
-                            </form>
-                          </td>
-                          
-                        
-                          
-                        </tr>
-                        @endforeach
-                      </tbody>
-                    </table>
-                  </div>
+            <div class="col-12">
+                <div class="card my-4">
+                    <div class="card-header pb-0">
+                        <a href="{{ route('productcategories.create') }}">
+                            <span class="btn btn-sm bg-gradient-primary mb-3 fs-6 ">add new item</span>
+                        </a>
+                        <h6>Product Categories</h6>
+                    </div>
+                    <div class="card-body px-0 pb-2">
+                        <div class="table-responsive p-0">
+                            <table class="table align-items-center mb-0" id="datatable">
+                                <thead>
+                                    <tr>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">category name</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">total visit</th>
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">cycle</th>
+                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-capitalize">
+                                    @foreach ($productcat as $i => $dt)
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    {{ $i + 1 . ' . ' }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {{ $dt->category_name }}
+                                            </td>
+                                            <td>
+                                                {{ $dt->visit }} visit
+                                            </td>
+                                            <td>
+                                                {{ $dt->cycle }} day
+                                            </td>
+                                            <td class="align-middle text-center text-sm">
+                                                <a href="{{ route('productcategories.edit', $dt->id) }}">
+                                                    <span class="btn btn-sm bg-gradient-success">edit</span>
+                                                </a>
+                                                <form action="{{ route('productcategories.destroy', $dt->id) }}"
+                                                    method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm bg-gradient-danger"
+                                                        onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-          </div>
         </div>
-      </div>
-      
-
+    </div>
 @endsection

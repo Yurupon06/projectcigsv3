@@ -143,6 +143,9 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        if (auth()->id() !== $order->customer->user_id) {
+            abort(404); 
+        }
 
         return view('landing.checkout', compact('order', 'member'));
     }
@@ -186,7 +189,6 @@ class LandingController extends Controller
         if ($member->customer_id !== $customer->id) {
             abort(403);
         }
-
         return view('landing.membership', compact('member'));
     }
     abort(403);
