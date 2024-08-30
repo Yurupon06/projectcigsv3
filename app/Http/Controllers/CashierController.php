@@ -380,4 +380,5 @@ class CashierController extends Controller
             'message' => 'Check-in recorded successfully',
             'new_qr_token' => $newQrToken
         ]);
+    }
 }
