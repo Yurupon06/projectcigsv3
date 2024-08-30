@@ -1,140 +1,97 @@
 <style>
     body {
         font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden; /* Mencegah scroll horizontal */
     }
 
-    .bg-gradient-dark {
+    .navbar-horizontal-bottom {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
         background: linear-gradient(45deg, #000000, #3c3c3c);
+        border-top: 1px solid #ffffff;
+        z-index: 1030; /* Menjaga navbar tetap di atas konten */
     }
 
-    .bg-gradient-primary {
-        background: linear-gradient(45deg, #ff4b2b, #ff1c1c);
+    .navbar-horizontal-bottom .navbar-nav {
+        display: flex;
+        justify-content: space-around;
+        padding: 0.5rem 1rem;
     }
 
-    .bg-gradient-success {
-        background: linear-gradient(45deg, #28a745, #218838);
-    }
-
-    .bg-gradient-info {
-        background: linear-gradient(45deg, #17a2b8, #117a8b);
-    }
-
-    .text-white {
-        color: #ffffff !important;
-    }
-
-    .nav-link.active {
-        background-color: #ff4b2b;
-        border-radius: 0.375rem;
-    }
-
-    .sidenav .nav-link {
-        border-radius: 0.375rem;
-        padding: 1rem;
-        font-family: 'Poppins', sans-serif; 
-        font-weight: 400; 
-    }
-
-    .sidenav-header {
-        padding: 1rem;
-        font-family: 'Poppins', sans-serif; 
-        font-weight: 600; 
-    }
-
-    .sidenav .nav-item .nav-link {
+    .navbar-horizontal-bottom .nav-link {
         color: #ffffff;
         font-weight: 400;
-    }
-
-    .sidenav .nav-item .nav-link:hover {
-        background-color: #ff6f00; 
         border-radius: 0.375rem;
+        padding: 0.5rem 1rem;
     }
 
-    .sidenav .nav-link .material-icons {
+    .navbar-horizontal-bottom .nav-link.active {
+        background-color: #ff6f00;
+        margin: 0 0.5rem;
+    }
+
+    .navbar-horizontal-bottom .nav-link:hover {
+        background-color: #ff4b2b;
+    }
+
+    .navbar-horizontal-bottom .nav-link .material-icons {
         font-size: 1.5rem;
+        vertical-align: middle;
     }
 
-    .sidenav .nav-link-text {
+    .navbar-horizontal-bottom .nav-link-text {
         margin-left: 0.5rem;
-        font-family: 'Poppins', sans-serif;
     }
-
-    .horizontal.light {
-        border-color: #ffffff;
-    }
-
-    .icon {
-            font-size: 2rem;
-            color: #ffffff;
-            border-radius: 50%;
-            padding: 0.5rem;
-            margin-top: -1.5rem;
-        }
 </style>
 
+<main class="main-content position-relative max-height-vh-100 h-100">
+    <!-- Content -->
+    <!-- Your content here -->
 
-
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-dark" id="sidenav-main">
-    <div class="sidenav-header">
-      <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href="">
-        <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" height="80px" width="40px">
-        <span class="ms-1 font-weight-bold text-white">CASHIER</span>
-      </a>
-    </div>
-    <hr class="horizontal light mt-0 mb-2">
-    <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
-      <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link text-white {{ request()->is('cashier') ? 'active' : '' }}" href="{{route('cashier.index')}}">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">store</i>
-            </div>
-            <span class="nav-link-text ms-1">Cashier</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white {{ request()->is('cashier/order') ? 'active' : '' }}" href="{{ route('cashier.order') }}">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">add_shopping_cart</i>
-            </div>
-            <span class="nav-link-text ms-1">Add Order</span>
-          </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-white {{ request()->is('cashier/payment') ? 'active' : '' }}" href="{{ route('cashier.payment') }}">
-              <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-                <i class="material-icons opacity-10">payments</i>
-              </div>
-              <span class="nav-link-text ms-1">Payment</span>
-            </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white {{ request()->is('membercash/membercashier') ? 'active' : '' }}" href="{{ route('membercashier.membercash') }}">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">groups</i>
-            </div>
-            <span class="nav-link-text ms-1">Member</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white {{ request()->is('cashier/membercheckin') ? 'active' : '' }}" href="{{ route('cashier.membercheckin') }}">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">cyclone</i>
-            </div>
-            <span class="nav-link-text ms-1">Member Check In</span>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white {{ request()->is('checkin') ? 'active' : '' }}" href="{{route('cashier.checkin')}}">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">qr_code_scanner</i>
-            </div>
-            <span class="nav-link-text ms-1">Check In Scanner</span>
-          </a>
-        </li>
-        
-      </ul>
-    </div>
-  </aside>
+    <!-- Horizontal Navbar -->
+    <nav class="navbar navbar-horizontal-bottom">
+        <ul class="navbar-nav d-flex flex-row">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('cashier') ? 'active' : '' }}" href="{{ route('cashier.index') }}">
+                    <i class="material-icons">store</i>
+                    <span class="nav-link-text ms-1">Cashier</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('cashier/order') ? 'active' : '' }}" href="{{ route('cashier.order') }}">
+                    <i class="material-icons">add_shopping_cart</i>
+                    <span class="nav-link-text ms-1">Add Order</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('cashier/payment') ? 'active' : '' }}" href="{{ route('cashier.payment') }}">
+                    <i class="material-icons">payments</i>
+                    <span class="nav-link-text ms-1">Payment</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('membercash/membercashier') ? 'active' : '' }}" href="{{ route('membercashier.membercash') }}">
+                    <i class="material-icons">groups</i>
+                    <span class="nav-link-text ms-1">Member</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('cashier/membercheckin') ? 'active' : '' }}" href="{{ route('cashier.membercheckin') }}">
+                    <i class="material-icons">cyclone</i>
+                    <span class="nav-link-text ms-1">Member Check In</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('checkin') ? 'active' : '' }}" href="{{ route('cashier.checkin') }}">
+                    <i class="material-icons">qr_code_scanner</i>
+                    <span class="nav-link-text ms-1">Check In Scanner</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <!-- End Horizontal Navbar -->
+</main>

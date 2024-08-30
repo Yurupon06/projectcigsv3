@@ -1,9 +1,30 @@
-<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+<main class="main-content position-relative max-height-vh-100 h-100 ">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+    .navbar-main {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        z-index: 1030;
+    }
+    .navbar-main .container-fluid {
+        max-width: 100%;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+</style>
     <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
+    <nav class="navbar navbar-main navbar-expand-lg px-0shadow-none" id="navbarBlur" data-scroll="true" style="background-color: #080808">
+    <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" width="50px" height="50px" class="ms-4">
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
-          <h6 class="font-weight-bolder mb-0">@yield('page-title')</h6>
+          <h6 class="font-weight-bolder mb-0 text-white">@yield('page-title')</h6>
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -12,7 +33,7 @@
           
             @auth
             <li class="nav-item d-flex align-items-center">
-              <a href="{{route('cashier.profill')}}" class="nav-link text-body font-weight-bold px-0">
+              <a href="{{route('cashier.profill')}}" class="nav-link text-white font-weight-bold px-0">
                 <span>
                   {{ Auth::user()->role }} - {{ Auth::user()->name }}  
                 </span>
@@ -22,7 +43,7 @@
                   }
                 </style>
               </a>
-              <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link text-body font-weight-bold px-0 ms-4">
+              <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="nav-link text-white font-weight-bold px-0 ms-4">
                 <i class="fa fa-sign-out me-1"></i>
                 <span class="d-sm-inline d-none">Sign Out</span>
                 <style>

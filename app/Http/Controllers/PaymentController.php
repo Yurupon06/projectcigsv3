@@ -7,9 +7,12 @@ use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-    public function index()
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
     {
         $payment = Payment::with('order')->get();
-        return view('payment.index', compact('payment'));
+        return view('payment.index', compact('payments'));
     }
 }
