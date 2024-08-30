@@ -1,12 +1,27 @@
 @extends('landing.master')
 @section('title', 'Before Order')
 @include('landing.header')
-
-<div class="container">
+<style>
+    .pointer {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #DC5F00;
+        color: #fff;
+        border-radius: 30px; 
+        text-decoration: none;
+        font-size: 16px; 
+        font-weight: bold;
+    }
+    .pointer:hover {
+        background-color: #DC5F00;
+        transform: scale(1.05);
+    }
+</style>
+<div class="container mt-4">
     <div class="row">
         <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-            <div class="m-l-25 m-r--38 m-lr-0-xl">
-                <div class="wrap-table-shopping-cart">
+            <div class="m-l-25 m-r--38 m-lr-0-xl shadow " style="border-radius: 20px">
+                <div class="wrap-table-shopping-cart" style="border-radius: 20px">
                     <table class="table align-items-center mb-0">
                         <tr>
                             <th>Name</th>
@@ -36,8 +51,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
-            <div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
+        <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50" style="border-radius: 20px">
+            <div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm shadow" style="border-radius: 20px">
                 <form id="checkoutForm" action="{{ route('yourorder.update') }}" method="POST">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product['product_id'] }}">
@@ -80,7 +95,7 @@
                     </div>
 
 
-                    <button type="submit" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+                    <button type="submit" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 p-lr-15 trans-04 pointer">
                         Proceed to Checkout
                     </button>
                     <br>

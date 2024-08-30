@@ -1,4 +1,4 @@
-@extends('dashboard.master')
+@extends('cashier.master')
 @section('title', 'Membership Details')
 @section('sidebar')
     @include('cashier.sidebar')
@@ -54,7 +54,7 @@
 
 
 
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-4 mt-5">
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">
