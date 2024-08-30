@@ -52,11 +52,19 @@
                           </td>
                         
                           <td class="align-middle text-center text-sm">
+<<<<<<< HEAD
                             <a href="{{ route('product.edit', $dt->id) }}"><span class="btn bg-gradient-success btn-sm">edit</span></a>
                             <form action="{{ route('product.destroy', $dt->id) }}" method="POST" class="d-inline">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn bg-gradient-danger btn-sm" onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
+=======
+                            <a href="{{ route('product.edit', $dt->id) }}"><span class="btn bg-gradient-success ws-15 my-4 mb-2 btn-sm">edit</span></a>
+                            <form action="{{ route('product.destroy', $dt->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn bg-gradient-primary ws-15 my-4 mb-2 btn-sm" onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
+>>>>>>> 3f1ebcbe8f0b41244807d3af2deadef49167a6ed
                             </form>
                           </td>
                         

@@ -1,47 +1,44 @@
-
-
 <style>
-.wrap-header-mobile {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
-
-.btn-show-menu-mobile {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
-
-.btn-auth-mobile {
-    display: none;
-    margin-left: auto;
-    /* Align to the right */
-    padding: 0 15px;
-    color: #007BFF;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-/* Adjust position and visibility for mobile */
-@media (max-width: 768px) {
-    .btn-auth-mobile {
-        display: block;
-        padding-right: 15px;
-        /* Align to the right */
-    }
-    .menu-mobile {
-        display: none;
-    }
-}
-
-@media (min-width: 769px) {
-    .btn-show-menu-mobile,
     .wrap-header-mobile {
-        display: none;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
     }
-}
+
+    .btn-show-menu-mobile {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .btn-auth-mobile {
+        display: none;
+        margin-left: auto;
+        /* Align to the right */
+        padding: 0 15px;
+        color: #007BFF;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    @media (max-width: 768px) {
+        .btn-auth-mobile {
+            display: block;
+            padding-right: 15px;
+            /* Align to the right */
+        }
+        .menu-mobile {
+            display: none;
+        }
+    }
+
+    @media (min-width: 769px) {
+        .btn-show-menu-mobile,
+        .wrap-header-mobile {
+            display: none;
+        }
+    }
 </style>
 
 <header class="header-v2">

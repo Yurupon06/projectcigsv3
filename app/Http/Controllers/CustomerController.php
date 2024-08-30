@@ -53,7 +53,7 @@ class CustomerController extends Controller
         return view('customer.edit', compact('user', 'customer'));
     }
 
-    public function update(Request $request, $id,)
+    public function update(Request $request, $id, )
     {
         $request->validate([
             'user_id' => 'required',

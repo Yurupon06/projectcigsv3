@@ -46,7 +46,7 @@ class ProductController extends Controller
         return view('product.edit', compact('product', 'productcat'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request,$id)
     {
         $request->validate([
             'product_category_id' => 'required',
@@ -65,6 +65,10 @@ class ProductController extends Controller
         return redirect()->route('product.index')->with('success', 'product created successfully.');
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3f1ebcbe8f0b41244807d3af2deadef49167a6ed
     public function destroy(Product $product, $id)
     {
         $product = product::findOrFail($id);
