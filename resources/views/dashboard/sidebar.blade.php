@@ -13,7 +13,7 @@
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->is('dashboard') ? 'active' : '' }}" href="dashboard">
+                <a class="nav-link text-white {{ request()->is('dashboard') ? 'active' : '' }}" href="{{ route('dashboard.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">dashboard</i>
                     </div>
@@ -21,7 +21,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->is('productcategories') ? 'active' : '' }}"
+                <a class="nav-link text-white {{ request()->is('productcategories*') ? 'active' : '' }}"
                     href="{{ route('productcategories.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">category</i>
@@ -30,7 +30,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->is('product') ? 'active' : '' }}"
+                <a class="nav-link text-white {{ request()->is('product*') ? 'active' : '' }}"
                     href="{{ route('product.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">inventory_2</i>
@@ -66,7 +66,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->is('user') ? 'active' : '' }}"
+                <a class="nav-link text-white {{ request()->is('user*') ? 'active' : '' }}"
                     href="{{ route('user.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">person</i>
@@ -75,7 +75,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->is('customer') ? 'active' : '' }}"
+                <a class="nav-link text-white {{ request()->is('customer*') ? 'active' : '' }}"
                     href="{{ route('customer.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">person</i>

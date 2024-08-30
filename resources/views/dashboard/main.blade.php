@@ -14,7 +14,7 @@
                     @auth
                         <li class="nav-item d-flex align-items-center">
                             <a href="{{ route('dashboard.profil') }}" class="nav-link text-body font-weight-bold px-0">
-                                <span>
+                                <span class="text-capitalize">
                                     {{ Auth::user()->role }} - {{ Auth::user()->name }}
                                 </span>
                                 <style>

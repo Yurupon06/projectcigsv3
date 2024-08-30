@@ -1,8 +1,6 @@
 @extends('dashboard.master')
-
 @section('page-title', 'Profile Admin')
 @section('title', 'Profile Admin')
-
 @section('main')
     @include('dashboard.main')
 
@@ -10,15 +8,14 @@
         <div class="navigation-links">
             <a href="{{ route('dashboard.index') }}">Back</a>
         </div>
-    
         <div class="profile-section">
             <h1>Profile</h1>
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
             @endif
-            @if(session('warning'))
+            @if (session('warning'))
                 <div class="alert alert-warning">
                     {{ session('warning') }}
                 </div>
@@ -35,17 +32,14 @@
                 <span>Phone:</span>
                 <span>{{ $customer->phone ?? 'Not filled' }}</span>
             </div>
-    
             <div class="profile-field">
                 <span>Date of Birth:</span>
                 <span>{{ $customer->born ?? 'Not filled' }}</span>
             </div>
-    
             <div class="profile-field">
                 <span>Gender:</span>
-                <span>{{ $customer->gender ?? 'Not filled' }}</span>
+                <span class="text-capitalize">{{ $customer->gender ?? 'Not filled' }}</span>
             </div>
-    
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
                 Update Profile
             </button>
@@ -54,9 +48,10 @@
             </button>
         </div>
     </div>
-    
+
     <!-- Profile Update Modal -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -70,25 +65,31 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="name">Name</label>
-                            <input type="text" id="name" name="name" class="form-control" value="{{ Auth::user()->name }}" required>
+                            <input type="text" id="name" name="name" class="form-control"
+                                value="{{ Auth::user()->name }}" required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" id="email" name="email" class="form-control" value="{{ Auth::user()->email }}" required>
+                            <input type="email" id="email" name="email" class="form-control"
+                                value="{{ Auth::user()->email }}" required>
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone</label>
-                            <input type="text" id="phone" name="phone" class="form-control" value="{{ $customer->phone ?? '' }}" required>
+                            <input type="text" id="phone" name="phone" class="form-control"
+                                value="{{ $customer->phone ?? '' }}" required>
                         </div>
                         <div class="form-group">
                             <label for="born">Date of Birth</label>
-                            <input type="date" id="born" name="born" class="form-control" value="{{ $customer->born ?? '' }}" required>
+                            <input type="date" id="born" name="born" class="form-control"
+                                value="{{ $customer->born ?? '' }}" required>
                         </div>
                         <div class="form-group">
                             <label for="gender">Gender</label>
                             <select id="gender" name="gender" class="form-control" required>
-                                <option value="men" {{ ($customer->gender ?? 'men') == 'men' ? 'selected' : '' }}>Men</option>
-                                <option value="women" {{ ($customer->gender ?? 'men') == 'women' ? 'selected' : '' }}>Women</option>
+                                <option value="men" {{ ($customer->gender ?? 'men') == 'men' ? 'selected' : '' }}>Men
+                                </option>
+                                <option value="women" {{ ($customer->gender ?? 'men') == 'women' ? 'selected' : '' }}>
+                                    Women</option>
                             </select>
                         </div>
                     </div>
@@ -100,9 +101,10 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Change Password Modal -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog"
+        aria-labelledby="changePasswordModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -116,7 +118,8 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="current_password">Current Password</label>
-                            <input type="password" id="current_password" name="current_password" class="form-control" required>
+                            <input type="password" id="current_password" name="current_password" class="form-control"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="password">New Password</label>
@@ -124,7 +127,8 @@
                         </div>
                         <div class="form-group">
                             <label for="password_confirmation">Confirm New Password</label>
-                            <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required>
+                            <input type="password" id="password_confirmation" name="password_confirmation"
+                                class="form-control" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -135,17 +139,17 @@
             </div>
         </div>
     </div>
-    
+
     <script>
         document.querySelector('form').addEventListener('submit', function(event) {
-        var currentPassword = document.getElementById('current_password').value;
-        var newPassword = document.getElementById('password').value;
-        var confirmPassword = document.getElementById('password_confirmation').value;
-    
-        if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
-            event.preventDefault();
-            alert('Please fill in all fields if you are changing your password.');
-        }
-    });
+            var currentPassword = document.getElementById('current_password').value;
+            var newPassword = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('password_confirmation').value;
+
+            if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
+                event.preventDefault();
+                alert('Please fill in all fields if you are changing your password.');
+            }
+        });
     </script>
 @endsection
