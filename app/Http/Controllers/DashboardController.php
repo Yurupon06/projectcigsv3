@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
-    //
     public function index()
     {
         return view('dashboard.home');
     }
 
-    public function profile(){
+    public function profile()
+    {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         return view('dashboard.profile', compact('user', 'customer'));
@@ -49,7 +49,7 @@ class DashboardController extends Controller
         return redirect()->route('dashboard.profil')->with('success', 'Profile updated successfully.');
     }
 
-        public function updatePassword(Request $request)
+    public function updatePassword(Request $request)
     {
         $request->validate([
             'current_password' => 'required',
@@ -68,5 +68,4 @@ class DashboardController extends Controller
 
         return redirect()->route('dashboard.profil')->with('success', 'Password updated successfully.');
     }
-
 }
