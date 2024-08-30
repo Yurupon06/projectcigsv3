@@ -52,7 +52,7 @@
 
 
                         <div class="ms-3 me-3 text-end">
-                            <a href="{{ route('productcategories.index')}}" type="button" class="btn bg-gradient-primary ws-15 my-4 mb-2">Cancel</a>
+                            <a href="{{ route('productcategories.index')}}" type="button" class="btn bg-gradient-danger ws-15 my-4 mb-2">Cancel</a>
                             <button type="submit" class="btn bg-gradient-success ws-15 my-4 mb-2">Save</button>
                         </div>
                   </form>

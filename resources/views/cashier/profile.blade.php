@@ -144,7 +144,9 @@
                         </div>
                         <div class="form-group">
                             <label for="born">Date of Birth</label>
-                            <input type="date" id="born" name="born" class="form-control" value="{{ $customer->born ?? '' }}" required>
+                            <input type="date" id="born" name="born" class="form-control" 
+                                value="{{ $customer->born ?? '' }}" 
+                                max="{{ date('Y-m-d', strtotime('-1 day')) }}" required>
                         </div>
                         <div class="form-group">
                             <label for="gender">Gender</label>

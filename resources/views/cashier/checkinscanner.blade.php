@@ -66,7 +66,9 @@
                 <div id="countdown" class="alert alert-info"></div>
             </div>
         </div>
-        <a class="btn btn-outline-primary" href="{{ route('cashier.membercheckin') }}" role="button">Back</a>
+        <div class="d-flex justify-content-end" style="position: relative; top: -20px;">
+        <a class="btn btn-outline-dark" style="font-size: 20px; color: orange; border-color: orange; position: absolute; right: 0; top: -100px;"  href="{{ route('cashier.membercheckin') }}" role="button">Back</a>
+    </div>
     </div>
 
     <!-- Success and error sounds -->

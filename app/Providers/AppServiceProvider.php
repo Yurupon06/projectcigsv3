@@ -24,7 +24,7 @@ class AppServiceProvider extends ServiceProvider
         try {
             View::share('setting', ApplicationSetting::first());
         } catch (\Exception $e) {
-            dd($e);
+            \Log::error($e);
         }
     }
 }

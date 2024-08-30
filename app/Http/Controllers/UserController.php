@@ -46,11 +46,20 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        if (Auth::user()->role === 'customer' && Auth::id() !== $user->id) {
+            abort(403);
+        }
+
         return view('user.edit', compact('user'));
     }
 
     public function update(Request $request, User $user)
     {
+
+        if (Auth::user()->role === 'customer' && Auth::id() !== $user->id) {
+            abort(403);
+        }
+
         // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',
@@ -71,6 +80,12 @@ class UserController extends Controller
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
+
+        if (Auth::user()->role === 'customer' && Auth::id() !== $user->id) {
+            abort(403);
+        }
+
+        
         $user->delete();
         return redirect()->route('user.index')->with('success', 'user berhasil dihapus.');
     }

@@ -44,6 +44,11 @@ class CustomerController extends Controller
     public function edit($id)
     {
         $customer = Customer::findOrFail($id);
+
+        if (Auth::user()->role === 'customer' && Auth::id() !== $customer->user_id) {
+            abort(403);
+        }
+
         $user = User::where('role', 'customer')->get();
         return view('customer.edit', compact('user', 'customer'));
     }
@@ -58,6 +63,11 @@ class CustomerController extends Controller
         ]);
 
         $customer = Customer::findOrFail($id);
+
+        if (Auth::user()->role === 'customer' && Auth::id() !== $customer->user_id) {
+            abort(403);
+        }
+
         $customer->user_id = $request->user_id;
         $customer->phone = $request->phone;
         $customer->born = $request->born;
@@ -70,6 +80,11 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         $customer = customer::findOrFail($id);
+
+        if (Auth::user()->role === 'customer' && Auth::id() !== $customer->user_id) {
+            abort(403);
+        }
+        
         $customer->delete();
         return redirect()->route('customer.index')->with('success', 'customer berhasil dihapus.');
     }

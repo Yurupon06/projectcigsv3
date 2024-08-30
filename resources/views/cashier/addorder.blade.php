@@ -21,7 +21,7 @@
                 <div class="card-header pb-0">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
                         <span class="badge badge-sm bg-gradient-primary mb-3 fs-6">
-                          <i class="material-icons opacity-10">person_add</i>
+                          <i class="material-icons opacity-10">person_add</i>  Add Order
                         </span>
                     </a>
                     <h6>Add Order</h6>

@@ -18,6 +18,12 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
+
+        if (!$customer) {
+            abort(403);
+        }
+
+
         return view('dashboard.profile', compact('user', 'customer'));
     }
 
@@ -32,6 +38,10 @@ class DashboardController extends Controller
         ]);
 
         $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        if (!$customer) {
+            abort(403);
+        }
         $user->update([
             'name' => $request->name,
             'email' => $request->email,

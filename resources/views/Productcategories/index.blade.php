@@ -13,7 +13,7 @@
           <div class="col-12">
             <div class="card my-4">
               <div class="card-header pb-0">
-                <a href="{{route('productcategories.create')}}"><span class="btn btn-sm bg-gradient-primary mb-3 fs-6 ">add new item</span></a>
+                <a href="{{route('productcategories.create')}}"><span class="btn btn-sm bg-gradient-success mb-3 fs-6 ">add new item</span></a>
                 <h6>Product Categories</h6>
               </div>
                 <div class="card-body px-0 pb-2">
