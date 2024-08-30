@@ -130,6 +130,9 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        if (auth()->id() !== $order->customer->user_id) {
+            abort(404); 
+        }
 
         return view('landing.checkout', compact('order', 'member'));
     }
@@ -160,6 +163,9 @@ class LandingController extends Controller
             ->update(['status' => 'expired']);
 
         $member = Member::with('customer.user')->findOrFail($id);
+        if (auth()->id() !== $member->customer->user_id) {
+            abort(404); 
+        }
         return view('landing.membership', compact('member'));
     }
 
