@@ -36,21 +36,13 @@ class ProductCategorieController extends Controller
         return redirect()->route('productcategories.index')->with('success', 'productcat created successfully.');
     }
 
-<<<<<<< HEAD
-=======
-   
->>>>>>> 3f1ebcbe8f0b41244807d3af2deadef49167a6ed
     public function edit(Product_categorie $product_categorie, $id)
     {
         $productcat = Product_categorie::findOrFail($id);
         return view('productcategories.edit', compact('productcat'));
     }
 
-<<<<<<< HEAD
     public function update(Request $request, $id, Product_categorie $product_categorie)
-=======
-    public function update(Request $request,$id, Product_categorie $product_categorie)
->>>>>>> 3f1ebcbe8f0b41244807d3af2deadef49167a6ed
     {
         $request->validate([
             'category_name' => 'required',
