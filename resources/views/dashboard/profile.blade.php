@@ -6,67 +6,6 @@
 @section('main')
     @include('dashboard.main')
 
-    
-    <style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .navigation-links {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        
-        .navigation-links a {
-            text-decoration: none;
-            color: #007BFF;
-            font-weight: bold;
-        }
-        
-        .navigation-links a:hover {
-            text-decoration: underline;
-        }
-        
-        .profile-section {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .profile-section h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
-        }
-        
-        .profile-field {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .profile-field span {
-            font-size: 18px;
-            color: #555;
-        }
-        
-        .profile-field a {
-            text-decoration: none;
-            color: #007BFF;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        .profile-field a:hover {
-            text-decoration: underline;
-        }
-    </style>
-    
     <div class="container">
         <div class="navigation-links">
             <a href="{{ route('dashboard.index') }}">Back</a>
