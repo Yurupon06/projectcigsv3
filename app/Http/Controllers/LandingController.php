@@ -196,16 +196,15 @@ class LandingController extends Controller
     public function history()
     {
         $user = Auth::user();
-        if ($user && $user->role === 'customer') {
-            $customer = Customer::where('user_id', $user->id)->first();
-            $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-
-            if ($member) {
-                $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->orderBy('created_at', 'desc')->get();
-            } else {
-                $memberckin = collect();
-            }
-            abort(403);
-         }
+        $customer = Customer::where('user_id', $user->id)->first();
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        
+        if ($member) {
+            $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->orderBy('created_at', 'desc')->get();
+        } else {
+            $memberckin = collect();
+        }
+    
+        return view('landing.history', compact('memberckin', 'member'));
     }
 }
