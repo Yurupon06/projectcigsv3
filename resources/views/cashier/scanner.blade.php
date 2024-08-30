@@ -20,7 +20,7 @@
     </style>
 
     <div class="container mt-5 text-center">
-        <h1>Scan QR Code</h1>
+        {{-- <h1>Scan QR Code</h1> --}}
         <div id="reader"></div>
         <p id="result"></p>
         <a class="btn btn-outline-primary" href="{{ route('cashier.index') }}" role="button">Back</a>

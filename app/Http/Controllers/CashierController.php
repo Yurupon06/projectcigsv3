@@ -381,3 +381,4 @@ class CashierController extends Controller
             'new_qr_token' => $newQrToken
         ]);
 }
+}

@@ -19,6 +19,7 @@
                   <span class="badge badge-sm bg-gradient-primary mb-3 fs-6 ">
                     <i class="material-icons opacity-10">qr_code_scanner</i>
                   </span>
+                  
                 </a>
                 <h6>Cashier</h6>
               </div>
