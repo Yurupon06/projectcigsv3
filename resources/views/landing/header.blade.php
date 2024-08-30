@@ -75,6 +75,9 @@
     .menu-mobile {
         display: none;
     }
+    .main-menu-m li a {
+        font-size: 16px; /* Atur ukuran teks untuk mobile */
+    }
 }
 
 @media (min-width: 769px) {
@@ -174,11 +177,15 @@
     <!-- Menu Mobile -->
     <div class="menu-mobile">
         <ul class="main-menu-m">
+            @auth
             <li>
                 <a href="{{ route('landing.profile') }}">
                     {{ Auth::user()->name }}
                 </a>
             </li>
+            @else
+            
+            @endauth
             <li>
                 <a href="{{ route('landing.index') }}">Home</a>
             </li>

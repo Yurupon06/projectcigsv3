@@ -22,12 +22,24 @@ class CashierController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $order = order::with('customer', 'product')->orderBy('created_at', 'desc')->get();
-        return view('cashier.index', compact('order'));
-    }
+        $search = $request->input('search');
 
+        $orders = Order::with(['customer.user', 'product'])
+                        ->when($search, function ($query, $search) {
+                            return $query->whereHas('customer.user', function ($query) use ($search) {
+                                $query->where('name', 'like', "%{$search}%");
+                            });
+                        })
+                        ->orderBy('order_date', 'desc')
+                        ->paginate(7)
+                        ->appends(['search' => $search]);
+        
+        
+
+        return view('cashier.index', compact('orders'));
+    }
     public function show()
     {
         $order = order::with('customer', 'product')->get();
@@ -45,10 +57,23 @@ class CashierController extends Controller
         return view('cashier.show', compact('order'));
     }
 
-    public function payment()
+    public function payment(Request $request)
     {
+        $search = $request->input('search');
+
+        $payments = Payment::whereHas('order', function($query) use ($search) {
+            $query->where('status', 'like', '%' . $search . '%')
+                ->orWhereHas('customer.user', function($query) use ($search) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('product', function($query) use ($search) {
+                    $query->where('product_name', 'like', '%' . $search . '%');
+                });
+        })
+        ->paginate(5);
+
         $payment = Payment::with('order')->orderBy('created_at', 'desc')->get();
-        return view('cashier.payment', compact('payment'));
+        return view('cashier.payment', compact('payment', 'payments'));
     }
 
     public function store(Request $request, Order $order)
@@ -154,8 +179,16 @@ class CashierController extends Controller
     
 
 
-    public function membercashier()
+    public function membercashier(Request $request)
     {
+        $search = $request->input('search');
+        $members = Member::whereHas('customer.user', function ($query) use ($search) {
+            $query->where('name', 'LIKE', "%{$search}%");
+        })
+        ->orWhere('start_date', 'LIKE', "%{$search}%")
+        ->orWhere('status', 'LIKE', "%{$search}%")
+        ->paginate(5);
+        
     $currentDate = Carbon::now('Asia/Jakarta');
 
     Member::where('end_date', '<', $currentDate)
@@ -169,7 +202,7 @@ class CashierController extends Controller
 
     $member = Member::with('customer')->get();
 
-    return view('membercash.membercashier', compact('member'));
+    return view('membercash.membercashier', compact('member', 'members'));
     }
 
 public function storeCustomer(Request $request)
@@ -322,10 +355,22 @@ public function storeCustomer(Request $request)
     }
 
    
-    public function membercheckin()
+    public function membercheckin(Request $request)
     {
-        $memberckin = MemberCheckin::with('member.customer')->orderBy('created_at', 'desc')->get();
-        return view('cashier.membercheckin', compact('memberckin'));
+        $search = $request->input('search');
+        $membercheckins = MemberCheckin::with('member.customer.user')
+            ->when($request->search, function ($query, $search) {
+                $query->whereHas('member.customer.user', function ($query) use ($search) {
+                    $query->where('name', 'like', "%{$search}%")
+                        ->orWhere('phone', 'like', "%{$search}%")
+                        ->orWhere('qr_token', 'like', "%{$search}%");
+                });
+            })->orderBy('created_at', 'desc')
+            ->paginate(5)
+                        ->appends(['search' => $search]);
+
+    
+        return view('cashier.membercheckin', compact('membercheckins'));
 
     }
 
@@ -399,4 +444,5 @@ public function storeCustomer(Request $request)
     {
         return view('cashier.checkinscanner');  
     }
+    
 }

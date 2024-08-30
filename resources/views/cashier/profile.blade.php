@@ -2,6 +2,9 @@
 
 @section('page-title', 'Profile Cashier')
 @section('title', 'Profile Cashier')
+@section('sidebar')
+    @include('cashier.sidebar')
+@endsection
 @section('main')
     @include('cashier.main')
 
@@ -65,7 +68,7 @@
     
     </style>
     
-    <div class="container">
+    <div class="container mt-8">
         <div class="navigation-links">
             <a href="{{ route('cashier.index') }}">Back</a>
         </div>
