@@ -46,7 +46,7 @@ class ProductController extends Controller
         return view('product.edit', compact('product', 'productcat'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request,$id)
     {
         $request->validate([
             'product_category_id' => 'required',

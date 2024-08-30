@@ -101,8 +101,6 @@ Route::middleware('auth')->group(function () {
 
 
 
-
-
 Route::middleware((['auth', 'admin']))->group(function (){
     Route::resource('dashboard', DashboardController::class);
     Route::resource('productcategories', ProductCategorieController::class);
@@ -119,7 +117,6 @@ Route::middleware((['auth', 'admin']))->group(function (){
     Route::resource('application-setting', ApplicationSettingController::class);
 });
 Route::resource('payment', PaymentController::class);
-
 
 
 

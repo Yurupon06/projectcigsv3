@@ -373,10 +373,10 @@ class CashierController extends Controller
             $checkin = MemberCheckin::where('qr_token', $qr_token)->first();
 
             if ($checkin) {
-                return response()->json(['error' => 'QR Code already used'], 404);
+                return response()->json(['error' => 'QR Code already used'], 403);
             }
 
-            return response()->json(['error' => 'Invalid QR Code'], 404);
+            return response()->json(['error' => 'Invalid QR Code'], 403);
         }
 
         return response()->json([
@@ -430,7 +430,10 @@ class CashierController extends Controller
             'message' => 'Check-in recorded successfully',
             'new_qr_token' => $newQrToken
         ]);
-    }
-    
-}
+        }
+
+        public function showCheckIn()
+        {
+            return view('cashier.checkinscanner');  
+        }
 }

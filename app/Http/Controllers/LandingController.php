@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Member;
-use App\Models\membercheckin;
+use App\Models\Membercheckin;
 use App\Models\Order;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -28,9 +28,13 @@ class LandingController extends Controller
     public function profile()
     {
         $user = Auth::user();
-        $customer = Customer::where('user_id', $user->id)->first();
-        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-        return view('landing.profile', compact('user', 'customer', 'member'));
+        if ($user && $user->role === 'customer') {
+            $customer = Customer::where('user_id', $user->id)->first();
+            $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+            return view('landing.profile', compact('user', 'customer', 'member'));
+        }
+
+        abort(403);
     }
 
     public function profileUpdate(Request $request)
@@ -44,22 +48,27 @@ class LandingController extends Controller
         ]);
 
         $user = Auth::user();
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+        
+        if ($user && $user->role === 'customer') {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+            ]);
 
-        $customer = Customer::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'phone' => $request->phone,
-                'born' => $request->born,
-                'gender' => $request->gender,
-            ]
-        );
+            $customer = Customer::updateOrCreate(
+                ['user_id' => $user->id],
+                [
+                    'phone' => $request->phone,
+                    'born' => $request->born,
+                    'gender' => $request->gender,
+                ]
+            );
 
         return redirect()->route('landing.profile')->with('success', 'Profile updated successfully.');
     }
+    abort(403);
+}
+
 
     public function updatePassword(Request $request)
     {
@@ -84,11 +93,15 @@ class LandingController extends Controller
     public function order()
     {
         $user = Auth::user();
-        $customer = Customer::where('user_id', $user->id)->first();
-        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-        $orders = $customer ? Order::where('customer_id', $customer->id)->orderBy('created_at', 'desc')->get() : collect([]);
-    
-        return view('landing.order', compact('orders', 'customer', 'member'));
+
+        if ($user && $user->role === 'customer') {
+            $customer = Customer::where('user_id', $user->id)->first();
+            $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+            $orders = $customer ? Order::where('customer_id', $customer->id)->orderBy('created_at', 'desc')->get() : collect([]);
+        
+            return view('landing.order', compact('orders', 'customer', 'member'));
+        }
+        abort(403);
     }
 
     public function orderStore(Request $request)
@@ -162,11 +175,24 @@ class LandingController extends Controller
             ->where('status', '<>', 'expired')
             ->update(['status' => 'expired']);
 
+            $user = Auth::user();
+
+    if ($user && $user->role === 'customer') {
+        $customer = Customer::where('user_id', $user->id)->first();
+
+        if (!$customer) {
+            abort(403);
+        }
+
         $member = Member::with('customer.user')->findOrFail($id);
-        if (auth()->id() !== $member->customer->user_id) {
-            abort(404); 
+
+        if ($member->customer_id !== $customer->id) {
+            abort(403);
         }
         return view('landing.membership', compact('member'));
+    }
+    abort(403);
+
     }
 
     public function history()
@@ -174,13 +200,13 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-
+        
         if ($member) {
             $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->orderBy('created_at', 'desc')->get();
         } else {
             $memberckin = collect();
         }
-
+    
         return view('landing.history', compact('memberckin', 'member'));
     }
 }

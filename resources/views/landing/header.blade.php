@@ -1,27 +1,25 @@
 <style>
-.wrap-header-mobile {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
+    .wrap-header-mobile {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
 
-.btn-show-menu-mobile {
-    display: flex;
-    align-items: center;
-    position: relative;
-}
+    .btn-show-menu-mobile {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
 
-.btn-auth-mobile {
-    display: none;
-    margin-left: auto;
-    /* Align to the right */
-    padding: 0 15px;
-    color: #007BFF;
-    font-weight: bold;
-    text-decoration: none;
-}
-
+    .btn-auth-mobile {
+        display: none;
+        margin-left: auto;
+        /* Align to the right */
+        padding: 0 15px;
+        color: #007BFF;
+        font-weight: bold;
+        text-decoration: none;
 /* Gaya default untuk menu */
 .main-menu li a {
     color: #000;
@@ -72,20 +70,27 @@
         display: block;
         padding-right: 15px;
     }
-    .menu-mobile {
-        display: none;
+
+    @media (max-width: 768px) {
+        .btn-auth-mobile {
+            display: block;
+            padding-right: 15px;
+            /* Align to the right */
+        }
+        .menu-mobile {
+            display: none;
+        }
     }
     .main-menu-m li a {
         font-size: 16px; /* Atur ukuran teks untuk mobile */
     }
 }
-
-@media (min-width: 769px) {
-    .btn-show-menu-mobile,
-    .wrap-header-mobile {
-        display: none;
+    @media (min-width: 769px) {
+        .btn-show-menu-mobile,
+        .wrap-header-mobile {
+            display: none;
+        }
     }
-}
 </style>
 
 <header class="header-v2">

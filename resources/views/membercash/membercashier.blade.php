@@ -65,7 +65,7 @@
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <a href="{{ route('cashier.member', $member->id) }}">
-                                                    <span class="btn btn-sm bg-gradient-info">Detail</span>
+                                                <span class="btn bg-gradient-info ws-15 my-4 mb-2 btn-sm">Detail</span>
                                                 </a>
                                             </td>
                                         </tr>

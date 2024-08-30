@@ -5,9 +5,8 @@
 @endsection
 @section('page-title', 'Cashier')
 @section('page', 'Cashier')
-@section('main')
+@section('main')  
     @include('cashier.main')
-
     <style>
         #reader {
             width: 100%;

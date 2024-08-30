@@ -9,7 +9,7 @@ class ProductCategorieController extends Controller
 {
     public function index()
     {
-        return view('productcategories.index', [
+        return view('productcategories.index',[
             'productcat' => Product_categorie::all()
         ]);
     }

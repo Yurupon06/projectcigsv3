@@ -125,7 +125,7 @@
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-floating mb-3">
-                            <input name="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" required>
+                            <input name="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" value="{{ old('email') }}" required>
                             <label for="floatingInput">Email address</label>
                             @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
