@@ -75,7 +75,7 @@
             <div class="col-md-4">
                 <div class="card" style="height: 100%">
                     <div class="card-header text-uppercase font-weight-bolder opacity-20" >
-                        <h6>Add Order and Register Customer</h6>
+                        <h6>For Register Customer</h6>
                     </div>
                     <div class="modal-body pt-4 px-3">
                     <form id="addCustomerForm" action="{{ route('customer.store') }}" method="POST">
@@ -90,7 +90,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="phone" class="form-label">Phone</label>
-                            <input type="text" id="phone" name="phone" class="form-control" required>
+                            <input type="number" id="phone" name="phone" class="form-control" required>
                         </div>
                         <div class="text-end">
                             <button type="submit" class="btn btn-primary">Add Customer</button>
