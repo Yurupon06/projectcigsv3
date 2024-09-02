@@ -5,9 +5,8 @@
 @endsection
 @section('page-title', 'Cashier')
 @section('page', 'Cashier')
-@section('main')
+@section('main')  
     @include('cashier.main')
-
     <style>
         #reader {
             width: 100%;
@@ -42,6 +41,7 @@
                                         </button>
                                     </form>
                                 </div>
+
                             </div>
                         </div>
                         <div class="card-body px-0 pb-1">

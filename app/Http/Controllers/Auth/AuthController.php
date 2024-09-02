@@ -15,12 +15,10 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    //
     public function showRegisterForm()
     {
         return view('auth.register');
     }
-
 
     public function register(Request $request)
     {
@@ -51,16 +49,10 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-
-
-
     public function showLoginForm()
     {
         return view('auth.login');
     }
-
-
-
 
     public function login(Request $request)
     {
@@ -82,7 +74,6 @@ class AuthController extends Controller
         return redirect()->back()->withErrors(['email' => 'Invalid credentials'])->withInput();
     }
 
-
     public function logout()
     {
         Auth::logout();
@@ -93,9 +84,6 @@ class AuthController extends Controller
     {
         return view('auth.forgot-password');
     }
-
-
-
 
     public function forgot(Request $request)
     {
@@ -115,10 +103,10 @@ class AuthController extends Controller
         $status = Password::sendResetLink(
             $request->only('email')
         );
-    
+
         return $status === Password::RESET_LINK_SENT
-                    ? back()->with(['status' => __($status)])
-                    : back()->withErrors(['email' => __($status)]);
+            ? back()->with(['status' => __($status)])
+            : back()->withErrors(['email' => __($status)]);
     }
 
     public function reset(Request $request)
@@ -135,15 +123,15 @@ class AuthController extends Controller
                 $user->forceFill([
                     'password' => Hash::make($password)
                 ])->setRememberToken(Str::random(60));
-    
+
                 $user->save();
-    
+
                 event(new PasswordReset($user));
             }
         );
-    
+
         return $status === Password::PASSWORD_RESET
-                    ? redirect()->route('login')->with('status', __($status))->with('success', 'Password reset successfully')
-                    : back()->withErrors(['email' => [__($status)]]);
+            ? redirect()->route('login')->with('status', __($status))->with('success', 'Password reset successfully')
+            : back()->withErrors(['email' => [__($status)]]);
     }
 }

@@ -8,31 +8,19 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
         return view('user.index', [
             'user' => User::all()
         ]);
-
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
         $roles = User::all();
         return view('user.create', compact('roles'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         // Validasi input
@@ -50,59 +38,55 @@ class UserController extends Controller
         $user->email = $request->input('email');
         $user->phone = $request->input('phone');
         $user->password = Hash::make($request->input('password'));
-        $user->role = $request->input('role'); 
+        $user->role = $request->input('role');
         $user->save();
 
         return redirect()->route('user.index')->with('success', 'User created successfully.');
     }
 
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(User $user)
     {
-        //
+        if (Auth::user()->role === 'customer' && Auth::id() !== $user->id) {
+            abort(403);
+        }
+
+        return view('user.edit', compact('user'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-{
-    return view('user.edit', compact('user'));
-}
+    public function update(Request $request, User $user)
+    {
 
-public function update(Request $request, User $user)
-{
-    // Validasi input
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-        'phone' => 'required|string|max:13',
-        'role' => 'required|in:admin,customer,cashier', // Validasi role
-    ]);
+        if (Auth::user()->role === 'customer' && Auth::id() !== $user->id) {
+            abort(403);
+        }
 
-    // Update data pengguna
-    $user->name = $request->input('name');
-    $user->email = $request->input('email');
-    $user->phone = $request->input('phone');
+        // Validasi input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'phone' => 'required|string|max:13',
+            'role' => 'required|in:admin,customer,cashier', // Validasi role
+        ]);
 
-    $user->role = $request->input('role');
-    $user->save();
+        // Update data pengguna
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->phone = $request->input('phone');
+        $user->role = $request->input('role');
+        $user->save();
 
-    return redirect()->route('user.index')->with('success', 'User updated successfully.');
-}
-
-    /**
-     * Remove the specified resource from storage.
-     */
+        return redirect()->route('user.index')->with('success', 'User updated successfully.');
+    }
     public function destroy(string $id)
     {
-        //
         $user = User::findOrFail($id);
+
+        if (Auth::user()->role === 'customer' && Auth::id() !== $user->id) {
+            abort(403);
+        }
+
+        
         $user->delete();
         return redirect()->route('user.index')->with('success', 'user berhasil dihapus.');
-
     }
 }
