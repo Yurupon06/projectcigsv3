@@ -6,7 +6,7 @@
 @section('page-title', 'Payment')
 @section('page', 'Payment')
 @section('main')
-    @include('cashier.main')
+    @include('dashboard.main')
 
     <div class="container-fluid py-4">
         <div class="row">
