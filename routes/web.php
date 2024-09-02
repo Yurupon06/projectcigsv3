@@ -101,22 +101,22 @@ Route::middleware('auth')->group(function () {
 
 
 
-Route::middleware((['auth', 'admin']))->group(function (){
-    Route::resource('dashboard', DashboardController::class);
-    Route::resource('productcategories', ProductCategorieController::class);
-    Route::resource('product', ProductController::class);
-    Route::resource('customer', CustomerController::class);
-    Route::resource('user', UserController::class);
-    Route::resource('member', MemberController::class);
-    Route::resource('order', OrderController::class);
-    Route::get('scanner', function () {return view('order.scanner');})->name('scanner');
-    Route::get('/order/qrscan/{qr_token}', [OrderController::class, 'qrscan'])->name('order.qrscan');
-    Route::get('/admin/profil', [DashboardController::class, 'profile'])->name('dashboard.profil');
-    Route::post('/admin/profile', [DashboardController::class, 'profileUpdate'])->name('update.profile.admin');
-    Route::post('/admin/profile/password', [DashboardController::class, 'updatePassword'])->name('update.password.admin');
-    Route::resource('application-setting', ApplicationSettingController::class);
-});
-Route::resource('payment', PaymentController::class);
+// Route::middleware((['auth', 'admin']))->group(function (){
+//     Route::resource('dashboard', DashboardController::class);
+//     Route::resource('productcategories', ProductCategorieController::class);
+//     Route::resource('product', ProductController::class);
+//     Route::resource('customer', CustomerController::class);
+//     Route::resource('user', UserController::class);
+//     Route::resource('member', MemberController::class);
+//     Route::resource('order', OrderController::class);
+//     Route::get('scanner', function () {return view('order.scanner');})->name('scanner');
+//     Route::get('/order/qrscan/{qr_token}', [OrderController::class, 'qrscan'])->name('order.qrscan');
+//     Route::get('/admin/profil', [DashboardController::class, 'profile'])->name('dashboard.profil');
+//     Route::post('/admin/profile', [DashboardController::class, 'profileUpdate'])->name('update.profile.admin');
+//     Route::post('/admin/profile/password', [DashboardController::class, 'updatePassword'])->name('update.password.admin');
+//     Route::resource('application-setting', ApplicationSettingController::class);
+// });
+// Route::resource('payment', PaymentController::class);
 
 
 

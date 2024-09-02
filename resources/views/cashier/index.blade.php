@@ -10,7 +10,7 @@
     <style>
         #reader {
             width: 100%;
-            height: 300px;
+            height: 350px;
             margin: auto;
         }
 
@@ -18,7 +18,6 @@
             transform: scaleX(-1);
         }
 
-        /* Ensures that the QR code section does not resize based on the content */
         .tbl {
             min-height: 100%;
         }
@@ -27,7 +26,6 @@
     <div class="container-fluid py-4 mt-4">
         <div class="row">
             <div class="col-md-12 d-flex">
-                <!-- Table container -->
                 <div class="col-md-8 me-2" style="overflow: hidden;">
                     <div class="card my-4">
                         <div class="card-header pb-0">
@@ -96,15 +94,16 @@
                     </div>
                 </div>
 
-                <!-- Additional content container -->
                 <div class="col-md-4 qr-section">
                     <div class="card mt-4 tbl" style="height: 92%;">
                         <div class="card-header">
-                            <h6>Cashier Order</h6>
+                            <h6>Scanner For Order</h6>
                         </div>
                         <div class="card-body">
-                            <!-- QR code scanner -->
                             <div id="reader"></div>
+                            <div class="mt-3 text-center">
+                                <button id="toggle-scan-btn" class="btn btn-primary">Start Scan</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -114,27 +113,43 @@
 
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
     <script>
+        let html5QrcodeScanner = new Html5Qrcode("reader");
+        let isScanning = false;
+    
         function onScanSuccess(decodedText, decodedResult) {
             let qrToken = decodedText.trim();
             let url = `{{ route('cashier.qrscan', ['qr_token' => '__TOKEN__']) }}`.replace('__TOKEN__', qrToken);
             window.location.href = url;
         }
-
+    
         function onScanFailure(error) {
             console.warn(`Code scan error = ${error}`);
         }
-
-        let html5QrcodeScanner = new Html5Qrcode("reader");
-        html5QrcodeScanner.start(
-            { facingMode: "environment" },
-            {
-                fps: 30,
-                qrbox: 250 
-            },
-            onScanSuccess,
-            onScanFailure
-        ).catch(err => {
-            console.error("Error starting QR code scanner: ", err);
+    
+        document.getElementById('toggle-scan-btn').addEventListener('click', function() {
+            if (isScanning) {
+                html5QrcodeScanner.stop().then(() => {
+                    document.getElementById('toggle-scan-btn').textContent = 'Start Scan';
+                    isScanning = false;
+                }).catch(err => {
+                    console.error("Error stopping QR code scanner: ", err);
+                });
+            } else {
+                html5QrcodeScanner.start(
+                    { facingMode: "environment" },
+                    {
+                        fps: 30,
+                        qrbox: 350
+                    },
+                    onScanSuccess,
+                    onScanFailure
+                ).then(() => {
+                    document.getElementById('toggle-scan-btn').textContent = 'Stop Scan';
+                    isScanning = true;
+                }).catch(err => {
+                    console.error("Error starting QR code scanner: ", err);
+                });
+            }
         });
     </script>
 @endsection
