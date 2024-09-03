@@ -14,6 +14,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MemberCheckinController;
 use App\Http\Controllers\ProductCategorieController;
 use App\Http\Controllers\ApplicationSettingController;
+use App\Http\Controllers\ComplementController;
 
 
 // Public
@@ -39,6 +40,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/checkout/{id}', [LandingController::class, 'checkout'])->name('checkout');
         Route::get('/membership/{id}', [LandingController::class, 'membership'])->name('customer.membership');
         Route::get('/history', [LandingController::class, 'history'])->name('landing.history');
+        Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
+        Route::get('/f&b/{id}', [LandingController::class, 'complementDetail'])->name('f&b.detail');
     });
 
     // Admin
@@ -51,6 +54,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('member', MemberController::class);
         Route::resource('order', OrderController::class);
         Route::resource('payment', PaymentController::class);
+        Route::resource('complement', ComplementController::class);
         Route::view('scanner', 'order.scanner')->name('scanner');
         Route::get('/order/qrscan/{qr_token}', [OrderController::class, 'qrscan'])->name('order.qrscan');
 
