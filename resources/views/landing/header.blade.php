@@ -109,6 +109,9 @@
                         <li class="{{ request()->routeIs('landing.index') ? 'active' : ''}}">
                             <a href="{{ route('landing.index') }}">Home</a>
                         </li>
+                        <li class="{{ request()->routeIs('f&b.index') ? 'active' : ''}}">
+                            <a href="{{ route('f&b.index') }}">Product</a>
+                        </li>
                         <li class="{{ request()->routeIs('yourorder.index') ? 'active' : '' }}">
                             <a href="{{ route('yourorder.index') }}">My Order</a>
                         </li>
@@ -217,6 +220,9 @@
             @endauth
             <li>
                 <a href="{{ route('landing.index') }}">Home</a>
+            </li>
+            <li>
+                <a href="{{ route('f&b.index') }}">Product</a>
             </li>
             <li>
                 <a href="{{ route('yourorder.index') }}">My Order</a>
