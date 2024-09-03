@@ -21,7 +21,7 @@
         font-weight: bold;
         text-decoration: none;
     }
-    
+
 /* Gaya default untuk menu */
 .main-menu li a {
     color: #000;
@@ -141,6 +141,17 @@
                             {{ Auth::user()->name }}
                         </a>
                         <a href="{{ route('cashier.index') }}" class="flex-c-m trans-04 p-lr-25 link-black text-capitalize">
+                            {{ Auth::user()->role }}
+                        </a>
+                        <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                    @elseif (auth()->user()->role == 'admin')
+                        <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
+                            {{ Auth::user()->name }}
+                        </a>
+                        <a href="{{ route('dashboard.index') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
                             {{ Auth::user()->role }}
                         </a>
                         <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
