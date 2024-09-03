@@ -121,7 +121,8 @@
                                     </tr>
                                     <tr>
                                         <th>Order Date</th>
-                                        <td>{{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y H:i') }}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <th>Total Amount</th>
@@ -129,24 +130,32 @@
                                     </tr>
                                     <tr>
                                         <th>Status</th>
-                                        <td style="color: {{ $order->status === 'unpaid' ? 'red' : ($order->status === 'paid' ? 'green' : 'black') }}">
+                                        <td
+                                            style="color: {{ $order->status === 'unpaid' ? 'red' : ($order->status === 'paid' ? 'green' : 'black') }}">
                                             {{ $order->status }}
                                         </td>
                                     </tr>
                                     @if ($order->status === 'unpaid')
                                     <tr>
                                         <td colspan="2">
-                                            <form action="{{ route('payments.store', $order->id) }}" method="POST" class="text-end">
+                                            <form action="{{ route('payments.store', $order->id) }}" method="POST"
+                                                class="text-end">
                                                 @csrf
                                                 <div class="amount-input">
                                                     <label for="amount_given">Amount Given:</label>
-                                                    <input type="number" name="amount_given" id="amount_given" min="0" step="0.01" oninput="calculateChange()" onkeydown="inputE(event)">
+                                                    <input type="number" name="amount_given" id="amount_given"
+                                                        min="0" step="0.01" oninput="calculateChange()"
+                                                        onkeydown="inputE(event)">
                                                 </div>
                                                 <div class="change-display" id="change-display">
                                                     Change: <span id="change-amount">Rp 0</span>
                                                 </div>
-                                                <button type="submit" name="action" value="cancel" class="btn btn-danger" onclick="return confirm('Are you sure you want to cancel this Order ?')">Cancel Order</button>
-                                                <button type="submit" name="action" value="process" class="btn btn-success">Process Payment</button>
+                                                <button type="submit" name="action" value="cancel"
+                                                    class="btn btn-danger"
+                                                    onclick="return confirm('Are you sure you want to cancel this Order ?')">Cancel
+                                                    Order</button>
+                                                <button type="submit" name="action" value="process"
+                                                    class="btn btn-success">Process Payment</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -166,7 +175,8 @@
                     <div class="card-body">
                         <div class="number-buttons">
                             @for ($i = 1; $i <= 9; $i++)
-                                <button type="button" onclick="appendNumber('{{ $i }}')">{{ $i }}</button>
+                                <button type="button"
+                                    onclick="appendNumber('{{ $i }}')">{{ $i }}</button>
                             @endfor
                             <button type="button" onclick="appendNumber('0')">0</button>
                             <button type="button" onclick="appendNumber('.')">.</button>

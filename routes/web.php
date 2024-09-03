@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/order/qrscan/{qr_token}', [OrderController::class, 'qrscan'])->name('order.qrscan');
 
         Route::prefix('/admin')->group(function () {
-            Route::get('/profil', [DashboardController::class, 'profile'])->name('dashboard.profil');
+            Route::get('/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
             Route::post('/profile', [DashboardController::class, 'profileUpdate'])->name('update.profile.admin');
             Route::post('/profile/password', [DashboardController::class, 'updatePassword'])->name('update.password.admin');
         });
@@ -77,11 +77,11 @@ Route::middleware('auth')->group(function () {
             Route::get('/qrcheckin/{qr_token}', [MemberCheckinController::class, 'qrcheckin'])->name('cashier.qrcheckin');
             Route::get('/checkin-scanner', [CashierController::class, 'qrscanner'])->name('cashier.checkin');
             Route::get('/order', [CashierController::class, 'order'])->name('cashier.order');
-            Route::get('/profill', [CashierController::class, 'profile'])->name('cashier.profill');
             Route::post('/profile', [CashierController::class, 'profileUpdate'])->name('update.profile.cashier');
             Route::post('/profile/password', [CashierController::class, 'updatePassword'])->name('update.password.cashier');
             Route::post('/makeorder', [CashierController::class, 'makeOrder'])->name('make.order');
             Route::get('/receipt/{paymentId}', [CashierController::class, 'struk'])->name('cashier.receipt');
+            Route::get('/membership', [CashierController::class, 'membercashier'])->name('membercashier.membercash');
             Route::get('/member/{id}', [CashierController::class, 'detailMember'])->name('cashier.member');
             Route::post('/member/action/{id}', [CashierController::class, 'actionMember'])->name('action.member');
         });
@@ -89,40 +89,18 @@ Route::middleware('auth')->group(function () {
         Route::post('/payments/{order}', [CashierController::class, 'store'])->name('payments.store');
         Route::get('/struk-gym/{id}', [CashierController::class, 'showStruk'])->name('struk_gym');
         Route::post('/customer/store', [CashierController::class, 'storeCustomer'])->name('customer.store');
-        Route::get('/membercash/membercashier', [CashierController::class, 'membercashier'])->name('membercashier.membercash');
         Route::resource('members', MemberController::class);
         Route::get('/member-details/{qr_token}', [CashierController::class, 'getMemberDetails']);
         Route::post('/store-checkin', [CashierController::class, 'storeCheckIn']);
     });
 
+    Route::resource('payment', PaymentController::class);
+
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
-
-
-Route::middleware((['auth', 'admin']))->group(function (){
-    Route::resource('dashboard', DashboardController::class);
-    Route::resource('productcategories', ProductCategorieController::class);
-    Route::resource('product', ProductController::class);
-    Route::resource('customer', CustomerController::class);
-    Route::resource('user', UserController::class);
-    Route::resource('member', MemberController::class);
-    Route::resource('order', OrderController::class);
-    Route::get('scanner', function () {return view('order.scanner');})->name('scanner');
-    Route::get('/order/qrscan/{qr_token}', [OrderController::class, 'qrscan'])->name('order.qrscan');
-    Route::get('/admin/profil', [DashboardController::class, 'profile'])->name('dashboard.profil');
-    Route::post('/admin/profile', [DashboardController::class, 'profileUpdate'])->name('update.profile.admin');
-    Route::post('/admin/profile/password', [DashboardController::class, 'updatePassword'])->name('update.password.admin');
-    Route::resource('application-setting', ApplicationSettingController::class);
-});
-Route::resource('payment', PaymentController::class);
-
-
-
-
 Route::middleware('guest')->group(function (){
-
     Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
     Route::post('/register', [AuthController::class, 'register']);
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

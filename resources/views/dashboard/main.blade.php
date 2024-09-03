@@ -13,12 +13,15 @@
 
                     @auth
                         <li class="nav-item d-flex align-items-center">
-                            <a href="{{ route('dashboard.profil') }}" class="nav-link text-body font-weight-bold px-0">
-                                <span class="text-capitalize">
+                            <a href="{{ route('dashboard.profile') }}" class="nav-link text-body font-weight-bold px-0">
+                                <span class="text-capitalize profile {{ request()->routeIs('dashboard.profile') ? 'active' : '' }}">
                                     {{ Auth::user()->role }} - {{ Auth::user()->name }}
                                 </span>
                                 <style>
-                                    a:hove span {
+                                    .profile.active{
+                                        color: #ff8800
+                                    }
+                                    .profile:hover{
                                         color: #ff8800
                                     }
                                 </style>
@@ -26,15 +29,13 @@
                             <a href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                                 class="nav-link text-body font-weight-bold px-0 ms-4">
-                                <i class="fa fa-sign-out me-1"></i>
-                                <span class="d-sm-inline d-none">Sign Out</span>
+                                <div class="sign-out">
+                                    <i class="fa fa-sign-out me-1"></i>
+                                    <span class="d-sm-inline d-none">Sign Out</span>
+                                </div>
                                 <style>
-                                    a:hover .fa-sign-out {
-                                        color: #D81B60;
-                                    }
-
-                                    a:hover span {
-                                        color: #D81B60;
+                                    .sign-out:hover {
+                                        color: #D81B60
                                     }
                                 </style>
                             </a>
