@@ -54,6 +54,10 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        a {
+            text-decoration: none;
+        }
+
         .bg-gradient-dark {
             backgr ound: linear-gradient(45deg, #000000, #3c3c3c);
         }

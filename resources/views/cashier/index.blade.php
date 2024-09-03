@@ -5,7 +5,7 @@
 @endsection
 @section('page-title', 'Cashier')
 @section('page', 'Cashier')
-@section('main')  
+@section('main')
     @include('cashier.main')
     <style>
         #reader {
@@ -22,7 +22,7 @@
             min-height: 100%;
         }
     </style>
-    
+
     <div class="container-fluid py-4 mt-4">
         <div class="row">
             <div class="col-md-12 d-flex">
@@ -33,8 +33,11 @@
                                 <h6 class="mb-2">Cashier</h6>
                                 <div class="input-group mb-2" style="max-width: 300px;">
                                     <form method="GET" action="{{ route('cashier.index') }}" class="d-flex w-100">
-                                        <input type="text" name="search" class="form-control" placeholder="Search orders" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px;">
-                                        <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px;">
+                                        <input type="text" name="search" class="form-control"
+                                            placeholder="Search orders" value="{{ request('search') }}"
+                                            style="border-radius: 20px 0 0 20px; height: 38px;">
+                                        <button type="submit" class="btn btn-primary"
+                                            style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px;">
                                             <i class="fas fa-search"></i>
                                         </button>
                                     </form>
@@ -48,11 +51,11 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Product</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Order Date</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Total Amount</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">name</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">product</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">order date</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">total amount</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -75,7 +78,8 @@
                                                 <td>
                                                     Rp {{ number_format($dt->total_amount) }}
                                                 </td>
-                                                <td style="color: {{ $dt->status === 'unpaid' ? 'red' : ($dt->status === 'paid' ? 'green' : 'black') }}">
+                                                <td
+                                                    style="color: {{ $dt->status === 'unpaid' ? 'red' : ($dt->status === 'paid' ? 'green' : 'black') }}">
                                                     {{ $dt->status }}
                                                 </td>
                                             </tr>

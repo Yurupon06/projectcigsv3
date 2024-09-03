@@ -44,9 +44,9 @@
         }
 
         let html5QrcodeScanner = new Html5Qrcode("reader");
-        html5QrcodeScanner.start(
-            { facingMode: "environment" },
-            {
+        html5QrcodeScanner.start({
+                facingMode: "environment"
+            }, {
                 fps: 30,
                 qrbox: 500
             },

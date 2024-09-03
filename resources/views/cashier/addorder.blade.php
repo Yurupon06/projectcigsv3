@@ -11,7 +11,7 @@
     <!-- Tables -->
     <div class="container-fluid mt-6 py-4">
         <div class="row">
-            @if(session('success'))
+            @if (session('success'))
                 <div class="alert alert-success" role="alert">
                     {{ session('success') }}
                 </div>
@@ -25,46 +25,54 @@
                                     @csrf
                                     <div class="mb-1 ms-3 me-3 mt-2">
                                         <label for="customer_id" class="form-label">Name</label>
-                                        <select id="customer_id" name="customer_id" class="ps-2 form-select" aria-label="Select Name">
+                                        <select id="customer_id" name="customer_id" class="ps-2 form-select"
+                                            aria-label="Select Name">
                                             <option selected disabled>Select Name</option>
-                                            @foreach($customer as $dt)
-                                                <option value="{{ $dt->id }}" {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
-                                                    {{ $dt->user->name }} ( {{$dt->phone}} )
+                                            @foreach ($customer as $dt)
+                                                <option value="{{ $dt->id }}"
+                                                    {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
+                                                    {{ $dt->user->name }} ( {{ $dt->phone }} )
                                                 </option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="mb-1 ms-3 me-3">
                                         <label for="product_id" class="form-label">Product</label>
-                                        <select id="product_id" name="product_id" class="ps-2 form-select" aria-label="Select Product">
+                                        <select id="product_id" name="product_id" class="ps-2 form-select"
+                                            aria-label="Select Product">
                                             <option selected disabled>Select Product</option>
-                                            @foreach($product as $dt)
-                                            <option value="{{ $dt->id }}" data-description="{{ $dt->description }}" data-price="{{ $dt->price }}" data-visit="{{$dt->productcat->visit}}">
-                                                {{ $dt->product_name }}
-                                            </option>
+                                            @foreach ($product as $dt)
+                                                <option value="{{ $dt->id }}"
+                                                    data-description="{{ $dt->description }}"
+                                                    data-price="{{ $dt->price }}"
+                                                    data-visit="{{ $dt->productcat->visit }}">
+                                                    {{ $dt->product_name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
-                                
+
                                     <div class="mb-1 ms-3 me-3">
                                         <label for="description" class="form-label">Product Description</label>
                                         <textarea id="description" class="ps-2 form-control" readonly></textarea>
                                     </div>
-                                
+
                                     <div class="mb-1 ms-3 me-3">
                                         <label for="price" class="form-label">Product Price</label>
-                                        <input type="text" id="price" name="price" class="ps-2 form-control" readonly>
+                                        <input type="text" id="price" name="price" class="ps-2 form-control"
+                                            readonly>
                                     </div>
                                     <div class="mb-1 ms-3 me-3">
                                         <label for="visit" class="form-label">Product visit</label>
-                                        <input type="text" id="visit" name="visit" class="ps-2 form-control" readonly>
+                                        <input type="text" id="visit" name="visit" class="ps-2 form-control"
+                                            readonly>
                                     </div>
-                                    
+
                                     <div class="ms-1 me-3 mt-2 text-end">
                                         <a href="#" type="button" class="btn btn-secondary">Cancel</a>
                                         <button type="submit" class="btn btn-primary">Make Order</button>
                                     </div>
-                                </form>                      
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -102,15 +110,15 @@
         </div>
     </div>
     <script>
-    document.getElementById('product_id').addEventListener('change', function() {
-        var selectedOption = this.options[this.selectedIndex];
-        var description = selectedOption.getAttribute('data-description');
-        var price = selectedOption.getAttribute('data-price');
-        var visit = selectedOption.getAttribute('data-visit');
+        document.getElementById('product_id').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var description = selectedOption.getAttribute('data-description');
+            var price = selectedOption.getAttribute('data-price');
+            var visit = selectedOption.getAttribute('data-visit');
 
-        document.getElementById('description').value = description;
-        document.getElementById('price').value = price;
-        document.getElementById('visit').value = visit;
-    });
-</script>
+            document.getElementById('description').value = description;
+            document.getElementById('price').value = price;
+            document.getElementById('visit').value = visit;
+        });
+    </script>
 @endsection
