@@ -26,8 +26,16 @@ class CashierController extends Controller
 
         $orders = Order::with(['customer.user', 'product'])
                         ->when($search, function ($query, $search) {
-                            return $query->whereHas('customer.user', function ($query) use ($search) {
-                                $query->where('name', 'like', "%{$search}%");
+                            return $query->where(function ($q) use ($search) {
+                                $q->whereHas('customer.user', function ($q) use ($search) {
+                                    $q->where('name', 'like', "%{$search}%");
+                                })
+                                ->orWhereHas('product', function ($q) use ($search) {
+                                    $q->where('product_name', 'like', "%{$search}%");
+                                })
+                                ->orWhere('order_date', 'like', "%{$search}%")
+                                ->orWhere('total_amount', 'like', "%{$search}%")
+                                ->orWhere('status', 'like', "%{$search}%");
                             });
                         })
                         ->where('status', '!=', 'paid')
@@ -60,19 +68,27 @@ class CashierController extends Controller
     {
         $search = $request->input('search');
 
-        $payments = Payment::whereHas('order', function($query) use ($search) {
-            $query->where('status', 'like', '%' . $search . '%')
-                ->orWhereHas('customer.user', function($query) use ($search) {
-                    $query->where('name', 'like', '%' . $search . '%');
+        $payments = Payment::with(['order.customer.user', 'order.product'])
+            ->where(function($query) use ($search) {
+                $query->whereHas('order.customer.user', function($q) use ($search) {
+                    $q->where('name', 'like', '%' . $search . '%');
                 })
-                ->orWhereHas('product', function($query) use ($search) {
-                    $query->where('product_name', 'like', '%' . $search . '%');
-                });
-        })
-        ->paginate(5);
+                ->orWhereHas('order.product', function($q) use ($search) {
+                    $q->where('product_name', 'like', '%' . $search . '%');
+                })
+                ->orWhereHas('order', function($q) use ($search) {
+                    $q->where('id', 'like', '%' . $search . '%')
+                      ->orWhere('status', 'like', '%' . $search . '%');
+                })
+                ->orWhere('amount', 'like', '%' . $search . '%')
+                ->orWhere('amount_given', 'like', '%' . $search . '%')
+                ->orWhere('change', 'like', '%' . $search . '%')
+                ->orWhere('payment_date', 'like', '%' . $search . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
 
-        $payment = Payment::with('order')->orderBy('created_at', 'desc')->get();
-        return view('cashier.payment', compact('payment', 'payments'));
+        return view('cashier.payment', compact('payments'));
     }
 
     public function store(Request $request, Order $order)
@@ -181,6 +197,8 @@ class CashierController extends Controller
             $query->where('name', 'LIKE', "%{$search}%");
         })
         ->orWhere('start_date', 'LIKE', "%{$search}%")
+        ->orWhere('end_date', 'LIKE', "%{$search}%")
+        ->orWhere('visit', 'LIKE', "%{$search}%")
         ->orWhere('status', 'LIKE', "%{$search}%")
         ->paginate(5);
         
@@ -346,19 +364,20 @@ class CashierController extends Controller
     {
         $search = $request->input('search');
         $membercheckins = MemberCheckin::with('member.customer.user')
-            ->when($request->search, function ($query, $search) {
-                $query->whereHas('member.customer.user', function ($query) use ($search) {
-                    $query->where('name', 'like', "%{$search}%")
-                        ->orWhere('phone', 'like', "%{$search}%")
-                        ->orWhere('qr_token', 'like', "%{$search}%");
-                });
-            })->orderBy('created_at', 'desc')
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('member.customer.user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })
+                ->orWhereHas('member.customer', function ($q) use ($search) {
+                    $q->where('phone', 'like', "%{$search}%");
+                })
+                ->orWhere('created_at', 'like', "%{$search}%");
+            })
+            ->orderBy('created_at', 'desc')
             ->paginate(5)
-                        ->appends(['search' => $search]);
+            ->appends(['search' => $search]);
 
-    
         return view('cashier.membercheckin', compact('membercheckins'));
-
     }
 
     public function getMemberDetails($qr_token)

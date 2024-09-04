@@ -19,7 +19,7 @@
                                 <div class="input-group mb-2" style="max-width: 300px;">
                                     <form method="GET" action="{{ route('cashier.membercheckin') }}" class="d-flex w-100">
                                         <input type="text" name="search" class="form-control"
-                                            placeholder="Search members" value="{{ request('search') }}"
+                                            placeholder="Search Member Checkin" value="{{ request('search') }}"
                                             style="border-radius: 20px 0 0 20px; height: 38px;">
                                         <button type="submit" class="btn btn-primary"
                                             style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px;">
@@ -38,7 +38,6 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">name</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Phone</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Qr Token</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Image</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Time</th>
                                         </tr>
@@ -58,10 +57,8 @@
                                                     {{ $dt->member->customer->phone }}
                                                 </td>
                                                 <td>
-                                                    {!! QrCode::size(50)->generate($dt->qr_token) !!} ({{ $dt->qr_token }} )
-                                                </td>
-                                                <td>
                                                     <img src="{{ asset('storage/' . $dt->image) }}" class="img-thumbnail" alt="Member Image" style="max-width: 100px; max-height: 100px;">
+
                                                 </td>
                                                 
                                                 <td style="color: rgb(0, 223, 0)">

@@ -113,27 +113,27 @@
 
     @media (min-width: 768px) {
         .iphone-SE .div {
-            max-width: 600px; /* Increase the width of the card on desktop */
-            padding: 40px; /* Increase padding on desktop */
+            max-width: 600px; 
+            padding: 40px; 
         }
 
         .iphone-SE .group {
-            margin-bottom: 30px; /* Increase spacing at the bottom of the group */
+            margin-bottom: 30px; 
         }
 
         .iphone-SE .overlap-group {
-            padding: 30px; /* Increase padding within the group */
+            padding: 30px; 
         }
 
         .iphone-SE .text-wrapper,
         .iphone-SE .text-wrapper-2,
         .iphone-SE .text-wrapper-3,
         .iphone-SE .text-wrapper-4 {
-            font-size: 24px; /* Increase font size on desktop */
+            font-size: 24px; 
         }
 
         .iphone-SE .overlap {
-            font-size: 20px; /* Adjust the font size of the button */
+            font-size: 20px; 
         }
     }
 
