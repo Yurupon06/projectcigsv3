@@ -135,6 +135,9 @@
                                             {{ $order->status }}
                                         </td>
                                     </tr>
+                                    <tr>
+                                        
+                                    </tr>
                                     @if ($order->status === 'unpaid')
                                     <tr>
                                         <td colspan="2">

@@ -10,7 +10,7 @@
 
     <!-- Tables -->
     <div class="container-fluid mt-6 py-4">
-        <div class="row">
+        <div class="row">   
             @if (session('success'))
                 <div class="alert alert-success small" role="alert">
                     {{ session('success') }}
@@ -24,17 +24,28 @@
                                 <form action="{{ route('make.order') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <div class="mb-1 ms-3 me-3 mt-2">
-                                        <label for="customer_id" class="form-label small">Name</label>
-                                        <select id="customer_id" name="customer_id" class="ps-2 form-select form-select-sm"
-                                            aria-label="Select Name">
-                                            <option selected disabled>Select Name</option>
-                                            @foreach ($customer as $dt)
-                                                <option value="{{ $dt->id }}"
-                                                    {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
-                                                    {{ $dt->user->name }} ( {{ $dt->phone }} )
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="customer_search" class="form-label">Search Name</label>
+                                                <input type="text" id="customer_search" class="form-control" placeholder="Type to search...">
+                                                <ul id="customer_search_results" class="list-group position-absolute w-100 d-none"></ul>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="customer_id" class="form-label">Select Name</label>
+                                                <select id="customer_id" name="customer_id" class="ps-2 form-select" aria-label="Select Name">
+                                                    @foreach ($customer as $dt)
+                                                        <option value="{{ $dt->id }}" data-name="{{ $dt->user->name }}" data-phone="{{ $dt->phone }}"
+                                                            {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
+                                                            {{ $dt->user->name }} ( {{ $dt->phone }} )
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <label for="selected_customer" class="form-label">Selected Customer</label>
+                                            <input type="text" id="selected_customer" class="form-control" readonly>
+                                        </div>
                                     </div>
                                     <div class="mb-1 ms-3 me-3">
                                         <label for="product_id" class="form-label small">Product</label>
@@ -69,8 +80,8 @@
                                     </div>
 
                                     <div class="ms-1 me-3 mt-2 text-end">
-                                        <a href="#" type="button" class="btn btn-secondary btn-sm">Cancel</a>
-                                        <button type="submit" class="btn btn-primary btn-sm">Make Order</button>
+                                        <a href="{{ route('cashier.index') }}" type="button" class="btn btn-secondary">Cancel</a>
+                                        <button type="submit" class="btn btn-primary">Make Order</button>
                                     </div>
                                 </form>
                             </div>
@@ -119,6 +130,97 @@
             document.getElementById('description').value = description;
             document.getElementById('price').value = price;
             document.getElementById('visit').value = visit;
+        });
+    </script>
+    <script>
+        document.getElementById('customer_search').addEventListener('input', function() {
+            var searchValue = this.value.toLowerCase();
+            var select = document.getElementById('customer_id');
+            var options = select.getElementsByTagName('option');
+            var selectedCustomerInput = document.getElementById('selected_customer');
+
+            for (var i = 0; i < options.length; i++) {
+                var option = options[i];
+                var name = option.getAttribute('data-name');
+                var phone = option.getAttribute('data-phone');
+
+                if (name && phone) {
+                    var text = (name + ' ' + phone).toLowerCase();
+                    if (text.indexOf(searchValue) > -1) {
+                        option.style.display = '';
+                        if (searchValue.length > 0) {
+                            selectedCustomerInput.value = name + ' (' + phone + ')';
+                            return;
+                        }
+                    } else {
+                        option.style.display = 'none';
+                    }
+                }
+            }
+
+            if (searchValue.length === 0) {
+                selectedCustomerInput.value = '';
+            }
+        });
+    </script>
+    <script>
+        document.getElementById('customer_id').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var name = selectedOption.getAttribute('data-name');
+            var phone = selectedOption.getAttribute('data-phone');
+            document.getElementById('selected_customer').value = name + ' (' + phone + ')';
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const customerSearch = document.getElementById('customer_search');
+            const customerSearchResults = document.getElementById('customer_search_results');
+            const customerSelect = document.getElementById('customer_id');
+            const selectedCustomerInput = document.getElementById('selected_customer');
+
+            customerSearch.addEventListener('input', function() {
+                const searchValue = this.value.toLowerCase();
+                const options = customerSelect.getElementsByTagName('option');
+                const results = [];
+
+                for (let option of options) {
+                    if (option.value && option.text.toLowerCase().includes(searchValue)) {
+                        results.push(option);
+                    }
+                }
+
+                displayResults(results);
+            });
+
+            function displayResults(results) {
+                customerSearchResults.innerHTML = '';
+                if (results.length > 0) {
+                    results.forEach(result => {
+                        const li = document.createElement('li');
+                        li.classList.add('list-group-item', 'list-group-item-action');
+                        li.textContent = result.text;
+                        li.addEventListener('click', () => selectCustomer(result));
+                        customerSearchResults.appendChild(li);
+                    });
+                    customerSearchResults.classList.remove('d-none');
+                } else {
+                    customerSearchResults.classList.add('d-none');
+                }
+            }
+
+            function selectCustomer(option) {
+                customerSelect.value = option.value;
+                selectedCustomerInput.value = option.text;
+                customerSearch.value = option.text;
+                customerSearchResults.classList.add('d-none');
+            }
+
+            // Sembunyikan hasil pencarian saat mengklik di luar area pencarian
+            document.addEventListener('click', function(event) {
+                if (!customerSearch.contains(event.target) && !customerSearchResults.contains(event.target)) {
+                    customerSearchResults.classList.add('d-none');
+                }
+            });
         });
     </script>
 @endsection
