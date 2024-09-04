@@ -93,13 +93,13 @@
                                 </tr>
                                 <tr>
                                     <th>Expired</th>
-                                    <td style="color:{{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
+                                    <td style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
                                         {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d F Y H:i') }}
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>Visit Left</th>
-                                    <td style="color:{{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
+                                    <td style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
                                         {{$member->visit}}
                                     </td>
                                 </tr>

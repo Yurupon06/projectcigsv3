@@ -91,19 +91,47 @@ class LandingController extends Controller
         return redirect()->route('landing.profile')->with('success', 'Password updated successfully.');
     }
 
-    public function order()
+    public function order(Request $request)
     {
         $user = Auth::user();
+        $search = $request->input('search');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
 
         if ($user && $user->role === 'customer') {
             $customer = Customer::where('user_id', $user->id)->first();
             $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-            $orders = $customer ? Order::where('customer_id', $customer->id)->orderBy('created_at', 'desc')->get() : collect([]);
-        
-            return view('landing.order', compact('orders', 'customer', 'member'));
+
+            if (!$startDate && !$endDate) {
+                $allOrders = Order::where('customer_id', $customer->id)->get();
+            }
+
+            $ordersQuery = Order::where('customer_id', $customer->id)
+                                ->orderBy('created_at', 'desc');
+
+            if ($search) {
+                $ordersQuery->whereHas('product', function ($query) use ($search) {
+                    $query->where('product_name', 'like', "%{$search}%");
+                });
+            }
+
+            if ($startDate && $endDate) {
+                $ordersQuery->whereDate('order_date', '>=', $startDate)
+                            ->whereDate('order_date', '<=', $endDate);
+            } elseif ($startDate) {
+                $ordersQuery->whereDate('order_date', '>=', $startDate);
+            } elseif ($endDate) {
+                $ordersQuery->whereDate('order_date', '<=', $endDate);
+            }
+
+            $orders = $ordersQuery->get();
+
+            return view('landing.order', compact('orders', 'customer', 'member', 'search', 'startDate', 'endDate'));
         }
+
         abort(403);
     }
+
 
     public function orderStore(Request $request)
     {

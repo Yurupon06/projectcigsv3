@@ -17,7 +17,12 @@
     }
 
     .navbar-horizontal-bottom .nav-link {
-        color: white;
+        color: #ffffff;
+        font-weight: 400;
+        border-radius: 0.375rem;
+        padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
     }
 
     .navbar-horizontal-bottom .nav-link.active {
@@ -25,23 +30,32 @@
     }
 
     .navbar-horizontal-bottom .nav-link:hover {
-        color: #ff8800;
+        background-color: #ff4b2b;
     }
 
-    @media (max-width: 768px) {
-        .navbar-horizontal-bottom {
-            position: static;
-            width: 100%;
-            bottom: auto;
+    .navbar-horizontal-bottom .nav-link .material-icons {
+        font-size: 1rem;
+        vertical-align: middle;
+    }
+
+    .navbar-horizontal-bottom .nav-link-text {
+        margin-left: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 813px) {
+        .navbar-horizontal-bottom .nav-link-text {
+            display: none; 
+        }
+
+        .navbar-horizontal-bottom .nav-link .material-icons {
+            font-size: 1.5rem; /* Increase icon size on small screens */
         }
     }
 </style>
 
-<main class="main-content position-relative max-height-vh-100 h-100">
-    <!-- Content -->
-    <!-- Your content here -->
 
-    <!-- Horizontal Navbar -->
+<main class="main-content position-relative max-height-vh-100 h-100">
     <nav class="navbar navbar-horizontal-bottom">
         <ul class="navbar-nav d-flex flex-row">
             <li class="nav-item">
