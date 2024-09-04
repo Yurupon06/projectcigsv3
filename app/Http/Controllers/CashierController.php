@@ -67,7 +67,7 @@ class CashierController extends Controller
                     $query->where('product_name', 'like', '%' . $search . '%');
                 });
         })
-        ->paginate(5);
+        ->paginate(7);
 
         $payment = Payment::with('order')->orderBy('created_at', 'desc')->get();
         return view('cashier.payment', compact('payment', 'payments'));

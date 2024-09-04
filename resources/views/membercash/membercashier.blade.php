@@ -8,7 +8,8 @@
 @section('main')
     @include('cashier.main')
 
-    <div class="container-fluid py-4 mt-6">
+
+    <div class="container-fluid py-4 mt-4">
         <div class="row">
             @if(session('success'))
                 <div class="alert alert-success">
@@ -17,13 +18,16 @@
             @endif
             <div class="col-12">
                 <div class="card my-4">
-                    <div class="card-header pb-0">
+                    <div class="card-header pb-0 py-1">
                         <div class="d-flex justify-content-between align-items-center">
                             <h6 class="mb-2">Member</h6>
                             <div class="input-group" style="max-width: 300px;">
-                                <form method="GET" action="{{ route('membercashier.membercash') }}" class="d-flex w-100">
-                                    <input type="text" name="search" class="form-control" placeholder="Search membership" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px;">
-                                    <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px;">
+                                <form method="GET" action="{{ route('cashier.index') }}" class="d-flex w-100 pt-2">
+                                    <input type="text" name="search" class="form-control"
+                                        placeholder="Search orders" value="{{ request('search') }}"
+                                        style="border-radius: 15px 0 0 15px; height: 32px; font-size: 12px;">
+                                    <button type="submit" class="btn btn-primary"
+                                        style="background-color: #ff7e00; border-radius: 0 15px 15px 0; height: 32px; padding: 0 10px; font-size: 12px;">
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </form>
