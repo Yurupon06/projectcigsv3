@@ -118,49 +118,31 @@
                                 <tbody>
                                     @foreach ($orders as $i => $dt)
                                         <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">name</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">product</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">order date</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">total amount</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">status</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
+                                            <td>
+                                                <div class="d-flex px-2 py-1">
+                                                    {{ $i + 1 + ($orders->currentPage() - 1) * $orders->perPage() }}
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {{ $dt->customer->user->name }}
+                                            </td>
+                                            <td>
+                                                {{ $dt->product->product_name }}
+                                            </td>
+                                            <td>
+                                                {{ \Carbon\Carbon::parse($dt->order_date)->translatedFormat('d F Y H:i') }}
+                                            </td>
+                                            <td>
+                                                Rp {{ number_format($dt->total_amount) }}
+                                            </td>
+                                            <td
+                                                style="color: {{ $dt->status === 'unpaid' ? 'red' : ($dt->status === 'paid' ? 'green' : 'black') }}">
+                                                {{ $dt->status }}
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($orders as $i => $dt)
-                                            <tr>
-                                                <td>
-                                                    <div class="d-flex px-2 py-1">
-                                                        {{ $i + 1 + ($orders->currentPage() - 1) * $orders->perPage() }}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    {{ $dt->customer->user->name }}
-                                                </td>
-                                                <td>
-                                                    {{ $dt->product->product_name }}
-                                                </td>
-                                                <td>
-                                                    {{ \Carbon\Carbon::parse($dt->order_date)->translatedFormat('d F Y H:i') }}
-                                                </td>
-                                                <td>
-                                                    Rp {{ number_format($dt->total_amount) }}
-                                                </td>
-                                                <td
-                                                    style="color: {{ $dt->status === 'unpaid' ? 'red' : ($dt->status === 'paid' ? 'green' : 'black') }}">
-                                                    {{ $dt->status }}
-                                                </td>
-                                                <td class="align-middle text-center text-sm">
-                                                    <a href="{{route('cashier.qrscan', $dt->qr_token)}}">
-                                                    <span class="btn bg-gradient-info ws-15 my-4 mb-2 btn-sm">Detail</span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="container-fluid">
