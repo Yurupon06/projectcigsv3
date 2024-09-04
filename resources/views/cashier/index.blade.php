@@ -34,7 +34,7 @@
                                 <div class="input-group mb-2" style="max-width: 300px;">
                                     <form method="GET" action="{{ route('cashier.index') }}" class="d-flex w-100">
                                         <input type="text" name="search" class="form-control"
-                                            placeholder="Search orders" value="{{ request('search') }}"
+                                            placeholder="Search Customer" value="{{ request('search') }}"
                                             style="border-radius: 20px 0 0 20px; height: 38px;">
                                         <button type="submit" class="btn btn-primary"
                                             style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px;">
