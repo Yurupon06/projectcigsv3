@@ -27,6 +27,8 @@
         font-weight: 400;
         border-radius: 0.375rem;
         padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
     }
 
     .navbar-horizontal-bottom .nav-link.active {
@@ -39,20 +41,28 @@
     }
 
     .navbar-horizontal-bottom .nav-link .material-icons {
-        font-size: 1.5rem;
+        font-size: 1rem;
         vertical-align: middle;
     }
 
     .navbar-horizontal-bottom .nav-link-text {
         margin-left: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 813px) {
+        .navbar-horizontal-bottom .nav-link-text {
+            display: none; 
+        }
+
+        .navbar-horizontal-bottom .nav-link .material-icons {
+            font-size: 1.5rem; /* Increase icon size on small screens */
+        }
     }
 </style>
 
-<main class="main-content position-relative max-height-vh-100 h-100">
-    <!-- Content -->
-    <!-- Your content here -->
 
-    <!-- Horizontal Navbar -->
+<main class="main-content position-relative max-height-vh-100 h-100">
     <nav class="navbar navbar-horizontal-bottom">
         <ul class="navbar-nav d-flex flex-row">
             <li class="nav-item">
@@ -62,31 +72,36 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('cashier/order') ? 'active' : '' }}" href="{{ route('cashier.order') }}">
+                <a class="nav-link {{ request()->is('cashier/order', 'cashier/qrscan*') ? 'active' : '' }}"
+                    href="{{ route('cashier.order') }}">
                     <i class="material-icons">add_shopping_cart</i>
                     <span class="nav-link-text ms-1">Add Order</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('cashier/payment') ? 'active' : '' }}" href="{{ route('cashier.payment') }}">
+                <a class="nav-link {{ request()->is('cashier/payment') ? 'active' : '' }}"
+                    href="{{ route('cashier.payment') }}">
                     <i class="material-icons">payments</i>
                     <span class="nav-link-text ms-1">Payment</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('membercash/membercashier') ? 'active' : '' }}" href="{{ route('membercashier.membercash') }}">
+                <a class="nav-link {{ request()->is('cashier/membership', 'cashier/member/*') ? 'active' : '' }}"
+                    href="{{ route('membercashier.membercash') }}">
                     <i class="material-icons">groups</i>
                     <span class="nav-link-text ms-1">Member</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('cashier/membercheckin') ? 'active' : '' }}" href="{{ route('cashier.membercheckin') }}">
+                <a class="nav-link {{ request()->is('cashier/membercheckin') ? 'active' : '' }}"
+                    href="{{ route('cashier.membercheckin') }}">
                     <i class="material-icons">cyclone</i>
                     <span class="nav-link-text ms-1">Member Check In</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('checkin') ? 'active' : '' }}" href="{{ route('cashier.checkin') }}">
+                <a class="nav-link {{ request()->is('checkin') ? 'active' : '' }}"
+                    href="{{ route('cashier.checkin') }}">
                     <i class="material-icons">qr_code_scanner</i>
                     <span class="nav-link-text ms-1">Check In Scanner</span>
                 </a>

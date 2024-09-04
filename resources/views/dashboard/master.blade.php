@@ -54,6 +54,10 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        a {
+            text-decoration: none;
+        }
+
         .bg-gradient-dark {
             backgr ound: linear-gradient(45deg, #000000, #3c3c3c);
         }
@@ -486,6 +490,17 @@
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../../assets/js/material-dashboard.min.js?v=3.1.0"></script>
 
+    <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+      </script>
+
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+  </script>
 
 </body>
 

@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Check In Scanner</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
+    <link rel="icon" type="image/png"
+        href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 
     <style>
         #reader {
@@ -25,11 +27,14 @@
             padding: 5px;
         }
 
-        #success-message, #error-message, #countdown {
+        #success-message,
+        #error-message,
+        #countdown {
             display: none;
         }
     </style>
 </head>
+
 <body>
     <div class="container mt-5 text-center">
         @if (session('message'))
@@ -77,7 +82,7 @@
     <script>
         let scanCompleted = false;
         let html5QrcodeScanner = new Html5Qrcode("reader");
-    
+
         function onScanSuccess(decodedText) {
             if (scanCompleted) return;
 
@@ -90,7 +95,7 @@
                         const errorMessage = document.getElementById('error-message');
                         errorMessage.textContent = data.error;
                         errorMessage.style.display = 'block';
-                        scanCompleted = false; 
+                        scanCompleted = false;
 
                         document.getElementById('error-sound').play();
 
@@ -125,34 +130,35 @@
                         }, 1000);
 
                         fetch('/store-checkin', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            body: JSON.stringify({
-                                qr_token: decodedText,
-                                image: null
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                        'content')
+                                },
+                                body: JSON.stringify({
+                                    qr_token: decodedText,
+                                    image: null
+                                })
                             })
-                        })
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.success) {
-                                console.log('Check-in recorded successfully');
-                                console.log('New QR token:', result.new_qr_token);
-                            } else {
-                                const errorMessage = document.getElementById('error-message');
-                                errorMessage.textContent = result.message;
-                                errorMessage.style.display = 'block';
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.success) {
+                                    console.log('Check-in recorded successfully');
+                                    console.log('New QR token:', result.new_qr_token);
+                                } else {
+                                    const errorMessage = document.getElementById('error-message');
+                                    errorMessage.textContent = result.message;
+                                    errorMessage.style.display = 'block';
 
-                                document.getElementById('error-sound').play();
-                                
-                                setTimeout(() => {
-                                    errorMessage.style.display = 'none';
-                                }, 3000);
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                                    document.getElementById('error-sound').play();
+
+                                    setTimeout(() => {
+                                        errorMessage.style.display = 'none';
+                                    }, 3000);
+                                }
+                            })
+                            .catch(error => console.error('Error:', error));
 
                         html5QrcodeScanner.stop().then(ignore => {
                             console.log("QR code scanning stopped.");
@@ -177,9 +183,9 @@
                 });
         }
 
-        html5QrcodeScanner.start(
-            { facingMode: "environment" },
-            {
+        html5QrcodeScanner.start({
+                facingMode: "environment"
+            }, {
                 fps: 30,
                 qrbox: 500
             },
@@ -187,7 +193,7 @@
         ).catch(err => {
             console.error("Error starting QR code scanner: ", err);
         });
-
     </script>
 </body>
+
 </html>

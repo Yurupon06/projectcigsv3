@@ -21,6 +21,7 @@
         font-weight: bold;
         text-decoration: none;
     }
+
 /* Gaya default untuk menu */
 .main-menu li a {
     color: #000;
@@ -108,6 +109,9 @@
                         <li class="{{ request()->routeIs('landing.index') ? 'active' : ''}}">
                             <a href="{{ route('landing.index') }}">Home</a>
                         </li>
+                        <li class="{{ request()->routeIs('f&b.index') ? 'active' : ''}}">
+                            <a href="{{ route('f&b.index') }}">Product</a>
+                        </li>
                         <li class="{{ request()->routeIs('yourorder.index') ? 'active' : '' }}">
                             <a href="{{ route('yourorder.index') }}">My Order</a>
                         </li>
@@ -124,11 +128,33 @@
 
                 <div class="wrap-icon-header flex-w flex-r-m h-full">
                 @auth
-                    @if(auth()->user()->role == 'cashier')
+                    @if(auth()->user()->role == 'admin')
+                    <a href="{{ route('dashboard.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black">
+                        {{ Auth::user()->name }}
+                    </a>
+                    <a href="{{ route('dashboard.index') }}" class="flex-c-m trans-04 p-lr-25 link-black text-capitalize">
+                        dashboard
+                    </a>
+                    <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        Logout
+                    </a>
+                    @elseif(auth()->user()->role == 'cashier')
+                        <a href="{{ route('cashier.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black">
+                            {{ Auth::user()->name }}
+                        </a>
+                        <a href="{{ route('cashier.index') }}" class="flex-c-m trans-04 p-lr-25 link-black text-capitalize">
+                            {{ Auth::user()->role }}
+                        </a>
+                        <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                    @elseif (auth()->user()->role == 'admin')
                         <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
                             {{ Auth::user()->name }}
                         </a>
-                        <a href="{{ route('cashier.index') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('cashier.index') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.index') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
                             {{ Auth::user()->role }}
                         </a>
                         <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
@@ -194,6 +220,9 @@
             @endauth
             <li>
                 <a href="{{ route('landing.index') }}">Home</a>
+            </li>
+            <li>
+                <a href="{{ route('f&b.index') }}">Product</a>
             </li>
             <li>
                 <a href="{{ route('yourorder.index') }}">My Order</a>

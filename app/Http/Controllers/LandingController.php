@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\Member;
 use App\Models\Membercheckin;
 use App\Models\Order;
+use App\Models\complement;
 use Carbon\Carbon;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
@@ -95,14 +96,14 @@ class LandingController extends Controller
         $user = Auth::user();
         $search = $request->input('search');
         $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date', now()->endOfDay()->format('Y-m-d H:i:s'));
+        $endDate = $request->input('end_date');
+
         if ($user && $user->role === 'customer') {
             $customer = Customer::where('user_id', $user->id)->first();
             $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
 
-            if (!$startDate) {
-                $startDate = Order::where('customer_id', $customer->id)
-                                ->min('order_date');
+            if (!$startDate && !$endDate) {
+                $allOrders = Order::where('customer_id', $customer->id)->get();
             }
 
             $ordersQuery = Order::where('customer_id', $customer->id)
@@ -115,7 +116,8 @@ class LandingController extends Controller
             }
 
             if ($startDate && $endDate) {
-                $ordersQuery->whereBetween('order_date', [$startDate, $endDate]);
+                $ordersQuery->whereDate('order_date', '>=', $startDate)
+                            ->whereDate('order_date', '<=', $endDate);
             } elseif ($startDate) {
                 $ordersQuery->whereDate('order_date', '>=', $startDate);
             } elseif ($endDate) {
@@ -235,5 +237,26 @@ class LandingController extends Controller
         }
     
         return view('landing.history', compact('memberckin', 'member'));
+    }
+
+    public function complement(Request $request)
+    {
+        $category = $request->get('category');
+    
+        // Check if a category is selected, otherwise show all complements
+        $complement = $category ? Complement::where('category', $category)->get() : Complement::all();
+
+        $user = Auth::user();
+        $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        return view('landing.complement.index', compact('complement', 'user', 'customer', 'member', 'category'));
+    }
+    public function complementDetail($id)
+    {
+        $complement = complement::findOrFail($id);
+        $user = Auth::user();
+        $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        return view('landing.complement.detail', compact('complement', 'user', 'customer', 'member'));
     }
 }
