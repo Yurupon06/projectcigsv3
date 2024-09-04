@@ -9,7 +9,7 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $payments = Payment::with('order')->get();
-        return view('payment.index', compact('payments'));
+        $payment = Payment::with('order')->get();
+        return view('payment.index', compact('payment'));
     }
 }
