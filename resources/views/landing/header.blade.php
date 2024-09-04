@@ -20,6 +20,7 @@
         color: #007BFF;
         font-weight: bold;
         text-decoration: none;
+    }
 /* Gaya default untuk menu */
 .main-menu li a {
     color: #000;
