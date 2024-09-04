@@ -311,7 +311,7 @@ class CashierController extends Controller
             ]
         );
 
-        return redirect()->route('cashier.profill')->with('success', 'Profile updated successfully.');
+        return redirect()->route('cashier.profile')->with('success', 'Profile updated successfully.');
     }
 
     public function updatePassword(Request $request)

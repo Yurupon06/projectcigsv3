@@ -36,7 +36,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($payments as $i => $dt)
+                                    @foreach ($payment as $i => $dt)
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
