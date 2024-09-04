@@ -66,7 +66,7 @@ class DashboardController extends Controller
             ->orderBy('date')
             ->pluck('count', 'date');
 
-        // Ensure each day in the past 7 days has a value (0 if no data)
+        // Ensure each day in the past has a value (0 if no data)
         $datesWeekly = [];
         $datesMonthly = [];
         $ordersData = [];
@@ -91,7 +91,6 @@ class DashboardController extends Controller
             $membersData[] = $members->get($date, 0);
         }
 
-        // Get latest products count
         return view('dashboard.home', compact(
             'datesWeekly',
             'datesMonthly',
