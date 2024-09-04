@@ -21,7 +21,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->is('productcategories*') ? 'active' : '' }}"
+                <a class="nav-link text-white {{ request()->routeIs('productcategories.*') ? 'active' : '' }}"
                     href="{{ route('productcategories.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">category</i>
@@ -30,12 +30,21 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->is('product*') ? 'active' : '' }}"
+                <a class="nav-link text-white {{ request()->routeIs('product.*') ? 'active' : '' }}"
                     href="{{ route('product.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">inventory_2</i>
                     </div>
                     <span class="nav-link-text ms-1">Product</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white {{ request()->is('complement*') ? 'active' : '' }}"
+                    href="{{ route('complement.index') }}">
+                    <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="material-icons opacity-10">inventory_2</i>
+                    </div>
+                    <span class="nav-link-text ms-1">complement</span>
                 </a>
             </li>
             <li class="nav-item">

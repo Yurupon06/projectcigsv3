@@ -7,7 +7,6 @@
 @section('page', 'Payment')
 @section('main')
     @include('dashboard.main')
-
     <div class="container-fluid py-4">
         <div class="row">
             @if (session('success'))
@@ -37,7 +36,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($payment as $i => $dt)
+                                    @foreach ($payments as $i => $dt)
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">

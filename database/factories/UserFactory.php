@@ -25,11 +25,33 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => preg_replace('/@.*$/', '@gmail.com', $this->faker->unique()->safeEmail),
+            'phone' => Str::random(12),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => bcrypt('123'),
+            'role' => 'customer',
             'remember_token' => Str::random(10),
         ];
+    }
+
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+        ]);
+    }
+
+    public function cashier(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'cashier',
+        ]);
+    }
+    public function customer(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'customer',
+        ]);
     }
 
     /**

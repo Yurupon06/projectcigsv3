@@ -94,6 +94,7 @@
         }
     </style>
 
+<<<<<<< HEAD
     <header class="header-v2">
         <!-- Header desktop -->
         <div class="container-menu-desktop trans-03">
@@ -148,6 +149,74 @@
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
+=======
+<header class="header-v2">
+    <!-- Header desktop -->
+    <div class="container-menu-desktop trans-03">
+        <div class="wrap-menu-desktop">
+            <nav class="limiter-menu-desktop p-l-45">
+                <!-- Menu desktop -->
+                <div class="menu-desktop">
+                    <ul class="main-menu">
+                        <li>
+                            <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" width="50px" height="50px">
+                        </li>
+                        <li class="{{ request()->routeIs('landing.index') ? 'active' : ''}}">
+                            <a href="{{ route('landing.index') }}">Home</a>
+                        </li>
+                        <li class="{{ request()->routeIs('f&b.index') ? 'active' : ''}}">
+                            <a href="{{ route('f&b.index') }}">Product</a>
+                        </li>
+                        <li class="{{ request()->routeIs('yourorder.index') ? 'active' : '' }}">
+                            <a href="{{ route('yourorder.index') }}">My Order</a>
+                        </li>
+                        <li class="{{ request()->routeIs('customer.membership') ? 'active' : '' }}">
+                            @auth
+                                @if($member)
+                                    <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                                @endif
+                            @endauth
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div class="wrap-icon-header flex-w flex-r-m h-full">
+                @auth
+                    @if(auth()->user()->role == 'admin')
+                    <a href="{{ route('dashboard.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black">
+                        {{ Auth::user()->name }}
+                    </a>
+                    <a href="{{ route('dashboard.index') }}" class="flex-c-m trans-04 p-lr-25 link-black text-capitalize">
+                        dashboard
+                    </a>
+                    <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        Logout
+                    </a>
+                    @elseif(auth()->user()->role == 'cashier')
+                        <a href="{{ route('cashier.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black">
+                            {{ Auth::user()->name }}
+                        </a>
+                        <a href="{{ route('cashier.index') }}" class="flex-c-m trans-04 p-lr-25 link-black text-capitalize">
+                            {{ Auth::user()->role }}
+                        </a>
+                        <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                    @elseif (auth()->user()->role == 'admin')
+                        <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
+                            {{ Auth::user()->name }}
+                        </a>
+                        <a href="{{ route('dashboard.index') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('dashboard.index') ? 'active' : '' }}">
+                            {{ Auth::user()->role }}
+                        </a>
+                        <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+>>>>>>> b86e52554eb1469715fb97251433fc7f0458ae85
                     @else
                         <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('login') ? 'active' : '' }}">
                             Login
@@ -172,6 +241,7 @@
             @else
                 <a href="{{ route('login') }}" class="btn-auth-mobile link-black">Login</a>
             @endauth
+<<<<<<< HEAD
             <!-- Button show menu -->
             <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
                 <span class="hamburger-box">
@@ -189,6 +259,22 @@
                         {{ Auth::user()->name }}
                     </a>
                 </li>
+=======
+            <li>
+                <a href="{{ route('landing.index') }}">Home</a>
+            </li>
+            <li>
+                <a href="{{ route('f&b.index') }}">Product</a>
+            </li>
+            <li>
+                <a href="{{ route('yourorder.index') }}">My Order</a>
+            </li>
+            @auth
+                @if($member)
+                    <li>
+                        <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                    </li>
+>>>>>>> b86e52554eb1469715fb97251433fc7f0458ae85
                 @else
                 
                 @endauth
