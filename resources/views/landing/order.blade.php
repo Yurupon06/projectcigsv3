@@ -29,6 +29,21 @@
     </style>
 
     <div class="container mt-4">
+        <div class="d-flex justify-content-end mb-4">
+            <form method="GET" action="{{ route('yourorder.index') }}" class="d-flex">
+                <input type="text" name="search" class="form-control" placeholder="Search" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px; width: 250px;">
+                <div class="form-group">
+                    <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date', $startDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}">
+                </div>
+                <div class="form-group">
+                    <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date', $endDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}">
+                </div>
+                <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px;">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+        
         <div class="row">
             <div class="col-12 d-none d-lg-block">
                 <div class="row">

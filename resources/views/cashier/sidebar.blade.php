@@ -3,7 +3,7 @@
         font-family: 'Poppins', sans-serif;
         margin: 0;
         padding: 0;
-        overflow-x: hidden; /* Mencegah scroll horizontal */
+        overflow-x: hidden; /* Prevent horizontal scrolling */
     }
 
     .navbar-horizontal-bottom {
@@ -13,13 +13,7 @@
         right: 0;
         background: linear-gradient(45deg, #000000, #3c3c3c);
         border-top: 1px solid #ffffff;
-        z-index: 1030; /* Menjaga navbar tetap di atas konten */
-    }
-
-    .navbar-horizontal-bottom .navbar-nav {
-        display: flex;
-        justify-content: space-around;
-        padding: 0.5rem 1rem;
+        z-index: 1030; /* Keep navbar above content */
     }
 
     .navbar-horizontal-bottom .nav-link {
@@ -27,11 +21,12 @@
         font-weight: 400;
         border-radius: 0.375rem;
         padding: 0.5rem 1rem;
+        display: flex;
+        align-items: center;
     }
 
     .navbar-horizontal-bottom .nav-link.active {
-        background-color: #ff6f00;
-        margin: 0 0.5rem;
+        color: #ff8800;
     }
 
     .navbar-horizontal-bottom .nav-link:hover {
@@ -39,20 +34,28 @@
     }
 
     .navbar-horizontal-bottom .nav-link .material-icons {
-        font-size: 1.5rem;
+        font-size: 1rem;
         vertical-align: middle;
     }
 
     .navbar-horizontal-bottom .nav-link-text {
         margin-left: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    @media (max-width: 813px) {
+        .navbar-horizontal-bottom .nav-link-text {
+            display: none; 
+        }
+
+        .navbar-horizontal-bottom .nav-link .material-icons {
+            font-size: 1.5rem; /* Increase icon size on small screens */
+        }
     }
 </style>
 
-<main class="main-content position-relative max-height-vh-100 h-100">
-    <!-- Content -->
-    <!-- Your content here -->
 
-    <!-- Horizontal Navbar -->
+<main class="main-content position-relative max-height-vh-100 h-100">
     <nav class="navbar navbar-horizontal-bottom">
         <ul class="navbar-nav d-flex flex-row">
             <li class="nav-item">

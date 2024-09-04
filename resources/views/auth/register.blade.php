@@ -180,9 +180,7 @@
                                 <input type="password" class="form-control" id="floatingPasswordConfirm" name="password_confirmation" required autocomplete="new-password">
                                 <label for="floatingPasswordConfirm">Confirm Password</label>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Register</button>
-                            <a href="{{ url()->previous() }}" class="btn btn-back w-100 mt-3">Back</a>
-                        </form>
+                            <button type="submit" class="btn btn-primary w-100">Register</button>                        </form>
                     </div>
                     <div class="card-footer text-center">
                         <p>Already have an account? <a href="{{ route('login') }}" style="color: #ff4b2b;">Login</a></p>

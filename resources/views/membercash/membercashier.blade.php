@@ -20,9 +20,9 @@
                     <div class="card-header pb-0">
                         <div class="d-flex justify-content-between align-items-center">
                             <h6 class="mb-2">Member</h6>
-                            <div class="input-group mb-2" style="max-width: 300px;">
+                            <div class="input-group" style="max-width: 300px;">
                                 <form method="GET" action="{{ route('membercashier.membercash') }}" class="d-flex w-100">
-                                    <input type="text" name="search" class="form-control" placeholder="Search members" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px;">
+                                    <input type="text" name="search" class="form-control" placeholder="Search membership" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px;">
                                     <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px;">
                                         <i class="fas fa-search"></i>
                                     </button>
@@ -46,26 +46,26 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($members as $i => $member)
-                                        <tr>
+                                        <tr style="line-height: 1.2;">
                                             <td class="text-center">
-                                                <div class="d-flex px-2 py-1">
+                                                <div class="d-flex px-2 py-1" style="padding: 5px 0;">
                                                     {{ $i + 1 }} .
                                                 </div>
                                             </td>
-                                            <td>{{ $member->customer->user->name }}</td>
-                                            <td style="color: {{ $member->status === 'inactive' ? 'red' : ($member->status === 'active' ? 'blue' : 'black') }}">
+                                            <td style="padding: 5px 8px;">{{ $member->customer->user->name }}</td>
+                                            <td style="padding: 5px 8px; color: {{ $member->status === 'inactive' ? 'red' : ($member->status === 'active' ? 'blue' : 'black') }}">
                                                 {{ \Carbon\Carbon::parse($member->start_date)->translatedFormat('d F Y') }}
                                             </td>
-                                            <td style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'red') }}">
+                                            <td style="padding: 5px 8px; color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'red') }}">
                                                 {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d F Y') }}
                                             </td>
-                                            <td>{{ $member->visit }}</td>
-                                            <td style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
+                                            <td style="padding: 5px 8px;">{{ $member->visit }}</td>
+                                            <td style="padding: 5px 8px; color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
                                                 {{ $member->status }}
                                             </td>
-                                            <td class="align-middle text-center text-sm">
+                                            <td class="align-middle text-center text-sm" style="padding: 5px 8px;">
                                                 <a href="{{ route('cashier.member', $member->id) }}">
-                                                <span class="btn bg-gradient-info ws-15 my-4 mb-2 btn-sm">Detail</span>
+                                                    <span class="btn bg-gradient-info ws-15 my-27 btn-sm">Detail</span>
                                                 </a>
                                             </td>
                                         </tr>
