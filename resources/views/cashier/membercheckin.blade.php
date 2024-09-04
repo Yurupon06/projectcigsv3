@@ -61,8 +61,9 @@
                                                     {!! QrCode::size(50)->generate($dt->qr_token) !!} ({{ $dt->qr_token }} )
                                                 </td>
                                                 <td>
-                                                    {{ $dt->image }}
+                                                    <img src="{{ asset('storage/' . $dt->image) }}" class="img-thumbnail" alt="Member Image" style="max-width: 100px; max-height: 100px;">
                                                 </td>
+                                                
                                                 <td style="color: rgb(0, 223, 0)">
                                                     {{ $dt->created_at->setTimezone('Asia/Jakarta') }}
                                                 </td>

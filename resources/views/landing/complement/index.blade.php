@@ -55,7 +55,7 @@
 			<div class="bg0 m-t-23 p-b-140">
 				<div class="container">
 					<div class="row isotope-grid">
-						@foreach($complement as $dt)
+						@forelse($complement as $dt)
 						<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ">
 							<div class="block2">
 								<div class="block2-pic hov-img0" style="width: 15rem !important; height: 15rem;">
@@ -77,7 +77,9 @@
 								</div>
 							</div>
 						</div>
-						@endforeach
+						@empty
+						<p class="text-center">No Complement found.</p>
+						@endforelse
 					</div>
 				</div>
 			</div>

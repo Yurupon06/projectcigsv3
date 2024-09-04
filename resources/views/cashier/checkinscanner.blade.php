@@ -82,12 +82,21 @@
     <script>
         let scanCompleted = false;
         let html5QrcodeScanner = new Html5Qrcode("reader");
-
+    
         function onScanSuccess(decodedText) {
             if (scanCompleted) return;
-
+    
             scanCompleted = true;
-
+    
+            // Capture image from video stream
+            const video = document.querySelector('#reader video');
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageBase64 = canvas.toDataURL('image/png'); 
+    
             fetch(`/member-details/${decodedText}`)
                 .then(response => response.json())
                 .then(data => {
@@ -96,9 +105,9 @@
                         errorMessage.textContent = data.error;
                         errorMessage.style.display = 'block';
                         scanCompleted = false;
-
+    
                         document.getElementById('error-sound').play();
-
+    
                         setTimeout(() => {
                             errorMessage.style.display = 'none';
                         }, 3000);
@@ -106,29 +115,29 @@
                         document.getElementById('name').textContent = data.name;
                         document.getElementById('phone').textContent = data.phone;
                         document.getElementById('expiration').textContent = data.expired_date;
-
+    
                         const successMessage = document.getElementById('success-message');
                         const countdown = document.getElementById('countdown');
                         const errorMessage = document.getElementById('error-message');
                         successMessage.style.display = 'block';
                         countdown.style.display = 'block';
                         errorMessage.style.display = 'none';
-
+    
                         document.getElementById('success-sound').play();
-
+    
                         let countdownValue = 5;
-
+    
                         const interval = setInterval(() => {
                             countdown.textContent = `Refreshing in ${countdownValue} seconds...`;
                             countdownValue--;
-
+    
                             if (countdownValue < 0) {
                                 clearInterval(interval);
                                 countdown.style.display = 'none';
                                 location.reload();
                             }
                         }, 1000);
-
+    
                         fetch('/store-checkin', {
                                 method: 'POST',
                                 headers: {
@@ -138,7 +147,7 @@
                                 },
                                 body: JSON.stringify({
                                     qr_token: decodedText,
-                                    image: null
+                                    image: imageBase64 
                                 })
                             })
                             .then(response => response.json())
@@ -150,16 +159,16 @@
                                     const errorMessage = document.getElementById('error-message');
                                     errorMessage.textContent = result.message;
                                     errorMessage.style.display = 'block';
-
+    
                                     document.getElementById('error-sound').play();
-
+    
                                     setTimeout(() => {
                                         errorMessage.style.display = 'none';
                                     }, 3000);
                                 }
                             })
                             .catch(error => console.error('Error:', error));
-
+    
                         html5QrcodeScanner.stop().then(ignore => {
                             console.log("QR code scanning stopped.");
                         }).catch(err => {
@@ -170,19 +179,19 @@
                 .catch(error => {
                     console.error('Error fetching member details:', error);
                     const errorMessage = document.getElementById('error-message');
-                    errorMessage.textContent = 'Invalid Qr.';
+                    errorMessage.textContent = 'Invalid QR.';
                     errorMessage.style.display = 'block';
-
+    
                     document.getElementById('error-sound').play();
-
+    
                     scanCompleted = false;
-
+    
                     setTimeout(() => {
                         errorMessage.style.display = 'none';
                     }, 3000);
                 });
         }
-
+    
         html5QrcodeScanner.start({
                 facingMode: "environment"
             }, {
@@ -194,6 +203,7 @@
             console.error("Error starting QR code scanner: ", err);
         });
     </script>
+    
 </body>
 
 </html>

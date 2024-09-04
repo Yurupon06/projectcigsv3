@@ -11,7 +11,6 @@
         #reader {
             width: 100%;
             height: 350px;
-            margin: auto;
         }
 
         #reader video {
@@ -25,8 +24,8 @@
 
     <div class="container-fluid py-4 mt-4">
         <div class="row">
-            <div class="col-md-12 d-flex">
-                <div class="col-md-8 me-2" style="overflow: hidden;">
+            <div class="col-md-12 d-flex flex-column flex-md-row">
+                <div class="col-md-8 me-md-2 mb-4 mb-md-0" style="overflow: hidden;">
                     <div class="card my-4">
                         <div class="card-header pb-0">
                             <div class="d-flex justify-content-between align-items-center">
@@ -42,7 +41,6 @@
                                         </button>
                                     </form>
                                 </div>
-
                             </div>
                         </div>
                         <div class="card-body px-0 pb-1">
@@ -56,6 +54,7 @@
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">order date</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">total amount</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">status</th>
+                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -82,6 +81,11 @@
                                                     style="color: {{ $dt->status === 'unpaid' ? 'red' : ($dt->status === 'paid' ? 'green' : 'black') }}">
                                                     {{ $dt->status }}
                                                 </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    <a href="{{route('cashier.qrscan', $dt->qr_token)}}">
+                                                    <span class="btn bg-gradient-info ws-15 my-4 mb-2 btn-sm">Detail</span>
+                                                    </a>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -99,7 +103,7 @@
                 </div>
 
                 <div class="col-md-4 qr-section">
-                    <div class="card mt-4 tbl" style="height: 92%;">
+                    <div class="card mt-4 tbl">
                         <div class="card-header">
                             <h6>Scanner For Order</h6>
                         </div>
@@ -119,17 +123,17 @@
     <script>
         let html5QrcodeScanner = new Html5Qrcode("reader");
         let isScanning = false;
-    
+
         function onScanSuccess(decodedText, decodedResult) {
             let qrToken = decodedText.trim();
             let url = `{{ route('cashier.qrscan', ['qr_token' => '__TOKEN__']) }}`.replace('__TOKEN__', qrToken);
             window.location.href = url;
         }
-    
+
         function onScanFailure(error) {
             console.warn(`Code scan error = ${error}`);
         }
-    
+
         document.getElementById('toggle-scan-btn').addEventListener('click', function() {
             if (isScanning) {
                 html5QrcodeScanner.stop().then(() => {
