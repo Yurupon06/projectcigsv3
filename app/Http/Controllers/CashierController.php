@@ -12,6 +12,7 @@ use App\Models\Payment;
 use App\Models\Product_categorie;
 use App\Models\MemberCheckin;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -37,17 +38,18 @@ class CashierController extends Controller
                                 ->orWhere('status', 'like', "%{$search}%");
                             });
                         })
+                        ->where('status', '!=', 'paid')
                         ->orderBy('order_date', 'desc')
-                        ->paginate(7)
+                        ->paginate(5)
                         ->appends(['search' => $search]);
         
         
 
         return view('cashier.index', compact('orders'));
     }
-    public function show()
+    public function show($qr_token)
     {
-        $order = order::with('customer', 'product')->get();
+        $order = order::with('customer', 'product')->findOrFail($qr_token)->get();
         return view('cashier.show', compact('order'));
     }
 
@@ -410,42 +412,54 @@ class CashierController extends Controller
     {
         $request->validate([
             'qr_token' => 'required|string',
-            'image' => 'nullable|string',
+            'image' => 'nullable|string', 
         ]);
-
+    
         $qrToken = $request->input('qr_token');
-
+    
         $existingCheckin = MemberCheckin::where('qr_token', $qrToken)->first();
-
+    
         if ($existingCheckin) {
             return response()->json(['success' => false, 'message' => 'QR code has already been used.']);
         }
-
+    
         $member = Member::where('qr_token', $qrToken)->first();
-
+    
         if (!$member) {
             return response()->json(['success' => false, 'message' => 'Member not found.']);
         }
-
+    
         $member->decrement('visit');
-
+    
+        $imagePath = null;
+        if ($request->filled('image')) {
+            $imageData = $request->input('image');
+            $image = str_replace('data:image/png;base64,', '', $imageData);
+            $image = str_replace(' ', '+', $image);
+            $imageName = 'checkin_' . time() . '.png';
+            $imagePath = 'checkins/' . $imageName;
+            Storage::disk('public')->put($imagePath, base64_decode($image));
+        }
+    
         $checkin = MemberCheckin::create([
             'member_id' => $member->id,
             'qr_token' => $qrToken,
-            'image' => $request->input('image'),
+            'image' => $imagePath, // Store the image path in the database
         ]);
-
+    
         $newQrToken = Str::random(10);
         $member->update([
             'qr_token' => $newQrToken
         ]);
-
+    
         return response()->json([
             'success' => true,
             'message' => 'Check-in recorded successfully',
             'new_qr_token' => $newQrToken
         ]);
-        }
+    }
+    
+
 
         public function showCheckIn()
         {
