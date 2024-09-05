@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $product = Product::with('productcat')->get();
+        $product = Product::with('productcat')->orderBy('created_at', 'desc')->get();
         return view('product.index', compact('product'));
     }
 

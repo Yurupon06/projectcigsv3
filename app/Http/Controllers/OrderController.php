@@ -9,13 +9,13 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $order = order::with('customer', 'product')->get();
+        $order = order::with('customer', 'product')->orderBy('order_date', 'desc')->get();
         return view('order.index', compact('order'));
     }
 
     public function show()
     {
-        $order = order::with('customer', 'product')->get();
+        $order = order::with('customer', 'product')->orderBy('order_date', 'desc')->get();
         return view('order.show', compact('order'));
     }
 
