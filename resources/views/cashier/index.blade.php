@@ -10,8 +10,8 @@
     <style>
 #reader {
     width: 100%;
-    height: auto; /* Ini akan memastikan video menyesuaikan dengan lebar elemen induknya */
-    max-height: 350px; /* Maksimal tinggi tetap 350px */
+    height: auto; 
+    max-height: 350px; 
     margin: auto;
     position: relative;
     overflow: hidden;
