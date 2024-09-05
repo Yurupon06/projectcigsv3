@@ -22,23 +22,23 @@ class DashboardController extends Controller
         // Today's Money (Total Payments Amount)
         $todaysMoney = Payment::whereDate('created_at', $today)->sum('amount');
         $yesterdaysMoney = Payment::whereDate('created_at', $yesterday)->sum('amount');
-        $todaysMoneyComparison = $yesterdaysMoney > 0 ? (($todaysMoney - $yesterdaysMoney) / $yesterdaysMoney) * 100 : 100;
+        $todaysMoneyComparison = ($todaysMoney - $yesterdaysMoney) / $yesterdaysMoney * 100;
 
         // Today's Users (New Users Today)
         $todaysUsers = User::whereDate('created_at', $today)->count();
         $yesterdaysUsers = User::whereDate('created_at', $yesterday)->count();
-        $todaysUsersComparison = $yesterdaysUsers > 0 ? (($todaysUsers - $yesterdaysUsers) / $yesterdaysUsers) * 100 : 100;
+        $todaysUsersComparison = ($todaysUsers - $yesterdaysUsers) / $yesterdaysUsers * 100;
 
         // New Members (Members registered today)
         $newMembers = Member::whereDate('created_at', $today)->count();
         $yesterdaysNewMembers = Member::whereDate('created_at', $yesterday)->count();
-        $newMembersComparison = $yesterdaysNewMembers > 0 ? (($newMembers - $yesterdaysNewMembers) / $yesterdaysNewMembers) * 100 : 100;
+        $newMembersComparison = ($newMembers - $yesterdaysNewMembers) / $yesterdaysNewMembers * 100;
 
         // Total Sales Amount (All Time)
         $totalSales = Order::sum('total_amount');
         $todaysSales = Order::whereDate('created_at', $today)->sum('total_amount');
         $yesterdaysSales = Order::whereDate('created_at', $yesterday)->sum('total_amount');
-        $salesComparison = $yesterdaysSales > 0 ? (($todaysSales - $yesterdaysSales) / $yesterdaysSales) * 100 : 100;
+        $salesComparison = ($todaysSales - $yesterdaysSales) / $yesterdaysSales * 100;
 
         // Get the last 7 days
         $startOfWeek = Carbon::now()->subDays(6); // 7 days including today
@@ -102,6 +102,9 @@ class DashboardController extends Controller
             'newMembers',
             'totalSales',
             'todaysSales',
+            'yesterdaysMoney',
+            'yesterdaysUsers',
+            'yesterdaysNewMembers',
             'yesterdaysSales',
             'todaysMoneyComparison',
             'todaysUsersComparison',
