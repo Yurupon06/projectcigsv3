@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product_categorie;
+use App\Models\Member;
 use Illuminate\Http\Request;
 
 class ProductCategorieController extends Controller
 {
     public function index()
-    {
-        return view('productcategories.index',[
-            'productcat' => Product_categorie::all()
-        ]);
+    { 
+        $productcat = Product_categorie::orderBy('created_at', 'desc')->get();
+        return view('productcategories.index', compact('productcat'));
     }
 
     public function create()

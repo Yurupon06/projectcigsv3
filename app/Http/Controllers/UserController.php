@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return view('user.index', [
-            'user' => User::all()
-        ]);
+        $user = User::orderBy('created_at', 'desc')->get();
+        return view('user.index', compact('user'));
     }
 
     public function create()

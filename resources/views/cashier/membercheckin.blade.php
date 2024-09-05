@@ -54,7 +54,7 @@
                                                     {{ $dt->member->customer->user->name }}
                                                 </td>
                                                 <td>
-                                                    {{ $dt->member->customer->phone }}
+                                                    {{ substr($dt->member->customer->phone, 0, 2) . '******' . substr($dt->member->customer->phone, -4) }}
                                                 </td>
                                                 <td>
                                                     <img src="{{ asset('storage/' . $dt->image) }}" class="img-thumbnail" alt="Member Image" style="max-width: 100px; max-height: 100px;">
