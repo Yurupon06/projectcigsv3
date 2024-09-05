@@ -9,10 +9,10 @@
     @include('cashier.main')
 
     <!-- Tables -->
-    <div class="container-fluid mt-6 py-4">
+    <div class="container-fluid mt-5 py-4">
         <div class="row">   
             @if (session('success'))
-                <div class="alert alert-success" role="alert">
+                <div class="alert alert-success small" role="alert">
                     {{ session('success') }}
                 </div>
             @endif
@@ -48,8 +48,8 @@
                                         </div>
                                     </div>
                                     <div class="mb-1 ms-3 me-3">
-                                        <label for="product_id" class="form-label">Product</label>
-                                        <select id="product_id" name="product_id" class="ps-2 form-select"
+                                        <label for="product_id" class="form-label small">Product</label>
+                                        <select id="product_id" name="product_id" class="ps-2 form-select form-select-sm"
                                             aria-label="Select Product">
                                             <option selected disabled>Select Product</option>
                                             @foreach ($product as $dt)
@@ -64,18 +64,18 @@
                                     </div>
 
                                     <div class="mb-1 ms-3 me-3">
-                                        <label for="description" class="form-label">Product Description</label>
-                                        <textarea id="description" class="ps-2 form-control" readonly></textarea>
+                                        <label for="description" class="form-label small">Product Description</label>
+                                        <textarea id="description" class="ps-2 form-control form-control-sm" readonly></textarea>
                                     </div>
 
                                     <div class="mb-1 ms-3 me-3">
-                                        <label for="price" class="form-label">Product Price</label>
-                                        <input type="text" id="price" name="price" class="ps-2 form-control"
+                                        <label for="price" class="form-label small">Product Price</label>
+                                        <input type="text" id="price" name="price" class="ps-2 form-control form-control-sm"
                                             readonly>
                                     </div>
                                     <div class="mb-1 ms-3 me-3">
-                                        <label for="visit" class="form-label">Product visit</label>
-                                        <input type="text" id="visit" name="visit" class="ps-2 form-control"
+                                        <label for="visit" class="form-label small">Product visit</label>
+                                        <input type="text" id="visit" name="visit" class="ps-2 form-control form-control-sm"
                                             readonly>
                                     </div>
 
@@ -93,29 +93,29 @@
             <!-- Additional Card on the Right -->
             <div class="col-md-4">
                 <div class="card" style="height: 100%">
-                    <div class="card-header text-uppercase font-weight-bolder opacity-20" >
+                    <div class="card-header text-uppercase font-weight-bolder opacity-20 text-centersmall">
                         <h6>For Register Customer</h6>
                     </div>
                     <div class="modal-body pt-4 px-3">
-                    <form id="addCustomerForm" action="{{ route('customer.store') }}" method="POST">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" id="name" name="name" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" id="email" name="email" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
-                            <input type="number" id="phone" name="phone" class="form-control" required>
-                        </div>
-                        <div class="text-end">
-                            <button type="submit" class="btn btn-primary">Add Customer</button>
-                        </div>
-                    </form>
-                </div>
+                        <form id="addCustomerForm" action="{{ route('customer.store') }}" method="POST">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="name" class="form-label small">Name</label>
+                                <input type="text" id="name" name="name" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label small">Email</label>
+                                <input type="email" id="email" name="email" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label small">Phone</label>
+                                <input type="number" id="phone" name="phone" class="form-control form-control-sm" required>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">Add Customer</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
