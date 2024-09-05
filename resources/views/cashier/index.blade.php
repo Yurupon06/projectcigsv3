@@ -33,10 +33,10 @@
             <div class="col-md-12 d-flex flex-column flex-md-row">
                 <div class="col-md-8 me-md-2 mb-4 mb-md-0" style="overflow: hidden;">
                     <div class="card my-4">
-                        <div class="card-header pb-0">
+                        <div class="card-header pb-0 py-1">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="mb-2">Cashier</h6>
-                                <div class="input-group mb-2" style="max-width: 300px;">
+                                <div class="input-group mt-2" style="max-width: 300px;">
                                     <form method="GET" action="{{ route('cashier.index') }}" class="d-flex w-100">
                                         <input type="text" name="search" class="form-control"
                                             placeholder="Search Customer" value="{{ request('search') }}"
@@ -49,7 +49,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body px-0 pb-1">
+                        <div class="card-body px-0">
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0" id="datatable">
                                     <thead>
@@ -89,7 +89,7 @@
                                                 </td>
                                                 <td class="align-middle text-center text-sm">
                                                     <a href="{{route('cashier.qrscan', $dt->qr_token)}}">
-                                                    <span class="btn bg-gradient-info ws-15 my-4 mb-2 btn-sm">Detail</span>
+                                                    <span class="btn bg-gradient-info ws-15 my-2 mb-2 btn-sm">Detail</span>
                                                     </a>
                                                 </td>
                                             </tr>
@@ -110,7 +110,7 @@
 
                 <div class="col-md-4 qr-section">
                     <div class="card mt-4 tbl">
-                        <div class="card-header">
+                        <div class="card-header py-2 mt-2 text-center">
                             <h6>Scanner For Order</h6>
                         </div>
                         <div class="card-body">

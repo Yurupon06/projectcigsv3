@@ -2,14 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
-use App\Models\Member;
-use App\Models\Payment;
-use App\Models\Customer;
-use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
@@ -149,7 +144,7 @@ class DashboardController extends Controller
             ]
         );
 
-        return redirect()->route('dashboard.profile')->with('success', 'Profile updated successfully.');
+        return redirect()->route('dashboard.profil')->with('success', 'Profile updated successfully.');
     }
 
     public function updatePassword(Request $request)
@@ -162,13 +157,13 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return redirect()->route('dashboard.profile')->with('warning', 'Current password does not match.');
+            return redirect()->route('dashboard.profil')->with('warning', 'Current password does not match.');
         }
 
         $user->update([
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('dashboard.profile')->with('success', 'Password updated successfully.');
+        return redirect()->route('dashboard.profil')->with('success', 'Password updated successfully.');
     }
 }

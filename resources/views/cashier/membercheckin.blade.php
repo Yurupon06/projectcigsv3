@@ -7,22 +7,22 @@
 @section('page', 'Member Check-In')
 @section('main')
     @include('cashier.main')
-
+    
     <div class="container-fluid py-4 mt-4">
         <div class="row">
             <div class="col-md-12 d-flex">
                 <div class="col-md-12 me-2" style="overflow: hidden;">
                     <div class="card my-4">
-                        <div class="card-header pb-0">
+                        <div class="card-header pb-0 py-2 mt-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="mb-2">Member</h6>
                                 <div class="input-group mb-2" style="max-width: 300px;">
                                     <form method="GET" action="{{ route('cashier.membercheckin') }}" class="d-flex w-100">
                                         <input type="text" name="search" class="form-control"
                                             placeholder="Search Member Checkin" value="{{ request('search') }}"
-                                            style="border-radius: 20px 0 0 20px; height: 38px;">
-                                        <button type="submit" class="btn btn-primary"
-                                            style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px;">
+                                            style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
+                                            <button type="submit" class="btn btn-primary"
+                                            style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px; font-size: 12px;">
                                             <i class="fas fa-search"></i>
                                         </button>
                                     </form>
@@ -54,7 +54,7 @@
                                                     {{ $dt->member->customer->user->name }}
                                                 </td>
                                                 <td>
-                                                    {{ $dt->member->customer->phone }}
+                                                    {{ substr($dt->member->customer->phone, 0, 2) . '******' . substr($dt->member->customer->phone, -4) }}
                                                 </td>
                                                 <td>
                                                     <img src="{{ asset('storage/' . $dt->image) }}" class="img-thumbnail" alt="Member Image" style="max-width: 100px; max-height: 100px;">
