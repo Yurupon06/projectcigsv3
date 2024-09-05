@@ -16,7 +16,6 @@
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Phone</th>
-                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Qr Token</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Image</th>
                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Time</th>
                     </tr>
@@ -31,7 +30,6 @@
                           </td>
                           <td>{{ $dt->member->customer->user->name }}</td>
                           <td>{{ $dt->member->customer->phone }}</td>
-                          <td>{!! QrCode::size(50)->generate($dt->qr_token) !!} ({{ $dt->qr_token}})</td>
                           <td><img src="{{ asset('storage/' . $dt->image) }}" class="img-thumbnail" alt="Member Image" style="max-width: 100px; max-height: 100px;"></td>
                           <td style="color: rgb(0, 223, 0)">{{ $dt->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y, H:i')  }}</td>
                         </tr>
