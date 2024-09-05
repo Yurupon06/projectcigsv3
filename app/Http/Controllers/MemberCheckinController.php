@@ -15,14 +15,14 @@ class MemberCheckinController extends Controller
 {
     public function index()
     {
-        $membercheckin = MemberCheckin::with('member')->get();
+        $membercheckin = MemberCheckin::with('member')->orderBy('created_at', 'desc')->get();
         return view('cashier.membercheckin', compact('membercheckin'));
     }
 
-    public function qrcheckin($qr_token)
+    public function qrcheckin(Request $request,$qr_token)
     {
         $qr_token = $request->input('qr_token');
-        $checkin = MemberCekin::where('qr_token', $qr_token)->first();
+        $checkin = MemberCheckin::where('qr_token', $qr_token)->first();
 
         if ($checkin && $checkin->status === 'use') {
             $checkin->status = 'used';
@@ -36,7 +36,7 @@ class MemberCheckinController extends Controller
 
     public function qrcheck($qr_token)
     {
-        $member = MemberCheckin::where('qr_token', $qr_token)->first();
+        $membercheckin = MemberCheckin::where('qr_token', $qr_token)->first();
 
         if (!$membercheckin) {
             return redirect()->route('cashier.membercheckin')->with('error', 'Member not found');
