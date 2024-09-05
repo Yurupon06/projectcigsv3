@@ -25,9 +25,9 @@
                                 <form method="GET" action="{{ route('cashier.index') }}" class="d-flex w-100 pt-2">
                                     <input type="text" name="search" class="form-control"
                                         placeholder="Search orders" value="{{ request('search') }}"
-                                        style="border-radius: 15px 0 0 15px; height: 32px; font-size: 12px;">
+                                        style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
                                     <button type="submit" class="btn btn-primary"
-                                        style="background-color: #ff7e00; border-radius: 0 15px 15px 0; height: 32px; padding: 0 10px; font-size: 12px;">
+                                        style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 10px; font-size: 14px;">
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </form>
@@ -69,7 +69,7 @@
                                             </td>
                                             <td class="align-middle text-center text-sm" style="padding: 5px 8px;">
                                                 <a href="{{ route('cashier.member', $member->id) }}">
-                                                    <span class="btn bg-gradient-info ws-15 my-27 btn-sm">Detail</span>
+                                                    <span class="btn bg-gradient-info ws-15 my-2 btn-sm">Detail</span>
                                                 </a>
                                             </td>
                                         </tr>

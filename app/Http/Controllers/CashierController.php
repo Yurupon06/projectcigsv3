@@ -40,7 +40,7 @@ class CashierController extends Controller
                         })
                         ->where('status', '!=', 'paid')
                         ->orderBy('order_date', 'desc')
-                        ->paginate(5)
+                        ->paginate(7)
                         ->appends(['search' => $search]);
         
         
@@ -86,7 +86,7 @@ class CashierController extends Controller
                 ->orWhere('payment_date', 'like', '%' . $search . '%');
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(5);
+            ->paginate(7);
 
 
         return view('cashier.payment', compact('payments'));

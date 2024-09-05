@@ -104,7 +104,7 @@
                     <div class="card-header pb-0 navigation-links">
                         <a href="{{ route('cashier.index') }}">Back</a>
                     </div>
-                    <div class="card-header pb-0">
+                    <div class="card-header pb-0 py-1">
                         <h6>Order Details</h6>
                     </div>
                     <div class="card-body px-0 pb-2">

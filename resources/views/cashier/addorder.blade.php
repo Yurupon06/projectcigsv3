@@ -9,7 +9,7 @@
     @include('cashier.main')
 
     <!-- Tables -->
-    <div class="container-fluid mt-6 py-4">
+    <div class="container-fluid mt-5 py-4">
         <div class="row">   
             @if (session('success'))
                 <div class="alert alert-success small" role="alert">
@@ -112,7 +112,7 @@
                                 <input type="number" id="phone" name="phone" class="form-control form-control-sm" required>
                             </div>
                             <div class="text-end">
-                                <button type="submit" class="btn btn-primary btn-sm">Add Customer</button>
+                                <button type="submit" class="btn btn-primary">Add Customer</button>
                             </div>
                         </form>
                     </div>
