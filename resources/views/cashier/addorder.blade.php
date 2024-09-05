@@ -33,12 +33,14 @@
                                             <div class="col-md-6">
                                                 <label for="customer_id" class="form-label">Select Name</label>
                                                 <select id="customer_id" name="customer_id" class="ps-2 form-select" aria-label="Select Name">
-                                                    @foreach ($customer as $dt)
-                                                        <option value="{{ $dt->id }}" data-name="{{ $dt->user->name }}" data-phone="{{ $dt->phone }}"
-                                                            {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
-                                                            {{ $dt->user->name }} ( {{ $dt->phone }} )
-                                                        </option>
-                                                    @endforeach
+                                                <option value="" disabled selected>Select Customer</option>
+                                                @foreach ($customer as $dt)
+                                                    <option value="{{ $dt->id }}" data-name="{{ $dt->user->name }}" 
+                                                        data-phone="{{ substr($dt->phone, 0, 4) . '**' . substr($dt->phone, -4) }}"
+                                                        {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
+                                                        {{ $dt->user->name }} ( {{ substr($dt->phone, 0, 4) . '**' . substr($dt->phone, -4) }} )
+                                                    </option>
+                                                @endforeach
                                                 </select>
                                             </div>
                                         </div>
