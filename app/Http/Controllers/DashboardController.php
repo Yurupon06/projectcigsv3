@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\Member;
+use App\Models\Payment;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
