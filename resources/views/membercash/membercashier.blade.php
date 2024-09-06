@@ -9,13 +9,16 @@
     @include('cashier.main')
     
     <style>
-        .page {
-            display: none;
-        }
+        @media screen and (max-width: 768px) {
+                .page {
+                display: none;
+            }
 
-        .input-group {
-            margin-right: 8px;
+            .input-group {
+                margin-right: 8px;
+            }
         }
+        
     </style>
 
     <div class="container-fluid py-4 mt-4">
