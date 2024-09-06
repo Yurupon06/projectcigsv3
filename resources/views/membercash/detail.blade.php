@@ -116,9 +116,9 @@
                                         <form action="{{route('action.member', $member->id )}}" method="POST" class="text-end">
                                             @csrf
                                             @if ($member->status === 'active')
-                                                <button type="submit" name="action" value="cancel" class="btn btn-danger">Cancel Membership</button>
+                                                <button type="submit" name="action" value="cancel" class="btn btn-danger"  onclick="return confirm('Are you sure you want to ban this member ?')">Ban Membership</button>
                                             @elseif ($member->status === 'expired')
-                                                <button type="submit" name="action" value="cancel" class="btn btn-danger">Cancel Membership</button>
+                                                <button type="submit" name="action" value="cancel" class="btn btn-danger"  onclick="return confirm('Are you sure you want to ban this member ?')">Ban Membership</button>
                                                 <button type="submit" name="action" value="process" class="btn btn-success">Procces Membership</button>
                                             @else
                                             <button type="submit" name="action" value="process" class="btn btn-success">Procces Membership</button>
