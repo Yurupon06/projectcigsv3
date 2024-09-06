@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -13,11 +13,16 @@
     <style>
         #reader {
             width: 100%;
-            height: 500px;
+            height: auto;
+            max-height: 500px;
             margin: auto;
         }
 
         #reader video {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: cover;
             transform: scaleX(-1);
         }
 
@@ -32,6 +37,22 @@
         #countdown {
             display: none;
         }
+
+        /* Media query untuk layar kecil seperti mobile */
+        @media (max-width: 768px) {
+            #reader {
+                height: auto;
+                max-height: 300px;
+            }
+
+            table td {
+                font-size: 1rem;
+            }
+
+            #reader video {
+                max-height: 300px;
+            }
+        }
     </style>
 </head>
 
@@ -42,7 +63,10 @@
                 alert('{{ session('message') }}');
             </script>
         @endif
-        <h1>Scan QR Code</h1>
+        <a href="{{ route('cashier.membercheckin') }}" style="text-decoration: none; color:black;">
+            <h1>Scan QR Code</h1>
+        </a>
+
         <div class="row">
             <div class="col-md-6">
                 <div id="reader"></div>
@@ -71,9 +95,6 @@
                 <div id="countdown" class="alert alert-info"></div>
             </div>
         </div>
-        <div class="text-end mb-3">
-            <a class="btn btn-lg" href="{{ route('cashier.membercheckin') }}" role="button" style="background-color: #ff7e00; color: white; font-size: 1.2rem; padding: 10px 20px;">Back</a>
-        </div>
     </div>
 
     <!-- Success and error sounds -->
@@ -84,12 +105,12 @@
     <script>
         let scanCompleted = false;
         let html5QrcodeScanner = new Html5Qrcode("reader");
-    
+
         function onScanSuccess(decodedText) {
             if (scanCompleted) return;
-    
+
             scanCompleted = true;
-    
+
             // Capture image from video stream
             const video = document.querySelector('#reader video');
             const canvas = document.createElement('canvas');
@@ -97,8 +118,8 @@
             canvas.height = video.videoHeight;
             const context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageBase64 = canvas.toDataURL('image/png'); 
-    
+            const imageBase64 = canvas.toDataURL('image/png');
+
             fetch(`/member-details/${decodedText}`)
                 .then(response => response.json())
                 .then(data => {
@@ -107,9 +128,9 @@
                         errorMessage.textContent = data.error;
                         errorMessage.style.display = 'block';
                         scanCompleted = false;
-    
+
                         document.getElementById('error-sound').play();
-    
+
                         setTimeout(() => {
                             errorMessage.style.display = 'none';
                         }, 3000);
@@ -117,29 +138,29 @@
                         document.getElementById('name').textContent = data.name;
                         document.getElementById('phone').textContent = data.phone;
                         document.getElementById('expiration').textContent = data.expired_date;
-    
+
                         const successMessage = document.getElementById('success-message');
                         const countdown = document.getElementById('countdown');
                         const errorMessage = document.getElementById('error-message');
                         successMessage.style.display = 'block';
                         countdown.style.display = 'block';
                         errorMessage.style.display = 'none';
-    
+
                         document.getElementById('success-sound').play();
-    
+
                         let countdownValue = 5;
-    
+
                         const interval = setInterval(() => {
                             countdown.textContent = `Refreshing in ${countdownValue} seconds...`;
                             countdownValue--;
-    
+
                             if (countdownValue < 0) {
                                 clearInterval(interval);
                                 countdown.style.display = 'none';
                                 location.reload();
                             }
                         }, 1000);
-    
+
                         fetch('/store-checkin', {
                                 method: 'POST',
                                 headers: {
@@ -149,7 +170,7 @@
                                 },
                                 body: JSON.stringify({
                                     qr_token: decodedText,
-                                    image: imageBase64 
+                                    image: imageBase64
                                 })
                             })
                             .then(response => response.json())
@@ -161,16 +182,16 @@
                                     const errorMessage = document.getElementById('error-message');
                                     errorMessage.textContent = result.message;
                                     errorMessage.style.display = 'block';
-    
+
                                     document.getElementById('error-sound').play();
-    
+
                                     setTimeout(() => {
                                         errorMessage.style.display = 'none';
                                     }, 3000);
                                 }
                             })
                             .catch(error => console.error('Error:', error));
-    
+
                         html5QrcodeScanner.stop().then(ignore => {
                             console.log("QR code scanning stopped.");
                         }).catch(err => {
@@ -183,29 +204,38 @@
                     const errorMessage = document.getElementById('error-message');
                     errorMessage.textContent = 'Invalid QR.';
                     errorMessage.style.display = 'block';
-    
+
                     document.getElementById('error-sound').play();
-    
+
                     scanCompleted = false;
-    
+
                     setTimeout(() => {
                         errorMessage.style.display = 'none';
                     }, 3000);
                 });
         }
-    
+
         html5QrcodeScanner.start({
                 facingMode: "environment"
             }, {
                 fps: 30,
-                qrbox: 500
+                qrbox: function(viewfinderWidth, viewfinderHeight) {
+                    // Adjust the qrbox size based on the viewfinder size (making it responsive)
+                    var minEdgePercentage = 0.8;  // 80% of the smaller edge
+                    var minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+                    var qrboxSize = Math.floor(minEdge * minEdgePercentage);
+                    return {
+                        width: qrboxSize,
+                        height: qrboxSize
+                    };
+                }
             },
             onScanSuccess
         ).catch(err => {
             console.error("Error starting QR code scanner: ", err);
         });
     </script>
-    
+
 </body>
 
 </html>

@@ -112,7 +112,6 @@ class DashboardController extends Controller
             'salesComparison'
         ));
     }
-
     public function profile()
     {
         $user = Auth::user();
