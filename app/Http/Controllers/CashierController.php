@@ -23,6 +23,7 @@ class CashierController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $perPage = $request->input('per_page', 5);
 
         $orders = Order::with(['customer.user', 'product'])
                         ->when($search, function ($query, $search) {
@@ -40,7 +41,7 @@ class CashierController extends Controller
                         })
                         ->where('status', '!=', 'paid')
                         ->orderBy('order_date', 'desc')
-                        ->paginate(7)
+                        ->paginate($perPage)
                         ->appends(['search' => $search]);
         
         
@@ -67,6 +68,7 @@ class CashierController extends Controller
     public function payment(Request $request)
     {
         $search = $request->input('search');
+        $perPage = $request->input('per_page', 5);
 
         $payments = Payment::with(['order.customer.user', 'order.product'])
             ->where(function($query) use ($search) {
@@ -86,8 +88,7 @@ class CashierController extends Controller
                 ->orWhere('payment_date', 'like', '%' . $search . '%');
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(7);
-
+            ->paginate($perPage);
 
         return view('cashier.payment', compact('payments'));
     }
@@ -250,7 +251,7 @@ class CashierController extends Controller
     {
         $customer = Customer::whereHas('user', function ($role) {
             $role->where('role', 'customer');
-        })->with('user')->get();
+        })->with('user')->orderBy(User::select('name')->whereColumn('users.id', 'customers.user_id'))->get();
     
         $product = Product::with('productcat')->get();
     

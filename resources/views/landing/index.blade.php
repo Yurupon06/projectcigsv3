@@ -5,18 +5,16 @@
 
 <style>
     .card {
-        border: none; /* Remove border */
-        border-radius: 12px; /* More rounded corners */
+        border: none; 
+        border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Soft shadow */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .card:hover {
-        transform: translateY(-5px); /* Slight lift on hover */
-        box-shadow: 0 8px 16px rgba(0,0,0,0.2); /* More pronounced shadow */
+        transform: translateY(-5px); 
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
     }
-
-    /* Card Header */
     .card-header {
         background-color: #ffffff;
         padding: 20px; 
@@ -26,15 +24,15 @@
         margin-bottom: 0;
     }
     .card-header span {
-        font-size: 16px; /* Consistent font size */
-        color: #6c757d; /* Muted text color */
+        font-size: 16px; 
+        color: #6c757d;
     }
 
     /* Card Footer */
     .card-footer {
-        background-color: #ffffff; /* White background */
+        background-color: #ffffff; 
         padding: 15px;
-        border-top: 1px solid #f1f1f1; /* Subtle divider */
+        border-top: 1px solid #f1f1f1; 
     }
 
     /* Button Style */
@@ -56,7 +54,7 @@
 
     .item-slick1 {
         position: relative;
-        height: 450px;
+        height: 100vh;
         background-size: cover;
         background-position: center;
         display: flex;
@@ -73,13 +71,13 @@
         text-align: justify;
         color: #fff;
         text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-        background: rgba(0, 0, 0, 0.1); /* Background transparan di belakang teks */
+        background: rgba(0, 0, 0, 0.1);
         padding: 20px;
         border-radius: 10px;
         width: 80%;
     }
     .text-overlay h1 {
-        font-size: 48px; /* Ukuran font untuk judul */
+        font-size: 48px;
         font-weight: bold;
         margin-bottom: 15px;
         letter-spacing: 1px;
@@ -88,7 +86,7 @@
     }
 
     .text-overlay p {
-        font-size: 20px; /* Ukuran font untuk paragraf */
+        font-size: 20px; 
         margin-bottom: 20px;
         animation: fadeInUp 1s ease-in-out;
     }
@@ -127,7 +125,7 @@
 
     @media (max-width: 768px) {
     .item-slick1 {
-        height: 300px;
+        height: 50vh;
     }
 
     .text-overlay {
@@ -141,8 +139,8 @@
     }
 
     .text-overlay p {
-        font-size: 16px; /* Ukuran font paragraf lebih kecil */
-        margin-bottom: 15px; /* Mengurangi margin bawah */
+        font-size: 16px;
+        margin-bottom: 15px;
     }
 }
 
