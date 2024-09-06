@@ -14,102 +14,123 @@ use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        // Declaration
+        $range = $request->query('range', 7);
         $today = Carbon::today();
         $yesterday = Carbon::yesterday();
+        $twoWeeksBefore = Carbon::now()->subDays(14);
+        $twoMonthBefore = Carbon::now()->subDays(60);
+        $lastWeek = Carbon::now()->subDays(7);
+        $lastmonth = Carbon::now()->subDays(30);
+        $endDate = Carbon::now();
 
-        // Today's Money (Total Payments Amount)
-        $todaysMoney = Payment::whereDate('created_at', $today)->sum('amount');
-        $yesterdaysMoney = Payment::whereDate('created_at', $yesterday)->sum('amount');
-        $todaysMoneyComparison = ($todaysMoney - $yesterdaysMoney) / $yesterdaysMoney * 100;
+        // Range
+        if ($range == 7) {
+            $startDate = Carbon::now()->subDays(6);
+            $comparisonDate = $twoWeeksBefore;
+        } else {
+            $startDate = Carbon::now()->subDays(30);
+            $comparisonDate = $twoMonthBefore;
+        }
 
-        // Today's Users (New Users Today)
-        $todaysUsers = User::whereDate('created_at', $today)->count();
-        $yesterdaysUsers = User::whereDate('created_at', $yesterday)->count();
-        $todaysUsersComparison = ($todaysUsers - $yesterdaysUsers) / $yesterdaysUsers * 100;
+        // Money
+        $amountsMoney = Payment::whereBetween('created_at', [$startDate, $endDate])->sum('amount');
+        $comparisonMoney = Payment::whereBetween('created_at', [$comparisonDate, $startDate])->sum('amount');
 
-        // New Members (Members registered today)
-        $newMembers = Member::whereDate('created_at', $today)->count();
-        $yesterdaysNewMembers = Member::whereDate('created_at', $yesterday)->count();
-        $newMembersComparison = ($newMembers - $yesterdaysNewMembers) / $yesterdaysNewMembers * 100;
+        if ($comparisonMoney != 0) {
+            $amountsMoneyComparison = ($amountsMoney - $comparisonMoney) / $comparisonMoney * 100;
+        } else {
+            $amountsMoneyComparison = $amountsMoney > 0 ? 100 : 0;
+        }
 
-        // Total Sales Amount (All Time)
-        $totalSales = Order::sum('total_amount');
-        $todaysSales = Order::whereDate('created_at', $today)->sum('total_amount');
-        $yesterdaysSales = Order::whereDate('created_at', $yesterday)->sum('total_amount');
-        $salesComparison = ($todaysSales - $yesterdaysSales) / $yesterdaysSales * 100;
+        // User
+        $amountsUsers = User::whereBetween('created_at', [$startDate, $endDate])->count();
+        $comparisonUser = User::whereBetween('created_at', [$comparisonDate, $startDate])->count();
 
-        // Get the last 7 days
-        $startOfWeek = Carbon::now()->subDays(6); // 7 days including today
-        $startOfMonth = Carbon::now()->subDays(30); // 30 days including today
-        $endOfDate = Carbon::now();
+        if ($comparisonUser != 0) {
+            $amountsUserComparison = ($amountsUsers - $comparisonUser) / $comparisonUser * 100;
+        } else {
+            $amountsUserComparison = $amountsUsers > 0 ? 100 : 0;
+        }
 
-        // Fetch daily orders for the past week
-        $orders = Order::whereBetween('order_date', [$startOfMonth, $endOfDate])
+        // Member
+        $amountsMembers = Member::whereBetween('start_date', [$startDate, $endDate])->count();
+        $comparisonMember = Member::whereBetween('start_date', [$comparisonDate, $startDate])->count();
+
+        if ($comparisonMember != 0) {
+            $amountsMemberComparison = ($amountsMembers - $comparisonMember) / $comparisonMember * 100;
+        } else {
+            $amountsMemberComparison = $amountsMembers > 0 ? 100 : 0;
+        }
+
+        // Total Sales
+        $totalSales = Payment::sum('amount');
+        $amountsSales = Payment::whereBetween('created_at', [$startDate, $endDate])->sum('amount');
+        $comparisonSales = Payment::whereBetween('created_at', [$comparisonDate, $startDate])->sum('amount');
+
+        if ($comparisonSales != 0) {
+            $amountsSalesComparison = ($amountsMoney - $comparisonSales) / $comparisonSales * 100;
+        } else {
+            $amountsSalesComparison = $amountsMoney > 0 ? 100 : 0;
+        }
+
+        // Fetch daily orders for the selected range
+        $orders = Order::whereBetween('order_date', [$startDate, $endDate])
             ->selectRaw('DATE(order_date) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date')
             ->pluck('count', 'date');
 
-        // Fetch daily payments for the past week
-        $payments = Payment::whereBetween('payment_date', [$startOfWeek, $endOfDate])
+        // Fetch daily payments for the selected range
+        $payments = Payment::whereBetween('payment_date', [$startDate, $endDate])
             ->selectRaw('DATE(payment_date) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date')
             ->pluck('count', 'date');
 
-        // Fetch daily new members for the past week
-        $members = Member::whereBetween('start_date', [$startOfWeek, $endOfDate])
+        // Fetch daily new members for the selected range
+        $members = Member::whereBetween('start_date', [$startDate, $endDate])
             ->selectRaw('DATE(start_date) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date')
             ->pluck('count', 'date');
 
-        // Ensure each day in the past has a value (0 if no data)
-        $datesWeekly = [];
-        $datesMonthly = [];
+        // Prepare data for the selected range
+        $dates = [];
         $ordersData = [];
         $paymentsData = [];
         $membersData = [];
 
-        // Prepare data for the last week (7 days)
-        for ($i = 6; $i >= 0; $i--) {
+        // Prepare data for each day within the range
+        for ($i = $range; $i >= 0; $i--) {
             $date = Carbon::now()->subDays($i)->format('Y-m-d');
-            $datesWeekly[] = $date;
-            $ordersData[] = $orders->get($date, 0);
-            $paymentsData[] = $payments->get($date, 0);
-            $membersData[] = $members->get($date, 0);
-        }
-
-        // Prepare data for the last month
-        for ($i = 30; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i)->format('Y-m-d');
-            $datesMonthly[] = $date;
+            $dates[] = $date;
             $ordersData[] = $orders->get($date, 0);
             $paymentsData[] = $payments->get($date, 0);
             $membersData[] = $members->get($date, 0);
         }
 
         return view('dashboard.home', compact(
-            'datesWeekly',
-            'datesMonthly',
+            'range',
+            'dates',
             'ordersData',
             'paymentsData',
             'membersData',
-            'todaysMoney',
-            'todaysUsers',
-            'newMembers',
+            'amountsMoney',
+            'amountsUsers',
+            'amountsMembers',
+            'amountsSales',
             'totalSales',
-            'todaysSales',
-            'yesterdaysMoney',
-            'yesterdaysUsers',
-            'yesterdaysNewMembers',
-            'yesterdaysSales',
-            'todaysMoneyComparison',
-            'todaysUsersComparison',
-            'newMembersComparison',
-            'salesComparison'
+            'comparisonMoney',
+            'comparisonUser',
+            'comparisonMember',
+            'comparisonSales',
+            'amountsMoneyComparison',
+            'amountsUserComparison',
+            'amountsMemberComparison',
+            'amountsSalesComparison'
         ));
     }
     public function profile()
