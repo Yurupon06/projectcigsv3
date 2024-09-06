@@ -78,7 +78,10 @@
                                                 </div>
                                             </td>
                                             <td style="padding: 5px 8px; ">
-                                                <a href="{{ route('cashier.member', $member->id) }}" style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}; text-decoration: none ">
+                                                <a href="{{ route('cashier.member', $member->id) }}"
+                                                style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }};
+                                                text-decoration: none;
+                                                font-weight:bold; ">
                                                     {{ $member->customer->user->name }}
                                                 </a>
                                             </td>
