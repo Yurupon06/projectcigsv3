@@ -26,25 +26,54 @@
                 font-size: 14px;
             }
         }
+
+        /* Responsive Search Form */
+        .search-form input{
+            border-radius: 0 0 0 0;
+        }
+        
+        .search-form button {
+            border-radius: 0 20px 20px 0;
+        }
+
+        /* Media queries for smaller screens */
+        @media (max-width: 768px) {
+            .search-form input {
+                width: 50%;
+            }
+            .search-form button {
+                width: 30%;
+                border-radius: 0 20px 20px 0;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .search-form input {
+                width: 60%;
+                font-size: 14px;
+            }
+            .search-form button {
+                width: 40%;
+                font-size: 14px;
+                border-radius: 0 20px 20px 0;
+            }
+        }
     </style>
 
     <div class="container mt-4">
         <div class="d-flex justify-content-end mb-4">
-            <form method="GET" action="{{ route('yourorder.index') }}" class="d-flex">
-                <input type="text" name="search" class="form-control" placeholder="Search" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px; width: 250px;">
-                <div class="form-group">
-                    <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date', $startDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}">
-                </div>
-                <div class="form-group">
-                    <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date', $endDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}">
-                </div>
-                <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px;">
+            <form method="GET" action="{{ route('yourorder.index') }}" class="d-flex search-form">
+                <input clang="s" type="text" name="search" class="form-control" placeholder="Search" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
+                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date', $startDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}" style="height: 38px;">
+                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date', $endDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}" style="height: 38px;">
+                <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; height: 38px;">
                     <i class="fas fa-search"></i>
                 </button>
             </form>
         </div>
         
         <div class="row">
+            <!-- Desktop view orders -->
             <div class="col-12 d-none d-lg-block">
                 <div class="row">
                     <div class="col-lg-12 mb-4">
@@ -72,7 +101,7 @@
                 </div>
             </div>
 
-            <!-- Mobile Layout: Full Width -->
+            <!-- Mobile Layout -->
             <div class="col-12 d-lg-none">
                 @forelse ($orders as $i => $order)
                     <a href="{{ route('checkout', $order->id) }}" class="card mb-4 text-decoration-none text-dark">

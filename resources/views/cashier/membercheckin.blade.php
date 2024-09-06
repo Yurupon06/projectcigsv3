@@ -7,6 +7,19 @@
 @section('page', 'Member Check-In')
 @section('main')
     @include('cashier.main')
+
+    <style>
+        @media screen and (max-width: 768px) {
+                .page {
+                display: none;
+            }
+
+            .input-group {
+                margin-right: 8px;
+            }
+        }
+        
+    </style>
     
     <div class="container-fluid py-4 mt-4">
         <div class="row">
@@ -15,9 +28,9 @@
                     <div class="card my-4">
                         <div class="card-header pb-0 py-1">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="mb-2">Member</h6>
-                                <div class="input-group" style="max-width: 300px;">
-                                    <form method="GET" action="{{ route('cashier.membercheckin') }}" class="d-flex w-100 pt-2">
+                                <h6 class="mb-2 page">Member</h6>
+                                <div class="input-group mb-2" style="max-width: 300px;">
+                                    <form method="GET" action="{{ route('cashier.membercheckin') }}" class="d-flex w-100">
                                         <input type="text" name="search" class="form-control"
                                             placeholder="Search orders" value="{{ request('search') }}"
                                             style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
