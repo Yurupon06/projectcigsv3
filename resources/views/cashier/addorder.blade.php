@@ -8,6 +8,19 @@
 @section('main')
     @include('cashier.main')
 
+    <style>
+        .select2-container--bootstrap-5 .select2-selection {
+            border-radius: 0.375rem; /* Match Bootstrap 5 border radius */
+            padding: 0.375rem;
+            border: 1px solid #ced4da;
+            height: calc(1.5em + 0.75rem + 2px);
+        }
+        .select2-container--bootstrap-5 .select2-selection__arrow {
+            height: 100%;
+        }
+    </style>
+
+
     <!-- Tables -->
     <div class="container-fluid mt-5 py-4">
         <div class="row">   
@@ -25,18 +38,14 @@
                                     @csrf
                                     <div class="mb-1 ms-3 me-3 mt-2">
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <label for="customer_search" class="form-label">Search Name</label>
-                                                <input type="text" id="customer_search" class="form-control" placeholder="Type to search...">
-                                                <ul id="customer_search_results" class="list-group position-absolute w-100 d-none"></ul>
-                                            </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-12">
                                                 <label for="customer_id" class="form-label">Select Name</label>
-                                                <select id="customer_id" name="customer_id" class="ps-2 form-select" aria-label="Select Name">
+                                                <select id="customer_id" name="customer_id" class="ps-2 form-select select2" aria-label="Select Name">
+                                                    <option value="" disabled selected>Select Customer</option>
                                                     @foreach ($customer as $dt)
                                                         <option value="{{ $dt->id }}" data-name="{{ $dt->user->name }}" data-phone="{{ $dt->phone }}"
                                                             {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
-                                                            {{ $dt->user->name }} ( {{ $dt->phone }} )
+                                                            {{ $dt->user->name }} ({{ $dt->phone }})
                                                         </option>
                                                     @endforeach
                                                 </select>
@@ -93,7 +102,7 @@
             <!-- Additional Card on the Right -->
             <div class="col-md-4">
                 <div class="card" style="height: 100%">
-                    <div class="card-header text-uppercase font-weight-bolder opacity-20 text-centersmall">
+                    <div class="card-header text-uppercase font-weight-bolder opacity-20 text-centersmall text-center py-2 mt-2">
                         <h6>For Register Customer</h6>
                     </div>
                     <div class="modal-body pt-4 px-3">
@@ -223,4 +232,15 @@
             });
         });
     </script>
+    <script>
+        $(document).ready(function() {
+            $('#customer_id').select2({
+                placeholder: 'Select Customer',
+                allowClear: true,
+                width: '100%',
+                theme: 'bootstrap-5'  // If using Bootstrap 5
+            });
+        });
+    </script>
+
 @endsection

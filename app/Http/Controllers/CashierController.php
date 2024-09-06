@@ -23,6 +23,7 @@ class CashierController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $perPage = $request->input('per_page', 5);
 
         $orders = Order::with(['customer.user', 'product'])
                         ->when($search, function ($query, $search) {
@@ -38,9 +39,9 @@ class CashierController extends Controller
                                 ->orWhere('status', 'like', "%{$search}%");
                             });
                         })
-                        ->where('status', '!=', 'paid')
+                        ->where('status', 'unpaid')
                         ->orderBy('order_date', 'desc')
-                        ->paginate(7)
+                        ->paginate($perPage)
                         ->appends(['search' => $search]);
         
         
@@ -67,6 +68,7 @@ class CashierController extends Controller
     public function payment(Request $request)
     {
         $search = $request->input('search');
+        $perPage = $request->input('per_page', 5);
 
         $payments = Payment::with(['order.customer.user', 'order.product'])
             ->where(function($query) use ($search) {
@@ -86,8 +88,7 @@ class CashierController extends Controller
                 ->orWhere('payment_date', 'like', '%' . $search . '%');
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(7);
-
+            ->paginate($perPage);
 
         return view('cashier.payment', compact('payments'));
     }
@@ -194,29 +195,36 @@ class CashierController extends Controller
     public function membercashier(Request $request)
     {
         $search = $request->input('search');
-        $members = Member::whereHas('customer.user', function ($query) use ($search) {
-            $query->where('name', 'LIKE', "%{$search}%");
-        })
-        ->orWhere('start_date', 'LIKE', "%{$search}%")
-        ->orWhere('end_date', 'LIKE', "%{$search}%")
-        ->orWhere('visit', 'LIKE', "%{$search}%")
-        ->orWhere('status', 'LIKE', "%{$search}%")
-        ->paginate(5);
-        
-    $currentDate = Carbon::now('Asia/Jakarta');
-
+        $perPage = $request->input('per_page', 5);
+    
+        $members = Member::join('customers', 'members.customer_id', '=', 'customers.id')
+            ->join('users', 'customers.user_id', '=', 'users.id')
+            ->where(function ($query) use ($search) {
+                $query->where('users.name', 'LIKE', "%{$search}%")
+                      ->orWhere('members.start_date', 'LIKE', "%{$search}%")
+                      ->orWhere('members.end_date', 'LIKE', "%{$search}%")
+                      ->orWhere('members.visit', 'LIKE', "%{$search}%")
+                      ->orWhere('members.status', 'LIKE', "%{$search}%");
+            })
+            ->orderBy('users.name', 'asc') 
+            ->select('members.*') 
+            ->paginate($perPage);
+    
+        $currentDate = Carbon::now('Asia/Jakarta');
+    
         Member::where('end_date', '<', $currentDate)
             ->where('status', '<>', 'expired')
             ->update(['status' => 'expired']);
-
+    
         Member::where('visit', 0)
             ->where('status', '<>', 'expired')
             ->update(['status' => 'expired']);
-
+    
         $member = Member::with('customer')->get();
-
-    return view('membercash.membercashier', compact('member', 'members'));
+    
+        return view('membercash.membercashier', compact('member', 'members'));
     }
+    
 
     public function storeCustomer(Request $request)
     {
@@ -250,7 +258,7 @@ class CashierController extends Controller
     {
         $customer = Customer::whereHas('user', function ($role) {
             $role->where('role', 'customer');
-        })->with('user')->get();
+        })->with('user')->orderBy(User::select('name')->whereColumn('users.id', 'customers.user_id'))->get();
     
         $product = Product::with('productcat')->get();
     
@@ -364,6 +372,7 @@ class CashierController extends Controller
     public function membercheckin(Request $request)
     {
         $search = $request->input('search');
+        $perPage = $request->input('per_page', 5);
         $membercheckins = MemberCheckin::with('member.customer.user')
             ->when($search, function ($query) use ($search) {
                 $query->whereHas('member.customer.user', function ($q) use ($search) {
@@ -375,7 +384,7 @@ class CashierController extends Controller
                 ->orWhere('created_at', 'like', "%{$search}%");
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(5)
+            ->paginate($perPage)
             ->appends(['search' => $search]);
 
         return view('cashier.membercheckin', compact('membercheckins'));

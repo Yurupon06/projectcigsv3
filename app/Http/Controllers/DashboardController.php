@@ -133,7 +133,6 @@ class DashboardController extends Controller
             'amountsSalesComparison'
         ));
     }
-
     public function profile()
     {
         $user = Auth::user();

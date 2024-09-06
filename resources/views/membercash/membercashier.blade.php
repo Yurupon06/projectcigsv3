@@ -7,7 +7,19 @@
 @section('page', 'Membership')
 @section('main')
     @include('cashier.main')
+    
+    <style>
+        @media screen and (max-width: 768px) {
+                .page {
+                display: none;
+            }
 
+            .input-group {
+                margin-right: 8px;
+            }
+        }
+        
+    </style>
 
     <div class="container-fluid py-4 mt-4">
         <div class="row">
@@ -20,16 +32,27 @@
                 <div class="card my-4">
                     <div class="card-header pb-0 py-1">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h6 class="mb-2">Member</h6>
+                            <h6 class="mb-2 page">Member</h6>
                             <div class="input-group" style="max-width: 300px;">
-                                <form method="GET" action="{{ route('cashier.index') }}" class="d-flex w-100 pt-2">
+                                <form method="GET" action="{{ route('membercashier.membercash') }}" class="d-flex w-100 pt-2">
                                     <input type="text" name="search" class="form-control"
-                                        placeholder="Search orders" value="{{ request('search') }}"
+                                        placeholder="Search Members" value="{{ request('search') }}"
                                         style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
                                     <button type="submit" class="btn btn-primary"
                                         style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 10px; font-size: 14px;">
                                         <i class="fas fa-search"></i>
                                     </button>
+                                </form>
+                            </div>
+                            <div>
+                                <form method="GET" action="{{ route('membercashier.membercash') }}">
+                                    <label for="per_page" class="me-2">Show:</label>
+                                    <select name="per_page" id="per_page" onchange="this.form.submit()">
+                                        <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
+                                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                    </select>
                                 </form>
                             </div>
                         </div>
@@ -44,8 +67,6 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Start</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">End</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Visit</th>
-                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Status</th>
-                                        <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -56,21 +77,21 @@
                                                     {{ $i + 1 }} .
                                                 </div>
                                             </td>
-                                            <td style="padding: 5px 8px;">{{ $member->customer->user->name }}</td>
+                                            <td style="padding: 5px 8px; ">
+                                                <a href="{{ route('cashier.member', $member->id) }}" style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}; text-decoration: none ">
+                                                    {{ $member->customer->user->name }}
+                                                </a>
+                                            </td>
                                             <td style="padding: 5px 8px; color: {{ $member->status === 'inactive' ? 'red' : ($member->status === 'active' ? 'blue' : 'black') }}">
                                                 {{ \Carbon\Carbon::parse($member->start_date)->translatedFormat('d F Y') }}
                                             </td>
                                             <td style="padding: 5px 8px; color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'red') }}">
                                                 {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d F Y') }}
                                             </td>
-                                            <td style="padding: 5px 8px;">{{ $member->visit }}</td>
-                                            <td style="padding: 5px 8px; color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
-                                                {{ $member->status }}
-                                            </td>
-                                            <td class="align-middle text-center text-sm" style="padding: 5px 8px;">
-                                                <a href="{{ route('cashier.member', $member->id) }}">
-                                                    <span class="btn bg-gradient-info ws-15 my-2 btn-sm">Detail</span>
-                                                </a>
+                                            <td style="padding: 5px 8px; ">
+                                                <span style="{{ $member->visit == 0 ? 'color: red;' : '' }}">
+                                                    {{ $member->visit }}
+                                                </span>
                                             </td>
                                         </tr>
                                     @endforeach

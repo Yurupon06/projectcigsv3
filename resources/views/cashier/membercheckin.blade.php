@@ -7,24 +7,48 @@
 @section('page', 'Member Check-In')
 @section('main')
     @include('cashier.main')
+
+    <style>
+        @media screen and (max-width: 768px) {
+                .page {
+                display: none;
+            }
+
+            .input-group {
+                margin-right: 8px;
+            }
+        }
+        
+    </style>
     
     <div class="container-fluid py-4 mt-4">
         <div class="row">
             <div class="col-md-12 d-flex">
                 <div class="col-md-12 me-2" style="overflow: hidden;">
                     <div class="card my-4">
-                        <div class="card-header pb-0 py-2 mt-2">
+                        <div class="card-header pb-0 py-1">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h6 class="mb-2">Member</h6>
+                                <h6 class="mb-2 page">Member</h6>
                                 <div class="input-group mb-2" style="max-width: 300px;">
                                     <form method="GET" action="{{ route('cashier.membercheckin') }}" class="d-flex w-100">
                                         <input type="text" name="search" class="form-control"
-                                            placeholder="Search Member Checkin" value="{{ request('search') }}"
+                                            placeholder="Search orders" value="{{ request('search') }}"
                                             style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
-                                            <button type="submit" class="btn btn-primary"
-                                            style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 15px; font-size: 12px;">
+                                        <button type="submit" class="btn btn-primary"
+                                            style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 10px; font-size: 14px;">
                                             <i class="fas fa-search"></i>
                                         </button>
+                                    </form>
+                                </div>
+                                <div>
+                                    <form method="GET" action="{{ route('cashier.membercheckin') }}">
+                                        <label for="per_page" class="me-2">Show:</label>
+                                        <select name="per_page" id="per_page" onchange="this.form.submit()">
+                                            <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
+                                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                        </select>
                                     </form>
                                 </div>
                             </div>
