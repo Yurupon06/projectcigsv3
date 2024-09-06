@@ -14,9 +14,25 @@
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span
-                            class="text-success text-sm font-weight-bolder">{{ round($todaysMoneyComparison, 2) }}%
-                        </span>than yesterday</p>
+                    <p class="mb-0">
+                        @if ($yesterdaysMoney <= 0)
+                            <span class="text-success text-sm font-weight-bolder">{{ round($todaysMoney, 2) }}%</span>
+                            than yesterday
+                        @else
+                            @if ($todaysMoneyComparison < 0)
+                                <span class="text-danger text-sm font-weight-bolder">
+                                    {{ round($todaysMoneyComparison, 2) }}%
+                                </span>
+                            @elseif ($todaysMoneyComparison > 0)
+                                <span class="text-success text-sm font-weight-bolder">
+                                    +{{ round($todaysMoneyComparison, 2) }}%
+                                </span>
+                            @else
+                                <span class="text-sm font-weight-bolder">No change</span>
+                            @endif
+                            than yesterday
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -34,9 +50,25 @@
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span
-                            class="text-success text-sm font-weight-bolder">{{ round($todaysUsersComparison, 2) }}%
-                        </span>than yesterday</p>
+                    <p class="mb-0">
+                        @if ($todaysUsers <= 0)
+                            <span class="text-danger text-sm font-weight-bolder">{{ round($todaysUsers, 2) }}%</span>
+                            than yesterday
+                        @else
+                            @if ($todaysUsersComparison < 0)
+                                <span class="text-danger text-sm font-weight-bolder">
+                                    {{ round($todaysUsersComparison, 2) }}%
+                                </span>
+                            @elseif ($todaysUsersComparison > 0)
+                                <span class="text-success text-sm font-weight-bolder">
+                                    +{{ round($todaysUsersComparison, 2) }}%
+                                </span>
+                            @else
+                                <span class="text-sm font-weight-bolder">No change</span>
+                            @endif
+                            than yesterday
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -54,9 +86,25 @@
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span
-                            class="text-danger text-sm font-weight-bolder">{{ round($newMembersComparison, 2) }}%</span>
-                        than yesterday</p>
+                    <p class="mb-0">
+                        @if ($todaysUsers <= 0)
+                            <span class="text-danger text-sm font-weight-bolder">{{ round($todaysUsers, 2) }}%</span>
+                            than yesterday
+                        @else
+                            @if ($todaysUsersComparison < 0)
+                                <span class="text-danger text-sm font-weight-bolder">
+                                    {{ round($todaysUsersComparison, 2) }}%
+                                </span>
+                            @elseif ($todaysUsersComparison > 0)
+                                <span class="text-success text-sm font-weight-bolder">
+                                    +{{ round($todaysUsersComparison, 2) }}%
+                                </span>
+                            @else
+                                <span class="text-sm font-weight-bolder">No change</span>
+                            @endif
+                            than yesterday
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -74,9 +122,25 @@
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span
-                            class="text-success text-sm font-weight-bolder">{{ round($salesComparison, 2) }}%
-                        </span>than yesterday</p>
+                    <p class="mb-0">
+                        @if ($yesterdaysSales <= 0)
+                            <span class="text-success text-sm font-weight-bolder">{{ round($todaysSales, 2) }}%</span>
+                            than yesterday
+                        @else
+                            @if ($salesComparison < 0)
+                                <span class="text-danger text-sm font-weight-bolder">
+                                    {{ round($salesComparison, 2) }}%
+                                </span>
+                            @elseif ($salesComparison > 0)
+                                <span class="text-success text-sm font-weight-bolder">
+                                    +{{ round($salesComparison, 2) }}%
+                                </span>
+                            @else
+                                <span class="text-sm font-weight-bolder">No change</span>
+                            @endif
+                            than yesterday
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
