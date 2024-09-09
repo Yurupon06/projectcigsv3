@@ -42,12 +42,16 @@
                                                 <label for="customer_id" class="form-label">Select Name</label>
                                                 <select id="customer_id" name="customer_id" class="ps-2 form-select select2" aria-label="Select Name">
                                                     <option value="" disabled selected>Select Customer</option>
-                                                    @foreach ($customer as $dt)
-                                                        <option value="{{ $dt->id }}" data-name="{{ $dt->user->name }}" data-phone="{{ $dt->phone }}"
-                                                            {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
-                                                            {{ $dt->user->name }} ({{ $dt->phone }})
-                                                        </option>
-                                                    @endforeach
+                                                        @foreach ($customer as $dt)
+                                                            @php
+                                                                $phone = $dt->phone;
+                                                                $maskedPhone = substr($phone, 0, 4) . '****' . substr($phone, -4);
+                                                            @endphp
+                                                            <option value="{{ $dt->id }}" data-name="{{ $dt->user->name }}" data-phone="{{ $dt->phone }}"
+                                                                {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
+                                                                {{ $dt->user->name }} ({{ $maskedPhone }})
+                                                            </option>
+                                                        @endforeach
                                                 </select>
                                             </div>
                                         </div>
