@@ -11,10 +11,22 @@ class ComplementController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $complement = complement::all();
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 5);
+
+        $complement = complement::when($search, function ($query) use ($search) {
+            return $query->where('name', 'like', '%' . $search . '%')
+                ->orWhere('category', 'like', '%' . $search . '%')
+                ->orWhere('description', 'like', '%' . $search . '%')
+                ->orWhere('price', 'like', '%' . $search . '%')
+                ->orWhere('stok', 'like', '%' . $search . '%')
+                ->orWhere('image', 'like', '%' . $search . '%');
+        })
+        ->paginate($perPage)
+        ->appends(['search' => $search]);
+
         return view('complement.index', compact('complement'));
     }
 
@@ -40,7 +52,7 @@ class ComplementController extends Controller
             'stok' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-    
+
         $complement = new complement();
         $complement->name = $request->name;
         $complement->category = $request->category;
@@ -51,7 +63,7 @@ class ComplementController extends Controller
             $complement->image = $request->file('image')->store('complement');
         }
         $complement->save();
-    
+
         return redirect()->route('complement.index')->with([
             'status' => 'simpan',
             'pesan' => 'data complement dengan nama "' . $request->name . '" has been created ',
@@ -88,23 +100,23 @@ class ComplementController extends Controller
             'stok' => 'required|integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-    
+
         $complement = Complement::findOrFail($id);
         $complement->name = $request->name;
         $complement->category = $request->category;
         $complement->description = $request->description;
         $complement->price = $request->price;
         $complement->stok = $request->stok;
-    
+
         if ($request->hasFile('image')) {
             if (Storage::exists($complement->image)) {
                 Storage::delete($complement->image);
             }
             $complement->image = $request->file('image')->store('complement');
         }
-    
+
         $complement->save();
-    
+
         return redirect()->route('complement.index')->with([
             'status' => 'update',
             'pesan' => 'Data complement dengan nama "' . $request->name . '" has been updated',
