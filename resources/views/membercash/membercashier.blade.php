@@ -44,17 +44,17 @@
                                     </button>
                                 </form>
                             </div>
-                            <div>
-                                <form method="GET" action="{{ route('membercashier.membercash') }}">
-                                    <label for="per_page" class="me-2">Show:</label>
-                                    <select name="per_page" id="per_page" onchange="this.form.submit()">
-                                        <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
-                                        <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
-                                        <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
-                                        <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
-                                    </select>
-                                </form>
-                            </div>
+                            <div class="d-flex align-items-center my-3">
+                                    <form method="GET" action="{{ route('cashier.payment') }}" class="d-flex">
+                                        <label for="per_page" class="form-label me-2 mt-2">Show:</label>
+                                        <select name="per_page" id="per_page" class="form-select form-select-sm w-auto me-3" onchange="this.form.submit()">
+                                            <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
+                                            <option value="10" {{ request('per_page') == 10 ? 'selected' : '' }}>10</option>
+                                            <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
+                                            <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
+                                        </select>
+                                    </form>
+                                </div>
                         </div>
                     </div>
                     <div class="card-body px-0 pb-2">
