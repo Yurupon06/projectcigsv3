@@ -29,7 +29,7 @@
                                             aria-label="Default select example">
                                             <option selected disabled>Select Name</option>
                                             @foreach ($user as $category)
-                                                <option value="{{ $category->id }}"
+                                                <option  value="{{ $category->id }}"
                                                     {{ $category->id == $customer->user_id ? 'selected' : '' }}>
                                                     {{ $category->name }}</option>
                                             @endforeach

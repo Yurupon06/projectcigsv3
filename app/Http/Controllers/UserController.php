@@ -9,9 +9,18 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = User::orderBy('created_at', 'desc')->get();
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 5);
+        $user = User::where(function ($query) use ($search) {
+            $query->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('email', 'LIKE', "%{$search}%")
+                  ->orWhere('phone', 'LIKE', "%{$search}%");
+        })
+        ->orderBy('name', 'asc')
+        ->paginate($perPage);
+            
         return view('user.index', compact('user'));
     }
 

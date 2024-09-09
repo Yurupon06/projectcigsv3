@@ -38,7 +38,7 @@
             @endif
             <div class="col-12">
                 <div class="card my-4">
-                <div class="card-header pb-0 py-1">
+                    <div class="card-header pb-0 py-1">
                         <div class="d-flex justify-content-between align-items-center">
                             <h6 class="mb-2 page">Payment</h6>
                             <div class="input-group" style="max-width: 300px;">
@@ -62,7 +62,7 @@
                                             <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                                         </select>
                                     </form>
-                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body px-0 pb-2">

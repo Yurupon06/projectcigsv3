@@ -4,15 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $customer = Customer::whereHas('user', function ($role) {
-            $role->where('role', 'customer');
-        })->with('user')->get();
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 5);
+        $customer = Customer::select('customers.*')
+        ->join('users', 'customers.user_id', '=', 'users.id')
+        ->where('users.role', 'customer') 
+        ->where(function ($query) use ($search) {
+            if ($search) {
+                $query->where('users.name', 'LIKE', "%{$search}%");
+            }
+        })
+        ->with('user')
+        ->orderBy('users.name', 'asc')
+        ->paginate($perPage);
         return view('customer.index', compact('customer'));
     }
 
@@ -45,11 +56,11 @@ class CustomerController extends Controller
     {
         $customer = Customer::findOrFail($id);
 
-        if (Auth::user()->role === 'customer' && Auth::id() !== $customer->user_id) {
-            abort(403);
-        }
+        // if (Auth::user()->role === 'customer' && Auth::id() !== $customer->user_id) {
+        //     abort(403);
+        // }
 
-        $user = User::where('role', 'customer')->get();
+        $user = User::all();
         return view('customer.edit', compact('user', 'customer'));
     }
 
