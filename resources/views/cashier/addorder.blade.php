@@ -40,7 +40,7 @@
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <label for="customer_id" class="form-label">Select Name</label>
-                                                <select id="customer_id" name="customer_id" class="ps-2 form-select select2" aria-label="Select Name">
+                                                <select id="customer_id" name="customer_id" class="ps-2 form-select select2" aria-label="Select Name" required>
                                                     <option value="" disabled selected>Select Customer</option>
                                                         @foreach ($customer as $dt)
                                                             @php
@@ -55,16 +55,12 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="mt-2">
-                                            <label for="selected_customer" class="form-label">Selected Customer</label>
-                                            <input type="text" id="selected_customer" class="form-control" readonly>
-                                        </div>
                                     </div>
                                     <div class="mb-1 ms-3 me-3">
                                         <label for="product_id" class="form-label small">Product</label>
                                         <select id="product_id" name="product_id" class="ps-2 form-select form-select-sm"
-                                            aria-label="Select Product">
-                                            <option selected disabled>Select Product</option>
+                                            aria-label="Select Product" required>
+                                            <option value="" disabled selected>Select Product</option>
                                             @foreach ($product as $dt)
                                                 <option value="{{ $dt->id }}"
                                                     data-description="{{ $dt->description }}"
@@ -239,10 +235,8 @@
     <script>
         $(document).ready(function() {
             $('#customer_id').select2({
-                placeholder: 'Select Customer',
-                allowClear: true,
-                width: '100%',
-                theme: 'bootstrap-5'  // If using Bootstrap 5
+                placeholder: "Select Customer",
+                allowClear: true
             });
         });
     </script>

@@ -169,7 +169,7 @@
                 <div class="card text-center mx-auto">
                     <div class="card-header">
                         <h3>{{$dt->product_name}}</h3>
-                        <span class="text-black">Rp.{{$dt->price}}</span>
+                        <span class="text-black">Rp.{{number_format($dt->price)}}</span>
                     </div>
                     <div class="card-body">
                         <ul>

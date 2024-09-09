@@ -8,9 +8,23 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $product = Product::with('productcat')->orderBy('created_at', 'desc')->get();
+        $search = $request->input('search');
+        $perPage = $request->input('per_page', 5);
+
+        $product = Product::with(['productcat'])
+            ->where(function($query) use ($search) {
+                $query->whereHas('productcat', function($q) use ($search) {
+                    $q->where('category_name', 'like', '%' . $search . '%');
+                })
+                ->orWhere('product_name', 'like', '%' . $search . '%')
+                ->orWhere('description', 'like', '%' . $search . '%')
+                ->orWhere('price', 'like', '%' . $search . '%');
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
+
         return view('product.index', compact('product'));
     }
 

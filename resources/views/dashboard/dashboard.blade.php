@@ -1,5 +1,43 @@
-<div class="container-fluid py-4">
+<div class="container-fluid mt-2">
     <div class="row">
+        <div class="d-flex justify-content-{{ request('range') ? 'between' : 'end' }} mb-2 me-4">
+            <style>
+                .custom-select {
+                    appearance: none;
+                    box-sizing: border-box;
+                    cursor: pointer;
+                    z-index: 1;
+                }
+
+                .custom-select:focus {
+                    outline: none;
+                    background-color: #fff
+                }
+
+                .select-form .select-icon {
+                    position: absolute;
+                    right: 0;
+                }
+            </style>
+            @if (request('range'))
+                <a href="{{ route('dashboard.index') }}"
+                    class="fw-bold text-sm text-black d-block border border-1 border-black px-2 py-1">Reset Filter</a>
+            @endif
+
+            <form method="GET" action="{{ route('dashboard.index') }}" id="filter-form"
+                class="select-form position-relative d-flex align-items-center me-3 py-1">
+                <select id="filter-select" class="custom-select border-0 bg-transparent w-100 text-sm text-end px-4"
+                    name="range" onchange="this.form.submit()">
+                    <option selected disabled>Filter</option>
+                    <option value="7" {{ request('range') == '7' ? 'selected' : '' }}>Last 7 Days</option>
+                    <option value="30" {{ request('range') == '30' ? 'selected' : '' }}>Last 30 Days</option>
+                </select>
+                <div class="select-icon" id="filter-icon">
+                    <i class="bi bi-funnel-fill"></i>
+                </div>
+            </form>
+        </div>
+        <hr class="mb-4">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
             <div class="card">
                 <div class="card-header p-3 pt-2">
@@ -8,15 +46,33 @@
                         <i class="material-icons opacity-10">weekend</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Today's Money</p>
-                        <h4 class="mb-0">Rp. {{ number_format($todaysMoney, 0, ',', '.') }}</h4>
+                        <p class="text-sm mb-0 text-capitalize">{{ request('range') == '30' ? 'Monthly' : 'Weekly' }}
+                            Money</p>
+                        <h4 class="mb-0">Rp. {{ number_format($amountsMoney, 0, ',', '.') }}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span
-                            class="text-success text-sm font-weight-bolder">{{ round($todaysMoneyComparison, 2) }}%
-                        </span>than yesterday</p>
+                    <p class="mb-0">
+                        @if ($comparisonMoney <= 0)
+                            <span
+                                class="text-success text-sm font-weight-bolder">{{ round($amountsMoneyComparison, 2) }}%</span>
+                            than {{ request('range') == '30' ? 'last month' : 'last week' }}
+                        @else
+                            @if ($amountsMoneyComparison < 0)
+                                <span class="text-danger text-sm font-weight-bolder">
+                                    {{ round($amountsMoneyComparison, 2) }}%
+                                </span>
+                            @elseif ($amountsMoneyComparison > 0)
+                                <span class="text-success text-sm font-weight-bolder">
+                                    +{{ round($amountsMoneyComparison, 2) }}%
+                                </span>
+                            @else
+                                <span class="text-sm font-weight-bolder">No change</span>
+                            @endif
+                            than {{ request('range') == '30' ? 'last month' : 'last week' }}
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -28,15 +84,33 @@
                         <i class="material-icons opacity-10">person</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">Today's Users</p>
-                        <h4 class="mb-0">{{ number_format($todaysUsers, 0, ',', '.') }}</h4>
+                        <p class="text-sm mb-0 text-capitalize">{{ request('range') == '30' ? 'Monthly' : 'Weekly' }}
+                            Users</p>
+                        <h4 class="mb-0">{{ number_format($amountsUsers, 0, ',', '.') }}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span
-                            class="text-success text-sm font-weight-bolder">{{ round($todaysUsersComparison, 2) }}%
-                        </span>than yesterday</p>
+                    <p class="mb-0">
+                        @if ($comparisonUser <= 0)
+                            <span
+                                class="text-success text-sm font-weight-bolder">{{ round($amountsUserComparison, 2) }}%</span>
+                            than {{ request('range') == '30' ? 'last month' : 'last week' }}
+                        @else
+                            @if ($amountsUserComparison < 0)
+                                <span class="text-danger text-sm font-weight-bolder">
+                                    {{ round($amountsUserComparison, 2) }}%
+                                </span>
+                            @elseif ($amountsUserComparison > 0)
+                                <span class="text-success text-sm font-weight-bolder">
+                                    +{{ round($amountsUserComparison, 2) }}%
+                                </span>
+                            @else
+                                <span class="text-sm font-weight-bolder">No change</span>
+                            @endif
+                            than {{ request('range') == '30' ? 'last month' : 'last week' }}
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -48,15 +122,33 @@
                         <i class="material-icons opacity-10">person</i>
                     </div>
                     <div class="text-end pt-1">
-                        <p class="text-sm mb-0 text-capitalize">New Members</p>
-                        <h4 class="mb-0">{{ number_format($newMembers, 0, ',', '.') }}</h4>
+                        <p class="text-sm mb-0 text-capitalize">{{ request('range') == '30' ? 'Monthly' : 'Weekly' }}
+                            Members</p>
+                        <h4 class="mb-0">{{ number_format($amountsMembers, 0, ',', '.') }}</h4>
                     </div>
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span
-                            class="text-danger text-sm font-weight-bolder">{{ round($newMembersComparison, 2) }}%</span>
-                        than yesterday</p>
+                    <p class="mb-0">
+                        @if ($comparisonMember <= 0)
+                            <span
+                                class="text-success text-sm font-weight-bolder">{{ round($amountsMemberComparison, 2) }}%</span>
+                            than {{ request('range') == '30' ? 'last month' : 'last week' }}
+                        @else
+                            @if ($amountsMemberComparison < 0)
+                                <span class="text-danger text-sm font-weight-bolder">
+                                    {{ round($amountsMemberComparison, 2) }}%
+                                </span>
+                            @elseif ($amountsMemberComparison > 0)
+                                <span class="text-success text-sm font-weight-bolder">
+                                    +{{ round($amountsMemberComparison, 2) }}%
+                                </span>
+                            @else
+                                <span class="text-sm font-weight-bolder">No change</span>
+                            @endif
+                            than {{ request('range') == '30' ? 'last month' : 'last week' }}
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
@@ -74,15 +166,32 @@
                 </div>
                 <hr class="dark horizontal my-0">
                 <div class="card-footer p-3">
-                    <p class="mb-0"><span
-                            class="text-success text-sm font-weight-bolder">{{ round($salesComparison, 2) }}%
-                        </span>than yesterday</p>
+                    <p class="mb-0">
+                        @if ($comparisonSales <= 0)
+                            <span
+                                class="text-success text-sm font-weight-bolder">{{ round($amountsSalesComparison, 2) }}%</span>
+                            than {{ request('range') == '30' ? 'last month' : 'last week' }}
+                        @else
+                            @if ($amountsSalesComparison < 0)
+                                <span class="text-danger text-sm font-weight-bolder">
+                                    {{ round($amountsSalesComparison, 2) }}%
+                                </span>
+                            @elseif ($amountsSalesComparison > 0)
+                                <span class="text-success text-sm font-weight-bolder">
+                                    +{{ round($amountsSalesComparison, 2) }}%
+                                </span>
+                            @else
+                                <span class="text-sm font-weight-bolder">No change</span>
+                            @endif
+                            than {{ request('range') == '30' ? 'last month' : 'last week' }}
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>
     </div>
     <div class="row mt-4">
-        <div class="col-lg-4 col-md-6 mt-4 mb-4">
+        <div class="col-lg-4 col-md-6">
             <div class="card z-index-2">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                     <div class="bg-gradient-lightblue shadow-lightblue border-radius-lg py-3 pe-1">
@@ -92,8 +201,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6 class="mb-0">Orders This Week</h6>
-                    <p class="text-sm">Count of orders for the last 7 days</p>
+                    <h6 class="mb-0">Orders This {{ request('range') == '30' ? 'Month' : 'Week' }}</h6>
+                    <p class="text-sm">Count of orders for the last {{ $range }} days</p>
                     <hr class="dark horizontal">
                     <div class="d-flex">
                         <i class="material-icons text-sm my-auto me-1">schedule</i>
@@ -102,7 +211,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 col-md-6 mt-4 mb-4">
+        <div class="col-lg-4 col-md-6">
             <div class="card z-index-2">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                     <div class="bg-gradient-lightgreen shadow-lightgreen border-radius-lg py-3 pe-1">
@@ -112,8 +221,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6 class="mb-0">Payments This Week</h6>
-                    <p class="text-sm">Count of payments for the last 7 days</p>
+                    <h6 class="mb-0">Payments This {{ request('range') == '30' ? 'Month' : 'Week' }}</h6>
+                    <p class="text-sm">Count of payments for the last {{ $range }} days</p>
                     <hr class="dark horizontal">
                     <div class="d-flex">
                         <i class="material-icons text-sm my-auto me-1">schedule</i>
@@ -122,7 +231,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4 mt-4 mb-3">
+        <div class="col-lg-4">
             <div class="card z-index-2">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                     <div class="bg-gradient-lightcoral shadow-lightcoral border-radius-lg py-3 pe-1">
@@ -132,8 +241,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6 class="mb-0">New Members This Week</h6>
-                    <p class="text-sm">Count of new members for the last 7 days</p>
+                    <h6 class="mb-0">New Members This {{ request('range') == '30' ? 'Month' : 'Week' }}</h6>
+                    <p class="text-sm">Count of new members for the last {{ $range }} days</p>
                     <hr class="dark horizontal">
                     <div class="d-flex">
                         <i class="material-icons text-sm my-auto me-1">schedule</i>
@@ -152,7 +261,7 @@
         new Chart(ctx1, {
             type: 'bar',
             data: {
-                labels: {!! json_encode($datesWeekly) !!},
+                labels: {!! json_encode($dates) !!},
                 datasets: [{
                     label: 'Orders',
                     data: {!! json_encode($ordersData) !!},
@@ -172,7 +281,7 @@
         new Chart(ctx2, {
             type: 'line',
             data: {
-                labels: {!! json_encode($datesWeekly) !!},
+                labels: {!! json_encode($dates) !!},
                 datasets: [{
                     label: 'Payments',
                     data: {!! json_encode($paymentsData) !!},
@@ -195,7 +304,7 @@
         new Chart(ctx3, {
             type: 'line',
             data: {
-                labels: {!! json_encode($datesWeekly) !!},
+                labels: {!! json_encode($dates) !!},
                 datasets: [{
                     label: 'New Members',
                     data: {!! json_encode($membersData) !!},
