@@ -272,19 +272,16 @@ class CashierController extends Controller
 
     public function order()
     {
-        // Mendapatkan customer yang role-nya 'customer' dan terdaftar sebagai member dengan status 'active'
         $customer = Customer::whereHas('user', function ($query) {
             $query->where('role', 'customer');
         })->whereHas('members', function ($query) {
-            $query->where('status', 'active'); // Memfilter hanya member yang memiliki status 'active'
+            $query->where('status', '!=', 'inactive');
         })->with('user')
         ->orderBy(User::select('name')->whereColumn('users.id', 'customers.user_id'))
         ->get();
 
-        // Mendapatkan daftar produk beserta kategorinya
         $product = Product::with('productcat')->get();
 
-        // Mendapatkan user yang belum terdaftar sebagai customer tapi memiliki role 'customer'
         $usersWithoutCustomer = User::whereDoesntHave('customer')
                                     ->where('role', 'customer')
                                     ->get();
