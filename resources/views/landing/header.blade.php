@@ -1,4 +1,7 @@
 <style>
+    a{
+        text-decoration: none;
+    }
     .wrap-header-mobile {
         display: flex;
         align-items: center;
@@ -63,7 +66,6 @@
     .main-menu-m {
         background-color: #000;
         color: #fff;
-        text-decoration: none;
     }
 
     /* Adjust position and visibility for mobile */
@@ -80,12 +82,11 @@
                 /* Align to the right */
             }
             .menu-mobile {
-            display: block;
-        }
+                display: none;
+            }
         }
         .main-menu-m li a {
-            font-size: 16px;
-            text-decoration: none;
+            font-size: 16px; /* Atur ukuran teks untuk mobile */
         }
     }
         @media (min-width: 769px) {
@@ -176,52 +177,54 @@
         </div>
     </div>
 
-    <!-- Header Mobile -->
-    <div class="wrap-header-mobile">
-        <div class="logo-mobile">
-            <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo">
-        </div>
+        <!-- Header Mobile -->
+        <div class="wrap-header-mobile">
+            <div class="logo-mobile">
+                <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo">
+            </div>
 
-        @auth
-            <!-- Hide logout button on mobile -->
-        @else
-            <a href="{{ route('login') }}" class="btn-auth-mobile link-black">Login</a>
-        @endauth
-        <!-- Button show menu -->
-        <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
-            <span class="hamburger-box">
-                <span class="hamburger-inner"></span>
-            </span>
-        </div>
-    </div>
-
-    <!-- Menu Mobile -->
-    <div class="menu-mobile">
-        <ul class="main-menu-m">
             @auth
-            <li>
-                <a href="{{ route('landing.profile') }}">
-                    {{ Auth::user()->name }}
-                </a>
-            </li>
+                <!-- Hide logout button on mobile -->
             @else
+                <a href="{{ route('login') }}" class="btn-auth-mobile link-black">Login</a>
             @endauth
-            <li>
-                <a href="{{ route('landing.index') }}">Home</a>
-            </li>
-            <li>
-                <a href="{{ route('f&b.index') }}">Complement</a>
-            </li>
-            <li>
-                <a href="{{ route('yourorder.index') }}">My Order</a>
-            </li>
-            @auth
-                @if($member)
-                    <li>
-                        <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
-                    </li>
-                @endif
-            @endauth
-        </ul>
-    </div>
-</header>
+            <!-- Button show menu -->
+            <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </div>
+        </div>
+
+        <!-- Menu Mobile -->
+        <div class="menu-mobile">
+            <ul class="main-menu-m">
+                @auth
+                <li>
+                    <a href="{{ route('landing.profile') }}">
+                        {{ Auth::user()->name }}
+                    </a>
+                </li>
+                @else
+                
+                @endauth
+                <li>
+                    <a href="{{ route('landing.index') }}">Home</a>
+                </li>
+                <li>
+                    <a href="{{ route('f&b.index') }}">Complement</a>
+                </li>
+                <li>
+                    <a href="{{ route('yourorder.index') }}">My Order</a>
+                </li>
+                @auth
+                    @if($member)
+                        <li>
+                            <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+                        </li>
+                    @else
+                    @endif
+                @endauth
+            </ul>
+        </div>
+    </header>

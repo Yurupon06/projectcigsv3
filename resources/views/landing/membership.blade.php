@@ -161,6 +161,20 @@
     }
 </style>
 
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@if(session('warning'))
+    <script>
+        Swal.fire({
+            icon: 'warning',
+            title: 'Warning',
+            text: '{{ session('warning') }}',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6',
+        });
+    </script>
+@endif
+
 <div class="iphone-SE">
     <div class="div">
         <div class="group">
@@ -168,7 +182,19 @@
                 <img class="logo-gym" src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
             
                 <div class="text-wrapper" style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
-                    {{ $member->status }}
+                    @switch($member->status)
+                              @case('active')
+                                  Active
+                              @break
+                              @case('expired')
+                                  Expired
+                              @break
+                              @case('inactive')
+                                  You Got Ban !
+                              @break
+                              @default
+                                  Lainnya
+                          @endswitch
                 </div>
                 <div class="text-wrapper-2">
                     NAME : 
@@ -241,4 +267,6 @@
         </div>
     </div>
 </div>
+
+
 @endsection

@@ -12,7 +12,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">
-                    <div class="card-header pb-0">
+                    <div class="card-header pb-0  py-1">
                         <div class="d-flex justify-content-between align-items-center">
                             <h6>Order</h6>
                             <div class="input-group" style="max-width: 300px;">

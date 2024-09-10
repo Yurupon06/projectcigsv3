@@ -83,7 +83,19 @@
                                 <tr>
                                     <th>Status</th>
                                     <td style="color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
-                                        {{ $member->status }}
+                                        @switch($member->status)
+                                            @case('active')
+                                                Active
+                                            @break
+                                            @case('expired')
+                                                Expired
+                                            @break
+                                            @case('inactive')
+                                                Ban
+                                            @break
+                                            @default
+                                                Lainnya
+                                        @endswitch
                                     </td>
                                 </tr>
                                 @else
@@ -113,15 +125,15 @@
                                 
                                 <tr>
                                     <td colspan="2">
-                                        <form action="{{route('action.member', $member->id )}}" method="POST" class="text-end">
+                                        <form id="action-form" action="{{ route('action.member', $member->id ) }}" method="POST" class="text-end">
                                             @csrf
                                             @if ($member->status === 'active')
-                                                <button type="submit" name="action" value="cancel" class="btn btn-danger"  onclick="return confirm('Are you sure you want to ban this member ?')">Ban Membership</button>
+                                                <button type="button" data-action="cancel" class="btn btn-danger btn-ban">Ban Membership</button>
                                             @elseif ($member->status === 'expired')
-                                                <button type="submit" name="action" value="cancel" class="btn btn-danger"  onclick="return confirm('Are you sure you want to ban this member ?')">Ban Membership</button>
-                                                <button type="submit" name="action" value="process" class="btn btn-success">Procces Membership</button>
+                                                <button type="button" data-action="cancel" class="btn btn-danger btn-ban">Ban Membership</button>
+                                                <button type="button" data-action="process" class="btn btn-success btn-process">Procces Membership</button>
                                             @else
-                                            <button type="submit" name="action" value="process" class="btn btn-success">Procces Membership</button>
+                                                <button type="button" data-action="unban" class="btn btn-success btn-unban">Unban Membership</button>
                                             @endif
                                         </form>
                                     </td>
@@ -133,5 +145,57 @@
             </div>
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll('button[data-action]').forEach(button => {    
+        button.addEventListener('click', function (e) {
+            e.preventDefault(); // Mencegah form dikirim langsung
+            let action = this.getAttribute('data-action'); // Ambil nilai action dari tombol
+
+            let confirmText = '';
+            let successText = '';
+
+            switch (action) {
+                case 'cancel':
+                    confirmText = 'Are you sure you want to ban this member?';
+                    successText = 'Member has been banned.';
+                    break;
+                case 'unban':
+                    confirmText = 'Are you sure you want to unban this member?';
+                    successText = 'Member has been unbanned.';
+                    break;
+                case 'process':
+                    confirmText = 'Are you sure you want to process this membership?';
+                    successText = 'Membership has been processed.';
+                    break;
+                default:
+                    confirmText = 'Are you sure?';
+                    successText = 'Action completed successfully.';
+            }
+
+            Swal.fire({
+                title: 'Confirmation',
+                text: confirmText,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, proceed!',
+                cancelButtonText: 'No, cancel!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika dikonfirmasi, set value action dan kirim form
+                    let form = document.getElementById('action-form');
+                    let input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'action';
+                    input.value = action;
+                    form.appendChild(input);
+                    form.submit();
+                }
+            });
+        });
+    });
+    </script>
 
 @endsection
