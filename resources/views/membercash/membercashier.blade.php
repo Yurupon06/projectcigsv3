@@ -45,7 +45,7 @@
                                 </form>
                             </div>
                             <div class="d-flex align-items-center my-3">
-                                    <form method="GET" action="{{ route('cashier.payment') }}" class="d-flex">
+                                    <form method="GET" action="{{ route('membercashier.membercash') }}" class="d-flex">
                                         <label for="per_page" class="form-label me-2 mt-2">Show:</label>
                                         <select name="per_page" id="per_page" class="form-select form-select-sm w-auto me-3" onchange="this.form.submit()">
                                             <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
@@ -85,10 +85,10 @@
                                                     {{ $member->customer->user->name }}
                                                 </a>
                                             </td>
-                                            <td style="padding: 5px 8px; color: {{ $member->status === 'inactive' ? 'red' : ($member->status === 'active' ? 'blue' : 'black') }}">
+                                            <td style="padding: 5px 8px; color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'blue' : 'black') }}">
                                                 {{ \Carbon\Carbon::parse($member->start_date)->translatedFormat('d F Y') }}
                                             </td>
-                                            <td style="padding: 5px 8px; color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'red') }}">
+                                            <td style="padding: 5px 8px; color: {{ $member->status === 'expired' ? 'red' : ($member->status === 'active' ? 'green' : 'black') }}">
                                                 {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d F Y') }}
                                             </td>
                                             <td style="padding: 5px 8px; ">
