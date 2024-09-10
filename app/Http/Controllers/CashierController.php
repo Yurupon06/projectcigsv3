@@ -93,6 +93,16 @@ class CashierController extends Controller
         return view('cashier.payment', compact('payments'));
     }
 
+    public function detailpayment($id)
+    {
+        $dpayment = Payment::with(['order.customer.user', 'order.product'])
+        ->where('id', $id)
+        ->firstOrFail();
+
+    return view('cashier.detailpayment', compact('dpayment'));
+    }
+
+
     public function store(Request $request, Order $order)
     {
         if ($request->input('action') === 'cancel') {
@@ -256,13 +266,22 @@ class CashierController extends Controller
 
     public function order()
     {
-        $customer = Customer::whereHas('user', function ($role) {
-            $role->where('role', 'customer');
-        })->with('user')->orderBy(User::select('name')->whereColumn('users.id', 'customers.user_id'))->get();
-    
+        // Mendapatkan customer yang role-nya 'customer' dan terdaftar sebagai member dengan status 'active'
+        $customer = Customer::whereHas('user', function ($query) {
+            $query->where('role', 'customer');
+        })->whereHas('members', function ($query) {
+            $query->where('status', 'active'); // Memfilter hanya member yang memiliki status 'active'
+        })->with('user')
+        ->orderBy(User::select('name')->whereColumn('users.id', 'customers.user_id'))
+        ->get();
+
+        // Mendapatkan daftar produk beserta kategorinya
         $product = Product::with('productcat')->get();
-    
-        $usersWithoutCustomer = User::whereDoesntHave('customer')->where('role', 'customer')->get();
+
+        // Mendapatkan user yang belum terdaftar sebagai customer tapi memiliki role 'customer'
+        $usersWithoutCustomer = User::whereDoesntHave('customer')
+                                    ->where('role', 'customer')
+                                    ->get();
 
         return view('cashier.addorder', compact('customer', 'product', 'usersWithoutCustomer'));
     }
