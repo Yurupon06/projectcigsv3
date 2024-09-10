@@ -94,6 +94,7 @@
 	<script src="../../assets/vendor/isotope/isotope.pkgd.min.js"></script>
 <!--===============================================================================================-->
 	<script src="../../assets/vendor/sweetalert/sweetalert.min.js"></script>
+	
 	<script>
 		$('.js-addwish-b2').on('click', function(e){
 			e.preventDefault();

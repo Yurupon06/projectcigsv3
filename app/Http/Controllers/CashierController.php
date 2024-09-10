@@ -216,24 +216,30 @@ class CashierController extends Controller
                       ->orWhere('members.visit', 'LIKE', "%{$search}%")
                       ->orWhere('members.status', 'LIKE', "%{$search}%");
             })
-            ->orderBy('users.name', 'asc') 
+            ->orderByRaw(
+                "CASE
+                    WHEN members.status = 'active' THEN 1
+                    WHEN members.status = 'expired' THEN 2
+                    ELSE 4
+                END,
+                users.name ASC") 
             ->select('members.*') 
             ->paginate($perPage);
     
         $currentDate = Carbon::now('Asia/Jakarta');
-    
         Member::where('end_date', '<', $currentDate)
-            ->where('status', '<>', 'expired')
+            ->where('status', '<>', 'inactive')
             ->update(['status' => 'expired']);
-    
+
         Member::where('visit', 0)
-            ->where('status', '<>', 'expired')
+            ->where('status', '<>', 'inactive')
             ->update(['status' => 'expired']);
-    
+        
         $member = Member::with('customer')->get();
     
         return view('membercash.membercashier', compact('member', 'members'));
     }
+    
     
 
     public function storeCustomer(Request $request)
@@ -383,8 +389,18 @@ class CashierController extends Controller
         $member = Member::find($id);
         if ($request->input('action') === 'cancel') {
             $member->update(['status' => 'inactive']);
-            return redirect()->route('membercashier.membercash')->with('success', 'Member canceled successfully.');
+            return redirect()->route('membercashier.membercash')->with('success', 'Member Banned successfully.');
         }
+        if ($request->input('action') === 'unban') {
+            $currentDate = Carbon::now('Asia/Jakarta');
+            if ($member->end_date < $currentDate) {
+                $member->update(['status' => 'expired']);
+            }else {
+                $member->update(['status' => 'active']);
+            }
+            return redirect()->route('membercashier.membercash')->with('success', 'Member successfully Unban.');
+        }
+
         return redirect()->route('cashier.order');
     }
 
