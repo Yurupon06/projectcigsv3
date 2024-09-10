@@ -128,11 +128,22 @@
 
                 <div class="wrap-icon-header flex-w flex-r-m h-full">
                 @auth
-                    @if(auth()->user()->role == 'cashier')
-                        <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
+                    @if(auth()->user()->role == 'admin')
+                        <a href="{{ route('dashboard.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black">
                             {{ Auth::user()->name }}
                         </a>
-                        <a href="{{ route('cashier.index') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('cashier.index') ? 'active' : '' }}">
+                        <a href="{{ route('dashboard.index') }}" class="flex-c-m trans-04 p-lr-25 link-black text-capitalize">
+                            dashboard
+                        </a>
+                        <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                    @elseif(auth()->user()->role == 'cashier')
+                        <a href="{{ route('cashier.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black">
+                            {{ Auth::user()->name }}
+                        </a>
+                        <a href="{{ route('cashier.index') }}" class="flex-c-m trans-04 p-lr-25 link-black text-capitalize">
                             {{ Auth::user()->role }}
                         </a>
                         <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
@@ -153,10 +164,10 @@
                         @csrf
                     </form>
                 @else
-                    <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('login') ? 'active' : '' }}">
+                    <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25 link-black">
                         Login
                     </a>
-                    <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('register') ? 'active' : '' }}">
+                    <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25 link-black">
                         Register
                     </a>
                 @endauth

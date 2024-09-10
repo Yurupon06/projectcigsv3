@@ -2,28 +2,6 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  
-  <title>
-    @yield('title')
-  </title>
-  <link rel="icon" type="image/png" href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
-  <!--     Fonts and icons     -->
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
-  <!-- Nucleo Icons -->
-  <link href="../../assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="../../assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/67b651a5ac.js" crossorigin="anonymous"></script>
-  <!-- Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-  <!-- CSS Files -->
-  <link id="pagestyle" href="../../assets/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
-  <!-- Nepcha Analytics (nepcha.com) -->
-  <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
-  {{-- <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script> --}}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
@@ -49,144 +27,26 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/2.1.2/css/dataTables.bootstrap5.css" rel="stylesheet">
 
+    {{-- Bootstrap Icons --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
+    {{-- Select2 --}}
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Sidebar Style -->
+    @yield('sidebar-style')
+
+    <!-- Main Style -->
+    @yield('main-style')
+
+    <!-- Dashboard Style -->
+    @yield('dashboard-style')
+
+    <!-- Profile Style -->
+    @yield('profile-style')
+
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-
-        a {
-            text-decoration: none;
-        }
-
-        .bg-gradient-dark {
-            backgr ound: linear-gradient(45deg, #000000, #3c3c3c);
-        }
-
-        .bg-gradient-primary {
-            background: linear-gradient(45deg, #2bf8ff, #1c60ff);
-        }
-
-        .bg-gradient-success {
-            background: linear-gradient(45deg, #28a745, #218838);
-        }
-
-        .bg-gradient-info {
-            background: linear-gradient(45deg, #17a2b8, #117a8b);
-        }
-
-        .text-white {
-            color: #ffffff !important;
-        }
-
-        .nav-link.active {
-            background-color: #ff4b2b;
-            border-radius: 0.375rem;
-        }
-
-        .sidenav .nav-link {
-            border-radius: 0.375rem;
-            padding: 1rem;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 400;
-        }
-
-        .sidenav-header {
-            padding: 1rem;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-        }
-
-        .sidenav .nav-item .nav-link {
-            color: #ffffff;
-            font-weight: 400;
-        }
-
-        .sidenav .nav-item .nav-link:hover {
-            background-color: #ff6f00;
-            border-radius: 0.375rem;
-        }
-
-        .sidenav .nav-link .material-icons {
-            font-size: 1.5rem;
-        }
-
-        .sidenav .nav-link-text {
-            margin-left: 0.5rem;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .horizontal.light {
-            border-color: #ffffff;
-        }
-
-        .icon {
-            font-size: 2rem;
-            color: #ffffff;
-            border-radius: 50%;
-            padding: 0.5rem;
-            margin-top: -1.5rem;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .navigation-links {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        
-        .navigation-links a {
-            text-decoration: none;
-            color: #007BFF;
-            font-weight: bold;
-        }
-        
-        .navigation-links a:hover {
-            text-decoration: underline;
-        }
-        
-        .profile-section {
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .profile-section h1 {
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: #333;
-        }
-        
-        .profile-field {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        
-        .profile-field span {
-            font-size: 18px;
-            color: #555;
-        }
-        
-        .profile-field a {
-            text-decoration: none;
-            color: #007BFF;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        
-        .profile-field a:hover {
-            text-decoration: underline;
-        }
-
         .status-unpaid {
             color: red;
         }
@@ -195,7 +55,6 @@
             color: green;
         }
     </style>
-
 
 </head>
 
@@ -220,7 +79,6 @@
     <script src="../../assets/js/plugins/smooth-scrollbar.min.js"></script>
     <script src="../../assets/js/plugins/chartjs.min.js"></script>
     <script>
-
         new Chart(ctx, {
             type: "bar",
             data: {
@@ -479,7 +337,6 @@
 
 
     <!-- DataTables JS -->
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.js"></script>
@@ -492,17 +349,20 @@
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../../assets/js/material-dashboard.min.js?v=3.1.0"></script>
 
+    {{-- Select2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-      </script>
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
 
-<script>
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    });
-  </script>
+    <script>
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+    </script>
 
 </body>
 
