@@ -1,38 +1,29 @@
+@section('dashboard-style')
+<style>
+    .custom-select {
+        appearance: none;
+        box-sizing: border-box;
+        cursor: pointer;
+        z-index: 1;
+    }
+
+    .custom-select:focus {
+        outline: none;
+        background-color: #fff
+    }
+    </style>
+@endsection
 <div class="container-fluid mt-2">
     <div class="row">
-        <div class="d-flex justify-content-{{ request('range') ? 'between' : 'end' }} mb-2 me-4">
-            <style>
-                .custom-select {
-                    appearance: none;
-                    box-sizing: border-box;
-                    cursor: pointer;
-                    z-index: 1;
-                }
-
-                .custom-select:focus {
-                    outline: none;
-                    background-color: #fff
-                }
-
-                .select-form .select-icon {
-                    position: absolute;
-                    right: 0;
-                }
-            </style>
-            @if (request('range'))
-                <a href="{{ route('dashboard.index') }}"
-                    class="fw-bold text-sm text-black d-block border border-1 border-black px-2 py-1">Reset Filter</a>
-            @endif
-
+        <div class="d-flex justify-content-end mb-2 me-4">
             <form method="GET" action="{{ route('dashboard.index') }}" id="filter-form"
                 class="select-form position-relative d-flex align-items-center me-3 py-1">
                 <select id="filter-select" class="custom-select border-0 bg-transparent w-100 text-sm text-end px-4"
                     name="range" onchange="this.form.submit()">
-                    <option selected disabled>Filter</option>
-                    <option value="7" {{ request('range') == '7' ? 'selected' : '' }}>Last 7 Days</option>
+                    <option selected value="7" {{ request('range') == '7' ? 'selected' : '' }}>Last 7 Days</option>
                     <option value="30" {{ request('range') == '30' ? 'selected' : '' }}>Last 30 Days</option>
                 </select>
-                <div class="select-icon" id="filter-icon">
+                <div class="select-icon position-absolute end-0" id="filter-icon">
                     <i class="bi bi-funnel-fill"></i>
                 </div>
             </form>
@@ -241,8 +232,8 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <h6 class="mb-0">New Members This {{ request('range') == '30' ? 'Month' : 'Week' }}</h6>
-                    <p class="text-sm">Count of new members for the last {{ $range }} days</p>
+                    <h6 class="mb-0">Members This {{ request('range') == '30' ? 'Month' : 'Week' }}</h6>
+                    <p class="text-sm">Count of members for the last {{ $range }} days</p>
                     <hr class="dark horizontal">
                     <div class="d-flex">
                         <i class="material-icons text-sm my-auto me-1">schedule</i>
@@ -306,7 +297,7 @@
             data: {
                 labels: {!! json_encode($dates) !!},
                 datasets: [{
-                    label: 'New Members',
+                    label: 'Members',
                     data: {!! json_encode($membersData) !!},
                     backgroundColor: 'rgba(255, 145, 10, 0.4)',
                     borderColor: 'rgba(255, 99, 71, 0.6)',
