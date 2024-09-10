@@ -90,7 +90,7 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <a class="u" href="{{ route('cashier.member', $dt->order->customer->user->id )}}">
+                                                <a class="u" href="{{ route('cashier.detailpayment', $dt->id )}}">
                                                 {{ $dt->order->customer->user->name }}</a>
                                             </td>
                                             <td>

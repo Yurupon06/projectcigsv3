@@ -22,7 +22,7 @@ class Customer extends Model
 
     public function members()
     {
-        return $this->hasMany(Member::class, 'customer_id');
+        return $this->hasMany(Member::class, 'customer_id', 'id');
     }
 
     public function activeMember()

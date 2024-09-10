@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
             Route::view('/scanner', 'cashier.scanner')->name('scanner.cashier');
             Route::get('/qrscan/{qr_token}', [CashierController::class, 'qrscan'])->name('cashier.qrscan');
             Route::get('/payment', [CashierController::class, 'payment'])->name('cashier.payment');
+            Route::get('/detailpayment/{id}', [CashierController::class, 'detailpayment'])->name('cashier.detailpayment');
             Route::get('/membercheckin', [CashierController::class, 'membercheckin'])->name('cashier.membercheckin');
             Route::view('/qrcheckin', 'cashier.qrcheckin')->name('qrcheckin.cashier');
             Route::get('/qrcheckin/{qr_token}', [MemberCheckinController::class, 'qrcheckin'])->name('cashier.qrcheckin');
