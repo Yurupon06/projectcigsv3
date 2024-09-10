@@ -67,7 +67,7 @@
                                                 {{ $dt->email }}
                                             </td>
                                             <td>
-                                                {{ $dt->phone }}
+                                                {{ substr($dt->phone, 0, 4) . '****' . substr($dt->phone, -4)  }}
                                             </td>
                                             <td>
                                                 {{ $dt->role }}
