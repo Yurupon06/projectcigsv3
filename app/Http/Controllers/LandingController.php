@@ -9,7 +9,9 @@ use App\Models\Member;
 use App\Models\Membercheckin;
 use App\Models\Order;
 use App\Models\complement;
+use App\Models\cart;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cookie;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -17,13 +19,20 @@ use Illuminate\Support\Facades\Auth;
 
 class LandingController extends Controller
 {
+    public function getUniqueCartItemCount()
+    {
+        $user = Auth::user();
+        return $user ? cart::where('user_id', $user->id)->distinct('complement_id')->count('complement_id') : 0;
+    }
+
     public function index()
     {
         $products = Product::with('productcat')->get();
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-        return view('landing.index', compact('products', 'user', 'customer', 'member'));
+        $cartCount = $this->getUniqueCartItemCount();
+        return view('landing.index', compact('products', 'user', 'customer', 'member', 'cartCount'));
     }
 
     public function profile()
@@ -32,7 +41,8 @@ class LandingController extends Controller
         if ($user && $user->role === 'customer') {
             $customer = Customer::where('user_id', $user->id)->first();
             $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-            return view('landing.profile', compact('user', 'customer', 'member'));
+            $cartCount = $this->getUniqueCartItemCount();
+            return view('landing.profile', compact('user', 'customer', 'member', 'cartCount'));
         }
 
         abort(403);
@@ -94,6 +104,8 @@ class LandingController extends Controller
     public function order(Request $request)
     {
         $user = Auth::user();
+        
+        $cartCount = $this->getUniqueCartItemCount();
         $search = $request->input('search');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
@@ -101,6 +113,11 @@ class LandingController extends Controller
         if ($user && $user->role === 'customer') {
             $customer = Customer::where('user_id', $user->id)->first();
             $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+
+            if ($member && $member->status == 'inactive') {
+                return redirect()->route('customer.membership', ['id' => $member->id])
+                                 ->with('warning', 'You got banned. Please contact support.');
+            }
 
             if (!$startDate && !$endDate) {
                 $allOrders = Order::where('customer_id', $customer->id)->get();
@@ -126,7 +143,7 @@ class LandingController extends Controller
 
             $orders = $ordersQuery->get();
 
-            return view('landing.order', compact('orders', 'customer', 'member', 'search', 'startDate', 'endDate'));
+            return view('landing.order', compact('orders', 'customer', 'member', 'search', 'startDate', 'endDate', 'cartCount'));
         }
 
         abort(403);
@@ -172,11 +189,12 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        $cartCount = $this->getUniqueCartItemCount();
         if (auth()->id() !== $order->customer->user_id) {
             abort(404); 
         }
 
-        return view('landing.checkout', compact('order', 'member'));
+        return view('landing.checkout', compact('order', 'member', 'cartCount'));
     }
 
     public function beforeOrder(Request $request)
@@ -185,6 +203,7 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        $cartCount = $this->getUniqueCartItemCount();
 
         if ($member && $member->status == 'inactive') {
             return redirect()->route('customer.membership', ['id' => $member->id])
@@ -195,7 +214,7 @@ class LandingController extends Controller
             return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
         }
 
-        return view('landing.beforeOrder', compact('product', 'user', 'customer', 'member'));
+        return view('landing.beforeOrder', compact('product', 'user', 'customer', 'member', 'cartCount'));
     }
 
     public function membership($id)
@@ -203,11 +222,11 @@ class LandingController extends Controller
         $currentDate = Carbon::now('Asia/Jakarta');
 
         Member::where('end_date', '<', $currentDate)
-            ->where('status', '<>', 'expired')
+            ->where('status', '<>', 'inactive')
             ->update(['status' => 'expired']);
 
         Member::where('visit', 0)
-            ->where('status', '<>', 'expired')
+            ->where('status', '<>', 'inactive')
             ->update(['status' => 'expired']);
 
             $user = Auth::user();
@@ -220,11 +239,12 @@ class LandingController extends Controller
         }
 
         $member = Member::with('customer.user')->findOrFail($id);
+        $cartCount = $this->getUniqueCartItemCount();
 
         if ($member->customer_id !== $customer->id) {
             abort(403);
         }
-        return view('landing.membership', compact('member'));
+        return view('landing.membership', compact('member', 'cartCount'));
     }
     abort(403);
 
@@ -235,6 +255,7 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        $cartCount = $this->getUniqueCartItemCount();
         
         if ($member) {
             $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->orderBy('created_at', 'desc')->get();
@@ -242,27 +263,87 @@ class LandingController extends Controller
             $memberckin = collect();
         }
     
-        return view('landing.history', compact('memberckin', 'member'));
+        return view('landing.history', compact('memberckin', 'member', 'cartCount'));
     }
 
     public function complement(Request $request)
     {
         $category = $request->get('category');
     
-        // Check if a category is selected, otherwise show all complements
         $complement = $category ? Complement::where('category', $category)->get() : Complement::all();
+        
 
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-        return view('landing.complement.index', compact('complement', 'user', 'customer', 'member', 'category'));
+        $cartCount = $this->getUniqueCartItemCount();
+
+        return view('landing.complement.index', compact('complement', 'user', 'customer', 'member', 'category','cartCount'));
     }
-    public function complementDetail($id)
+    public function complementDetail($id, request $request)
     {
         $complement = complement::findOrFail($id);
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-        return view('landing.complement.detail', compact('complement', 'user', 'customer', 'member'));
+        $cartCount = $this->getUniqueCartItemCount();
+        return view('landing.complement.detail', compact('complement', 'user', 'customer', 'member', 'cartCount'));
+    }
+
+    public function addToCart(Request $request, $complementId)
+    {
+        $user = Auth::user();
+        
+        $complement = complement::findOrFail($complementId);
+    
+        $quantity = $request->input('quantity', 1);
+    
+        $cartItem = cart::where('user_id', $user->id)
+                        ->where('complement_id', $complement->id)
+                        ->first();
+    
+        if ($cartItem) {
+            $newQuantity = $cartItem->quantity + $quantity;
+            $cartItem->update([
+                'quantity' => $newQuantity,
+                'total' => $newQuantity * $complement->price
+            ]);
+        } else {
+            cart::create([
+                'user_id' => $user->id,
+                'complement_id' => $complement->id,
+                'quantity' => $quantity,
+                'total' => $quantity * $complement->price
+            ]);
+        }
+    
+        return redirect()->route('cart.index')->with('success', 'Item added to cart successfully!');
+    }
+
+
+    public function cart ()
+    {
+        $user = Auth::user();
+    
+        // Ambil customer dan member seperti sebelumnya
+        $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        
+        // Ambil data cart berdasarkan user yang sedang login
+        $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
+        $cartCount = $this->getUniqueCartItemCount();
+
+    
+        return view('landing.cart.index', compact('user', 'customer', 'member', 'cartItems', 'cartCount'));
+    }
+
+
+    public function deleteCart($id)
+    {
+        $cartItem = cart::findOrFail($id);
+
+        $cartItem->delete();
+
+        return redirect()->route('cart.index')->with('success', 'Item removed from cart successfully!');
     }
 }

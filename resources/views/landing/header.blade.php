@@ -129,9 +129,12 @@
 
 
                     <div class="wrap-icon-header flex-w flex-r-m h-full">
+                        <a href="{{route('cart.index')}}" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="{{ $cartCount }}">
+							<i class="zmdi zmdi-shopping-cart"></i>
+						</a>
                     @auth
                         @if(auth()->user()->role == 'cashier')
-                            <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
+                            <a href="{{ route('cashier.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
                                 {{ Auth::user()->name }}
                             </a>
                             <a href="{{ route('cashier.index') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('cashier.index') ? 'active' : '' }}">
@@ -141,6 +144,17 @@
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                                 Logout
                             </a>
+                        @elseif(auth()->user()->role == 'admin')
+                            <a href="{{ route('dashboard.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
+                                {{ Auth::user()->name }}
+                            </a>
+                            <a href="{{ route('dashboard.index') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('cashier.index') ? 'active' : '' }}">
+                                {{ Auth::user()->role }}
+                            </a>
+                            <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
+                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>                        
                         @else
                             <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
                                 {{ Auth::user()->name }}
@@ -178,6 +192,11 @@
             @else
                 <a href="{{ route('login') }}" class="btn-auth-mobile link-black">Login</a>
             @endauth
+            <div class="wrap-icon-header flex-w flex-r-m m-r-15">
+				<a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="{{ $cartCount }}">
+					<i class="zmdi zmdi-shopping-cart"></i>
+				</a>
+			</div>
             <!-- Button show menu -->
             <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
                 <span class="hamburger-box">

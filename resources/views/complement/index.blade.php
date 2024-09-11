@@ -89,14 +89,18 @@
                                             </td>
                                             <td class="align-middle text-center text-sm">
                                                 <a href="{{ route('complement.edit', $dt->id) }}">
-                                                    <span class="btn bg-gradient-success btn-sm">edit</span>
+                                                    <span class="btn bg-gradient-success ">
+                                                        <i class="material-icons">edit</i>
+                                                    </span>
                                                 </a>
                                                 <form action="{{route('complement.destroy', $dt->id)}}" method="POST"
                                                     class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn bg-gradient-danger btn-sm"
-                                                        onclick="return confirm('Are you sure you want to delete this category?')">delete</button>
+                                                    <button type="submit" class="btn bg-gradient-danger "
+                                                        onclick="return confirm('Are you sure you want to delete this category?')">
+                                                        <i class="material-icons">delete</i>
+                                                    </button>
                                                 </form>
                                             </td>
                                         </tr>
