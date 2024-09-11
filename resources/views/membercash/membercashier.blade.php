@@ -74,7 +74,7 @@
                                         <tr style="line-height: 1.2;">
                                             <td class="text-center">
                                                 <div class="d-flex px-2 py-1" style="padding: 5px 0;">
-                                                    {{ $i + 1 }} .
+                                                    {{ ($members->currentPage() - 1) * $members->perPage() + $i + 1 . ' . ' }}
                                                 </div>
                                             </td>
                                             <td style="padding: 5px 8px; ">
