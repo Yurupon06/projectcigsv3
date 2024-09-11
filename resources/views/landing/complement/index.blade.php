@@ -60,7 +60,7 @@
 							<div class="block2">
 								<div class="block2-pic hov-img0" style="width: 15rem !important; height: 15rem;">
 									<img style="width: 100%" src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
-									<a href="{{route('f&b.detail', $dt->id)}}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+									<a href="{{route('complement.detail', $dt->id)}}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
 										Quick View
 									</a>
 								</div>
