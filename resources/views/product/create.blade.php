@@ -23,12 +23,12 @@
                                     @csrf
                                     <div class="mb-2 ms-3 me-3">
                                         <label for="product_category_id" class="form-label">category</label>
-                                        <select id="product_category_id" name="product_category_id"
-                                            class="ps-2 form-select @error('product_category_id') is-invalid @enderror"
-                                            aria-label="Default select example">
-                                            <option selected disabled>Select category</option>
+                                        <select id="product_category_id" name="product_category_id" class="ps-2 form-select select2" aria-label="Select Category" required>
+                                            <option value="" disabled selected>Select Category</option>
                                             @foreach ($productcat as $dt)
-                                                <option value="{{ $dt->id }}">{{ $dt->category_name }}</option>
+                                                <option value="{{ $dt->id }}">
+                                                    {{ $dt->category_name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -73,7 +73,12 @@
             </div>
         </div>
     </div>
-
-
-
+    <script>
+        $(document).ready(function() {
+            $('#product_category_id').select2({
+                placeholder: "Select Category",
+                allowClear: true
+            });
+        });
+    </script>
 @endsection

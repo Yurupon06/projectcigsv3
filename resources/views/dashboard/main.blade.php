@@ -1,3 +1,16 @@
+@section('main-style')
+<style>
+    .profile.active{
+        color: #ff8800
+    }
+    .profile:hover{
+        color: #ff8800
+    }
+    .sign-out:hover {
+        color: #D81B60
+    }
+</style>
+@endsection
 <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
     <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
@@ -17,14 +30,6 @@
                                 <span class="text-capitalize profile {{ request()->routeIs('dashboard.profile') ? 'active' : '' }}">
                                     {{ Auth::user()->role }} - {{ Auth::user()->name }}
                                 </span>
-                                <style>
-                                    .profile.active{
-                                        color: #ff8800
-                                    }
-                                    .profile:hover{
-                                        color: #ff8800
-                                    }
-                                </style>
                             </a>
                             <a href="{{ route('logout') }}"
                                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
@@ -33,13 +38,8 @@
                                     <i class="fa fa-sign-out me-1"></i>
                                     <span class="d-sm-inline d-none">Sign Out</span>
                                 </div>
-                                <style>
-                                    .sign-out:hover {
-                                        color: #D81B60
-                                    }
-                                </style>
                             </a>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf
                             </form>
                         </li>

@@ -185,6 +185,12 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+
+        if ($member && $member->status == 'inactive') {
+            return redirect()->route('customer.membership', ['id' => $member->id])
+                             ->with('warning', 'You got banned. Please contact support.');
+        }
+
         if (!$customer || !$customer->phone || !$customer->born || !$customer->gender) {
             return redirect()->route('landing.profile')->with('warning', 'Please complete your profile before Join The Gym.');
         }

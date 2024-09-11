@@ -202,7 +202,7 @@
                 .catch(error => {
                     console.error('Error fetching member details:', error);
                     const errorMessage = document.getElementById('error-message');
-                    errorMessage.textContent = 'Invalid QR.';
+                    errorMessage.textContent = 'Invalid QR Code.';
                     errorMessage.style.display = 'block';
 
                     document.getElementById('error-sound').play();
@@ -211,7 +211,7 @@
 
                     setTimeout(() => {
                         errorMessage.style.display = 'none';
-                    }, 3000);
+                    }, 5000);
                 });
         }
 

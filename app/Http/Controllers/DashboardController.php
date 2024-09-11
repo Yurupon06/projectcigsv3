@@ -18,20 +18,20 @@ class DashboardController extends Controller
     {
         // Declaration
         $range = $request->query('range', 7);
-        $today = Carbon::today();
-        $yesterday = Carbon::yesterday();
-        $twoWeeksBefore = Carbon::now()->subDays(14);
-        $twoMonthBefore = Carbon::now()->subDays(60);
-        $lastWeek = Carbon::now()->subDays(7);
-        $lastmonth = Carbon::now()->subDays(30);
+        $twoWeeksBefore = Carbon::today()->subDays(14);
+        $twoMonthBefore = Carbon::today()->subDays(60);
         $endDate = Carbon::now();
+
+        if (!$request->has('range')) {
+            return redirect()->route('dashboard.index', ['range' => $range]);
+        }
 
         // Range
         if ($range == 7) {
-            $startDate = Carbon::now()->subDays(6);
+            $startDate = Carbon::today()->subDays(7);
             $comparisonDate = $twoWeeksBefore;
         } else {
-            $startDate = Carbon::now()->subDays(30);
+            $startDate = Carbon::today()->subDays(30);
             $comparisonDate = $twoMonthBefore;
         }
 
@@ -67,13 +67,13 @@ class DashboardController extends Controller
 
         // Total Sales
         $totalSales = Payment::sum('amount');
-        $amountsSales = Payment::whereBetween('created_at', [$startDate, $endDate])->sum('amount');
-        $comparisonSales = Payment::whereBetween('created_at', [$comparisonDate, $startDate])->sum('amount');
+        $firstSales = Payment::min('created_at');
+        $comparisonSales = Payment::whereBetween('created_at', [$firstSales, $startDate])->sum('amount');
 
         if ($comparisonSales != 0) {
-            $amountsSalesComparison = ($amountsMoney - $comparisonSales) / $comparisonSales * 100;
+            $amountsSalesComparison = ($totalSales - $comparisonSales) / $comparisonSales * 100;
         } else {
-            $amountsSalesComparison = $amountsMoney > 0 ? 100 : 0;
+            $amountsSalesComparison = $totalSales > 0 ? 100 : 0;
         }
 
         // Fetch daily orders for the selected range
@@ -121,7 +121,6 @@ class DashboardController extends Controller
             'amountsMoney',
             'amountsUsers',
             'amountsMembers',
-            'amountsSales',
             'totalSales',
             'comparisonMoney',
             'comparisonUser',
@@ -137,8 +136,6 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
-
-
 
         return view('dashboard.profile', compact('user', 'customer'));
     }

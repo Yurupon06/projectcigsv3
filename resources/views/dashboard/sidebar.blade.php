@@ -1,4 +1,75 @@
-<aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-dark" id="sidenav-main">
+@section('sidebar-style')
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .bg-gradient-dark {
+        backgr ound: linear-gradient(45deg, #000000, #3c3c3c);
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(45deg, #2bf8ff, #1c60ff);
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(45deg, #28a745, #218838);
+    }
+
+    .bg-gradient-info {
+        background: linear-gradient(45deg, #17a2b8, #117a8b);
+    }
+
+    .nav-link.active {
+        background-color: #ff4b2b;
+        border-radius: 0.375rem;
+    }
+
+    .sidenav .nav-link {
+        border-radius: 0.375rem;
+        padding: 1rem;
+        font-weight: 400;
+    }
+
+    .sidenav-header {
+        padding: 1rem;
+        font-weight: 600;
+    }
+
+    .sidenav .nav-item .nav-link {
+        color: #ffffff;
+        font-weight: 400;
+    }
+
+    .sidenav .nav-item .nav-link:hover {
+        background-color: #ff6f00;
+        border-radius: 0.375rem;
+    }
+
+    .sidenav .nav-link .material-icons {
+        font-size: 1.5rem;
+    }
+
+    .sidenav .nav-link-text {
+        margin-left: 0.5rem;
+    }
+
+    .icon {
+        font-size: 2rem;
+        color: #ffffff;
+        border-radius: 50%;
+        padding: 0.5rem;
+        margin-top: -1.5rem;
+    }
+    </style>
+@endsection
+<aside
+    class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3 bg-gradient-dark"
+    id="sidenav-main">
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
@@ -9,11 +80,12 @@
                 class="ms-1 font-weight-bold text-white">{{ isset($setting) ? $setting->app_name : 'Faybaal GYM' }}</span>
         </a>
     </div>
-    <hr class="horizontal light mt-0 mb-2">
+    <hr class="horizontal light border-light mt-0 mb-2">
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link text-white {{ request()->is('dashboard') ? 'active' : '' }}" href="{{ route('dashboard.index') }}">
+                <a class="nav-link text-white {{ request()->is('dashboard') ? 'active' : '' }}"
+                    href="{{ route('dashboard.index') }}">
                     <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="material-icons opacity-10">dashboard</i>
                     </div>
