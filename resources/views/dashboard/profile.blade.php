@@ -4,9 +4,55 @@
 @section('main')
     @include('dashboard.main')
 
+    @section('profile-style')
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .profile-section {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .profile-section h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        
+        .profile-field {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .profile-field span {
+            font-size: 18px;
+            color: #555;
+        }
+        
+        .profile-field a {
+            text-decoration: none;
+            color: #007BFF;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        
+        .profile-field a:hover {
+            text-decoration: underline;
+        }
+        </style>
+    @endsection
+
     <div class="container">
-        <div class="navigation-links">
-            <a href="{{ route('dashboard.index') }}">Back</a>
+        <div class="navigation-links d-flex justify-content-between mb-3">
+            <a href="{{ route('dashboard.index') }}" class="text-primary text-decoration-none fw-bold">Back</a>
         </div>
         <div class="profile-section">
             <h1>Profile</h1>

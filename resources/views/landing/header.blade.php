@@ -96,7 +96,6 @@
             }
         }
     </style>
-
     <header class="header-v2">
         <!-- Header desktop -->
         <div class="container-menu-desktop trans-03">
@@ -169,17 +168,30 @@
                             @csrf
                         </form>
                     @else
-                        <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('login') ? 'active' : '' }}">
-                            Login
+                        <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
+                            {{ Auth::user()->name }}
                         </a>
-                        <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('register') ? 'active' : '' }}">
-                            Register
+                        <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                            Logout
                         </a>
-                    @endauth
-                    </div>
-                </nav>
-            </div>
+                    @endif
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25 link-black">
+                        Login
+                    </a>
+                    <a href="{{ route('register') }}" class="flex-c-m trans-04 p-lr-25 link-black">
+                        Register
+                    </a>
+                @endauth
+                </div>
+            </nav>
         </div>
+    </div>
 
         <!-- Header Mobile -->
         <div class="wrap-header-mobile">
