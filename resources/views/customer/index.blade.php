@@ -97,7 +97,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
-                                {{ $customer->links('pagination::bootstrap-5') }}
+                                {{ $customer->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>
