@@ -141,7 +141,7 @@ class LandingController extends Controller
                 $ordersQuery->whereDate('order_date', '<=', $endDate);
             }
 
-            $orders = $ordersQuery->get();
+            $orders = $ordersQuery->paginate(5);
 
             return view('landing.order', compact('orders', 'customer', 'member', 'search', 'startDate', 'endDate', 'cartCount'));
         }
@@ -258,7 +258,7 @@ class LandingController extends Controller
         $cartCount = $this->getUniqueCartItemCount();
         
         if ($member) {
-            $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->orderBy('created_at', 'desc')->get();
+            $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->orderBy('created_at', 'desc')->paginate(5);
         } else {
             $memberckin = collect();
         }

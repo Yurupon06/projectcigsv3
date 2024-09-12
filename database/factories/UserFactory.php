@@ -26,7 +26,7 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'email' => preg_replace('/@.*$/', '@gmail.com', $this->faker->unique()->safeEmail),
-            'phone' => Str::random(12),
+            'phone' => $this->faker->numerify('08#########'),
             'email_verified_at' => now(),
             'password' => bcrypt('123'),
             'role' => 'customer',
