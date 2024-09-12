@@ -57,7 +57,7 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    {{ $i + 1 . ' . ' }}
+                                                    {{ ($user->currentPage() - 1) * $user->perPage() + $i + 1 . ' . ' }}
                                                 </div>
                                             </td>
                                             <td>
@@ -67,7 +67,7 @@
                                                 {{ $dt->email }}
                                             </td>
                                             <td>
-                                                {{ $dt->phone }}
+                                                {{ substr($dt->phone, 0, 4) . '****' . substr($dt->phone, -4)  }}
                                             </td>
                                             <td>
                                                 {{ $dt->role }}

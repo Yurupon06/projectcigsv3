@@ -2,28 +2,26 @@
 @section('main')
     @include('landing.header')
 <style>
-    /* Adjust grid items for smaller screens */
     @media (max-width: 576px) {
         .isotope-item {
-            width: 50%; /* Two items side by side */
-            padding-bottom: 20px; /* Space between items */
+            width: 50%; 
+            padding-bottom: 20px;
         }
 
         .block2-pic {
-            height: auto; /* Auto height for images */
+            height: auto; 
         }
 
         .block2-txt-child1 {
-            text-align: center; /* Center text for smaller screens */
+            text-align: center;
         }
 
         .block2-btn {
-            font-size: 12px; /* Adjust button text size */
+            font-size: 12px;
             padding: 10px 15px;
         }
     }
 
-    /* Adjust image sizes for different screen sizes */
     @media (max-width: 768px) {
         .block2-pic {
             width: 100%;

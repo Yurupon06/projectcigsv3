@@ -59,13 +59,14 @@
     <nav class="navbar navbar-horizontal-bottom">
         <ul class="navbar-nav d-flex flex-row">
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('cashier') ? 'active' : '' }}" href="{{ route('cashier.index') }}">
+                <a class="nav-link {{ request()->is('cashier') ? 'active' : '' }}" 
+                    href="{{ route('cashier.index') }}">
                     <i class="material-icons">store</i>
                     <span class="nav-link-text ms-1">Cashier</span>
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('cashier/order', 'cashier/qrscan*') ? 'active' : '' }}"
+                <a class="nav-link {{ request()->is('cashier/order') ? 'active' : '' }}"
                     href="{{ route('cashier.order') }}">
                     <i class="material-icons">add_shopping_cart</i>
                     <span class="nav-link-text ms-1">Add Order</span>

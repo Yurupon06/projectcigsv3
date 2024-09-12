@@ -99,7 +99,7 @@
                                             <tr>
                                                 <td>
                                                     <div class="d-flex px-2 py-1">
-                                                        {{ $i + 1 + ($orders->currentPage() - 1) * $orders->perPage() }}
+                                                        {{ ($orders->currentPage() - 1) * $orders->perPage() + $i + 1 . ' . ' }}
                                                     </div>
                                                 </td>
                                                 <td>

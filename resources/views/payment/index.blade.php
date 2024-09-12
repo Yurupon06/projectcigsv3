@@ -70,7 +70,7 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    {{ $i + 1 . ' . ' }}
+                                                    {{ ($payment->currentPage() - 1) * $payment->perPage() + $i + 1 . ' . ' }}
                                                 </div>
                                             </td>
                                             <td>
