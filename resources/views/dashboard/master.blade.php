@@ -95,6 +95,7 @@
     @yield('dashboard-script')
     @yield('profile-script')
     @yield('create-product-script')
+    @yield('edit-product-script')
     @yield('setting-script')
 
     <script>
