@@ -73,6 +73,7 @@
             </div>
         </div>
     </div>
+    @section('create-product-script')
     <script>
         $(document).ready(function() {
             $('#product_category_id').select2({
@@ -81,4 +82,5 @@
             });
         });
     </script>
+    @endsection
 @endsection

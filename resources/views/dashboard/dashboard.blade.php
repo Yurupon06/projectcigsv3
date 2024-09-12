@@ -197,7 +197,7 @@
                     <hr class="dark horizontal">
                     <div class="d-flex">
                         <i class="material-icons text-sm my-auto me-1">schedule</i>
-                        <p class="mb-0 text-sm">Updated daily</p>
+                        <p class="mb-0 text-sm">Updated {{ $orderUpdateTime ? $orderUpdateTime->diffForHumans() : 'recently' }}</p>
                     </div>
                 </div>
             </div>
@@ -217,7 +217,7 @@
                     <hr class="dark horizontal">
                     <div class="d-flex">
                         <i class="material-icons text-sm my-auto me-1">schedule</i>
-                        <p class="mb-0 text-sm">Updated daily</p>
+                        <p class="mb-0 text-sm">Updated {{ $paymentUpdateTime ? $paymentUpdateTime->diffForHumans() : 'recently' }}</p>
                     </div>
                 </div>
             </div>
@@ -237,16 +237,19 @@
                     <hr class="dark horizontal">
                     <div class="d-flex">
                         <i class="material-icons text-sm my-auto me-1">schedule</i>
-                        <p class="mb-0 text-sm">Updated daily</p>
+                        <p class="mb-0 text-sm">Updated {{ $memberUpdateTime ? $memberUpdateTime->diffForHumans() : 'recently' }}</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFyC8IW3BswlCnpnF4wJcgk5/MPjFp4xX1pP5Vdff8Q7RxL1STeYtTcJQ" crossorigin="anonymous"></script>
+    @section('dashboard-script')
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Chart JS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <script>
         const ctx1 = document.getElementById('chart-bars').getContext('2d');
         new Chart(ctx1, {
@@ -264,7 +267,9 @@
                     y: {
                         beginAtZero: true
                     }
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
 
@@ -287,7 +292,9 @@
                     y: {
                         beginAtZero: true
                     }
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
 
@@ -310,7 +317,10 @@
                     y: {
                         beginAtZero: true
                     }
-                }
+                },
+                responsive: true,
+                maintainAspectRatio: false
             }
         });
     </script>
+    @endsection
