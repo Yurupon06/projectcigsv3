@@ -97,6 +97,13 @@
                         @empty
                             <p class="text-center">No orders found.</p>
                         @endforelse
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-12">
+                                    {{ $orders->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

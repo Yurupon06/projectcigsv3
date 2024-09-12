@@ -167,19 +167,6 @@
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                             @csrf
                         </form>
-                    @else
-                        <a href="{{ route('landing.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
-                            {{ Auth::user()->name }}
-                        </a>
-                        <a href="{{ route('logout') }}" class="flex-c-m trans-04 p-lr-25 link-black"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                            Logout
-                        </a>
-                    @endif
-
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form>
                 @else
                     <a href="{{ route('login') }}" class="flex-c-m trans-04 p-lr-25 link-black">
                         Login
