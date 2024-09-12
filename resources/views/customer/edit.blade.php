@@ -27,9 +27,8 @@
                                         <label for="user_id" class="form-label">name</label>
                                         <select id="user_id" name="user_id" class="ps-2 form-select"
                                             aria-label="Default select example">
-                                            <option selected disabled>Select Name</option>
                                             @foreach ($user as $category)
-                                                <option  value="{{ $category->id }}"
+                                                <option  disabled value="{{ $category->id }}"
                                                     {{ $category->id == $customer->user_id ? 'selected' : '' }}>
                                                     {{ $category->name }}</option>
                                             @endforeach
