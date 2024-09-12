@@ -186,7 +186,7 @@
             </div>
         </div>
     </div>
-
+    @section('profile-script')
     <script>
         document.querySelector('form').addEventListener('submit', function(event) {
             var currentPassword = document.getElementById('current_password').value;
@@ -199,4 +199,5 @@
             }
         });
     </script>
+    @endsection
 @endsection

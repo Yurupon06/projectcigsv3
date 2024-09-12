@@ -25,14 +25,7 @@
                                     @method('PUT')
                                     <div class="mb-2 ms-3 me-3">
                                         <label for="user_id" class="form-label">name</label>
-                                        <select id="user_id" name="user_id" class="ps-2 form-select"
-                                            aria-label="Default select example">
-                                            @foreach ($user as $category)
-                                                <option  disabled value="{{ $category->id }}"
-                                                    {{ $category->id == $customer->user_id ? 'selected' : '' }}>
-                                                    {{ $category->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        <input type="text" value="{{ $customer->user->name }}" disabled class="ps-2 d-block w-100">
                                     </div>
                                     <div class="mb-3 ms-3 me-3">
                                         <label for="phone" class="form-label">phone</label>

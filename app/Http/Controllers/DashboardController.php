@@ -112,6 +112,16 @@ class DashboardController extends Controller
             $membersData[] = $members->get($date, 0);
         }
 
+        // Calculate specific update times
+        $orderUpdateTime = Order::max('order_date');
+        $paymentUpdateTime = Payment::max('payment_date');
+        $memberUpdateTime = Member::max('start_date');
+
+        // Convert to Carbon instances
+        $orderUpdateTime = $orderUpdateTime ? Carbon::parse($orderUpdateTime) : null;
+        $paymentUpdateTime = $paymentUpdateTime ? Carbon::parse($paymentUpdateTime) : null;
+        $memberUpdateTime = $memberUpdateTime ? Carbon::parse($memberUpdateTime) : null;
+
         return view('dashboard.home', compact(
             'range',
             'dates',
@@ -129,7 +139,10 @@ class DashboardController extends Controller
             'amountsMoneyComparison',
             'amountsUserComparison',
             'amountsMemberComparison',
-            'amountsSalesComparison'
+            'amountsSalesComparison',
+            'orderUpdateTime',
+            'paymentUpdateTime',
+            'memberUpdateTime'
         ));
     }
     public function profile()

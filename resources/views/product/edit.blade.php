@@ -25,13 +25,12 @@
                                     @method('PUT')
                                     <div class="mb-2 ms-3 me-3">
                                         <label for="product_category_id" class="form-label">category</label>
-                                        <select id="product_category_id" name="product_category_id" class="ps-2 form-select"
-                                            aria-label="Default select example">
-                                            <option selected disabled>Select Name</option>
-                                            @foreach ($productcat as $category)
-                                                <option value="{{ $category->id }}"
-                                                    {{ $category->id == $product->product_category_id ? 'selected' : '' }}>
-                                                    {{ $category->category_name }}</option>
+                                        <select id="product_category_id" name="product_category_id" class="ps-2 form-select select2" aria-label="Select Category" required>
+                                            <option value="" disabled selected>Select Category</option>
+                                            @foreach ($productcat as $dt)
+                                                <option value="{{ $dt->id }}">
+                                                    {{ $dt->category_name }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
@@ -77,7 +76,14 @@
             </div>
         </div>
     </div>
-
-
-
+    @section('edit-product-script')
+    <script>
+        $(document).ready(function() {
+            $('#product_category_id').select2({
+                placeholder: "Select Category",
+                allowClear: true
+            });
+        });
+    </script>
+    @endsection
 @endsection
