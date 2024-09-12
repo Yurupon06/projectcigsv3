@@ -64,7 +64,7 @@ class ComplementController extends Controller
         }
         $complement->save();
 
-        return redirect()->route('complement.index')->with([
+        return redirect()->route('complements.index')->with([
             'status' => 'simpan',
             'pesan' => 'data complement dengan nama "' . $request->name . '" has been created ',
         ]);
@@ -117,7 +117,7 @@ class ComplementController extends Controller
 
         $complement->save();
 
-        return redirect()->route('complement.index')->with([
+        return redirect()->route('complements.index')->with([
             'status' => 'update',
             'pesan' => 'Data complement dengan nama "' . $request->name . '" has been updated',
         ]);

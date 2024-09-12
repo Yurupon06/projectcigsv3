@@ -19,7 +19,7 @@
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
                             <div class="card border-1 m-3 pt-3">
-                                <form action="{{ route('complement.update', $complement->id) }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('complements.update', $complement->id) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                     <div class="mb-3 ms-3 me-3">
@@ -92,7 +92,7 @@
                                     </div>
                                     
                                     <div class="ms-3 me-3 text-end">
-                                        <a href="{{route('complement.index')}}" type="button"
+                                        <a href="{{route('complements.index')}}" type="button"
                                             class="btn bg-gradient-primary ws-15 my-4 mb-2">Cancel</a>
                                         <button type="submit"
                                             class="btn bg-gradient-success ws-15 my-4 mb-2">Update</button>

@@ -61,7 +61,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('member', MemberController::class);
         Route::resource('order', OrderController::class);
         Route::resource('payment', PaymentController::class);
-        Route::resource('complement', ComplementController::class);
+        Route::resource('complements', ComplementController::class);
         Route::view('scanner', 'order.scanner')->name('scanner');
         Route::get('/order/qrscan/{qr_token}', [OrderController::class, 'qrscan'])->name('order.qrscan');
 
