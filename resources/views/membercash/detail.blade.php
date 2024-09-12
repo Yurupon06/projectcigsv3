@@ -127,13 +127,10 @@
                                     <td colspan="2">
                                         <form id="action-form" action="{{ route('action.member', $member->id ) }}" method="POST" class="text-end">
                                             @csrf
-                                            @if ($member->status === 'active')
-                                                <button type="button" data-action="cancel" class="btn btn-danger btn-ban">Ban Membership</button>
-                                            @elseif ($member->status === 'expired')
-                                                <button type="button" data-action="cancel" class="btn btn-danger btn-ban">Ban Membership</button>
-                                                <button type="button" data-action="process" class="btn btn-success btn-process">Procces Membership</button>
-                                            @else
+                                            @if ($member->status === 'inactive')
                                                 <button type="button" data-action="unban" class="btn btn-success btn-unban">Unban Membership</button>
+                                            @else
+                                                <button type="button" data-action="cancel" class="btn btn-danger btn-ban">Ban Membership</button>
                                             @endif
                                         </form>
                                     </td>

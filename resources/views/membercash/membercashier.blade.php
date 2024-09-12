@@ -23,10 +23,17 @@
 
     <div class="container-fluid py-4 mt-4">
         <div class="row">
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
             @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
+                <script>
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'success',
+                        text: '{{ session('success') }}',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#3085d6',
+                    });
+                </script>
             @endif
             <div class="col-12">
                 <div class="card my-4">
@@ -74,7 +81,7 @@
                                         <tr style="line-height: 1.2;">
                                             <td class="text-center">
                                                 <div class="d-flex px-2 py-1" style="padding: 5px 0;">
-                                                    {{ $i + 1 }} .
+                                                    {{ ($members->currentPage() - 1) * $members->perPage() + $i + 1 . ' . ' }}
                                                 </div>
                                             </td>
                                             <td style="padding: 5px 8px; ">

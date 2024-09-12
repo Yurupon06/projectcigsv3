@@ -57,14 +57,14 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    {{ $i + 1 . ' . ' }}
+                                                    {{ ($customer->currentPage() - 1) * $customer->perPage() + $i + 1 . ' . ' }}
                                                 </div>
                                             </td>
                                             <td>
 												{{ $dt->user->name }}
 											</td>
                                             <td>
-                                                {{ $dt->phone }}
+                                                {{ substr($dt->phone, 0, 4) . '****' . substr($dt->phone, -4)  }}
                                             </td>
                                             <td>
                                                 {{ $dt->born }}

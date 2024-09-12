@@ -62,7 +62,7 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex px-2 py-1">
-                                                    {{ $i + 1 . ' . ' }}
+                                                    {{ ($productcat->currentPage() - 1) * $productcat->perPage() + $i + 1 . ' . ' }}
                                                 </div>
                                             </td>
                                             <td>

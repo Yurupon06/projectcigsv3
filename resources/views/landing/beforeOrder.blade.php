@@ -1,11 +1,12 @@
 @extends('landing.master')
 @section('title', 'Before Order')
-@include('landing.header')
+@section('main')
+    @include('landing.header')
 <style>
     .pointer {
         display: inline-block;
-        padding: 12px 25px;
-        background-color: #DC5F00;
+        padding: 12px 20px;
+        background-color: #000000;
         color: #fff;
         border-radius: 30px; 
         text-decoration: none;
@@ -95,7 +96,7 @@
                     </div>
 
 
-                    <button type="submit" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 p-lr-15 trans-04 pointer">
+                    <button type="submit" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 p-lr-15 trans-04 mb-2 pointer">
                         Proceed to Checkout
                     </button>
                     <br>
@@ -118,3 +119,4 @@
         }
     });
 </script>
+@endsection

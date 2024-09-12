@@ -13,9 +13,14 @@ class cart extends Model
         'user_id',
         'complement_id',
         'quantity',
+        'total',
     ];
 
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function complement(){
+        return $this->belongsTo(complement::class, 'complement_id');
     }
 }

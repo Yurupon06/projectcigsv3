@@ -19,7 +19,8 @@ use App\Http\Controllers\ComplementController;
 
 // Public
 Route::get('/', [LandingController::class, 'index'])->name('landing.index');
-
+Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
+Route::get('/cart', [LandingController::class, 'cart'])->name('cart.index');
 // Auth
 Route::middleware('auth')->group(function () {
     // Customer
@@ -40,8 +41,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/checkout/{id}', [LandingController::class, 'checkout'])->name('checkout');
         Route::get('/membership/{id}', [LandingController::class, 'membership'])->name('customer.membership');
         Route::get('/history', [LandingController::class, 'history'])->name('landing.history');
-        Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
-        Route::get('/f&b/{id}', [LandingController::class, 'complementDetail'])->name('f&b.detail');
+        
+        Route::get('/complement/{id}', [LandingController::class, 'complementDetail'])->name('complement.detail');
+        Route::post('/cart/add/{complementId}', [LandingController::class, 'addToCart'])->name('cart.add');
+        Route::delete('/cart/remove/{id}', [LandingController::class, 'deleteCart'])->name('cart.remove');
+        Route::post('/update-cart-cookie', [LandingController::class, 'updateCartCookie']);
+
+
+
     });
 
     // Admin
