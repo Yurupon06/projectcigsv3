@@ -13,13 +13,13 @@
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-header pb-0">
-                        <a href="{{route('complement.create')}}">
+                        <a href="{{route('complements.create')}}">
                             <span class="btn btn-sm bg-gradient-primary mb-3 fs-6 ">add new item</span>
                         </a>
                         <div class="d-flex justify-content-between align-items-center">
                             <h6>Complement</h6>
                             <div class="input-group" style="max-width: 300px;">
-                                <form method="GET" action="{{ route('complement.index') }}" class="d-flex w-100 pt-2">
+                                <form method="GET" action="{{ route('complements.index') }}" class="d-flex w-100 pt-2">
                                     <input type="text" name="search" class="form-control"
                                         placeholder="Search Complement" value="{{ request('search') }}"
                                         style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
@@ -30,7 +30,7 @@
                                 </form>
                             </div>
                             <div class="d-flex align-items-center my-3">
-                                <form method="GET" action="{{ route('complement.index') }}" class="d-flex">
+                                <form method="GET" action="{{ route('complements.index') }}" class="d-flex">
                                     <label for="per_page" class="form-label me-2 mt-2">Show:</label>
                                     <select name="per_page" id="per_page" class="form-select form-select-sm w-auto me-3" onchange="this.form.submit()">
                                         <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
@@ -88,12 +88,12 @@
                                                 <img src="storage/{{ $dt->image }}" class="img-thumbnail" alt="" style="max-width: 100px; max-height: 100px;">
                                             </td>
                                             <td class="align-middle text-center text-sm">
-                                                <a href="{{ route('complement.edit', $dt->id) }}">
+                                                <a href="{{ route('complements.edit', $dt->id) }}">
                                                     <span class="btn bg-gradient-success ">
                                                         <i class="material-icons">edit</i>
                                                     </span>
                                                 </a>
-                                                <form action="{{route('complement.destroy', $dt->id)}}" method="POST"
+                                                <form action="{{route('complements.destroy', $dt->id)}}" method="POST"
                                                     class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
