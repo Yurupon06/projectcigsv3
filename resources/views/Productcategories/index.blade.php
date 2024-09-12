@@ -100,7 +100,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
-                                {{ $productcat->links('pagination::bootstrap-5') }}
+                                {{ $productcat->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>

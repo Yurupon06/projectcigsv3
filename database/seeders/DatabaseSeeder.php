@@ -13,19 +13,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        User::factory(5)->create();
 
-        User::factory()->customer()->create([
-            'name' => 'Customer',
-            'email' => 'customer@gmail.com',
-        ]);
-        User::factory()->admin()->create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-        ]);
-        User::factory()->cashier()->create([
-            'name' => 'Cashier',
-            'email' => 'cashier@gmail.com',
-        ]);
+        // User::factory()->customer()->create([
+        //     'name' => 'Customer',
+        //     'email' => 'customer@gmail.com',
+        // ]);
+        // User::factory()->admin()->create([
+        //     'name' => 'Admin',
+        //     'email' => 'admin@gmail.com',
+        // ]);
+        // User::factory()->cashier()->create([
+        //     'name' => 'Cashier',
+        //     'email' => 'cashier@gmail.com',
+        // ]);
     }
 }

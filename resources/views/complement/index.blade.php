@@ -112,7 +112,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-12">
-                                {{ $complement->links('pagination::bootstrap-5') }}
+                                {{ $complement->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
                             </div>
                         </div>
                     </div>
