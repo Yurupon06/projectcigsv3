@@ -1,7 +1,6 @@
 @extends('landing.master')
 @section('title', 'Home')
 @section('main')
-    @include('landing.header')
 
 <style>
     .card {

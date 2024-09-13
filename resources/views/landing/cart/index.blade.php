@@ -1,6 +1,5 @@
 @extends('landing.master')
 @section('main')
-    @include('landing.header')
 
 @if(session('success'))
     <div class="alert alert-success">

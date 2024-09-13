@@ -1,7 +1,6 @@
 @extends('landing.master')
 @section('title', 'Profile')
 @section('main')
-    @include('landing.header')
 
 <style>
     .container {

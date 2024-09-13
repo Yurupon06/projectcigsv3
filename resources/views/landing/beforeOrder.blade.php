@@ -1,7 +1,6 @@
 @extends('landing.master')
 @section('title', 'Before Order')
 @section('main')
-    @include('landing.header')
 <style>
     .pointer {
         display: inline-block;

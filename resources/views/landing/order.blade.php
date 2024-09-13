@@ -1,7 +1,6 @@
 @extends('landing.master')
 @section('title', 'Order')
 @section('main')
-    @include('landing.header')
 
     @if(session('success'))
         <div class="alert alert-success" role="alert">

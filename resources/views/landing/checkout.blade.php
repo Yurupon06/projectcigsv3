@@ -1,7 +1,6 @@
 @extends('landing.master')
 @section('title', 'Checkout')
 @section('main')
-    @include('landing.header')
 
 <style>
     .cell-padding {
