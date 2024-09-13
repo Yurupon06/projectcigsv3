@@ -1,7 +1,6 @@
 @extends('landing.master')
 @section('title', 'History')
 @section('main')
-    @include('landing.header')
   
 <style>
     .text-xxs {

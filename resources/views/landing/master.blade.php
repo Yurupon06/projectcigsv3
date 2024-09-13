@@ -40,8 +40,59 @@
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 		<style>
-			a{
+			a {
 				text-decoration: none;
+			}
+			.wrap-header-mobile {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				width: 100%;
+			}
+			.btn-show-menu-mobile {
+				display: flex;
+				align-items: center;
+				position: relative;
+			}
+			.btn-auth-mobile {
+				display: none;
+				margin-left: auto;
+				padding: 0 15px;
+				color: #007BFF;
+				font-weight: bold;
+				text-decoration: none;
+			}
+			.main-menu li a {
+				color: #000;
+				border-radius: 10px;
+				padding: 6px 12px;
+				text-decoration: none;
+			}
+			.main-menu li.active a {
+				color: #000000;
+				border-radius: 10px;
+			}
+			.main-menu li.active {
+				background-color: #FFA500;
+				border-radius: 10px;
+				padding: 6px 12px;
+			}
+			.main-menu-m li.active a {
+				color: #000000;
+				border-radius: 10px;
+				display: block;
+			}
+			.link-black {
+				color: black;
+				text-decoration: none;
+				transition: color 0.3s ease;
+			}
+			.link-black:hover, .link-black.active {
+				color: #FF8C00; 
+			}
+			.main-menu-m {
+				background-color: #000;
+				color: #fff;
 			}
 		</style>
 
@@ -50,10 +101,70 @@
 </head>
 <body>
 
-    @yield('main')
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 bg-light">
+                <!-- Left Sidebar Content -->
+            </div>
+            <div class="col-md-6">
+				<header class="header-v2">
+					<div class="wrap-header-mobile">
+						<div class="logo-mobile">
+							<img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo">
+						</div>
+						@auth
+							<!-- Hide logout button on mobile -->
+						@else
+							<a href="{{ route('login') }}" class="btn-auth-mobile link-black">Login</a>
+						@endauth
+						<div class="wrap-icon-header flex-w flex-r-m m-r-15">
+							{{-- <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="{{ $cartCount }}">
+								<i class="zmdi zmdi-shopping-cart"></i>
+							</a> --}}
+						</div>
+						<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+							<span class="hamburger-box">
+								<span class="hamburger-inner"></span>
+							</span>
+						</div>
+					</div>
+					<div class="menu-mobile">
+						<ul class="main-menu-m">
+							@auth
+							<li>
+								<a href="{{ route('landing.profile') }}">
+									{{ Auth::user()->name }}
+								</a>
+							</li>
+							@else
+							@endauth
+							<li>
+								<a href="{{ route('landing.index') }}">Home</a>
+							</li>
+							<li>
+								<a href="{{ route('yourorder.index') }}">My Order</a>
+							</li>
+							@auth
+								@if($member)
+									<li>
+										<a href="{{ route('customer.membership', ['id' => $member->id]) }}">View Membership</a>
+									</li>
+								@endif
+							@endauth
+						</ul>
+					</div>
+				</header>
+                @yield('main')
+            </div>
+            <div class="col-md-3 bg-light">
+                <!-- Right Sidebar Content -->
+            </div>
+        </div>
+    </div>
+    @yield('script')
 
-	@yield('script')
 
+	
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

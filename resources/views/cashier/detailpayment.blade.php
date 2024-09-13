@@ -97,6 +97,7 @@
                                     <th>Status</th>
                                     <td class="status">{{ $dpayment->order->status }}</td>
                                 </tr>
+                                <tr><td></td></tr>
                             </table>
                         </div>
                     </div>

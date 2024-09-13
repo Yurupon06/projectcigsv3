@@ -1,6 +1,5 @@
 @extends('landing.master')
 @section('main')
-    @include('landing.header')
 
 <body class="animsition">
     

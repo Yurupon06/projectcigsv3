@@ -1,6 +1,5 @@
 @extends('landing.master')
 @section('main')
-    @include('landing.header')
 <style>
     @media (max-width: 576px) {
         .isotope-item {
