@@ -6,6 +6,10 @@
     .text-xxs {
         font-size: 11px;
     }
+
+    .card-body {
+        padding-top: 100px;
+    }
 </style>
     <div class="card-body px-0 pb-1">
         <div id="alert"></div>

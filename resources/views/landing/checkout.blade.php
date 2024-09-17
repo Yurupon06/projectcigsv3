@@ -96,6 +96,10 @@
             width: 100%;
         }
     }
+
+    .container {
+        padding-bottom: 100px;
+    }
 </style>
 
 <div class="container mt-4">
@@ -122,7 +126,7 @@
         <div class="col-12 mb-4">
             <div class="card shadow">
                 <h5 class="card-title">Order Details</h5>
-                <table class="table table-responsive">
+                <table class="table">
                     <thead>
                         <tr>
                             <th>Product</th>
@@ -160,7 +164,7 @@
                 <br>
             @endif
 
-            <div class="flex-w flex-t p-t-27 p-b-33">
+            <div class="d-flex">
                     <div class="size-208">
                         <span class="mtext-101 cl2">
                             Total:
@@ -173,14 +177,16 @@
                         <span class="mtext-110 cl2" style="color: {{ $order->status == 'unpaid' ? 'red' : ($order->status == 'canceled' ? 'gray' : 'green') }}; font-weight: bold;">
                             {{ ucfirst($order->status) }}
                         </span>
-                        @if ($order->status === 'unpaid')
-                        <form action="{{ route('yourorder.cancel', $order->id) }}" method="POST" class="mt-3">
-                            @csrf
-                            @method('PATCH')
-                            <button type="submit" class="flex-c-m stext-101 cl0 size-11 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel Order</button>
-                        </form>
-                        @endif
                     </div>
+                </div>
+                <div class="d-flex justify-content-center mt-2">
+                    @if ($order->status === 'unpaid')
+                    <form action="{{ route('yourorder.cancel', $order->id) }}" method="POST" class="mt-3 w-100">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="btn btn-dark w-100 rounded-0" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel Order</button>
+                    </form>
+                    @endif
                 </div>
         </div>
     </div>

@@ -42,6 +42,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     <style>
         a {
             text-decoration: none;
@@ -108,6 +110,27 @@
             background-color: #000;
             color: #fff;
         }
+
+        .contains, .header-v2, .nav-bottom {
+            max-width: 576px;
+        }
+
+        .nav-bottom {
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        
+        .active {
+            color: #FF8C00;
+        }
+
+        /* @media (max-width: 992px) {
+            .contains {
+                max-width: 100%;
+            }
+        } */
+
     </style>
 
 
@@ -116,65 +139,68 @@
 
 <body>
 
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-4 bg-light">
-                <!-- Left Sidebar Content -->
-            </div>
-            <div class="col-md-4">
-                <header class="header-v2">
-                    <div class="wrap-header-mobile">
-                        <div class="logo-mobile">
-                            <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
-                                alt="logo">
-                        </div>
-                        @auth
-                            <!-- Hide logout button on mobile -->
-                        @else
-                            <a href="{{ route('login') }}" class="btn-auth-mobile link-black">Login</a>
-                        @endauth
-                        <div class="wrap-icon-header flex-w flex-r-m m-r-15">
-                            {{-- <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="{{ $cartCount }}">
+    <div class="contains m-auto">
+        <header class="header-v2 fixed-top m-auto">
+            <div class="wrap-header-mobile">
+                <div class="logo-mobile">
+                    <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
+                        alt="logo">
+                </div>
+                @auth
+                    <a href="{{ route('logout') }}" class="link-black me-2"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        Logout
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="link-black me-2">Login</a>
+                @endauth
+                {{-- @guest
+                    <a href="{{ route('login') }}" class="link-black me-2">Login</a>
+                @endguest --}}
+                {{-- <div class="wrap-icon-header flex-w flex-r-m m-r-15"> --}}
+                {{-- <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="{{ $cartCount }}">
 								<i class="zmdi zmdi-shopping-cart"></i>
 							</a> --}}
-                        </div>
-                        <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
-                            <span class="hamburger-box">
-                                <span class="hamburger-inner"></span>
-                            </span>
-                        </div>
-                    </div>
-                    <div class="menu-mobile">
-                        <ul class="main-menu-m">
-                            @auth
-                                <li>
-                                    <a href="{{ route('landing.profile') }}">
-                                        {{ Auth::user()->name }}
-                                    </a>
-                                </li>
-                            @else
-                            @endauth
-                            <li>
-                                <a href="{{ route('landing.index') }}">Home</a>
-                            </li>
-                            <li>
-                                <a href="{{ route('yourorder.index') }}">My Order</a>
-                            </li>
-                            @auth
-                                @if ($member)
-                                    <li>
-                                        <a href="{{ route('customer.membership', ['id' => $member->id]) }}">View
-                                            Membership</a>
-                                    </li>
-                                @endif
-                            @endauth
-                        </ul>
-                    </div>
-                </header>
-                @yield('main')
+                {{-- </div> --}}
             </div>
-            <div class="col-md-4 bg-light">
-                <!-- Right Sidebar Content -->
+        </header>
+        @yield('main')
+    </div>
+    <div class="nav-bottom fixed-bottom bg-white m-auto text-center">
+        <div class="row">
+            <div class="nav-bottom-item col-3">
+                <a href="{{ route('landing.index') }}" class="{{ request()->routeIs('landing.index') || request()->is('checking') ? 'active' : 'text-dark'}}">
+                    <i class="bi bi-house-fill fs-3"></i>
+                    <p>Home</p>
+                </a>
+            </div>
+            <div class="nav-bottom-item col-3">
+                <a href="{{ route('yourorder.index') }}" class="{{ request()->routeIs('yourorder.index') || request()->is('checkout*') ? 'active' : 'text-dark'}}">
+                    <i class="bi bi-cart-fill fs-3"></i>
+                    <p>My Order</p>
+                </a>
+            </div>
+            <div class="nav-bottom-item col-3">
+                @if($member)
+                <a href="{{ route('customer.membership', ['id' => $member->id]) }}" class="{{ request()->routeIs('customer.membership') || request()->is('history') ? 'active' : 'text-dark'}}">
+                    <i class="bi bi-person-vcard fs-3"></i>
+                    <p>Membership</p>
+                </a>
+                @else
+                <a href="#product-section" class="{{ request()->routeIs('customer.membership') || request()->is('history') ? 'active' : 'text-dark'}}">
+                    <i class="bi bi-person-vcard fs-3"></i>
+                    <p>Membership</p>
+                </a>
+                @endif
+            </div>
+            <div class="nav-bottom-item col-3">
+                <a href="{{ route('landing.profile') }}" class="{{ request()->routeIs('landing.profile') ? 'active' : 'text-dark'}}">
+                    <i class="bi bi-person-fill fs-3"></i>
+                    <p>Profile</p>
+                </a>
             </div>
         </div>
     </div>

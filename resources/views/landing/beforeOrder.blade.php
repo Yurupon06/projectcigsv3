@@ -17,6 +17,11 @@
             background-color: #DC5F00;
             transform: scale(1.05);
         }
+
+        .container {
+            padding-top: 60px;
+            padding-bottom: 100px;
+        }
     </style>
     <div class="container mt-4 flex-wrap">
         <div class="row">

@@ -72,7 +72,6 @@
             top: 80%;
             left: 50%;
             transform: translate(-60%, -50%);
-            text-align: justify;
             color: #fff;
             text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
             background: rgba(0, 0, 0, 0.1);
@@ -151,9 +150,13 @@
                 margin-bottom: 15px;
             }
         }
+
+        #product-section {
+            padding-bottom: 100px;
+        }
     </style>
 
-    <div class="animsition">
+    <div class="animsition mb-5">
         <!-- Slider -->
         <section class="section-slide">
             <div class="wrap-slick1 rs1-slick1">
