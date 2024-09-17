@@ -4,6 +4,7 @@
 
 <style>
     .container {
+        min-height: 100vh;
         max-width: 800px;
         margin: 0 auto;
         padding: 20px;
@@ -63,7 +64,7 @@
 
     /* Mobile Logout Button Styles */
     .btn-logout-mobile {
-        display: none; /* Hide by default */
+        display: block; /* Hide by default */
         color: #007BFF;
         font-weight: bold;
         text-decoration: none;

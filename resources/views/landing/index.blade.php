@@ -3,56 +3,19 @@
 @section('main')
 
 <style>
-    .card {
-        border: none; 
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .card:hover {
-        transform: translateY(-5px); 
-        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-    }
-    .card-header {
-        background-color: #ffffff;
-        padding: 20px; 
-    }
-    .card-header h3 {
-        font-size: 20px;
-        margin-bottom: 0;
-    }
-    .card-header span {
-        font-size: 16px; 
-        color: #6c757d;
-    }
 
-    /* Card Footer */
-    .card-footer {
-        background-color: #ffffff; 
-        padding: 15px;
-        border-top: 1px solid #f1f1f1; 
-    }
 
-    /* Button Style */
-    .boxed-btn3 {
-        display: inline-block;
-        padding: 12px 25px;
-        background-color: #FFA500;
-        color: #000;
-        border-radius: 30px; 
-        text-decoration: none;
-        font-size: 16px; 
-        transition: background-color 0.3s ease, transform 0.3s ease;
-    }
-    .boxed-btn3:hover {
-        background-color: #000;
-        color: #fff;
-        transform: scale(1.05);
+    /* Slider */
+    .section-slide {
+        width: 100%;
+        max-width: 1200px; /* Sesuaikan dengan lebar maksimal */
+        margin: 0 auto; /* Memastikan slider berada di tengah */
     }
 
     .item-slick1 {
-        position: relative;
+        width: 100%;
+        max-width: 1200px; /* Sesuaikan dengan lebar maksimal */
+        margin: 0 auto; /* Memastikan item slider berada di tengah */
         height: 100vh;
         background-size: cover;
         background-position: center;
@@ -75,6 +38,7 @@
         border-radius: 10px;
         width: 80%;
     }
+
     .text-overlay h1 {
         font-size: 48px;
         font-weight: bold;
@@ -88,6 +52,61 @@
         font-size: 20px; 
         margin-bottom: 20px;
         animation: fadeInUp 1s ease-in-out;
+    }
+
+    /* Card */
+    .card {
+        border: none; 
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        width: 100%;
+        max-width: 400px; /* Atur sesuai kebutuhan */
+        margin: 0 auto; /* Memastikan card berada di tengah */
+    }
+
+    .card:hover {
+        transform: translateY(-5px); 
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .card-header {
+        background-color: #ffffff;
+        padding: 20px; 
+    }
+
+    .card-header h3 {
+        font-size: 20px;
+        margin-bottom: 0;
+    }
+
+    .card-header span {
+        font-size: 16px; 
+        color: #6c757d;
+    }
+
+    .card-footer {
+        background-color: #ffffff; 
+        padding: 15px;
+        border-top: 1px solid #f1f1f1; 
+    }
+
+    .boxed-btn3 {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #FFA500;
+        color: #000;
+        border-radius: 30px; 
+        text-decoration: none;
+        font-size: 16px; 
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .boxed-btn3:hover {
+        background-color: #000;
+        color: #fff;
+        transform: scale(1.05);
     }
 
     /* Animasi */
@@ -113,39 +132,9 @@
         }
     }
 
-    @keyframes fadeIn {
-        0% {
-            opacity: 0;
-        }
-        100% {
-            opacity: 1;
-        }
-    }
-
-    @media (max-width: 768px) {
-    .item-slick1 {
-        height: 50vh;
-    }
-
-    .text-overlay {
-        text-align: left;
-        width: 90%;
-        padding: 30px;
-    }
-
-    .text-overlay h1 {
-        font-size: 40px; 
-    }
-
-    .text-overlay p {
-        font-size: 16px;
-        margin-bottom: 15px;
-    }
-}
-
 </style>
 
-	<div class="animsition">
+<div class="animsition">
     <!-- Slider -->
     <section class="section-slide">
         <div class="wrap-slick1 rs1-slick1">
@@ -164,7 +153,7 @@
     <div id="product-section" class="container mt-5">
         <div class="d-flex justify-content-center flex-wrap">
             @foreach ($products as $dt)
-            <div class="col-lg-4 col-md-6 mb-4">
+            <div class="col-lg-4 col-md-6 mb-4 d-flex align-items-stretch">
                 <div class="card text-center mx-auto">
                     <div class="card-header">
                         <h3>{{$dt->product_name}}</h3>
@@ -196,5 +185,6 @@
             <i class="zmdi zmdi-chevron-up"></i>
         </span>
     </div>
-@endsection
+</div>
 
+@endsection

@@ -71,31 +71,6 @@
         background-color: #0056b3;
         transform: scale(1.05);
     }
-    @media (max-width: 576px) {
-        .card-title {
-            font-size: 16px;
-        }
-        .card-subtitle {
-            font-size: 14px;
-        }
-        .card-text {
-            font-size: 12px;
-        }
-        .navigation-links {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-    }
-    @media (min-width: 992px) {
-        .container {
-            display: flex;
-            justify-content: center;
-        }
-        .row {
-            max-width: 900px;
-            width: 100%;
-        }
-    }
 </style>
 
 <div class="container mt-4">

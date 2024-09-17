@@ -16,11 +16,29 @@
         background-color: #DC5F00;
         transform: scale(1.05);
     }
+    .card-section {
+        margin-bottom: 30px; /* Add margin between sections */
+    }
+    .shadow {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Add shadow for a lifted effect */
+    }
+    .form-section {
+        border-radius: 20px;
+    }
+    .container {
+        min-height: 100vh;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
 </style>
+
 <div class="container mt-4">
     <div class="row">
-        <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-            <div class="m-l-25 m-r--38 m-lr-0-xl shadow " style="border-radius: 20px">
+        <!-- Order Details -->
+        <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50 card-section">
+            <div class="m-l-25 m-r--38 m-lr-0-xl shadow form-section">
                 <div class="wrap-table-shopping-cart" style="border-radius: 20px">
                     <table class="table align-items-center mb-0">
                         <tr>
@@ -51,8 +69,10 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50" style="border-radius: 20px">
-            <div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm shadow" style="border-radius: 20px">
+
+        <!-- Payment -->
+        <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50 card-section">
+            <div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm shadow form-section">
                 <form id="checkoutForm" action="{{ route('yourorder.update') }}" method="POST">
                     @csrf
                     <input type="hidden" name="product_id" value="{{ $product['product_id'] }}">
@@ -93,7 +113,6 @@
                             </span>
                         </div>
                     </div>
-
 
                     <button type="submit" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 p-lr-15 trans-04 mb-2 pointer">
                         Proceed to Checkout

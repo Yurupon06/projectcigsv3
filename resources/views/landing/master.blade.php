@@ -103,10 +103,10 @@
 
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-3 bg-light">
+            <div class="col-md-4 bg-light">
                 <!-- Left Sidebar Content -->
             </div>
-            <div class="col-md-6">
+            <div class="col-md-4">
 				<header class="header-v2">
 					<div class="wrap-header-mobile">
 						<div class="logo-mobile">
@@ -156,7 +156,7 @@
 				</header>
                 @yield('main')
             </div>
-            <div class="col-md-3 bg-light">
+            <div class="col-md-4 bg-light">
                 <!-- Right Sidebar Content -->
             </div>
         </div>
