@@ -1,7 +1,6 @@
 @extends('landing.master')
 @section('title', 'Order')
 @section('main')
-    @include('landing.header')
 
     @if(session('success'))
         <div class="alert alert-success" role="alert">
@@ -57,6 +56,10 @@
                 font-size: 14px;
                 border-radius: 0 20px 20px 0;
             }
+        }
+
+        .container {
+            padding-bottom: 100px;
         }
     </style>
 
