@@ -73,7 +73,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('cashier/payment') ? 'active' : '' }}"
+                <a class="nav-link {{ request()->is('cashier/payment', 'cashier/detailpayment/*') ? 'active' : '' }}"
                     href="{{ route('cashier.payment') }}">
                     <i class="material-icons">payments</i>
                     <span class="nav-link-text ms-1">Payment</span>

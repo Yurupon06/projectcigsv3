@@ -1,11 +1,14 @@
 @extends('landing.master')
 @section('title', 'History')
 @section('main')
-    @include('landing.header')
   
 <style>
     .text-xxs {
         font-size: 11px;
+    }
+
+    .card-body {
+        padding-top: 100px;
     }
 </style>
     <div class="card-body px-0 pb-1">

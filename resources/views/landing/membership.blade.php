@@ -1,7 +1,6 @@
 @extends('landing.master')
 @section('title', 'Membership')
 @section('main')
-    @include('landing.header')
 
 <style>
     .iphone-SE {
