@@ -142,10 +142,16 @@
     <div class="contains m-auto">
         <header class="header-v2 fixed-top m-auto">
             <div class="wrap-header-mobile">
+                @if(request()->routeIs('landing.index'))
                 <div class="logo-mobile">
                     <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
                         alt="logo">
                 </div>
+                @else
+                    <a href="javascript:history.back()" class="text-dark fs-3">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                @endif
                 @auth
                     <a href="{{ route('logout') }}" class="link-black me-2"
                         onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
@@ -154,6 +160,11 @@
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
                     </form>
+                    <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+                        <span class="hamburger-box">
+                            <span class="hamburger-inner"></span>
+                        </span>
+                    </div>
                 @else
                     <a href="{{ route('login') }}" class="link-black me-2">Login</a>
                 @endauth
@@ -169,6 +180,7 @@
         </header>
         @yield('main')
     </div>
+    @auth
     <div class="nav-bottom fixed-bottom bg-white m-auto text-center">
         <div class="row">
             <div class="nav-bottom-item col-3">
@@ -204,6 +216,7 @@
             </div>
         </div>
     </div>
+    @endauth
     @yield('script')
 
     <!-- JQuery -->
