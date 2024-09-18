@@ -1,4 +1,5 @@
 @extends('landing.master')
+@section('title', 'Complement')
 @section('main')
 <style>
     @media (max-width: 576px) {

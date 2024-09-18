@@ -57,6 +57,10 @@
                 border-radius: 0 20px 20px 0;
             }
         }
+
+        .container {
+            padding-bottom: 100px;
+        }
     </style>
 
     <div class="container mt-4">
