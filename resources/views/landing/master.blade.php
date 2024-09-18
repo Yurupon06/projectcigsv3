@@ -41,6 +41,7 @@
     <link rel="stylesheet" type="text/css" href="../../assets/css/main.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -185,9 +186,9 @@
             </div>
             <div class="nav-bottom-item col-3">
                 @if($member)
-                <a href="{{ route('customer.membership', ['id' => $member->id]) }}" class="{{ request()->routeIs('customer.membership') || request()->is('history') ? 'active' : 'text-dark'}}">
-                    <i class="bi bi-person-vcard fs-3"></i>
-                    <p>Membership</p>
+                <a href="{{route('landing.history')}}" class="{{ request()->routeIs('landing.history') || request()->is('history') ? 'active' : 'text-dark'}}">
+                    <i class="bi bi-clock-history fs-3"></i>
+                    <p>History</p>
                 </a>
                 @else
                 <a href="#product-section" class="{{ request()->routeIs('customer.membership') || request()->is('history') ? 'active' : 'text-dark'}}">

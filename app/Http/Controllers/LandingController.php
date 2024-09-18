@@ -27,6 +27,15 @@ class LandingController extends Controller
 
     public function index()
     {
+        $currentDate = Carbon::now('Asia/Jakarta');
+        Member::where('end_date', '<', $currentDate)
+        ->where('status', '<>', 'inactive')
+        ->update(['status' => 'expired']);
+
+        Member::where('visit', 0)
+            ->where('status', '<>', 'inactive')
+            ->update(['status' => 'expired']);
+
         $products = Product::with('productcat')->get();
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
