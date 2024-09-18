@@ -154,10 +154,144 @@
         #product-section {
             padding-bottom: 100px;
         }
+
+        
     </style>
+
+    <style>
+.member-card {
+    background-color: #282828;
+    border-radius: 15px;
+    width: 100%;
+    padding: 20px;
+    padding-top: 100px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.overlap-group {
+    position: relative;
+}
+
+.logo-gym {
+    width: 50px;
+}
+
+.text-wrapper {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.text-wrapper-2,
+.text-wrapper-3 {
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+.text-wrapper-4,
+.text-wrapper-5 {
+    font-size: 14px;
+    font-weight: normal;
+    margin-top: 10px;
+}
+
+.text-wrapper-4 span,
+.text-wrapper-5 span {
+    font-weight: bold;
+}
+
+.overlap-btn {
+    margin-top: 10px;
+    background-color: #FF5722;
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    font-size: 14px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.overlap-btn:hover {
+    background-color: #E64A19;
+}
+
+.modal-content {
+    color: white;
+}
+
+
+
+    </style>
+    
 
     <div class="animsition mb-5">
         <!-- Slider -->
+        @if ($member)
+        <div class="member-card">
+            <div class="overlap-group">
+                <div class="d-flex flex-row justify-content-between">
+
+                    <div class="text-wrapper" style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
+                        @switch($member->status)
+                                  @case('active')
+                                      Active
+                                  @break
+                                  @case('expired')
+                                      Expired
+                                  @break
+                                  @case('inactive')
+                                      You Got Ban !
+                                  @break
+                                  @default
+                                      Lainnya
+                              @endswitch
+                    </div>  
+                    <img class="logo-gym" src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
+            
+                
+                </div>
+                
+                <div class="text-wrapper-2">
+                    NAME : 
+                    <span title="{{ $member->customer->user->name }}">
+                        {{ Str::limit($member->customer->user->name, 9, '...') }}
+                    </span>
+                </div>
+            
+                <div class="text-wrapper-3">MEMBER ID : GYM.{{ $member->id }}</div>
+            
+                @if ($member->status !== 'inactive')
+                    <div class="text-wrapper-4">
+                        EXPIRED : <span style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
+                        {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d/M/Y') }}
+                        </span>
+                    </div>
+                    <div class="d-flex flex-row justify-content-between">
+                    <div class="text-wrapper-5 ">
+                        Visit Left : <span style="color: {{ $member->status === 'active' ? 'white' : ($member->status === 'expired' ? 'red' : 'green') }}">
+                            {{ $member->visit }}
+                            @if ($member->visit == 0)
+                                <span>visit habis</span>
+                            @endif
+                        </span>
+                    </div>
+                    @if ($member->status === 'active')
+                    <button type="button" class="overlap-btn" data-bs-toggle="modal" data-bs-target="#qrModal">
+                        Get In <i class="fa-solid fa-dumbbell"></i>
+                    </button>
+                    @else
+                    @endif
+                    </div>
+                    
+                @endif
+            </div>
+        </div>
+        @else
         <section class="section-slide">
             <div class="wrap-slick1 rs1-slick1">
                 <div class="slick1">
@@ -170,6 +304,8 @@
                 </div>
             </div>
         </section>
+        @endif
+            
 
         <!-- Product -->
         <div id="product-section" class="container mt-5">
@@ -202,6 +338,30 @@
                 </div>
             </div>
         </div>
+
+        @if ($member)
+        <!-- Modal -->
+        <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered"> 
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="qrModalLabel">Your QR Code</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex justify-content-center align-items-center">
+                        {!! QrCode::size(200)->generate($member->qr_token) !!}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @else
+
+        @endif
+        
+        
 
         <!-- Back to top -->
         <div class="btn-back-to-top" id="myBtn">
