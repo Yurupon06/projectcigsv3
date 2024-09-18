@@ -18,9 +18,10 @@ use App\Http\Controllers\ComplementController;
 
 
 // Public
-Route::get('/', [LandingController::class, 'index'])->name('landing.index');
+Route::get('/home', [LandingController::class, 'index'])->name('landing.index');
 Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
 Route::get('/cart', [LandingController::class, 'cart'])->name('cart.index');
+Route::get('/', [LandingController::class, 'home'])->name('home.index');
 // Auth
 Route::middleware('auth')->group(function () {
     // Customer

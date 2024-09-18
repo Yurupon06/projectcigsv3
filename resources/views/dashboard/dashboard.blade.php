@@ -11,6 +11,13 @@
         outline: none;
         background-color: #fff
     }
+
+    @media screen and (max-width: 768px) {
+        .mmbr {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+    }
     </style>
 @endsection
 <div class="container-fluid mt-2">
@@ -223,7 +230,7 @@
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="card z-index-2">
+            <div class="card mmbr z-index-2">
                 <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
                     <div class="bg-gradient-lightcoral shadow-lightcoral border-radius-lg py-3 pe-1">
                         <div class="chart mt-3">
@@ -231,7 +238,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body ">
                     <h6 class="mb-0">Members This {{ request('range') == '30' ? 'Month' : 'Week' }}</h6>
                     <p class="text-sm">Count of members for the last {{ $range }} days</p>
                     <hr class="dark horizontal">

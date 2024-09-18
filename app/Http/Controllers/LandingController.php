@@ -346,4 +346,9 @@ class LandingController extends Controller
 
         return redirect()->route('cart.index')->with('success', 'Item removed from cart successfully!');
     }
+
+    public function home()
+    {
+        return view('landing.home.index');
+    }
 }
