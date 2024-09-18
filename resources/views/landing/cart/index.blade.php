@@ -15,7 +15,7 @@
                     <div class="wrap-table-shopping-cart">
                         <table class="table-shopping-cart">
                             <tr class="table_head">
-                                <th class="column-1">Product</th>
+                                <th class="column-1">Products</th>
                                 <th class="column-2"></th>
                                 <th class="column-3">Price</th>
                                 <th class="column-4">Quantity</th>

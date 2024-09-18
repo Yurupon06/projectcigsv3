@@ -112,7 +112,6 @@
             </div>
         </div>
     </div>
-
     <script>
         document.getElementById('checkoutForm').addEventListener('submit', function(event) {
             var selectElement = document.querySelector('select[name="payment_method"]');
