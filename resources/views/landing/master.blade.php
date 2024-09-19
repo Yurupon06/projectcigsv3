@@ -143,35 +143,15 @@
     <div class="contains m-auto">
         <header class="header-v2 fixed-top m-auto">
             <div class="wrap-header-mobile">
-                @if(request()->routeIs('landing.index'))
                 <div class="logo-mobile">
                     <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
                         alt="logo">
                 </div>
-                @else
-                    <a href="javascript:history.back()" class="text-dark fs-3">
+                @if(request()->is('checkout*'))
+                    <a href="{{ url()->previous() }}" class="text-dark fs-3">
                         <i class="bi bi-chevron-left"></i>
                     </a>
                 @endif
-                @auth
-                    <a href="{{ route('logout') }}" class="link-black me-2"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                        Logout
-                    </a>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="link-black me-2">Login</a>
-                @endauth
-                {{-- @guest
-                    <a href="{{ route('login') }}" class="link-black me-2">Login</a>
-                @endguest --}}
-                {{-- <div class="wrap-icon-header flex-w flex-r-m m-r-15"> --}}
-                {{-- <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="{{ $cartCount }}">
-								<i class="zmdi zmdi-shopping-cart"></i>
-							</a> --}}
-                {{-- </div> --}}
             </div>
         </header>
         @yield('main')
@@ -324,7 +304,7 @@
         });
     </script>
     <!--===============================================================================================-->
-    <script src="../../assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 </body>
 
 </html>

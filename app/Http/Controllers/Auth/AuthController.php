@@ -67,7 +67,7 @@ class AuthController extends Controller
                 return redirect('cashier');
             }
             if ($user->role === 'customer') {
-                return redirect('/home');
+                return redirect('home');
             }
         }
 

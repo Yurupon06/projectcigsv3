@@ -30,6 +30,7 @@
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
             padding: 1.5rem;
             background-color: #404040;
+            max-height: 90vh;
             max-width: 500px;
             width: 100%;
             margin: auto;
@@ -56,8 +57,13 @@
             border: 1px solid #ff4b2b;
         }
 
+        .form-floating {
+            height: 55px;
+        }
+
         .form-floating > label {
             color: #bfbfbf;
+            max-height: 10px;
         }
 
         .form-floating > .form-control:focus ~ label {
@@ -107,7 +113,7 @@
         }
 
         .logo {
-            width: 150px;
+            width: 100px;
             height: auto;
         }
 
@@ -132,6 +138,16 @@
             h3 {
                 font-size: 1.25rem;
             }
+            .card {
+                border: none;
+                border-radius: 10px;
+                box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
+                padding: 20px;
+                background-color: #404040;
+                max-width: 500px;
+                width: 100%;
+                margin: auto;
+            }
         }
     </style>
 </head>
@@ -148,35 +164,35 @@
                     <div class="card-body">
                         <form method="POST" action="{{ route('register') }}">
                             @csrf
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mb-2">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" id="floatingName" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
                                 <label for="floatingName">Name</label>
                                 @error('name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mb-2">
                                 <input type="email" class="form-control @error('email') is-invalid @enderror" id="floatingEmail" name="email" value="{{ old('email') }}" required autocomplete="email">
                                 <label for="floatingEmail">Email</label>
                                 @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mb-2">
                                 <input type="number" class="form-control @error('phone') is-invalid @enderror" id="floatingPhone" name="phone" value="{{ old('phone') }}" required autocomplete="phone">
                                 <label for="floatingEmail">Phone</label>
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mb-2">
                                 <input type="password" class="form-control @error('password') is-invalid @enderror" id="floatingPassword" name="password" required autocomplete="new-password">
                                 <label for="floatingPassword">Password</label>
                                 @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mb-2">
                                 <input type="password" class="form-control" id="floatingPasswordConfirm" name="password_confirmation" required autocomplete="new-password">
                                 <label for="floatingPasswordConfirm">Confirm Password</label>
                             </div>
