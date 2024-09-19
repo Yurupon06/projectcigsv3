@@ -81,43 +81,49 @@
             text-decoration: none;
         }
         .button-grid {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-        }
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
 
-        .btn-box {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 30%;
-            padding: 20px;
-            text-align: center;
-            background-color: white;
-            color: #333;
-            border-radius: 10px;
-            font-weight: bold;
-            text-decoration: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: box-shadow 0.3s ease;
-            border: 1px solid #ddd;
-        }
+.button-grid {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 0;
+}
 
-        .btn-box:hover {
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
+.btn-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30%;
+    padding: 20px;
+    text-align: center;
+    background-color: white;
+    color: #333;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    border: 1px solid #ddd;
+}
 
-        .btn-box:active {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-        }
+.btn-box:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
 
-        .btn-logo {
-            width: 20px;
-            height: auto;
-            margin-right: 10px;
-        }
+.btn-box:active {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
 
-        
+.btn-logo {
+    width: 20px;
+    height: auto;
+    margin-right: 10px;
+}
+
+
     </style>
 
     <div class="container">
@@ -141,33 +147,17 @@
                 <span>Name:</span>
                 <span>{{ $user->name }}</span>
             </div>
-            <div class="profile-field">
-                <span>Email:</span>
-                <span>{{ $user->email }}</span>
-            </div>
-            <div class="profile-field">
-                <span>Phone:</span>
-                <span>{{ $customer->phone ?? 'Not filled' }}</span>
-            </div>
-
-            <div class="profile-field">
-                <span>Date of Birth:</span>
-                <span>{{ $customer->born ?? 'Not filled' }}</span>
-            </div>
-
-            <div class="profile-field">
-                <span>Gender:</span>
-                <span>{{ $customer->gender ?? 'Not filled' }}</span>
-            </div>
-
         </div>
         <div class="button-grid">
-            <button type="button" class="btn-box" data-toggle="modal" data-target="#editProfileModal">
-                <i class="bi bi-gear fs-1"></i>
-            </button>
-            <button type="button" class="btn-box" data-toggle="modal" data-target="#changePasswordModal">
-                <i class="bi bi-key fs-1"></i>
-            </button>
+            <a href="{{ route('landing.profile') }}" class="btn-box">
+                <i class="bi bi-person fs-1"></i>
+            </a>
+            @if ($member)
+            <a href="{{route('landing.history')}}" class="btn-box">
+                <i class="bi bi-clock-history fs-1"></i>
+            </a>
+            @endif
+            
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                 @csrf
             </form>
@@ -176,7 +166,11 @@
             </a>
             
         </div>
+        
     </div>
+
+
+
 
     <!-- Profile Update Modal -->
     <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel"
@@ -268,7 +262,6 @@
                 </form>
             </div>
         </div>
-        
     </div>
 
     <script>

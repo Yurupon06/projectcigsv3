@@ -161,11 +161,6 @@
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                         @csrf
                     </form>
-                    <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
-                        <span class="hamburger-box">
-                            <span class="hamburger-inner"></span>
-                        </span>
-                    </div>
                 @else
                     <a href="{{ route('login') }}" class="link-black me-2">Login</a>
                 @endauth
