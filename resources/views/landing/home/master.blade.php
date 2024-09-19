@@ -39,8 +39,9 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     
     <!--===============================================================================================-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hamburgers/1.2.1/hamburgers.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hamburgers/1.2.1/hamburgers.css">
+    <link rel="stylesheet" type="text/css" href="../../../../assets/vendor/css-hamburgers/hamburgers.min.css">
+    <link rel="stylesheet" type="text/css" href="../../../../assets/vendor/css-hamburgers/hamburgers.css">
+
 
     <style>
         .status-unpaid {
@@ -341,6 +342,8 @@
 
     <script src="../../assets/js/material-dashboard.min.js?v=3.1.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <!--===============================================================================================-->
+    <script src="../../../assets/js/main.js"></script>
     
 </body>
 </html>
