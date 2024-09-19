@@ -107,7 +107,7 @@
             <div class="navbar-nav-desktop">
                 <ul class="navbar-nav d-flex align-items-center">
                     <li class="nav-item">
-                        <a href="{{ route('home.index') }}" class="nav-link text-black font-weight-bold px-3">HOME</a>
+                        <a href="{{ route('landing.index') }}" class="nav-link text-black font-weight-bold px-3">HOME</a>
                     </li>
                     @guest
                     <li class="nav-item">
@@ -125,7 +125,7 @@
         <div class="menu-mobile">
             <ul class="main-menu-m d-flex flex-column align-items-center ps-0">
                 <li>
-                    <a href="{{ route('home.index') }}">HOME</a>
+                    <a href="{{ route('landing.index') }}">HOME</a>
                 </li>
                 <li>
                     <a href="{{ route('login') }}">LOGIN</a>
@@ -133,7 +133,7 @@
                 <li>
                     <a href="{{ route('register') }}">REGISTER</a>
                 </li>
-            </ul>
+            </ul>ww
         </div>
     </nav>
 

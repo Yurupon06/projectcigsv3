@@ -224,10 +224,43 @@
     color: white;
 }
 
+        .about-us {
+            background-color: #fff;
+            padding: 50px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+        }
 
+        .about-us h2 {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: #333;
+        }
 
+        .about-us p {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 18px;
+            color: #000;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
     </style>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if(session('warning'))
+        <script>
+            Swal.fire({
+                icon: 'warning',
+                title: 'Warning',
+                text: '{{ session('warning') }}',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+            });
+        </script>
+    @endif
 
     <div class="animsition mb-5">
         <!-- Slider -->
@@ -259,7 +292,7 @@
                 <div class="text-wrapper-2">
                     NAME : 
                     <span title="{{ $member->customer->user->name }}">
-                        {{ Str::limit($member->customer->user->name, 9, '...') }}
+                        {{ $member->customer->user->name }}
                     </span>
                 </div>
             
@@ -305,6 +338,16 @@
             </div>
         </section>
         @endif
+
+        <section class="about-us">
+            <h2>About Us</h2>
+            <p>Welcome to our gym! We offer top-notch facilities and expert trainers to help you achieve your fitness goals. Whether you’re interested in a membership, a single visit, or fitness products, we have something for everyone. Join us and take the first step towards a healthier you!</p>
+        </section>
+
+        <section class="about-us">
+            <h2>Membership</h2>
+            
+        </section>
             
 
         <!-- Product -->

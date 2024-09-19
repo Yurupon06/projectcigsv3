@@ -25,6 +25,17 @@ class LandingController extends Controller
         return $user ? cart::where('user_id', $user->id)->distinct('complement_id')->count('complement_id') : 0;
     }
 
+    public function profile2()
+    {
+        $user = Auth::user();
+        if ($user && $user->role === 'customer') {
+            $customer = Customer::where('user_id', $user->id)->first();
+            $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+            $cartCount = $this->getUniqueCartItemCount();
+            return view('landing.profile.index', compact('user', 'customer', 'member', 'cartCount'));
+        }
+    }
+
     public function index()
     {
         $currentDate = Carbon::now('Asia/Jakarta');
@@ -124,7 +135,7 @@ class LandingController extends Controller
             $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
 
             if ($member && $member->status == 'inactive') {
-                return redirect()->route('customer.membership', ['id' => $member->id])
+                return redirect()->route('landing.index')
                                  ->with('warning', 'You got banned. Please contact support.');
             }
 
@@ -215,7 +226,7 @@ class LandingController extends Controller
         $cartCount = $this->getUniqueCartItemCount();
 
         if ($member && $member->status == 'inactive') {
-            return redirect()->route('customer.membership', ['id' => $member->id])
+            return redirect()->route('landing.index')
                              ->with('warning', 'You got banned. Please contact support.');
         }
 

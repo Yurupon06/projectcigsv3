@@ -18,12 +18,13 @@ use App\Http\Controllers\ComplementController;
 
 
 // Public
-Route::get('/home', [LandingController::class, 'index'])->name('landing.index');
+
 Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
 Route::get('/cart', [LandingController::class, 'cart'])->name('cart.index');
 Route::get('/', [LandingController::class, 'home'])->name('home.index');
 // Auth
 Route::middleware('auth')->group(function () {
+    Route::get('/home', [LandingController::class, 'index'])->name('landing.index');
     // Customer
     Route::middleware('customer')->group(function () {
         Route::prefix('/profile')->group(function () {
@@ -31,7 +32,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [LandingController::class, 'profileUpdate'])->name('update.profile');
             Route::post('/password', [LandingController::class, 'updatePassword'])->name('update.password');
         });
-
+        Route::get('/prfl2', [LandingController::class, 'profile2'])->name('landing.profile2');
         Route::prefix('/myorder')->group(function () {
             Route::get('/', [LandingController::class, 'order'])->name('yourorder.index');
             Route::post('/', [LandingController::class, 'orderStore'])->name('yourorder.update');

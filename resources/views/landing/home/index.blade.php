@@ -222,7 +222,7 @@
                         <div class="text-overlay">
                             <h1>Join Our Gym Membership Today!</h1>
                             <p>Start your journey to a stronger, healthier you with our special membership offers!</p>
-                            <a href="{{ route('login') }}" class="btn fw-bold">Get Started</a>
+                            <a href="{{ route('landing.index') }}" class="btn fw-bold">Get Started</a>
                         </div>
                     </div>
                 </div>
@@ -243,7 +243,7 @@
                 <div class="card-content">
                     <h3>Exclusive Membership</h3>
                     <p>Get unlimited access to our gym with special membership plans. Enjoy lower rates and personalized training.</p>
-                    <a href="{{ route('login') }}">Explore Membership</a>
+                    <a href="{{ route('landing.index') }}">Explore Membership</a>
                 </div>
             </div>
 
@@ -253,7 +253,7 @@
                 <div class="card-content">
                     <h3>Single Visit</h3>
                     <p>Purchase a one-time pass for a day’s access to our gym. Ideal for trying us out without commitment.</p>
-                    <a href="{{ route('login') }}">Get Single Pass</a>
+                    <a href="{{ route('landing.index') }}">Get Single Pass</a>
                 </div>
             </div>
 
@@ -263,7 +263,7 @@
                 <div class="card-content">
                     <h3>Buy Products</h3>
                     <p>Explore our fitness products including supplements, gear, and apparel to enhance your workouts.</p>
-                    <a href="{{ route('login') }}">Shop Now</a>
+                    <a href="{{ route('landing.index') }}">Shop Now</a>
                 </div>
             </div>
         </section>
