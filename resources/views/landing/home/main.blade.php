@@ -29,14 +29,8 @@
             padding: 0 1rem;
         }
 
-        /* Sembunyikan menu di desktop */
-        #navbar-collapse {
+        .menu-mobile {
             display: none;
-        }
-
-        #navbar-collapse.active {
-            display: block;
-            width: 100%;
         }
 
         /* Gaya untuk menu mobile */
@@ -71,7 +65,7 @@
                 display: none;
             }
 
-            #navbar-collapse {
+            .menu-mobile {
                 display: none !important;
             }
 
@@ -90,40 +84,6 @@
                 display: block;
                 cursor: pointer;
             }
-
-            .hamburger-box {
-                width: 30px;
-                height: 20px;
-                position: relative;
-            }
-
-            .hamburger-inner {
-                width: 100%;
-                height: 3px;
-                background-color: black;
-                position: absolute;
-                top: 50%;
-                left: 0;
-                transform: translateY(-50%);
-            }
-
-            .hamburger-inner::before,
-            .hamburger-inner::after {
-                content: '';
-                width: 100%;
-                height: 3px;
-                background-color: black;
-                position: absolute;
-                left: 0;
-            }
-
-            .hamburger-inner::before {
-                top: -8px;
-            }
-
-            .hamburger-inner::after {
-                top: 8px;
-            }
         }
     </style>
 
@@ -137,7 +97,7 @@
             </div>
 
             <!-- Tombol hamburger untuk mobile -->
-            <div class="hamburger hamburger--squeeze">
+            <div class="btn-show-menu-mobile hamburger hamburger--squeeze">
                 <span class="hamburger-box">
                     <span class="hamburger-inner"></span>
                 </span>
@@ -162,7 +122,7 @@
         </div>
 
         <!-- Menu mobile -->
-        <div id="navbar-collapse">
+        <div class="menu-mobile">
             <ul class="main-menu-m d-flex flex-column align-items-center ps-0">
                 <li>
                     <a href="{{ route('home.index') }}">HOME</a>
@@ -176,14 +136,6 @@
             </ul>
         </div>
     </nav>
-
-    <!-- Script untuk toggle menu mobile -->
-    <script>
-        var $hamburger = document.querySelector(".hamburger");
-        $hamburger.addEventListener("click", function () {
-            document.getElementById("navbar-collapse").classList.toggle("active");
-        });
-    </script>
 
     <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
