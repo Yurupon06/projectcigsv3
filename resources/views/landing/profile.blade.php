@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', 'Profile')
+@section('title', $setting->app_name . ' - Profile' ?? 'Profile')
 @section('main')
 
     <style>
@@ -28,6 +28,8 @@
 
         .profile-section {
             background-color: #f9f9f9;
+            margin: 20px;
+            margin-top: 60px;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -83,7 +85,7 @@
         .button-grid {
             display: flex;
             justify-content: space-between;
-            margin: 20px 0;
+            margin: 20px;
         }
 
         .btn-box {
@@ -119,11 +121,6 @@
 
         
     </style>
-
-    <div class="container">
-        <div class="navigation-links">
-            <a href="{{ route('landing.index') }}">Back</a>
-        </div>
 
         <div class="profile-section">
             <h1>Profile</h1>

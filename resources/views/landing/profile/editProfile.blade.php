@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', 'Profile')
+@section('title', $setting->app_name . ' - Edit Profile' ?? 'Edit Profile')
 @section('main')
 
 <style>
