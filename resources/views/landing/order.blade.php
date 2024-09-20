@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', 'Order')
+@section('title', $setting->app_name . ' - Order' ?? 'Order')
 @section('main')
 
     @if(session('success'))
@@ -56,21 +56,26 @@
                 font-size: 14px;
                 border-radius: 0 20px 20px 0;
             }
+            .search-form input[type="date"] {
+                position: relative;
+
+            }
         }
 
         .container {
             padding-bottom: 100px;
+            margin-top: 80px;
         }
     </style>
 
-    <div class="container mt-4">
-        <div class="d-flex justify-content-end mb-4">
+    <div class="container">
+        <div class="d-flex justify-content-center mb-4">
             <form method="GET" action="{{ route('yourorder.index') }}" class="d-flex search-form">
                 <input clang="s" type="text" name="search" class="form-control" placeholder="Search" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
                 <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date', $startDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}" style="height: 38px;">
                 <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date', $endDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}" style="height: 38px;">
-                <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; height: 38px;">
-                    <i class="fas fa-search"></i>
+                <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; height: 38px; width: 30px;  ">
+                    <i class="fas fa-search align-middle d-flex justify-content-center"></i>
                 </button>
             </form>
         </div>
@@ -133,6 +138,13 @@
                 @empty
                     <p style="text-align: center; font-weight: bold;">No orders found.</p>
                 @endforelse
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 justify-content-end">
+                            {{ $orders->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

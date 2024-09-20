@@ -133,7 +133,7 @@
                 <li>
                     <a href="{{ route('register') }}">REGISTER</a>
                 </li>
-            </ul>ww
+            </ul>
         </div>
     </nav>
 

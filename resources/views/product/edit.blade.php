@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title', 'Edit - Product')
+@section('title', $ettings->app_name . '- Edit Product' ?? 'Edit Product')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection

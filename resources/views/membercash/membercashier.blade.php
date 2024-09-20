@@ -1,5 +1,5 @@
 @extends('cashier.master')
-@section('title', 'Membership')
+@section('title', $setting->app_name . ' - Membership' ?? 'Membership')
 @section('sidebar')
     @include('cashier.sidebar')
 @endsection

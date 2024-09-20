@@ -1,6 +1,6 @@
 @extends('dashboard.master')
 @section('page-title', 'Profile Admin')
-@section('title', 'Profile Admin')
+@section('title', $setting->app_name . ' - Profile Admin' ?? 'Profile Admin')
 @section('main')
     @include('dashboard.main')
 

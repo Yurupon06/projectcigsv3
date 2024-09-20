@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title', 'complement Create')
+@section('title', $setting->app_name . ' - Create complement' ?? 'complement Create')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection

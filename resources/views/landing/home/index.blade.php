@@ -75,21 +75,21 @@
         .card-container {
             background-color: #fff;
             display: flex;
-            flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+            flex-wrap: wrap;
             justify-content: space-between;
             padding: 50px 20px;
             gap: 20px;
         }
 
         .card {
-            position: relative; /* Ensure text can be positioned on top of the image */
+            position: relative; 
             flex: 1;
             background: #fff;
             border-radius: 0;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden; /* Ensure content does not overflow */
+            overflow: hidden;
             transition: transform 0.3s ease;
-            max-width: calc(33.333% - 20px); /* Adjust width for 3 cards in a row */
+            max-width: calc(33.333% - 20px);
         }
 
         .card:hover {
@@ -99,25 +99,25 @@
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Ensure the image covers the card */
+            object-fit: cover; 
             display: block;
         }
 
         .card-content {
-            position: absolute; /* Position text on top of the image */
-            bottom: 20px; /* Adjust as needed */
-            left: 20px; /* Adjust as needed */
-            color: #fff; /* Ensure text is visible on top of the image */
+            position: absolute;
+            bottom: 20px; 
+            left: 20px;
+            color: #fff;
             text-align: left;
-            z-index: 10; /* Ensure text is above the image */
-            background-color: rgba(0, 0, 0, 0.5); /* Optional: add a background color for better readability */
-            padding: 10px; /* Optional: add padding around the text */
-            border-radius: 5px; /* Optional: round the corners of the text background */
+            z-index: 10; 
+            background-color: rgba(0, 0, 0, 0.5); 
+            padding: 10px;
+            border-radius: 5px; 
         }
 
         .card h3, .card p, .card a {
             margin: 0;
-            color: #fff; /* Ensure text color contrasts with the background */
+            color: #fff;
         }
 
         .card h3 {
@@ -125,7 +125,7 @@
         }
 
         .card p {
-            color: #ddd; /* Lighter text color for better contrast */
+            color: #ddd; 
         }
 
         .card a {
@@ -137,9 +137,8 @@
             color: #FF8C00;
         }
 
-        /* Adjust the height of the card if needed */
         .card {
-            height: 300px; /* Example height */
+            height: 300px;
         }
 
         /* About Us Section */

@@ -77,7 +77,7 @@
             <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
                 alt="logo" height="80px">
             <span
-                class="ms-1 font-weight-bold text-white">{{ isset($setting) ? $setting->app_name : 'Faybaal GYM' }}</span>
+                class="ms-1 font-weight-bold text-white">{{ isset($setting) ? $setting->app_name : 'Faybal GYM' }}</span>
         </a>
     </div>
     <hr class="horizontal light border-light mt-0 mb-2">

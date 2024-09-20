@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title', 'Create - Product Categories')
+@section('title', $setting->app_name . ' - Create Product Categories')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
