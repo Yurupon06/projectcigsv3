@@ -147,7 +147,7 @@
                     <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
                         alt="logo">
                 </div>
-                @if(request()->is('checkout*'))
+                @if(request()->is('checkout*', 'edit*', 'getin'))
                     <a href="{{ url()->previous() }}" class="text-dark fs-3">
                         <i class="bi bi-chevron-left"></i>
                     </a>
@@ -178,7 +178,7 @@
                     <p>History</p>
                 </a>
                 @else
-                <a href="#product-section" class="{{ request()->routeIs('customer.membership') || request()->is('history') ? 'active' : 'text-dark'}}">
+                <a href="{{ route('landing.index') }}#product-section" class="{{ request()->routeIs('customer.membership') || request()->is('history') ? 'active' : 'text-dark'}}">
                     <i class="bi bi-person-vcard fs-3"></i>
                     <p>Membership</p>
                 </a>

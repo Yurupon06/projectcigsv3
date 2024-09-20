@@ -314,9 +314,9 @@
                         </span>
                     </div>
                     @if ($member->status === 'active')
-                    <button type="button" class="overlap-btn" data-bs-toggle="modal" data-bs-target="#qrModal">
+                    <a href="{{route('getin.index')}}" type="button" class="overlap-btn" >
                         Get In <i class="fa-solid fa-dumbbell"></i>
-                    </button>
+                    </a>
                     @else
                     @endif
                     </div>
@@ -382,27 +382,6 @@
             </div>
         </div>
 
-        @if ($member)
-        <!-- Modal -->
-        <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered"> 
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="qrModalLabel">Your QR Code</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body d-flex justify-content-center align-items-center">
-                        {!! QrCode::size(200)->generate($member->qr_token) !!}
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        @else
-
-        @endif
         
         
 
