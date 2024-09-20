@@ -131,7 +131,7 @@ class LandingController extends Controller
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return redirect()->route('landing.profile')->with('warning', 'Current password does not match.');
+            return redirect()->route('landing.change')->with('warning', 'Current password does not match.');
         }
 
         $user->update([
