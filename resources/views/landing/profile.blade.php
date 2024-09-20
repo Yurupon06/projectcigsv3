@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title',  $setting->app_name . ' - Profile' ?? 'Profile')
+@section('title', 'Profile')
 @section('main')
 
     <style>
@@ -29,7 +29,6 @@
         .profile-section {
             background-color: #f9f9f9;
             padding: 20px;
-            margin-top: 80px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -84,7 +83,7 @@
         .button-grid {
             display: flex;
             justify-content: space-between;
-            margin: 20px ;
+            margin: 20px 0;
         }
 
         .btn-box {
@@ -120,6 +119,11 @@
 
         
     </style>
+
+    <div class="container">
+        <div class="navigation-links">
+            <a href="{{ route('landing.index') }}">Back</a>
+        </div>
 
         <div class="profile-section">
             <h1>Profile</h1>
@@ -158,114 +162,45 @@
 
         </div>
         <div class="button-grid">
-            <button type="button" class="btn-box" data-toggle="modal" data-target="#editProfileModal">
+            <a href="{{route('landing.edit')}}" type="button" class="btn-box">
                 <i class="bi bi-gear fs-1"></i>
-            </button>
-            <button type="button" class="btn-box" data-toggle="modal" data-target="#changePasswordModal">
+            </a>
+            <a href="{{route('landing.change')}}" type="button" class="btn-box">
                 <i class="bi bi-key fs-1"></i>
-            </button>
+            </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                 @csrf
             </form>
-            <a href="{{ route('logout') }}" class="btn-box" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            
+            <a href="#" class="btn-box" id="logout-btn">
                 <i class="bi bi-box-arrow-right fs-1"></i>
             </a>
             
         </div>
     </div>
 
-    <!-- Profile Update Modal -->
-    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editProfileModalLabel">Update Profile</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('update.profile') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name">Name</label>
-                            <input type="text" id="name" name="name" class="form-control"
-                                value="{{ Auth::user()->name }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" class="form-control"
-                                value="{{ Auth::user()->email }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone</label>
-                            <input type="text" id="phone" name="phone" class="form-control"
-                                value="{{ $customer->phone ?? '' }}" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="born">Date of Birth</label>
-                            <input type="date" id="born" name="born" class="form-control"
-                                value="{{ $customer->born ?? '' }}" max="{{ date('Y-m-d', strtotime('-1 day')) }}"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="gender">Gender</label>
-                            <select id="gender" name="gender" class="form-control" required>
-                                <option value="men" {{ ($customer->gender ?? 'men') == 'men' ? 'selected' : '' }}>Men
-                                </option>
-                                <option value="women" {{ ($customer->gender ?? 'men') == 'women' ? 'selected' : '' }}>
-                                    Women</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('logout-btn').addEventListener('click', function(event) {
+            event.preventDefault(); // Mencegah link logout default dijalankan
 
-    <!-- Change Password Modal -->
-    <div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog"
-        aria-labelledby="changePasswordModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form action="{{ route('update.password') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="current_password">Current Password</label>
-                            <input type="password" id="current_password" name="current_password" class="form-control"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">New Password</label>
-                            <input type="password" id="password" name="password" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password_confirmation">Confirm New Password</label>
-                            <input type="password" id="password_confirmation" name="password_confirmation"
-                                class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-    </div>
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You will be logged out from this session.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, log me out!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika user memilih logout, submit form logout
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        });
+    </script>
 
     <script>
         document.querySelector('form').addEventListener('submit', function(event) {

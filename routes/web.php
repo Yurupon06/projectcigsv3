@@ -32,7 +32,12 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [LandingController::class, 'profileUpdate'])->name('update.profile');
             Route::post('/password', [LandingController::class, 'updatePassword'])->name('update.password');
         });
-        Route::get('/prfl2', [LandingController::class, 'profile2'])->name('landing.profile2');
+        route::prefix('/edit')->group(function () {
+            Route::get('/profile', [LandingController::class, 'editProfile'])->name('landing.edit');
+            Route::get('/password', [LandingController::class, 'changePass'])->name('landing.change');
+        });
+        Route::get('/getin', [LandingController::class, 'getIn'])->name('getin.index');
+        
         Route::prefix('/myorder')->group(function () {
             Route::get('/', [LandingController::class, 'order'])->name('yourorder.index');
             Route::post('/', [LandingController::class, 'orderStore'])->name('yourorder.update');

@@ -25,14 +25,34 @@ class LandingController extends Controller
         return $user ? cart::where('user_id', $user->id)->distinct('complement_id')->count('complement_id') : 0;
     }
 
-    public function profile2()
+    public function editProfile()
     {
         $user = Auth::user();
         if ($user && $user->role === 'customer') {
             $customer = Customer::where('user_id', $user->id)->first();
             $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
             $cartCount = $this->getUniqueCartItemCount();
-            return view('landing.profile.index', compact('user', 'customer', 'member', 'cartCount'));
+            return view('landing.profile.editProfile', compact('user', 'customer', 'member', 'cartCount'));
+        }
+    }
+    public function changePass()
+    {
+        $user = Auth::user();
+        if ($user && $user->role === 'customer') {
+            $customer = Customer::where('user_id', $user->id)->first();
+            $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+            $cartCount = $this->getUniqueCartItemCount();
+            return view('landing.profile.changepass', compact('user', 'customer', 'member', 'cartCount'));
+        }
+    }
+    public function getIn()
+    {
+        $user = Auth::user();
+        if ($user && $user->role === 'customer') {
+            $customer = Customer::where('user_id', $user->id)->first();
+            $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+            $cartCount = $this->getUniqueCartItemCount();
+            return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
         }
     }
 
