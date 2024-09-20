@@ -77,16 +77,7 @@
 													<span class="btn bg-gradient-success">
                                                         <i class="material-icons opacity-10">edit</i>
                                                     </span>
-												</a>
-                                                <form action="{{ route('customer.destroy', $dt->id) }}" method="POST"
-                                                    class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn bg-gradient-danger"
-                                                        onclick="return confirm('Are you sure you want to delete this category?')">
-                                                        <i class="material-icons opacity-10">delete</i>
-                                                    </button>
-                                                </form>
+												</a>    
                                             </td>
                                         </tr>
                                     @endforeach

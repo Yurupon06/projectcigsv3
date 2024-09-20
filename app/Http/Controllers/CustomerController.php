@@ -88,13 +88,10 @@ class CustomerController extends Controller
         return redirect()->route('customer.index')->with('success', 'customer edit successfully.');
     }
 
-    public function destroy($id)
+    public function destroy(Customer $customer)
     {
-        $customer = customer::findOrFail($id);
 
-        if (Auth::user()->role === 'customer' && Auth::id() !== $customer->user_id) {
-            abort(403);
-        }
+        
         
         $customer->delete();
         return redirect()->route('customer.index')->with('success', 'customer berhasil dihapus.');
