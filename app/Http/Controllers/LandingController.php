@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\Member;
-use App\Models\Membercheckin;
+use App\Models\MemberCheckin;
 use App\Models\Order;
 use App\Models\complement;
 use App\Models\cart;
