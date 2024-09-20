@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', 'Complement')
+@section('title', $setting->app_name . ' - Complement' ?? 'Complement')
 @section('main')
 <style>
     @media (max-width: 576px) {

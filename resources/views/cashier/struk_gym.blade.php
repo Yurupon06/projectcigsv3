@@ -3,7 +3,7 @@
 <link rel="icon" type="image/png"
     href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 <head>
-    <title>Struk Gym</title>
+    <title>]{{ $setting->app_name . ' - Struk' ?? 'Struk' }}</title>
     <style>
         * {
             margin: 0;

@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', 'Membership')
+@section('title', $setting->app_name . ' - Membership' ?? 'Membership')
 @section('main')
 
 <style>

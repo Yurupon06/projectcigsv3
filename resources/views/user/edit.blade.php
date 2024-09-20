@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title', 'Edit - User')
+@section('title', $settings->app_name . ' - Edit User' ?? 'Edit User')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
