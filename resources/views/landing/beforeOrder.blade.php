@@ -105,8 +105,6 @@
                             class="flex-c-m stext-101 cl0 size-116 bg3 bor14 p-lr-15 trans-04 mb-2 pointer">
                             Proceed to Checkout
                         </button>
-                        <a href="{{ route('landing.index') }}" class="mt-3 d-block"><span
-                                class="text-danger fw-bold">Cancel Order</span></a>
                     </form>
                 </div>
             </div>
