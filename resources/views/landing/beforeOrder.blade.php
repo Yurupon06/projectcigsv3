@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', $setting->app_name . ' - Before Order' ?? 'Before Order')
+@section('title', isset($setting) && $setting->app_name . ' - Before Order' ?? 'Before Order')
 @section('main')
     <style>
         .pointer {

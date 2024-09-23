@@ -13,12 +13,14 @@ return new class extends Migration
     {
         Schema::create('order_details', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('order_complement_id')->constrained('order_complements')->onDelete('cascade');
-            $table->foreignId('complement_id')->constrained('complements')->onDelete('cascade');
-            $table->integer('quantity');
-            $table->decimal('subtotal', 10);
+            $table->unsignedBigInteger('order_complement_id');
+            $table->foreign('order_complement_id')->references('id')->on('order_complements')->ondelete('cascade')->onupdate('cascade');
+            $table->unsignedBigInteger('complement_id');
+            $table->foreign('complement_id')->references('id')->on('complements')->ondelete('cascade')->onupdate('cascade');
+            $table->integer('quantity')->default(1);
+            $table->unsignedBigInteger('sub_total');
             $table->timestamps();
-        });        
+        });
     }
 
     /**

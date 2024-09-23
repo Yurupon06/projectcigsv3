@@ -12,9 +12,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 
-    <!-- Tambahkan Font Awesome untuk ikon -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-
     <style>
         body {
             background-color: #1a1a1a;
@@ -104,23 +101,6 @@
             text-align: center;
         }
 
-        .input-icon {
-            position: absolute;
-            top: 50%;
-            right: 15px;
-            transform: translateY(-50%);
-            cursor: pointer;
-            color: #6c757d;
-        }
-
-        .input-icon:hover {
-            color: #ffffff;
-        }
-
-        .position-relative {
-            position: relative;
-        }
-
         @media (min-width: 992px) {
             .card {
                 padding: 2rem;
@@ -145,16 +125,15 @@
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-floating mb-3">
-                            <input name="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" value="{{ old('email') }}" required>
-                            <label for="floatingInput">Email address</label>
-                            @error('email')
+                            <input name="phone" type="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" value="{{ old('phone') }}" required>
+                            <label for="floatingInput">Phone Number</label>
+                            @error('phone')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-floating mb-3 position-relative">
+                        <div class="form-floating mb-3">
                             <input name="password" type="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="floatingPassword" placeholder="Password" required>
                             <label for="floatingPassword">Password</label>
-                            <i class="fa fa-eye-slash input-icon" id="togglePasswordIcon" onclick="togglePassword()"></i>
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -168,24 +147,6 @@
             </div>
         </div>
     </main>
-
-    <!-- Script untuk toggle visibility password -->
-    <script>
-        function togglePassword() {
-            var passwordField = document.getElementById("floatingPassword");
-            var toggleIcon = document.getElementById("togglePasswordIcon");
-
-            if (passwordField.type === "password") {
-                passwordField.type = "text";
-                toggleIcon.classList.remove("fa-eye-slash");
-                toggleIcon.classList.add("fa-eye");
-            } else {
-                passwordField.type = "password";
-                toggleIcon.classList.remove("fa-eye");
-                toggleIcon.classList.add("fa-eye-slash");
-            }
-        }
-    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous"></script>

@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('page-title', $setting->app_name . ' - Profile Cashier' ?? 'Profile Cashier')
+@section('page-title', isset($setting) && $setting->app_name . ' - Profile Cashier' ?? 'Profile Cashier')
 @section('title', 'Profile Cashier')
 @section('sidebar')
     @include('cashier.sidebar')

@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('carts', function (Blueprint $table) {
+        Schema::create('order_complements', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->ondelete('cascade')->onupdate('cascade');
-            $table->unsignedBigInteger('complement_id');
-            $table->foreign('complement_id')->references('id')->on('complements')->ondelete('cascade')->onupdate('cascade');
+            $table->unsignedBigInteger('total_amount');
+            $table->enum('status', ['paid', 'unpaid', 'canceled'])->default('unpaid');
             $table->integer('quantity')->default(1);
-            $table->unsignedBigInteger('total');
+            $table->string('qr_token', 60)->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('carts');
+        Schema::dropIfExists('order_complements');
     }
 };

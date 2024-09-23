@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', $setting->app_name . ' - Profile' ?? 'Profile')
+@section('title', isset($setting) && $setting->app_name . ' - Profile' ?? 'Profile')
 @section('main')
 
     <style>
@@ -140,7 +140,7 @@
             </div>
             <div class="profile-field">
                 <span>Email:</span>
-                <span>{{ $user->email }}</span>
+                <span>{{ $user->email ?? 'Not filled' }}</span>
             </div>
             <div class="profile-field">
                 <span>Phone:</span>

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('amount');
             $table->unsignedBigInteger('amount_given');
             $table->unsignedBigInteger('change')->nullable();
+            $table->string('qr_token', 60)->nullable();
             $table->timestamps();
         });
     }

@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', $setting->app_name . ' - Membership' ?? 'Membership')
+@section('title', isset($setting) && $setting->app_name . ' - Membership' ?? 'Membership')
 @section('main')
 
 <style>

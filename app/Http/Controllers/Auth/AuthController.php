@@ -23,8 +23,8 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name' => 'required|string|max:255|unique:users',
+            // 'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:13',
             'password' => 'required|string|min:3|confirmed',
         ]);
@@ -35,7 +35,7 @@ class AuthController extends Controller
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
+            // 'email' => $request->email,
             'phone' => $request->phone,
             'password' => $request->password,
             'role' => 'customer'
@@ -56,7 +56,7 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('phone', 'password');
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
@@ -67,7 +67,7 @@ class AuthController extends Controller
                 return redirect('cashier');
             }
             if ($user->role === 'customer') {
-                return redirect('home');
+                return redirect('/home');
             }
         }
 
@@ -88,37 +88,37 @@ class AuthController extends Controller
     public function forgot(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
+            'phone' => 'required|phone',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('phone', $request->phone)->first();
 
         if (!$user) {
-            return back()->withErrors(['email' => 'Email not found']);
+            return back()->withErrors(['phone' => 'phone not found']);
         }
         if ($user->role == 'admin') {
-            return back()->withErrors(['email' => 'Invalid Email']);
+            return back()->withErrors(['phone' => 'Invalid phone']);
         }
 
         $status = Password::sendResetLink(
-            $request->only('email')
+            $request->only('phone')
         );
 
         return $status === Password::RESET_LINK_SENT
             ? back()->with(['status' => __($status)])
-            : back()->withErrors(['email' => __($status)]);
+            : back()->withErrors(['phone' => __($status)]);
     }
 
     public function reset(Request $request)
     {
         $request->validate([
             'token' => 'required',
-            'email' => 'required|email',
+            'phone' => 'required|phone',
             'password' => 'required|string|min:3|confirmed',
         ]);
 
         $status = Password::reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->only('phone', 'password', 'password_confirmation', 'token'),
             function (User $user, string $password) {
                 $user->forceFill([
                     'password' => Hash::make($password)
@@ -132,6 +132,6 @@ class AuthController extends Controller
 
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('login')->with('status', __($status))->with('success', 'Password reset successfully')
-            : back()->withErrors(['email' => [__($status)]]);
+            : back()->withErrors(['phone' => [__($status)]]);
     }
 }

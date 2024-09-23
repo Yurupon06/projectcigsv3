@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>{{ $setting->app_name . ' - Forgot Password' ?? 'Forgot Password' }}</title>
+    <title>{{ isset($setting) && $setting->app_name . ' - Forgot Password' ?? 'Forgot Password' }}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -134,13 +134,13 @@
                         <form action="{{ route('forgot') }}" method="POST">
                             @csrf
                             <div class="form-floating mb-3">
-                                <input name="email" type="email" class="form-control @error('email') is-invalid @enderror" id="floatingInput" placeholder="name@example.com" value="{{ old('email') }}" required>
-                                <label for="floatingInput">Email address</label>
-                                @error('email')
+                                <input name="phone" type="phone" class="form-control @error('phone') is-invalid @enderror" id="floatingInput" placeholder="0812323123 value="{{ old('phone') }}" required>
+                                <label for="floatingInput">phone number</label>
+                                @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button class="w-100 btn btn-primary" type="submit">Send Email Link</button>
+                            <button class="w-100 btn btn-primary" type="submit">Send phone Link</button>
                         </form>
                     </div>
                     <div class="card-footer text-center">

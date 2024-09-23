@@ -25,9 +25,9 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'email' => preg_replace('/@.*$/', '@gmail.com', $this->faker->unique()->safeEmail),
             'phone' => $this->faker->numerify('08#########'),
-            'email_verified_at' => now(),
+            'email' => preg_replace('/@.*$/', '@gmail.com', $this->faker->unique()->safeEmail),
+            'phone_verified_at' => now(),
             'password' => bcrypt('123'),
             'role' => 'customer',
             'remember_token' => Str::random(10),
@@ -60,7 +60,7 @@ class UserFactory extends Factory
     public function unverified(): static
     {
         return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
+            'phone_verified_at' => null,
         ]);
     }
 }

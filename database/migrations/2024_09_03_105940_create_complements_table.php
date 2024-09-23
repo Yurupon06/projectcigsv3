@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('complements', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100)->unique();
-            $table->enum('category', ['food', 'drink', 'suplement']);
+            $table->enum('category', ['food', 'drink', 'suplement', 'other']);
             $table->text('description'); 
             $table->integer('price');
             $table->integer('stok'); 
