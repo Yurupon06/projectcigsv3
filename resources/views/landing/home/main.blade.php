@@ -107,27 +107,35 @@
             <div class="navbar-nav-desktop">
                 <ul class="navbar-nav d-flex align-items-center">
                     
+                    @if(auth()->check())
                     @if(auth()->user()->role == 'cashier')
-                    <li class="nav-item">
-                        <a href="{{ route('cashier.index') }}" class="nav-link text-black font-weight-bold px-3">CASHIER</a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="{{ route('cashier.index') }}" class="nav-link text-black font-weight-bold px-3">CASHIER</a>
+                        </li>
                     @elseif(auth()->user()->role == 'admin')
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard.index') }}" class="nav-link text-black font-weight-bold px-3">ADMIN</a>
-                    </li>
+                        <li class="nav-item">
+                            <a href="{{ route('dashboard.index') }}" class="nav-link text-black font-weight-bold px-3">ADMIN</a>
+                        </li>
                     @else
+                        <li class="nav-item">
+                            <a href="{{ route('landing.index') }}" class="nav-link text-black font-weight-bold px-3">HOME</a>
+                        </li>
+                    @endif
+                @else
                     <li class="nav-item">
                         <a href="{{ route('landing.index') }}" class="nav-link text-black font-weight-bold px-3">HOME</a>
                     </li>
-                    @endif
-                    @guest
+                @endauth
+                
+                @guest
                     <li class="nav-item">
                         <a href="{{ route('login') }}" class="nav-link text-black font-weight-bold px-3">LOGIN</a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ route('register') }}" class="nav-link text-black font-weight-bold px-3">REGISTER</a>
                     </li>
-                    @endguest
+                @endguest
+                
                 </ul>
             </div>
         </div>
@@ -135,27 +143,35 @@
         <!-- Menu mobile -->
         <div class="menu-mobile">
             <ul class="main-menu-m d-flex flex-column align-items-center ps-0">
+                @if(auth()->check())
                 @if(auth()->user()->role == 'cashier')
-                <li>
-                    <a href="{{ route('cashier.index') }}">CASHIER</a>
-                </li>
+                    <li>
+                        <a href="{{ route('cashier.index') }}" >CASHIER</a>
+                    </li>
                 @elseif(auth()->user()->role == 'admin')
-                <li>
-                    <a href="{{ route('dashboard.index') }}">ADMIN</a>
-                </li>
+                    <li>
+                        <a href="{{ route('dashboard.index') }}" >ADMIN</a>
+                    </li>
                 @else
-                <li>
-                    <a href="{{ route('landing.index') }}">HOME</a>
-                </li>
+                    <li>
+                        <a href="{{ route('landing.index') }}" >HOME</a>
+                    </li>
                 @endif
-                @guest
+            @else
                 <li>
-                    <a href="{{ route('login') }}">LOGIN</a>
+                    <a href="{{ route('landing.index') }}" >HOME</a>
+                </li>
+            @endauth
+            
+            @guest
+                <li>
+                    <a href="{{ route('login') }}" >LOGIN</a>
                 </li>
                 <li>
-                    <a href="{{ route('register') }}">REGISTER</a>
+                    <a href="{{ route('register') }}" >REGISTER</a>
                 </li>
-                @endguest
+            @endguest
+            
                 
             </ul>
         </div>
