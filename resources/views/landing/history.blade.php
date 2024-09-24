@@ -10,7 +10,7 @@
     .card-container {
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
+        justify-content: space-around;5
         padding-top: 100px;
     }
 
@@ -39,14 +39,16 @@
 </style>
 
 <div class="card-container">
-    @foreach ($memberckin as $dt)
+    @forelse ($memberckin as $dt)
         <div class="card-item">
             <img src="{{ asset('storage/' . $dt->image) }}" class="img-thumbnail" alt="Member Image">
             <div class="card-body">
                 <p class="time-text">{{ $dt->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y, H:i') }}</p>
             </div>
         </div>
-    @endforeach
+        @empty
+            <p style="text-align: center; font-weight: bold;">No history checkin.</p>
+        @endforelse
 </div>
 
 <div class="container-fluid">

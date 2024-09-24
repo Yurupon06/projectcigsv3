@@ -26,7 +26,7 @@ Route::get('/', [LandingController::class, 'home'])->name('home.index');
 
 // Auth
 Route::middleware('auth')->group(function () {
-    
+    Route::get('/home', [LandingController::class, 'index'])->name('landing.index');    
     // Customer
     Route::middleware('customer')->group(function () {
         Route::prefix('/profile')->group(function () {

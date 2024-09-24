@@ -54,8 +54,8 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <button type="submit"><span class="btn bg-gradient-success ws-15 my-4 mb-2">Update</span></button>
-                            </form>
+                                <button type="submit" class="btn btn-success my-4 mb-2">Update</button>
+                                </form>
                         @else
                             <p class="mb-3 ms-3 me-3">No settings available. Please add settings first.</p>
                             <form action="{{ route('application-setting.store') }}" method="POST"
