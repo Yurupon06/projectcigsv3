@@ -11,7 +11,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!--===============================================================================================-->
     <link rel="icon" type="image/png"
-        href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
+        href="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
     <!--===============================================================================================-->
     <link rel="stylesheet" type="text/css" href="../../assets/vendor/bootstrap/css/bootstrap.min.css">
     <!--===============================================================================================-->
@@ -144,10 +144,10 @@
         <header class="header-v2 fixed-top m-auto">
             <div class="wrap-header-mobile">
                 <div class="logo-mobile">
-                    <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
+                    <img src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
                         alt="logo">
                 </div>
-                @if(request()->is('checking*','checkout*', 'edit*', 'getin'))
+                @if(request()->is('checking*','checkout*', 'edit*', 'getin', 'history', 'complement*'))
                     <a href="{{ url()->previous() }}" class="text-dark fs-3">
                         <i class="bi bi-chevron-left"></i>
                     </a>
@@ -173,9 +173,9 @@
             </div>
             <div class="nav-bottom-item col-3">
                 @if($member)
-                <a href="{{route('landing.history')}}" class="{{ request()->routeIs('landing.history') || request()->is('history') ? 'active' : 'text-dark'}}">
-                    <i class="bi bi-clock-history fs-3"></i>
-                    <p>History</p>
+                <a href="{{route('f&b.index')}}" class="{{ request()->routeIs('f&b.index') || request()->is('f&b') ? 'active' : 'text-dark'}}">
+                    <i class="bi bi-basket2 fs-3"></i>
+                    <p>Complement</p>
                 </a>
                 @else
                 <a href="{{ route('landing.index') }}#product-section" class="{{ request()->routeIs('customer.membership') || request()->is('history') ? 'active' : 'text-dark'}}">

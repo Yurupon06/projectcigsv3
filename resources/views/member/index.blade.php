@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title', isset($setting) && $setting->app_name . ' - Member' ?? 'Member')
+@section('title',  isset($setting) ? $setting->app_name : ' - Member' ?? 'Member')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection

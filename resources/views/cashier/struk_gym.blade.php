@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <link rel="icon" type="image/png"
-    href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
+    href="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 <head>
     <title>{{ isset($setting) ? $setting->app_name : 'Struk' }}</title>
     <style>

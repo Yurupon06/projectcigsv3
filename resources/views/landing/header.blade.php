@@ -7,7 +7,7 @@
                     <div class="menu-desktop">
                         <ul class="main-menu">
                             <li>
-                                <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" width="50px" height="50px">
+                                <img src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" width="50px" height="50px">
                             </li>
                             <li class="{{ request()->routeIs('landing.index') ? 'active' : ''}}">
                                 <a href="{{ route('landing.index') }}">Home</a>
@@ -82,7 +82,7 @@
         <!-- Header Mobile -->
         <div class="wrap-header-mobile">
             <div class="logo-mobile">
-                <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo">
+                <img src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo">
             </div>
 
             @auth

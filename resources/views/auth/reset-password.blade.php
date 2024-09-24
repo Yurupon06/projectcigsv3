@@ -127,7 +127,7 @@
                 @endif
                 <div class="card">
                     <div class="card-header text-center">
-                        <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
+                        <img src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
                         <h1 class="h3 mb-3 fw-normal">Reset Password</h1>
                     </div>
                     <form class="card-body" action="{{ route('reset') }}" method="POST">

@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title', isset($setting) && $setting->app_name . ' - Order Details' ?? 'Order Details')
+@section('title',  isset($setting) ? $setting->app_name : ' - Order Details' ?? 'Order Details')
 @section('sidebar')
     @include('cashier.sidebar')
 @endsection
