@@ -2,7 +2,9 @@
 @section('title',  $setting->app_name . ' - Complement' ?? 'Complement')
 @section('main')
 <style>
-    @media (max-width: 576px) {
+		.container{
+			padding-top: 100px;
+		}
         .isotope-item {
             width: 50%; 
             padding-bottom: 20px;
@@ -20,20 +22,12 @@
             font-size: 12px;
             padding: 10px 15px;
         }
-    }
-
-    @media (max-width: 768px) {
-        .block2-pic {
-            width: 100%;
-            height: auto;
-        }
-    }
 </style>
 <body class="animsition">
 	
-	<div class="bg0 m-t-23 p-b-140">
+	<div class="">
 		<div class="container">
-			<div class="flex-w flex-sb-m p-b-52">
+			<div class="">
 				<div class="flex-w flex-l-m filter-tope-group m-tb-10">
                     <a href="{{ route('f&b.index') }}" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ !$category ? 'how-active1' : '' }}" data-filter="*">
                         All Complements

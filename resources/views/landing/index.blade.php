@@ -283,9 +283,14 @@
                                   @default
                                       Lainnya
                               @endswitch
-                    </div>  
+                    </div>
+                    <div>
                     <img class="logo-gym" src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
-            
+                    <a href="{{route('landing.history')}}"  >
+                        <i class="fa-solid fa-chevron-right "></i>
+                    </a>
+                    </div> 
+                    
                 
                 </div>
                 
@@ -317,6 +322,7 @@
                     <a href="{{route('getin.index')}}" type="button" class="overlap-btn" >
                         Get In <i class="fa-solid fa-dumbbell"></i>
                     </a>
+                    
                     @else
                     @endif
                     </div>

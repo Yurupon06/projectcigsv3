@@ -35,6 +35,7 @@
                           <option value="food" {{ old('category') == 'food' ? 'selected' : '' }}>food</option>
                           <option value="drink" {{ old('category') == 'drink' ? 'selected' : '' }}>drink</option>
                           <option value="suplement" {{ old('category') == 'suplement' ? 'selected' : '' }}>suplement</option>
+                          <option value="other" {{ old('category') == 'other' ? 'selected' : '' }}>Other</option>
                         </select>
                         @error('category')
                             <div class="invalid-feedback">{{ $message }}</div>
