@@ -15,7 +15,7 @@
 
         .pointer:hover {
             background-color: #DC5F00;
-            transform: scale(1.05);
+            transform: scale(1);
         }
 
         .container {
@@ -57,7 +57,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12" style="border-radius: 20px">
+            <div class="col-md-12 mt-4" style="border-radius: 20px">
                 <div class="shadow p-3" style="border-radius: 20px">
                     <form id="checkoutForm" action="{{ route('yourorder.update') }}" method="POST">
                         @csrf

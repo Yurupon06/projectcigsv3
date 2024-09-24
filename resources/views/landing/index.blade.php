@@ -155,74 +155,70 @@
             padding-bottom: 100px;
         }
 
-        
-    </style>
+        .member-card {
+            background-color: #282828;
+            border-radius: 15px;
+            width: 100%;
+            padding: 20px;
+            padding-top: 100px;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
 
-    <style>
-.member-card {
-    background-color: #282828;
-    border-radius: 15px;
-    width: 100%;
-    padding: 20px;
-    padding-top: 100px;
-    color: white;
-    font-family: 'Arial', sans-serif;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    position: relative;
-}
+        .overlap-group {
+            position: relative;
+        }
 
-.overlap-group {
-    position: relative;
-}
+        .logo-gym {
+            width: 50px;
+        }
 
-.logo-gym {
-    width: 50px;
-}
+        .text-wrapper {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-.text-wrapper {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
+        .text-wrapper-2,
+        .text-wrapper-3 {
+            font-size: 14px;
+            font-weight: normal;
+            margin-bottom: 8px;
+        }
 
-.text-wrapper-2,
-.text-wrapper-3 {
-    font-size: 14px;
-    font-weight: normal;
-    margin-bottom: 8px;
-}
+        .text-wrapper-4,
+        .text-wrapper-5 {
+            font-size: 14px;
+            font-weight: normal;
+            margin-top: 10px;
+        }
 
-.text-wrapper-4,
-.text-wrapper-5 {
-    font-size: 14px;
-    font-weight: normal;
-    margin-top: 10px;
-}
+        .text-wrapper-4 span,
+        .text-wrapper-5 span {
+            font-weight: bold;
+        }
 
-.text-wrapper-4 span,
-.text-wrapper-5 span {
-    font-weight: bold;
-}
+        .overlap-btn {
+            margin-top: 10px;
+            background-color: #FF5722;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 14px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-.overlap-btn {
-    margin-top: 10px;
-    background-color: #FF5722;
-    border: none;
-    padding: 10px 20px;
-    color: white;
-    font-size: 14px;
-    border-radius: 25px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+        .overlap-btn:hover {
+            background-color: #E64A19;
+        }
 
-.overlap-btn:hover {
-    background-color: #E64A19;
-}
-
-.modal-content {
-    color: white;
-}
+        .modal-content {
+            color: white;
+        }
 
         .about-us {
             background-color: #fff;
@@ -248,6 +244,46 @@
             max-width: 800px;
             margin: 0 auto;
         }
+        /* Floating Cart Icon */
+        .floating-cart {
+            position: fixed;
+            bottom: 100px;
+            right: 420px;
+            background-color: #fff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        .floating-cart:hover {
+            background-color: #FF5722;
+        }
+
+        .floating-cart i {
+            font-size: 20px;
+            color: #FF5722;
+        }
+        .floating-cart:hover i {
+            color: white;
+        }
+        @media screen and (max-width: 576px) {
+            .floating-cart {
+            display: flex;
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background-color: #fff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+            }
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @if(session('warning'))
@@ -268,7 +304,6 @@
         <div class="member-card">
             <div class="overlap-group">
                 <div class="d-flex flex-row justify-content-between">
-
                     <div class="text-wrapper" style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
                         @switch($member->status)
                                   @case('active')
@@ -350,11 +385,8 @@
         </section>
 
         <section class="about-us">
-            <h2>Membership</h2>
-            
+            <h2>Membership</h2>    
         </section>
-            
-
         <!-- Product -->
         <div id="product-section" class="container mt-5">
             <div class="d-flex justify-content-center flex-wrap">
@@ -386,10 +418,13 @@
                 </div>
             </div>
         </div>
-
-        
-        
-
+    </div>
+        <!-- Floating Cart Icon -->
+        <div class="floating-cart">
+            <a href="{{ route('cart.index') }}">
+                <i class="fa fa-shopping-cart"></i>
+            </a>
+        </div>
         <!-- Back to top -->
         <div class="btn-back-to-top" id="myBtn">
             <span class="symbol-btn-back-to-top">

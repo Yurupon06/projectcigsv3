@@ -12,12 +12,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">
-                    <div class="card-header pb-0">
-                        <a href="{{route('complements.create')}}">
-                            <span class="btn btn-sm bg-gradient-primary mb-3 fs-6 ">add new item</span>
-                        </a>
+                    <div class="card-header pb-0 py-1">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h6>Complement</h6>
+                            <a href="{{route('complements.create')}}">
+                                <span class="btn btn-sm bg-gradient-primary mb-3 fs-6 ">add new item</span>
+                            </a>
                             <div class="input-group" style="max-width: 300px;">
                                 <form method="GET" action="{{ route('complements.index') }}" class="d-flex w-100 pt-2">
                                     <input type="text" name="search" class="form-control"
