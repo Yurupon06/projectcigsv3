@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', isset($setting) ? $setting->app_name : ' - Order' ?? 'Order')
+@section('title', isset($setting) ? $setting->app_name . ' - History' : 'History')
 @section('main')
 
 @if(session('success'))

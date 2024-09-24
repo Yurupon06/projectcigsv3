@@ -8,18 +8,18 @@
 @section('main')
     @include('dashboard.main')
 
-    <div class="container-fluid py-4">
+    <div class="container-fluid pb-4">
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-header py-2">
-                        <h3 class="text-center font-weight-bold">App Setting</h3>
+                        <h5 class="text-center font-weight-bold">App Setting</h5>
                     </div>
-                    <div class="card-body p-3">
+                    <div class="card-body p-2">
                         @if ($setting)
                             <img class="d-block mx-auto"
-                                src="{{ $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
-                                alt="Logo" width="200px">
+                                src="{{ asset('storage/' . $setting->app_logo) }}"
+                                alt="Logo" width="150px">
                             <form action="{{ route('application-setting.update', $setting->id) }}" method="POST"
                                 enctype="multipart/form-data">
                                 @csrf
@@ -54,8 +54,8 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <button type="submit" class="btn btn-success my-4 mb-2">Update</button>
-                                </form>
+                                <button type="submit" class="btn btn-primary mb-3 ms-3 me-3">Update</button>
+                            </form>
                         @else
                             <p class="mb-3 ms-3 me-3">No settings available. Please add settings first.</p>
                             <form action="{{ route('application-setting.store') }}" method="POST"

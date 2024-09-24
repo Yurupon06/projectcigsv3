@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>{{ $setting->app_name }} - Reset Password</title>
+    <title>{{ isset($setting) ? $setting->app_name . ' - Reset Password' : 'Reset Password' }}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -127,7 +127,7 @@
                 @endif
                 <div class="card">
                     <div class="card-header text-center">
-                        <img src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
+                        <img src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
                         <h1 class="h3 mb-3 fw-normal">Reset Password</h1>
                     </div>
                     <form class="card-body" action="{{ route('reset') }}" method="POST">

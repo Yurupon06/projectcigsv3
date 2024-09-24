@@ -92,7 +92,7 @@
         <div class="container-fluid">
             <div class="navbar-title">
                 <a class="navbar-brand" href="#">
-                    <img src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" class="img-fluid">
+                    <img src="{{  isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="logo" class="img-fluid">
                 </a>
             </div>
 
