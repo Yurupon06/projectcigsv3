@@ -245,14 +245,12 @@ class CashierController extends Controller
     public function storeCustomer(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'name' => 'required|string|max:255|unique:users',
             'phone' => 'required|string|max:15',
         ]);
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
             'phone' => $request->phone,
             'role' => 'customer',
         ]);
@@ -273,20 +271,18 @@ class CashierController extends Controller
     public function order()
     {
         $customer = Customer::whereHas('user', function ($query) {
-            $query->where('role', 'customer');
-        })->whereHas('members', function ($query) {
-            $query->where('status', '!=', 'inactive');
-        })->with('user')
+            $query->where('role', 'customer'); // Hanya user dengan role 'customer'
+        })
+        ->whereDoesntHave('members', function ($query) {
+            $query->where('status', 'inactive'); // Kecualikan member dengan status 'inactive'
+        })
+        ->with('user')
+
         ->orderBy(User::select('name')->whereColumn('users.id', 'customers.user_id'))
         ->get();
 
         $product = Product::with('productcat')->get();
-
-        $usersWithoutCustomer = User::whereDoesntHave('customer')
-                                    ->where('role', 'customer')
-                                    ->get();
-
-        return view('cashier.addorder', compact('customer', 'product', 'usersWithoutCustomer'));
+        return view('cashier.addorder', compact('customer', 'product', ));
     }
 
     public function makeOrder(Request $request)
