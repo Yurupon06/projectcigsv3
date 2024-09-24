@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title',  $setting->app_name . ' - Complement' ?? 'Complement')
+@section('title', isset($setting) ? $setting->app_name . ' - Complement' : 'Complement')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
@@ -8,7 +8,7 @@
 @section('main')
     @include('dashboard.main')
 
-    <div class="container-fluid py-4">
+    <div class="container-fluid pb-4">
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">

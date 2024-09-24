@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title',  $setting->app_name . ' - Edit Profile' ?? 'Edit - Profile')
+@section('title', isset($setting) ? $setting->app_name . ' - Edit Customer' : 'Edit Customer')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
@@ -9,10 +9,10 @@
     @include('dashboard.main')
 
     <!-- Tables -->
-    <div class="container-fluid py-4">
+    <div class="container-fluid pb-4">
         <div class="row">
             <div class="col-12">
-                <div class="card mb-4 text-capitalize">
+                <div class="card my-4 text-capitalize">
                     <div class="card-header pb-0">
                         <h6>Edit customer</h6>
                     </div>

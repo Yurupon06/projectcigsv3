@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <link rel="icon" type="image/png"
-    href="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
+    href="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 <head>
-    <title>]{{ $setting->app_name . ' - Struk' ?? 'Struk' }}</title>
+    <title>{{ isset($setting) ? $setting->app_name . ' - Struk' : 'Struk' }}</title>
     <style>
         * {
             margin: 0;

@@ -71,7 +71,7 @@
         <div class="container-fluid py-1 px-3">
             <div class="navbar-title">
                 <a class="navbar-brand" href="#">
-                    <img src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
+                    <img src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
                          alt="logo" class="img-fluid">
                 </a>
                 <h6 class="font-weight-bolder mb-0 text-white">@yield('page-title')</h6>

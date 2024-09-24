@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title',  $setting->app_name . ' - Membership' ?? 'Membership')
+@section('title', isset($setting) ? $setting->app_name . ' - Membership' : 'Membership')
 @section('main')
 
 <style>
@@ -178,7 +178,7 @@
     <div class="div">
         <div class="group">
             <div class="overlap-group">
-                <img class="logo-gym" src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
+                <img class="logo-gym" src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
             
                 <div class="text-wrapper" style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
                     @switch($member->status)

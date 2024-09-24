@@ -1,5 +1,5 @@
 @extends('cashier.master')
-@section('title',  $setting->app_name . ' - Cashier' ?? 'Cashier')
+@section('title', isset($setting) ? $setting->app_name . ' - Cashier' : 'Cashier')
 @section('sidebar')
     @include('cashier.sidebar')
 @endsection

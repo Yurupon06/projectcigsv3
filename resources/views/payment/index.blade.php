@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title',  $setting->app_name . ' - Payment' ?? 'Payment')
+@section('title', isset($setting) ? $setting->app_name . ' - Payment' : 'Payment')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
@@ -7,7 +7,7 @@
 @section('page', 'Payment')
 @section('main')
     @include('dashboard.main')
-    <div class="container-fluid py-4">
+    <div class="container-fluid pb-4">
         <div class="row">
             @if (session('success'))
                 <div class="alert alert-success" role="alert">
