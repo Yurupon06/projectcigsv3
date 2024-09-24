@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $setting->app_name . ' - QR Code Check-in' ?? 'QR Code Check-in'}}</title>
+    <title>{{ isset($setting) ? $setting->app_name . ' - QR Code Check-In' : 'QR Code Check-In' }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         #reader {

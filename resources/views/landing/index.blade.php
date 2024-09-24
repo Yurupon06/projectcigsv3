@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title',  isset($setting) ? $setting->app_name : ' - Home ' . 'Home')
+@section('title', isset($setting) ? $setting->app_name . ' - Home' : 'Home')
 @section('main')
 
     <style>
@@ -283,9 +283,8 @@
                                   @default
                                       Lainnya
                               @endswitch
-                    </div>
-                    <div>
-                    <img class="logo-gym" src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
+                    </div>  
+                    <img class="logo-gym" src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
                     <a href="{{route('landing.history')}}" style="color: white"  >
                         <i class="fa-solid fa-chevron-right "></i>
                     </a>

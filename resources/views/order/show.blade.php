@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title',  isset($setting) ? $setting->app_name : ' - Details Order' ?? 'Details Order')
+@section('title', isset($setting) ? $setting->app_name . ' - Order Details' : 'Order Details')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
@@ -8,7 +8,7 @@
 @section('main')
     @include('dashboard.main')
 
-    <div class="container-fluid py-4">
+    <div class="container-fluid pb-4">
         <div class="row">
             <div class="col-12">
                 <div class="card my-4">

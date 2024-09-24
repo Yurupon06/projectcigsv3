@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title',  isset($setting) ? $setting->app_name : ' - Edit Product Categories' ?? 'Edit Product Categories')
+@section('title', isset($setting) ? $setting->app_name . ' - Edit Product Categories' : 'Edit Product Categories')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
@@ -9,10 +9,10 @@
     @include('dashboard.main')
 
     <!-- Tables -->
-    <div class="container-fluid py-4">
+    <div class="container-fluid pb-4">
         <div class="row">
             <div class="col-12">
-                <div class="card mb-4">
+                <div class="card my-4">
                     <div class="card-header pb-0">
                         <h6>Edit Product Categories</h6>
                     </div>
