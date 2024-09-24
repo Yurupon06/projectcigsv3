@@ -4,7 +4,6 @@
 <body class="animsition">
     
     <!-- Product Detail -->
-    @if($complement instanceof App\Models\complement)
     <section class="sec-product-detail bg0 p-t-65 p-b-60">
         <div class="container">
             <div class="row">
@@ -74,9 +73,6 @@
             </div>
         </div>
     </section>
-@else
-    <p>Product not found.</p>
-@endif
 
 
 

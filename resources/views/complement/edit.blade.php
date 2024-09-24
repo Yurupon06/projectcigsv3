@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title',  $setting->app_name . ' - Edit complement' ?? 'Edit - complement')
+@section('title',  isset($setting) ? $setting->app_name : ' - Edit complement' ?? 'Edit - complement')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection
