@@ -1,5 +1,5 @@
 @extends('landing.home.master')
-@section('title',  $setting->app_name . ' - Home' ?? 'Home')
+@section('title',  isset($setting) ? $setting->app_name : ' - Home' ?? 'Home')
 @section('main')
     @include('landing.home.main')
 

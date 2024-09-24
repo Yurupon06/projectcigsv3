@@ -147,7 +147,7 @@
                     <img src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
                         alt="logo">
                 </div>
-                @if(request()->is('checking*','checkout*', 'edit*', 'getin', 'history'))
+                @if(request()->is('checking*','checkout*', 'edit*', 'getin', 'history', 'complement*'))
                     <a href="{{ url()->previous() }}" class="text-dark fs-3">
                         <i class="bi bi-chevron-left"></i>
                     </a>

@@ -1,5 +1,5 @@
 @extends('cashier.master')
-@section('title',  $setting->app_name . ' - Add Order' ?? 'Add Order')
+@section('title',  isset($setting) ? $setting->app_name : ' - Add Order' ?? 'Add Order')
 @section('sidebar')
     @include('cashier.sidebar')
 @endsection
@@ -112,10 +112,10 @@
                                 <label for="name" class="form-label small">Name</label>
                                 <input type="text" id="name" name="name" class="form-control form-control-sm" required>
                             </div>
-                            <div class="mb-3">
+                            {{-- <div class="mb-3">
                                 <label for="email" class="form-label small">Email</label>
                                 <input type="email" id="email" name="email" class="form-control form-control-sm" required>
-                            </div>
+                            </div> --}}
                             <div class="mb-3">
                                 <label for="phone" class="form-label small">Phone</label>
                                 <input type="number" id="phone" name="phone" class="form-control form-control-sm" required>

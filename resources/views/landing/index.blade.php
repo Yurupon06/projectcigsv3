@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title',  $setting->app_name . ' - Home ' . 'Home')
+@section('title',  isset($setting) ? $setting->app_name : ' - Home ' . 'Home')
 @section('main')
 
     <style>
@@ -286,7 +286,7 @@
                     </div>
                     <div>
                     <img class="logo-gym" src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
-                    <a href="{{route('landing.history')}}"  >
+                    <a href="{{route('landing.history')}}" style="color: white"  >
                         <i class="fa-solid fa-chevron-right "></i>
                     </a>
                     </div> 
