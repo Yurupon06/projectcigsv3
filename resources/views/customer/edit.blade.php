@@ -1,5 +1,5 @@
 @extends('dashboard.master')
-@section('title', isset($setting) && $setting->app_name . ' - Edit Profile' ?? 'Edit - Profile')
+@section('title',  $setting->app_name . ' - Edit Profile' ?? 'Edit - Profile')
 @section('sidebar')
     @include('dashboard.sidebar')
 @endsection

@@ -23,12 +23,12 @@ Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
 
 Route::get('/cart', [LandingController::class, 'cart'])->name('cart.index');
 Route::get('/', [LandingController::class, 'home'])->name('home.index');
-
 // Auth
 Route::middleware('auth')->group(function () {
     
     // Customer
     Route::middleware('customer')->group(function () {
+        Route::get('/home', [LandingController::class, 'index'])->name('landing.index');
         Route::prefix('/profile')->group(function () {
             Route::get('/', [LandingController::class, 'profile'])->name('landing.profile');
             Route::post('/', [LandingController::class, 'profileUpdate'])->name('update.profile');

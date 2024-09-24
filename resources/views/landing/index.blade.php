@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', isset($setting) && $setting->app_name . ' - Home ' . 'Home')
+@section('title',  $setting->app_name . ' - Home ' . 'Home')
 @section('main')
 
     <style>
@@ -284,7 +284,7 @@
                                       Lainnya
                               @endswitch
                     </div>  
-                    <img class="logo-gym" src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
+                    <img class="logo-gym" src="{{  $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
             
                 
                 </div>

@@ -1,5 +1,5 @@
 @extends('landing.master')
-@section('title', isset($setting) && $setting->app_name . ' - QR Code' ?? 'QR Code')
+@section('title',  $setting->app_name . ' - QR Code' ?? 'QR Code')
 @section('main')
 
 <style>
