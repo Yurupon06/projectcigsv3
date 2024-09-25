@@ -30,6 +30,9 @@
                 </div>
             @endif
             <div class="col-md-8">
+                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-lg">Membership</a>
+                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-secondary btn-lg">Complement</a>
+
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">

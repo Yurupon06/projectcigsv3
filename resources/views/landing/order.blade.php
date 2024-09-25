@@ -148,4 +148,10 @@
             </div>
         </div>
     </div>
+        <!-- Floating Cart Icon -->
+        <div class="floating-cart">
+            <a href="{{ route('cart.index') }}">
+                <i class="fa fa-shopping-cart"></i>
+            </a>
+        </div>   
 @endsection

@@ -9,6 +9,8 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\ApplicationSetting;
 use App\Models\Payment;
+use App\Models\Complement;
+use App\Models\Cart;
 use App\Models\Product_categorie;
 use App\Models\MemberCheckin;
 use Illuminate\Support\Facades\Auth;
@@ -503,4 +505,51 @@ class CashierController extends Controller
         {
             return view('cashier.checkinscanner');  
         }
+
+    public function orderComplement(Request $request){
+        $user = Auth::user();
+        $category = $request->get('category');
+        $complement = $category ? Complement::where('category', $category)->get() : Complement::all();
+        $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
+        return view('cashier.ordercomplement', compact('complement', 'cartItems'));
+    }
+
+
+    public function addToCart(Request $request, $complementId)
+    {
+        $user = Auth::user();
+        
+        $complement = complement::findOrFail($complementId);
+    
+        $quantity = $request->input('quantity', 1);
+    
+        $cartItem = cart::where('user_id', $user->id)
+                        ->where('complement_id', $complement->id)
+                        ->first();
+    
+        if ($cartItem) {
+            $newQuantity = $cartItem->quantity + $quantity;
+            $cartItem->update([
+                'quantity' => $newQuantity,
+                'total' => $newQuantity * $complement->price
+            ]);
+        } else {
+            cart::create([
+                'user_id' => $user->id,
+                'complement_id' => $complement->id,
+                'quantity' => $quantity,
+                'total' => $quantity * $complement->price
+            ]);
+        }
+    
+        return redirect()->route('cashier.complement')->with('success', 'Item added to cart successfully!');
+    }
+    public function deleteCart($id)
+    {
+        $cartItem = cart::findOrFail($id);
+
+        $cartItem->delete();
+
+        return redirect()->route('cashier.complement')->with('success', 'Item removed from cart successfully!');
+    }
 }

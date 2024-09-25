@@ -245,46 +245,7 @@
             max-width: 800px;
             margin: 0 auto;
         }
-        /* Floating Cart Icon */
-        .floating-cart {
-            position: fixed;
-            bottom: 100px;
-            right: 420px;
-            background-color: #fff;
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: background-color 0.3s ease;
-        }
 
-        .floating-cart:hover {
-            background-color: #FF5722;
-        }
-
-        .floating-cart i {
-            font-size: 20px;
-            color: #FF5722;
-        }
-        .floating-cart:hover i {
-            color: white;
-        }
-        @media screen and (max-width: 576px) {
-            .floating-cart {
-            display: flex;
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            background-color: #fff;
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: background-color 0.3s ease;
-            }
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @if(session('warning'))
@@ -319,12 +280,13 @@
                                   @default
                                       Lainnya
                               @endswitch
-                    </div>  
-                    <img class="logo-gym" src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
+                    </div>
                     <a href="{{route('landing.history')}}" style="color: white"  >
-                        <i class="fa-solid fa-chevron-right "></i>
+                        <div> 
+                            <img class="logo-gym" src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
+                            <i class="fa-solid fa-chevron-right "></i>
+                        </div> 
                     </a>
-                    </div> 
                     
                 
                 </div>

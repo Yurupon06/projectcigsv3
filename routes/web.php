@@ -105,6 +105,9 @@ Route::middleware('auth')->group(function () {
             Route::get('/membership', [CashierController::class, 'membercashier'])->name('membercashier.membercash');
             Route::get('/member/{id}', [CashierController::class, 'detailMember'])->name('cashier.member');
             Route::post('/member/action/{id}', [CashierController::class, 'actionMember'])->name('action.member');
+            Route::get('/complement', [CashierController::class, 'orderComplement'])->name('cashier.complement');
+            Route::post('/cart/add/{complementId}', [CashierController::class, 'addToCart'])->name('cart.added');
+            Route::delete('/cart/remove/{id}', [CashierController::class, 'deleteCart'])->name('cart.deleted');
         });
 
         Route::post('/payments/{order}', [CashierController::class, 'store'])->name('payments.store');
