@@ -22,6 +22,18 @@
             font-size: 12px;
             padding: 10px 15px;
         }
+
+		@media only screen and (max-width: 768px) {
+			.flex-w {
+				flex-wrap: nowrap; 
+				overflow-x: auto; 
+			}
+
+			.flex-w a {
+				margin-right: 5px; /* Mengurangi jarak antar elemen */
+				padding: 5px 5px;  /* Menyesuaikan padding untuk tampilan yang lebih kecil */
+			}
+		}
 </style>
 <body class="animsition">
 	
@@ -42,7 +54,6 @@
                         Supplement
                     </a>
                 </div>
-
 			</div>
 			<div class="bg0 m-t-23 p-b-140">
 				<div class="container">

@@ -1,4 +1,5 @@
 @extends('landing.master')
+@section('title', isset($setting) ? $setting->app_name . ' - Cart' : 'Cart')
 @section('main')
 
 @if(session('success'))
@@ -71,9 +72,55 @@
         background: none;
         cursor: pointer;
     }
+
+    .subtotal {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    @media (max-width: 767px) {
+        .cart-item {
+            flex-direction: row;
+            align-items: middle;
+            font-size: 0.85rem; /* Smaller font size */
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+
+        .cart-item span {
+            font-size: 0.85rem; /* Smaller font for price */
+        }
+
+        .quantity-wrapper input {
+            width: 35px; /* Smaller input */
+            height: 25px; /* Smaller height */
+            font-size: 0.75rem; /* Smaller font */
+        }
+
+        .btn-num-product-down, .btn-num-product-up {
+            width: 25px; /* Smaller button width */
+            height: 25px; /* Smaller button height */
+        }
+
+        .subtotal span,
+        .total-summary .mtext-110,
+        .total-summary .stext-110 {
+            font-size: 0.85rem; /* Reduce font size for total section */
+        }
+
+        .proced {
+            font-size: 14px; /* Smaller button font size */
+            padding: 8px 16px; /* Adjust padding */
+        }
+    }
 </style>
 
-<div class="bg0 p-t-85 p-b-85" id="cartForm">
+<div class="bg0 p-t-80 p-b-85" id="cartForm">
     <div class="container">
         <div class="row">
             <div class="col-lg-12 m-lr-auto m-b-40">
@@ -126,15 +173,15 @@
             <div class="row">
                 <div class="col-lg-12 m-lr-auto m-b-50">
                     <div class="bor10 p-lr-30 p-t-25 p-b-30 total-summary">
-                        <h5 class="stext-110 cl2 p-b-10">Order Summary</h5>
+                        <h5 class="stext-110 cl2 p-b-10">Order</h5>
                         
                         <!-- Order Items -->
                         @foreach ($cartItems as $item)
-                            <div class="flex-w flex-t p-b-10">
-                                <div class="size-208">
+                            <div class="subtotal flex-w flex-t p-b-10">
+                                <div class="size-80 text-left">
                                     <span class="stext-110 cl2">{{ $item->complement->name }} ({{ $item->quantity }} x Rp. {{ number_format($item->complement->price) }})</span>
                                 </div>
-                                <div class="size-209 text-right">
+                                <div class="size-208 text-right">
                                     <span class="mtext-110 cl2">Rp. {{ number_format($item->total) }}</span>
                                 </div>
                             </div>
@@ -154,7 +201,7 @@
                         <form action="" method="POST">
                             @csrf
                             <button type="submit" class="proced flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" style="font-size: 16px; padding: 10px 20px; border-radius: 5px;">
-                                Proceed to Checkout
+                                Checkout
                             </button>
                         </form>
                     </div>

@@ -84,6 +84,7 @@
         }
         .button-grid {
             display: flex;
+            color: #000;
             justify-content: space-between;
             margin: 20px;
         }
