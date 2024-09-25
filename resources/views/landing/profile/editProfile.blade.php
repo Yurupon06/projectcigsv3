@@ -3,14 +3,15 @@
 @section('main')
 
 <style>
-    /* CSS untuk memusatkan konten secara horizontal dan vertikal */
     .centered-container {
         display: flex;
         justify-content: center;
-        align-items: center;
-        min-height: 100vh; /* Tinggi minimum 100% dari viewport */
+        margin-top:60px;
+        align-items: center; /* Diubah agar konten mulai dari atas saat di-scroll */
+        min-height: 90vh; /* Tinggi minimum 100% dari viewport */
         background-color: #f8f9fa; /* Latar belakang halaman */
     }
+
     .content {
         background-color: white;
         padding: 20px;
@@ -18,6 +19,33 @@
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         width: 100%;
         max-width: 500px; /* Batas lebar maksimal */
+        max-height: 90vh; /* Batas tinggi maksimal */
+        overflow-y: auto; /* Tambahkan scroll jika konten melebihi tinggi */
+    }
+
+    /* Untuk mobile, pastikan konten tetap bisa di-scroll */
+    @media (max-width: 768px) {
+        .centered-container {
+            align-items: center;
+            justify-content: center;
+            margin-top: 0;
+            min-height: 100vh;
+        }
+        .content {
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+        }
+    }
+
+    .btn-primary {
+        background-color: #ff8500;
+        border-color: #ff8500;
+    }
+
+    .btn-primary:hover {
+        background-color: #ff5500;
+        border-color: #ff5500;
     }
 </style>
 

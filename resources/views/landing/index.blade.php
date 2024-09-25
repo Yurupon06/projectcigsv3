@@ -214,6 +214,7 @@
 
         .overlap-btn:hover {
             background-color: #E64A19;
+            color: white;
         }
 
         .modal-content {
@@ -422,7 +423,7 @@
         <!-- Floating Cart Icon -->
         <div class="floating-cart">
             <a href="{{ route('cart.index') }}">
-                <i class="fa fa-shopping-cart"></i>
+                <i class="fa fa-shopping-basket"></i>
             </a>
         </div>
         <!-- Back to top -->

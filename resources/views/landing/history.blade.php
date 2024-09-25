@@ -51,7 +51,7 @@
                 <div class="card-body">
                     <img src="{{ asset('storage/' . $dt->image) }}" class="card-img" alt="Member Image">
                     <p class="time-text">{{ $dt->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y, H:i') }}</p>
-                    </div>
+                </div>
             </div>
         @empty
             <p class="text-center">No orders found.</p>
