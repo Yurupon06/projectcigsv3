@@ -32,15 +32,34 @@
                     <a href="{{ route('f&b.index') }}" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ !$category ? 'how-active1' : '' }}" data-filter="*">
                         All Complements
                     </a>
-                    <a href="{{ route('f&b.index', ['category' => 'food']) }}" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'food' ? 'how-active1' : '' }}" data-filter=".food">
-                        Food
-                    </a>
-                    <a href="{{ route('f&b.index', ['category' => 'drink']) }}" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'drink' ? 'how-active1' : '' }}" data-filter=".drink">
-                        Drink
-                    </a>
-                    <a href="{{ route('f&b.index', ['category' => 'suplement']) }}" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'suplement' ? 'how-active1' : '' }}" data-filter=".suplement">
-                        Supplement
-                    </a>
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="bi bi-funnel-fill"></i>
+						</button>
+						<ul class="dropdown-menu">
+						<li>
+							<a href="{{ route('f&b.index', ['category' => 'food']) }}" class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'food' ? 'how-active1' : '' }}" data-filter=".food">
+								Food
+							</a>
+						</li>
+						<li>
+							<a href="{{ route('f&b.index', ['category' => 'drink']) }}" class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'drink' ? 'how-active1' : '' }}" data-filter=".drink">
+								Drink
+							</a>
+						</li>
+						<li>
+							<a href="{{ route('f&b.index', ['category' => 'suplement']) }}" class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'suplement' ? 'how-active1' : '' }}" data-filter=".suplement">
+								Suplement
+							</a>
+						</li>
+						<li>
+							<a href="{{ route('f&b.index', ['category' => 'other']) }}" class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'other' ? 'how-active1' : '' }}" data-filter=".other">
+								Other
+							</a>
+						</li>
+						</ul>
+					  </div>
+                    
                 </div>
 
 			</div>
@@ -78,7 +97,12 @@
 		</div>
 	</div>
 		
-
+        <!-- Floating Cart Icon -->
+        <div class="floating-cart">
+            <a href="{{ route('cart.index') }}">
+                <i class="fa fa-shopping-cart"></i>
+            </a>
+        </div>
 
 	<!-- Back to top -->
 	<div class="btn-back-to-top" id="myBtn">

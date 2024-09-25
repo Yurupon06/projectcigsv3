@@ -66,7 +66,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('cashier/order') ? 'active' : '' }}"
+                <a class="nav-link {{ request()->is('cashier/order', 'cashier/complement') ? 'active' : '' }}"
                     href="{{ route('cashier.order') }}">
                     <i class="material-icons">add_shopping_cart</i>
                     <span class="nav-link-text ms-1">Add Order</span>
