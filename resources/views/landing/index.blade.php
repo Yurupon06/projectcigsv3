@@ -399,9 +399,7 @@
                                     <span class="text-black">Rp.{{ number_format($dt->price) }}</span>
                                 </div>
                                 <div class="card-body">
-                                    <ul>
-                                        <li>{{ $dt->description }}</li>
-                                    </ul>
+                                    <p>{{ $dt->description }}</p>
                                 </div>
                                 <div class="card-footer">
                                     <form action="{{ route('beforeorder.index') }}" method="GET">
