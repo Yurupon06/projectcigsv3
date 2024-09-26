@@ -74,7 +74,7 @@
                 <input clang="s" type="text" name="search" class="form-control" placeholder="Search" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
                 <input type="date" name="start_date" id="start_date" class="form-control" value="{{ request('start_date', $startDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}" style="height: 38px;">
                 <input type="date" name="end_date" id="end_date" class="form-control" value="{{ request('end_date', $endDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}" style="height: 38px;">
-                <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; height: 38px; width: 30px;  ">
+                <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; height: 38px; width: 30px; border-color: #ffa500; ">
                     <i class="fas fa-search align-middle d-flex justify-content-center"></i>
                 </button>
             </form>
@@ -148,4 +148,10 @@
             </div>
         </div>
     </div>
+        <!-- Floating Cart Icon -->
+        <div class="floating-cart">
+            <a href="{{ route('cart.index') }}">
+                <i class="fa fa-shopping-cart"></i>
+            </a>
+        </div>   
 @endsection

@@ -27,6 +27,15 @@
         position: relative;
         z-index: 2;
     }
+    .btn-primary {
+        background-color: #ff8500;
+        border-color: #ff8500;
+    }
+
+    .btn-primary:hover {
+        background-color: #ff5500;
+        border-color: #ff5500;
+    }
 </style>
 
 
