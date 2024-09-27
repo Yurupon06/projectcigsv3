@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderDetail extends Model
 {
     use HasFactory;
-    protected $table = 'order_complements';
+    protected $table = 'order_details';
     protected $fillable = [
         'order_complement_id',
         'complement_id',
@@ -16,10 +16,10 @@ class OrderDetail extends Model
         'sub_total',	
     ];
 
-    public function order_complement(){
-        return $this->belongsTo(User::class, 'order_complement_id');
+    public function ordercomplement(){
+        return $this->belongsTo(OrderComplement::class, 'order_complement_id');
     }
     public function complement(){
-        return $this->belongsTo(User::class, 'complement_id');
+        return $this->belongsTo(complement::class, 'complement_id');
     }
 }
