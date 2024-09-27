@@ -10,7 +10,10 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
+    <link rel="icon" type="image/png" href="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
+
+    <!-- Tambahkan Font Awesome untuk ikon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
     <style>
         body {
@@ -101,6 +104,23 @@
             text-align: center;
         }
 
+        .input-icon {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6c757d;
+        }
+
+        .input-icon:hover {
+            color: #ffffff;
+        }
+
+        .position-relative {
+            position: relative;
+        }
+
         @media (min-width: 992px) {
             .card {
                 padding: 2rem;
@@ -119,21 +139,22 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-content">
-                        <img src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
+                        <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
                         <h1 class="h3 mb-3 fw-normal">Sign In</h1>
                     </div>
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-floating mb-3">
                             <input name="phone" type="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" value="{{ old('phone') }}" required>
-                            <label for="floatingInput">Phone Number</label>
+                            <label for="floatingInput">phone address</label>
                             @error('phone')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-3 position-relative">
                             <input name="password" type="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="floatingPassword" placeholder="Password" required>
                             <label for="floatingPassword">Password</label>
+                            <i class="fa fa-eye-slash input-icon" id="togglePasswordIcon" onclick="togglePassword()"></i>
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -147,6 +168,24 @@
             </div>
         </div>
     </main>
+
+    <!-- Script untuk toggle visibility password -->
+    <script>
+        function togglePassword() {
+            var passwordField = document.getElementById("floatingPassword");
+            var toggleIcon = document.getElementById("togglePasswordIcon");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                toggleIcon.classList.remove("fa-eye-slash");
+                toggleIcon.classList.add("fa-eye");
+            } else {
+                passwordField.type = "password";
+                toggleIcon.classList.remove("fa-eye");
+                toggleIcon.classList.add("fa-eye-slash");
+            }
+        }
+    </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous"></script>

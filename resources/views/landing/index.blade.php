@@ -381,11 +381,11 @@
         </div>
     </div>
         <!-- Floating Cart Icon -->
+        <a href="{{ route('cart.index') }}">
         <div class="floating-cart">
-            <a href="{{ route('cart.index') }}">
-                <i class="fa fa-shopping-basket"></i>
-            </a>
+            <i class="fa fa-shopping-cart"></i>
         </div>
+    </a>
         <!-- Back to top -->
         <div class="btn-back-to-top" id="myBtn">
             <span class="symbol-btn-back-to-top">

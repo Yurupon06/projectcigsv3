@@ -110,7 +110,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/cart/remove/{id}', [CashierController::class, 'deleteCart'])->name('cart.deleted');
             Route::post('/cart/update/{id}', [CashierController::class, 'updateQuantity'])->name('cart.update');
             Route::post('/cart/checkout', [CashierController::class, 'checkoutProccess'])->name('cart.checkout');
-            Route::get('/complement/order/{id}', [CashierController::class, 'checkoutComplement'])->name('cashier.checkout');
+            Route::get('/complement/{id}', [CashierController::class, 'checkoutComplement'])->name('cashier.checkout');
 
 
 
@@ -118,6 +118,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::post('/payments/{order}', [CashierController::class, 'store'])->name('payments.store');
+        Route::post('/payments/complement/{orderComplement}', [CashierController::class, 'paymentComplement'])->name('payments.complement');
         Route::get('/struk-gym/{id}', [CashierController::class, 'showStruk'])->name('struk_gym');
         Route::post('/customer/store', [CashierController::class, 'storeCustomer'])->name('customer.store');
         Route::resource('members', MemberController::class);

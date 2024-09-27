@@ -30,8 +30,10 @@
                 </div>
             @endif
             <div class="col-md-8">
-                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-lg">Membership</a>
-                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-secondary btn-lg">Complement</a>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary">MEMBERSHIP</a>
+                    <a href="{{route('cashier.complement')}}" type="button" class="btn btn-secondary">COMPLEMENT</a>
+                </div>
 
                 <div class="card">
                     <div class="card-body">

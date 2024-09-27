@@ -126,9 +126,11 @@
                             </div>
                             <div>
                                 <div class="d-flex flex-column text-center">
+                                    <a href="{{ route('complement.detail', $dt->id) }}" style="color:rgb(0, 0, 0);">
                                     <span>
                                         {{ $dt->name }}
                                     </span>
+                                    </a>
                                     <span class="stext-105 cl3">
                                         Rp. {{ number_format($dt->price) }}
                                     </span>

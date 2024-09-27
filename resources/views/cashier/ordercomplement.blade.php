@@ -131,8 +131,10 @@
                 </div>
             @endif
             <div class="col-md-8">
-                <a href="{{route('cashier.order')}}" type="button" class="btn btn-secondary btn-lg">Membership</a>
-                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-primary btn-lg">Complement</a>
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <a href="{{route('cashier.order')}}" type="button" class="btn btn-secondary">MEMBERSHIP</a>
+                    <a href="{{route('cashier.complement')}}" type="button" class="btn btn-primary">COMPLEMENT</a>
+                </div>
                 <!-- Product List -->
                 <div class="card">
                     <div class="card-body">
@@ -210,12 +212,10 @@
             let currentQuantity = parseInt(quantityInput.value);
             const newQuantity = currentQuantity + change;
     
-            if (newQuantity < 1) return; // Prevent quantity from going below 1
+            if (newQuantity < 1) return; 
     
-            // Update the quantity input value
             quantityInput.value = newQuantity;
     
-            // AJAX request to update the cart quantity and total
             fetch(`{{ url('/cashier/cart/update') }}/${itemId}`, {
                 method: 'POST',
                 headers: {
@@ -227,13 +227,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update the total display for this item
 
-    
-                    // Recalculate and update the overall total
                     updateOverallTotal();
                 } else {
-                    alert(data.error); // Show error message
                 }
             })
             .catch(error => console.error('Error:', error));
