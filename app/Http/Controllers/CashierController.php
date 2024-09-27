@@ -9,6 +9,10 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\ApplicationSetting;
 use App\Models\Payment;
+use App\Models\Complement;
+use App\Models\Cart;
+use App\Models\OrderComplement;
+use App\Models\OrderDetail;
 use App\Models\Product_categorie;
 use App\Models\MemberCheckin;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CashierController extends Controller
 {
@@ -503,4 +508,117 @@ class CashierController extends Controller
         {
             return view('cashier.checkinscanner');  
         }
+
+    public function orderComplement(Request $request){
+        $user = Auth::user();
+        $category = $request->get('category');
+        $complement = $category ? Complement::where('category', $category)->get() : Complement::all();
+        $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
+        return view('cashier.ordercomplement', compact('complement', 'cartItems'));
+    }
+
+
+    public function addToCart(Request $request, $complementId)
+    {
+        $user = Auth::user();
+        
+        $complement = complement::findOrFail($complementId);
+    
+        $quantity = $request->input('quantity', 1);
+    
+        $cartItem = cart::where('user_id', $user->id)
+                        ->where('complement_id', $complement->id)
+                        ->first();
+    
+        if ($cartItem) {
+            $newQuantity = $cartItem->quantity + $quantity;
+            $cartItem->update([
+                'quantity' => $newQuantity,
+                'total' => $newQuantity * $complement->price
+            ]);
+        } else {
+            cart::create([
+                'user_id' => $user->id,
+                'complement_id' => $complement->id,
+                'quantity' => $quantity,
+                'total' => $quantity * $complement->price
+            ]);
+        }
+    
+        return redirect()->route('cashier.complement')->with('success', 'Item added to cart successfully!');
+    }
+    public function deleteCart($id)
+    {
+        $cartItem = cart::findOrFail($id);
+
+        $cartItem->delete();
+
+        return redirect()->route('cashier.complement')->with('success', 'Item removed from cart successfully!');
+    }
+    
+
+    public function updateQuantity(Request $request, $id)
+    {
+        $cartItem = Cart::findOrFail($id);
+        $quantity = $request->input('quantity');
+    
+        // Validate the quantity (e.g., ensure it's greater than 0)
+        if ($quantity < 1) {
+            return response()->json(['error' => 'Quantity must be at least 1.'], 400);
+        }
+    
+        $cartItem->quantity = $quantity;
+        $cartItem->total = $quantity * $cartItem->complement->price; // Update total
+    
+        $cartItem->save();
+    
+        return response()->json(['success' => 'Quantity updated successfully!', 'total' => $cartItem->total]);
+    }
+
+    public function checkoutProccess(){
+        $user = Auth::user();
+        $cartItems = Cart::where('user_id', $user->id)->with('complement')->get();
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
+        }
+        $totalAmount = $cartItems->sum('total');
+        $qrToken = Str::random(10);
+        $orderComplement = OrderComplement::create([
+            'user_id' => $user->id,
+            'total_amount' => $totalAmount,
+            'status' => 'unpaid', // Misalnya status default
+            'quantity' => $cartItems->sum('quantity'),
+            'qr_token' => $qrToken, // Method untuk membuat QR token
+        ]);
+        foreach ($cartItems as $item) {
+            $price = $item->complement->price;
+            $subTotal = $price * $item->quantity;
+            OrderDetail::create([
+                'order_complement_id' => $orderComplement->id,
+                'complement_id' => $item->complement->id,
+                'quantity' => $item->quantity,
+                'sub_total' => $subTotal, // Ambil dari field 'total' di cart
+            ]);
+        }
+        Cart::where('user_id', $user->id)->delete();
+        return redirect()->route('cashier.checkout', ['id' => $orderComplement->id]);
+    }
+
+
+    public function checkoutComplement($id){
+    // Ambil OrderComplement berdasarkan ID
+    $orderComplement = OrderComplement::findOrFail($id);
+    
+    // Ambil detail order berdasarkan order_complement_id
+    $orderDetails = OrderDetail::where('order_complement_id', $id)->with('complement')->get();
+
+    return view('cashier.checkoutcomplement', compact('orderComplement', 'orderDetails'));
+    }
+
+    
+    
+
+    
+    
+
 }

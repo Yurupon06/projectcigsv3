@@ -46,8 +46,10 @@
             <div class="col-md-4">
                 <h5>Contact Us</h5>
                 <ul>
-                    <li><i class="fa fa-map-marker"></i> 123 Faybal Gym, BITC Building 3rd Floor</li>
-                    <li><i class="fa fa-phone"></i> +123 456 7890</li>
+                    <li><i class="fa fa-map-marker"></i>
+                    {{ $setting->app_address ?? '123 Faybal Gym, BITC Building 3rd Floor' }}</li>
+                    <li><i class="fa fa-phone"></i>
+                    {{ $setting->app_handphone ?? '123-456-7890' }}</li>
                     <li><i class="fa fa-envelope"></i> faybal@gym.com</li>
                 </ul>
             </div>

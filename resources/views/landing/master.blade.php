@@ -121,21 +121,55 @@
             border-top-right-radius: 15px;
             box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
         }
+
+        .nav-bottom a {
+            color: #FF5500;
+        }
         
         .active {
-            color: #FF8C00;
+            color: #FF5500;
+        }
+        /* Floating Cart Icon */
+        .floating-cart {
+            position: fixed;
+            bottom: 100px;
+            right: 420px;
+            background-color: #fff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
         }
 
-        /* @media (max-width: 992px) {
-            .contains {
-                max-width: 100%;
+        .floating-cart:hover {
+            background-color: #FF5722;
+        }
+
+        .floating-cart i {
+            font-size: 20px;
+            color: #FF5722;
+        }
+        .floating-cart:hover i {
+            color: white;
+        }
+        @media screen and (max-width: 576px) {
+            .floating-cart {
+            display: flex;
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background-color: #fff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
             }
-        } */
-
+        }
     </style>
-
-
-
 </head>
 
 <body>
@@ -147,7 +181,7 @@
                     <img src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
                         alt="logo">
                 </div>
-                @if(request()->is('checking*','checkout*', 'edit*', 'getin', 'history', 'complement*'))
+                @if(request()->is('checking*','checkout*', 'edit*', 'getin', 'history', 'complement*', 'cart'))
                     <a href="{{ url()->previous() }}" class="text-dark fs-3">
                         <i class="bi bi-chevron-left"></i>
                     </a>

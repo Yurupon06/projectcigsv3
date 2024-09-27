@@ -81,49 +81,47 @@
             text-decoration: none;
         }
         .button-grid {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-}
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
 
-.button-grid {
-    display: flex;
-    justify-content: space-between;
-    margin: 20px 0;
-}
+        .button-grid {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
 
-.btn-box {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30%;
-    padding: 20px;
-    text-align: center;
-    background-color: white;
-    color: #333;
-    border-radius: 10px;
-    font-weight: bold;
-    text-decoration: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s ease;
-    border: 1px solid #ddd;
-}
+        .btn-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 30%;
+            padding: 20px;
+            text-align: center;
+            background-color: white;
+            color: #333;
+            border-radius: 10px;
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+            border: 1px solid #ddd;
+        }
 
-.btn-box:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
+        .btn-box:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
 
-.btn-box:active {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
+        .btn-box:active {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
 
-.btn-logo {
-    width: 20px;
-    height: auto;
-    margin-right: 10px;
-}
-
-
+        .btn-logo {
+            width: 20px;
+            height: auto;
+            margin-right: 10px;
+        }
     </style>
 
     <div class="container">
