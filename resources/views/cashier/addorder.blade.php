@@ -18,6 +18,16 @@
         .select2-container--bootstrap-5 .select2-selection__arrow {
             height: 100%;
         }
+
+        .btn-membership:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            box-shadow: 0 6px 8px rgba(0, 0, 255, 0.2); /* Slightly larger shadow */
+        }
+
+        .btn-complement:hover {
+            background-color: #e04e00; /* Darker orange on hover */
+            box-shadow: 0 6px 8px rgba(255, 165, 0, 0.2); /* Slightly larger shadow */
+        }
     </style>
 
 
@@ -30,8 +40,12 @@
                 </div>
             @endif
             <div class="col-md-8">
-                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-lg">Membership</a>
-                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-secondary btn-lg">Complement</a>
+                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
+                    <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
+                </a>
+                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-sm align-items-center btn-complement" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
+                    <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
+                </a>
 
                 <div class="card">
                     <div class="card-body">
@@ -48,7 +62,7 @@
                                                         @foreach ($customer as $dt)
                                                             @php
                                                                 $phone = $dt->phone;
-                                                                $maskedPhone = substr($phone, 0, 4) . '****' . substr($phone, -4);
+                                                                $maskedPhone = substr($phone, 0, 4) . '' . substr($phone, -4);
                                                             @endphp
                                                             <option value="{{ $dt->id }}" data-name="{{ $dt->user->name }}" data-phone="{{ $dt->phone }}"
                                                                 {{ session('new_customer_id') == $dt->id ? 'selected' : '' }}>
@@ -243,5 +257,4 @@
             });
         });
     </script>
-
 @endsection

@@ -7,7 +7,7 @@
     <!-- Product Detail Section -->
     <section class="sec-product-detail bg0 p-t-65 p-b-60">
         <div class="container">
-            <div class="row">
+            <div class="row mt-4">
                 <!-- Image Section -->
                 <div class="col-md-6 col-lg-7 p-b-30">
                     <div class="p-l-25 p-r-30 p-lr-0-lg">

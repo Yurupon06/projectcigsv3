@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LandingSettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
@@ -81,6 +82,7 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::resource('application-setting', ApplicationSettingController::class);
+        Route::resource('landing-settings', LandingSettingController::class);
     });
 
     // Cashier
