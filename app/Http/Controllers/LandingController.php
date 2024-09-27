@@ -149,6 +149,7 @@ class LandingController extends Controller
         $search = $request->input('search');
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
+        $type = $request->input('type', 'membership');
 
         if ($user && $user->role === 'customer') {
             $customer = Customer::where('user_id', $user->id)->first();
@@ -181,14 +182,22 @@ class LandingController extends Controller
                 $ordersQuery->whereDate('order_date', '<=', $endDate);
             }
 
+            if (!$request->has('type')) {
+                return redirect()->route('yourorder.index', [
+                    'type' => $type,
+                    'search' => $search,
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                ]);
+            }
+
             $orders = $ordersQuery->paginate(5);
 
-            return view('landing.order', compact('orders', 'customer', 'member', 'search', 'startDate', 'endDate', 'cartCount'));
+            return view('landing.order', compact('orders', 'customer', 'member', 'type', 'search', 'startDate', 'endDate', 'cartCount',));
         }
 
         abort(403);
     }
-
 
     public function orderStore(Request $request)
     {

@@ -185,13 +185,6 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            {{-- <div class="form-floating mb-2">
-                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="floatingEmail" name="email" value="{{ old('email') }}" required autocomplete="email">
-                                <label for="floatingEmail">Email</label>
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div> --}}
                             <div class="form-floating mb-2">
                                 <input type="number" class="form-control @error('phone') is-invalid @enderror" id="floatingPhone" name="phone" value="{{ old('phone') }}" required autocomplete="phone">
                                 <label for="floatingEmail">Phone</label>
