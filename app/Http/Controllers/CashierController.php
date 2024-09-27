@@ -74,29 +74,39 @@ class CashierController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
-
+        $filter = $request->input('filter');
+    
         $payments = Payment::with(['order.customer.user', 'order.product'])
-            ->where(function($query) use ($search) {
-                $query->whereHas('order.customer.user', function($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('order.product', function($q) use ($search) {
-                    $q->where('product_name', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('order', function($q) use ($search) {
-                    $q->where('id', 'like', '%' . $search . '%')
-                      ->orWhere('status', 'like', '%' . $search . '%');
-                })
-                ->orWhere('amount', 'like', '%' . $search . '%')
-                ->orWhere('amount_given', 'like', '%' . $search . '%')
-                ->orWhere('change', 'like', '%' . $search . '%')
-                ->orWhere('payment_date', 'like', '%' . $search . '%');
+            ->where(function($query) use ($search, $filter) {
+                if ($filter === 'membership') {
+                    $query->whereNotNull('order_id'); 
+                } elseif ($filter === 'complement') {
+                    $query->whereNotNull('order_complement_id'); 
+                }
+                
+                if ($search) {
+                    $query->whereHas('order.customer.user', function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('order.product', function($q) use ($search) {
+                        $q->where('product_name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('order', function($q) use ($search) {
+                        $q->where('id', 'like', '%' . $search . '%')
+                          ->orWhere('status', 'like', '%' . $search . '%');
+                    })
+                    ->orWhere('amount', 'like', '%' . $search . '%')
+                    ->orWhere('amount_given', 'like', '%' . $search . '%')
+                    ->orWhere('change', 'like', '%' . $search . '%')
+                    ->orWhere('payment_date', 'like', '%' . $search . '%');
+                }
             })
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
-
+    
         return view('cashier.payment', compact('payments'));
     }
+    
 
     public function detailpayment($id)
     {
@@ -562,13 +572,8 @@ class CashierController extends Controller
         $cartItem = Cart::findOrFail($id);
         $quantity = $request->input('quantity');
     
-        // Validate the quantity (e.g., ensure it's greater than 0)
-        if ($quantity < 1) {
-            return response()->json(['error' => 'Quantity must be at least 1.'], 400);
-        }
-    
         $cartItem->quantity = $quantity;
-        $cartItem->total = $quantity * $cartItem->complement->price; // Update total
+        $cartItem->total = $quantity * $cartItem->complement->price; 
     
         $cartItem->save();
     
@@ -586,9 +591,9 @@ class CashierController extends Controller
         $orderComplement = OrderComplement::create([
             'user_id' => $user->id,
             'total_amount' => $totalAmount,
-            'status' => 'unpaid', // Misalnya status default
+            'status' => 'unpaid', 
             'quantity' => $cartItems->sum('quantity'),
-            'qr_token' => $qrToken, // Method untuk membuat QR token
+            'qr_token' => $qrToken, 
         ]);
         foreach ($cartItems as $item) {
             $price = $item->complement->price;
@@ -597,7 +602,7 @@ class CashierController extends Controller
                 'order_complement_id' => $orderComplement->id,
                 'complement_id' => $item->complement->id,
                 'quantity' => $item->quantity,
-                'sub_total' => $subTotal, // Ambil dari field 'total' di cart
+                'sub_total' => $subTotal, 
             ]);
         }
         Cart::where('user_id', $user->id)->delete();
@@ -606,13 +611,50 @@ class CashierController extends Controller
 
 
     public function checkoutComplement($id){
-    // Ambil OrderComplement berdasarkan ID
     $orderComplement = OrderComplement::findOrFail($id);
     
-    // Ambil detail order berdasarkan order_complement_id
     $orderDetails = OrderDetail::where('order_complement_id', $id)->with('complement')->get();
 
     return view('cashier.checkoutcomplement', compact('orderComplement', 'orderDetails'));
+    }
+
+
+
+
+    public function paymentComplement(Request $request, OrderComplement $orderComplement)
+    {
+        if ($request->input('action') === 'cancel') {
+            $orderComplement->update(['status' => 'canceled']);
+            return redirect()->route('cashier.index')->with('success', 'Order canceled successfully.');
+        }
+
+        $request->validate([
+            'amount_given' => 'required|numeric|min:0',
+        ]);
+
+        $amountGiven = $request->input('amount_given');
+
+        if ($amountGiven < $orderComplement->total_amount) {
+            return redirect()->back()->with('error', 'The amount given is less than the total amount.');
+        }
+
+        $paymentQrToken = Str::random(10);
+        $change = $amountGiven - $orderComplement->total_amount;
+
+        Payment::create([
+            'order_complement_id' => $orderComplement->id,
+            'payment_date' => Carbon::now('Asia/Jakarta'),
+            'amount' => $orderComplement->total_amount,
+            'amount_given' => $amountGiven,
+            'change' => $change,
+            'qr_token' => $paymentQrToken,
+        ]);
+
+        $orderComplement->update(['status' => 'paid']);
+
+        
+
+        return redirect()->route('cashier.checkout', ['id' => $orderComplement->id])->with('success', 'Payment processed and membership created successfully!');
     }
 
     

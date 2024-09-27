@@ -49,28 +49,98 @@
                                     </div>
                                 </td>
                                 <td>{{ $dt->quantity }}</td> 
-                                <td>{{ number_format($dt->sub_total, 2) }}</td>
+                                <td>Rp {{ number_format($dt->sub_total) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
                             <td colspan="2" class="text-right"><strong>Total</strong></td>
-                            <td><strong>{{ number_format($orderDetails->sum('sub_total'), 2) }}</strong></td>
+                            <td><strong>Rp {{ number_format($orderDetails->sum('sub_total')) }}</strong></td>
+                            
                         </tr>
                     </tfoot>
                 </table>
             </div>
+            @if ($orderComplement->status === 'paid')
             <div class="card-footer d-flex justify-content-end gap-2">
-                <form action="" method="POST">
+                <a href="{{route('cashier.index')}}" name="action" value="process" class="btn btn-primary">Back</a>
+            </div>
+            @else
+            <div class="card-footer d-flex justify-content-end gap-2">
+                <form action="{{ route('payments.complement', $orderComplement->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-primary">Proceed to Payment</button>
-                </form>
-                <form action="" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-danger">Cancel</button>
+                    <div class="amount-input">
+                        <label for="amount_given">Amount Given:</label>
+                        <input type="number" name="amount_given" id="amount_given"
+                            min="0" step="0.01" oninput="calculateChange()"
+                            onkeydown="inputE(event)">
+                    </div>
+                    <div class="change-display" id="change-display">
+                        Change: <span id="change-amount">Rp 0</span>
+                    </div>
+                    <br>
+                    <button type="submit" name="action" value="cancel"  class="btn btn-danger">Cancel</button>
+                    <button type="submit" name="action" value="process" class="btn btn-primary">Proceed to Payment</button>
                 </form>
             </div>
+            @endif
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success',
+                text: '{{ session('success') }}',
+            });
+        @endif
+
+        @if ($errors->any())
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ $errors->first() }}',
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+            });
+        @endif
+    </script>
+
+    <script>
+        function calculateChange() {
+            const amountGiven = parseFloat(document.getElementById('amount_given').value) || 0;
+            const totalAmount = {{$orderComplement->total_amount}};
+            const change = amountGiven - totalAmount;
+
+            document.getElementById('change-amount').textContent = 'Rp ' + change.toLocaleString('id-ID');
+        }
+
+        function inputE(e) {
+            if (e.key === 'e' || e.key === 'E' || e.key === '-') {
+                e.preventDefault();
+            }
+        }
+
+        function appendNumber(number) {
+            const input = document.getElementById('amount_given');
+            if (number === '.' && input.value.includes('.')) return; // Prevent multiple dots
+            input.value = (input.value || '') + number;
+            input.focus();
+            calculateChange();
+        }
+
+        function deleteLastDigit() {
+            const input = document.getElementById('amount_given');
+            input.value = input.value.slice(0, -1);
+            calculateChange();
+        }
+    </script>
 @endsection
