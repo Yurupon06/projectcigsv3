@@ -139,21 +139,22 @@
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-content">
-                        <img src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
+                        <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
                         <h1 class="h3 mb-3 fw-normal">Sign In</h1>
                     </div>
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-floating mb-3">
                             <input name="phone" type="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" value="{{ old('phone') }}" required>
-                            <label for="floatingInput">Phone Number</label>
+                            <label for="floatingInput">phone address</label>
                             @error('phone')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-3 position-relative">
                             <input name="password" type="password" class="form-control {{ $errors->has('password') ? 'is-invalid' : '' }}" id="floatingPassword" placeholder="Password" required>
                             <label for="floatingPassword">Password</label>
+                            <i class="fa fa-eye-slash input-icon" id="togglePasswordIcon" onclick="togglePassword()"></i>
                             @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
