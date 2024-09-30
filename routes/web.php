@@ -44,10 +44,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [LandingController::class, 'order'])->name('yourorder.index');
             Route::post('/', [LandingController::class, 'orderStore'])->name('yourorder.update');
             Route::patch('/{id}', [LandingController::class, 'orderCancel'])->name('yourorder.cancel');
+            Route::patch('/complement/{id}', [LandingController::class, 'complementCancel'])->name('complement.cancel');
         });
 
         Route::get('/checking', [LandingController::class, 'beforeOrder'])->name('beforeorder.index');
         Route::get('/checkout/{id}', [LandingController::class, 'checkout'])->name('checkout');
+        Route::get('/checkout/complement/{id}', [LandingController::class, 'showCheckoutComplement'])->name('checkout.complement');
+        Route::post('/checkout/complement', [LandingController::class, 'checkoutComplement'])->name('checkout.complement.store');
         Route::get('/membership/{id}', [LandingController::class, 'membership'])->name('customer.membership');
         Route::get('/history', [LandingController::class, 'history'])->name('landing.history');
         

@@ -27,9 +27,6 @@
 
 
                     <div class="wrap-icon-header flex-w flex-r-m h-full">
-                        {{-- <a href="{{route('cart.index')}}" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="{{ $cartCount }}">
-							<i class="zmdi zmdi-shopping-cart"></i>
-						</a> --}}
                     @auth
                         @if(auth()->user()->role == 'cashier')
                             <a href="{{ route('cashier.profile') }}" class="flex-c-m trans-04 p-lr-25 link-black {{ request()->routeIs('landing.profile') ? 'active' : '' }}">
@@ -90,11 +87,6 @@
             @else
                 <a href="{{ route('login') }}" class="btn-auth-mobile link-black">Login</a>
             @endauth
-            <div class="wrap-icon-header flex-w flex-r-m m-r-15">
-				{{-- <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti" data-notify="{{ $cartCount }}">
-					<i class="zmdi zmdi-shopping-cart"></i>
-				</a> --}}
-			</div>
         </div>
 
         <!-- Menu Mobile -->

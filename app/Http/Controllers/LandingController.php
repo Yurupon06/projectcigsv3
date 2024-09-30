@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Models\cart;
+use App\Models\Order;
+use App\Models\Member;
 use App\Models\Product;
 use App\Models\Customer;
-use App\Models\Member;
-use App\Models\MemberCheckin;
-use App\Models\Order;
 use App\Models\complement;
-use App\Models\cart;
-use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Models\MemberCheckin;
+use App\Models\OrderComplement;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cookie;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
 
 class LandingController extends Controller
 {
@@ -166,20 +168,31 @@ class LandingController extends Controller
 
             $ordersQuery = Order::where('customer_id', $customer->id)
                                 ->orderBy('created_at', 'desc');
+            $orderComplementsQuery = OrderComplement::where('user_id', $user->id)
+                                ->orderBy('created_at', 'desc');
 
             if ($search) {
                 $ordersQuery->whereHas('product', function ($query) use ($search) {
                     $query->where('product_name', 'like', "%{$search}%");
+                });
+
+                $orderComplementsQuery->where(function ($query) use ($search) {
+                    $query->where('total_amount', 'like', "%{$search}%")
+                          ->orWhere('status', 'like', "%{$search}%");
                 });
             }
 
             if ($startDate && $endDate) {
                 $ordersQuery->whereDate('order_date', '>=', $startDate)
                             ->whereDate('order_date', '<=', $endDate);
+                $orderComplementsQuery->whereDate('created_at', '>=', $startDate)
+                            ->whereDate('created_at', '<=', $endDate);
             } elseif ($startDate) {
                 $ordersQuery->whereDate('order_date', '>=', $startDate);
+                $orderComplementsQuery->whereDate('created_at', '>=', $startDate);
             } elseif ($endDate) {
                 $ordersQuery->whereDate('order_date', '<=', $endDate);
+                $orderComplementsQuery->whereDate('created_at', '<=', $endDate);
             }
 
             if (!$request->has('type')) {
@@ -192,8 +205,9 @@ class LandingController extends Controller
             }
 
             $orders = $ordersQuery->paginate(5);
+            $orderComplements = $orderComplementsQuery->paginate(5);
 
-            return view('landing.order', compact('orders', 'customer', 'member', 'type', 'search', 'startDate', 'endDate', 'cartCount',));
+            return view('landing.order', compact('orders', 'orderComplements', 'customer', 'member', 'type', 'search', 'startDate', 'endDate', 'cartCount',));
         }
 
         abort(403);
@@ -244,6 +258,69 @@ class LandingController extends Controller
         }
 
         return view('landing.checkout', compact('order', 'member', 'cartCount'));
+    }
+
+    public function showCheckoutComplement($id, Request $request)
+    {
+        $orderComplement = OrderComplement::with('user')->find($id);
+        $user = Auth::user();
+        $customer = Customer::where('user_id', $user->id)->first();
+        $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+        $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
+
+        return view('landing.checkout-complement', compact('orderComplement', 'customer', 'member', 'cartItems'));
+    }
+
+    public function complementCancel($id)
+    {
+        $orderComplement = OrderComplement::findOrFail($id);
+        $orderComplement->update(['status' => 'canceled']);
+        return redirect()->route('yourorder.index', ['type' => 'complement'])->with('success', 'Successfully Cancel The Complement.');
+    }
+
+    public function checkoutComplement( Request $request) {
+        $userId = auth()->id();
+
+        DB::beginTransaction();
+
+        try {
+            $cartItems = cart::where('user_id', $userId)->with('complement')->get();
+
+            if ($cartItems->isEmpty()) {
+                return redirect()->back()->with('error', 'Your cart is empty.');
+            }
+
+            $totalAmount = 0;
+            $totalQuantity = 0;
+
+            foreach ($cartItems as $item) {
+                $newQuantity = $request->input('quantity-' . $item->id);
+                
+                $newQuantity = min($newQuantity, $item->complement->stok);
+
+                $item->quantity = $newQuantity;
+                $item->total = $newQuantity * $item->complement->price;
+                $item->save();
+
+                $totalAmount += $item->total;
+                $totalQuantity += $item->quantity;
+            }
+
+            $orderComplement = OrderComplement::create([
+                'user_id' => $userId,
+                'total_amount' => $totalAmount,
+                'status' => 'unpaid',
+                'quantity' => $totalQuantity,
+                'qr_token' => Str::random(10),
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('checkout.complement', ['id' => $orderComplement->id])->with('success', 'Order created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'An error occurred while processing your order. Please try again.');
+        }
     }
 
     public function beforeOrder(Request $request)
