@@ -82,6 +82,7 @@
                             </div>
                             <div>
                                 <div class="d-flex flex-column text-center">
+                                    <a href="{{ route('complement.detail', $dt->id) }}" style="color:rgb(0, 0, 0);">
                                     <span>
                                         {{ $dt->name }}
                                     </span>
