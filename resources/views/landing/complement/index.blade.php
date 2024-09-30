@@ -25,46 +25,6 @@
             max-height: 200px;
             object-fit: cover;
         }
-
-        .floating-cart {
-            position: fixed;
-            bottom: 100px;
-            right: 420px;
-            background-color: #fff;
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: background-color 0.3s ease;
-        }
-
-        .floating-cart:hover {
-            background-color: #FF5722;
-        }
-
-        .floating-cart i {
-            font-size: 20px;
-            color: #FF5722;
-        }
-        .floating-cart:hover i {
-            color: white;
-        }
-        @media screen and (max-width: 576px) {
-            .floating-cart {
-            display: flex;
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            background-color: #fff;
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: background-color 0.3s ease;
-            }
-        }
     </style>
 
     <body class="animsition">
@@ -117,12 +77,8 @@
                 @forelse($complement as $dt)
                     <div class="col-6 mb-4">
                         <div>
-                            <div class="block2-pic hov-img0">
+                            <div class="block2-pic hov-img0 mb-2">
                                 <img src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
-                                <a href="{{ route('complement.detail', $dt->id) }}"
-                                    class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
-                                    Quick View
-                                </a>
                             </div>
                             <div>
                                 <div class="d-flex flex-column text-center">
@@ -130,25 +86,21 @@
                                     <span>
                                         {{ $dt->name }}
                                     </span>
-                                    </a>
-                                    <span class="stext-105 cl3">
+                                    <span class="stext-105 cl3 mb-2">
                                         Rp. {{ number_format($dt->price) }}
                                     </span>
+                                    <a href="{{ route('complement.detail', $dt->id) }}"
+                                        class="rounded-pill btn btn-dark text-white text-uppercase">
+                                        Quick View
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <p class="text-center">No Complement found.</p>
+                    <p class="text-center">Complement currently not available.</p>
                 @endforelse
             </div>
-        </div>
-
-        <!-- Floating Cart Icon -->
-        <div class="floating-cart">
-            <a href="{{ route('cart.index') }}">
-                <i class="fa fa-shopping-cart"></i>
-            </a>
         </div>
 
         <!-- Back to top -->

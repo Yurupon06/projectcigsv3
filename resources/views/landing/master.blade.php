@@ -129,45 +129,29 @@
         .active {
             color: #FF5500;
         }
-        /* Floating Cart Icon */
-        .floating-cart {
-            position: fixed;
-            bottom: 100px;
-            right: 420px;
-            background-color: #fff;
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: background-color 0.3s ease;
-        }
 
-        .floating-cart:hover {
+        #floating-cart {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            bottom: 80px;
+            right: 15px;
             background-color: #FF5722;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
         }
 
-        .floating-cart i {
-            font-size: 20px;
-            color: #FF5722;
-        }
-        .floating-cart:hover i {
-            color: white;
-        }
-        @media screen and (max-width: 576px) {
-            .floating-cart {
-            display: flex;
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
+        #floating-cart:hover {
             background-color: #fff;
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: background-color 0.3s ease;
-            }
+        }
+
+        #floating-cart i {
+            color: #fff;
+        }
+
+        #floating-cart:hover i {
+            color: #FF5722;
         }
     </style>
 </head>
@@ -182,7 +166,7 @@
                         alt="logo">
                 </div>
                 @if(request()->is('checking*','checkout*', 'edit*', 'getin', 'history', 'complement*', 'cart'))
-                    <a href="{{ url()->previous() }}" class="text-dark fs-3">
+                    <a href="javascript:history.back()" class="text-dark fs-3">
                         <i class="bi bi-chevron-left"></i>
                     </a>
                 @endif
@@ -224,6 +208,11 @@
                     <p>Profile</p>
                 </a>
             </div>
+        </div>
+        <div id="floating-cart" class="{{ request()->is('cart', 'checking*', 'getin', 'history', 'checkout*', 'complement*', 'edit*') ? 'd-none' : 'd-block' }}">
+            <a href="{{ route('cart.index') }}"> 
+                <i class="fa fa-shopping-cart fs-4 mt-3"></i>
+            </a>
         </div>
     </div>
     @endauth
@@ -338,7 +327,7 @@
         });
     </script>
     <!--===============================================================================================-->
-    <script src="../assets/js/main.js"></script>
+    <script src="../../assets/js/main.js"></script>
 </body>
 
 </html>
