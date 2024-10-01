@@ -25,6 +25,46 @@
             max-height: 200px;
             object-fit: cover;
         }
+
+        .floating-cart {
+            position: fixed;
+            bottom: 100px;
+            right: 420px;
+            background-color: #fff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        .floating-cart:hover {
+            background-color: #FF5722;
+        }
+
+        .floating-cart i {
+            font-size: 20px;
+            color: #FF5722;
+        }
+        .floating-cart:hover i {
+            color: white;
+        }
+        @media screen and (max-width: 576px) {
+            .floating-cart {
+            display: flex;
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background-color: #fff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+            }
+        }
     </style>
 
     <body class="animsition">
@@ -77,26 +117,28 @@
                 @forelse($complement as $dt)
                     <div class="col-6 mb-4">
                         <div>
-                            <a href="{{ route('complement.detail', $dt->id) }}">
-                                <div class="block2-pic hov-img0">
+                            <div class="block2-pic hov-img0">
+
+                                <a href="{{ route('complement.detail', $dt->id) }}">
                                     <img src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
-                                </div>
-                            </a>
+                                </a>
+                            </div>
                             <div>
                                 <div class="d-flex flex-column text-center">
                                     <a href="{{ route('complement.detail', $dt->id) }}" style="color:rgb(0, 0, 0);">
                                     <span>
                                         {{ $dt->name }}
                                     </span>
-                                    <span class="stext-105 cl3 mb-2">
+                                    </a>
+                                    <span class="stext-105 cl3">
                                         Rp. {{ number_format($dt->price) }}
-                                    </span
+                                    </span>
                                 </div>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <p class="text-center">Complement currently not available.</p>
+                    <p class="text-center">No Complement found.</p>
                 @endforelse
             </div>
         </div>
