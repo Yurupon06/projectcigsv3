@@ -77,9 +77,11 @@
                 @forelse($complement as $dt)
                     <div class="col-6 mb-4">
                         <div>
-                            <div class="block2-pic hov-img0 mb-2">
-                                <img src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
-                            </div>
+                            <a href="{{ route('complement.detail', $dt->id) }}">
+                                <div class="block2-pic hov-img0">
+                                    <img src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
+                                </div>
+                            </a>
                             <div>
                                 <div class="d-flex flex-column text-center">
                                     <a href="{{ route('complement.detail', $dt->id) }}" style="color:rgb(0, 0, 0);">
@@ -88,11 +90,7 @@
                                     </span>
                                     <span class="stext-105 cl3 mb-2">
                                         Rp. {{ number_format($dt->price) }}
-                                    </span>
-                                    <a href="{{ route('complement.detail', $dt->id) }}"
-                                        class="rounded-pill btn btn-dark text-white text-uppercase">
-                                        Quick View
-                                    </a>
+                                    </span
                                 </div>
                             </div>
                         </div>

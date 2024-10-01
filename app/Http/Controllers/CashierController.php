@@ -592,7 +592,7 @@ class CashierController extends Controller
             'user_id' => $user->id,
             'total_amount' => $totalAmount,
             'status' => 'unpaid', 
-            'quantity' => $cartItems->sum('quantity'),
+            'quantity' => $cartItems->count(),
             'qr_token' => $qrToken, 
         ]);
         foreach ($cartItems as $item) {
@@ -654,9 +654,20 @@ class CashierController extends Controller
 
         
 
-        return redirect()->route('cashier.checkout', ['id' => $orderComplement->id])->with('success', 'Payment processed and membership created successfully!');
+        return redirect()->route('struk_complement', ['id' => $orderComplement->id])->with('success', 'Payment processed and membership created successfully!');
     }
 
+
+    public function strukComplement($id){
+        $orderComplement = OrderComplement::with('user')->findOrFail($id);
+        $payment = Payment::where('order_complement_id', $id)->first();
+        $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->with('complement')->get();
+        $payment->payment_date = Carbon::parse($payment->payment_date);
+        $appSetting = ApplicationSetting::first();
+        $user = Auth::user();
+
+        return view('cashier.struk_complement', compact('payment', 'appSetting', 'user', 'orderDetails', 'orderComplement'));
+    }
     
     
 
