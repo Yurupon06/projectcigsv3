@@ -120,6 +120,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/payments/{order}', [CashierController::class, 'store'])->name('payments.store');
         Route::post('/payments/complement/{orderComplement}', [CashierController::class, 'paymentComplement'])->name('payments.complement');
         Route::get('/struk-gym/{id}', [CashierController::class, 'showStruk'])->name('struk_gym');
+        Route::get('/struk-complement/{id}', [CashierController::class, 'strukComplement'])->name('struk_complement');
         Route::post('/customer/store', [CashierController::class, 'storeCustomer'])->name('customer.store');
         Route::resource('members', MemberController::class);
         Route::get('/member-details/{qr_token}', [CashierController::class, 'getMemberDetails']);

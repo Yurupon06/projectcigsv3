@@ -117,13 +117,11 @@
                 @forelse($complement as $dt)
                     <div class="col-6 mb-4">
                         <div>
-                            <div class="block2-pic hov-img0">
-                                <img src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
-                                <a href="{{ route('complement.detail', $dt->id) }}"
-                                    class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
-                                    Quick View
-                                </a>
-                            </div>
+                            <a href="{{ route('complement.detail', $dt->id) }}">
+                                <div class="block2-pic hov-img0">
+                                    <img src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
+                                </div>
+                            </a>
                             <div>
                                 <div class="d-flex flex-column text-center">
                                     <a href="{{ route('complement.detail', $dt->id) }}" style="color:rgb(0, 0, 0);">

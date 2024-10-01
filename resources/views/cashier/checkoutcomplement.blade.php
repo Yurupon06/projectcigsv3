@@ -9,7 +9,7 @@
     @include('cashier.main')
     <div class="container mt-4">
         <h1 class="mb-4">Order Details - Order # {{ $orderComplement->id }}</h1>
-    
+
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -25,7 +25,7 @@
                 </button>
             </div>
         @endif
-    
+
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">Order # {{ $orderComplement->id }}</h5>
@@ -35,8 +35,8 @@
                     <thead>
                         <tr>
                             <th>Complement</th>
-                            <th>Quantity</th>
-                            <th>Sub Total</th>
+                            <th class="text-center">Quantity</th>
+                            <th class="text-right">Sub Total</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -48,23 +48,23 @@
                                         {{ $dt->complement->name }}
                                     </div>
                                 </td>
-                                <td>{{ $dt->quantity }}</td> 
-                                <td>Rp {{ number_format($dt->sub_total) }}</td>
+                                <td class="text-center">{{ $dt->quantity }}</td> 
+                                <td class="text-right">Rp {{ number_format($dt->sub_total) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
                             <td colspan="2" class="text-right"><strong>Total</strong></td>
-                            <td><strong>Rp {{ number_format($orderDetails->sum('sub_total')) }}</strong></td>
-                            
+                            <td class="text-right"><strong>Rp {{ number_format($orderDetails->sum('sub_total')) }}</strong></td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
+
             @if ($orderComplement->status === 'paid')
             <div class="card-footer d-flex justify-content-end gap-2">
-                <a href="{{route('cashier.index')}}" name="action" value="process" class="btn btn-primary">Back</a>
+                <a href="{{ route('cashier.payment', ['filter' => 'complement', 'per_page' => request('per_page')]) }}" name="action" value="process" class="btn btn-primary">Back</a>
             </div>
             @else
             <div class="card-footer d-flex justify-content-end gap-2">
