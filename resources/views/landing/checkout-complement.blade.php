@@ -147,8 +147,8 @@
             <div class="col-12 mb-4">
                 <div class="card shadow total-summary">
                     <h5 class="card-title">Order Details</h5>
-                    @foreach ($cartItems as $item)
-                        <div class="subtotal d-flex justify-content-between" data-id="{{ $item->id }}">
+                    @foreach ($complementItems as $item)
+                        <div class="subtotal d-flex justify-content-between">
                             <div class="text-left">
                                 <span>{{ $item->complement->name }} (<span
                                         class="total-quantity">{{ $item->quantity }}</span> x Rp.
@@ -156,7 +156,7 @@
                             </div>
                             <div class="text-right">
                                 <span>Rp. <span
-                                        class="total-price">{{ number_format($item->total, 0, '.', '.') }}</span></span>
+                                        class="total-price">{{ number_format($item->sub_total, 0, '.', '.') }}</span></span>
                             </div>
                         </div>
                     @endforeach
@@ -167,7 +167,7 @@
                         </div>
                         <div>
                             <strong id="subtotal">Rp. <span
-                                    id="subtotal-price">{{ number_format($cartItems->sum('total'), 0, '.', '.') }}</span></strong>
+                                    id="subtotal-price">{{ number_format($orderComplement->total_amount, 0, '.', '.') }}</span></strong>
                         </div>
                     </div>
                 </div>
