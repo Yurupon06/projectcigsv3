@@ -83,6 +83,7 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('application-setting', ApplicationSettingController::class);
         Route::resource('landing-settings', LandingSettingController::class);
+
     });
 
     // Cashier
