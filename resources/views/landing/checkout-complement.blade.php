@@ -134,7 +134,7 @@
 
             <!-- Profile Section -->
             <div class="col-12 mb-4">
-                <div class="card shadow">
+                <div class="card ">
                     <h5 class="card-title">Profile</h5>
                     <div class="card-text">
                         <p>{{ $orderComplement->user->name }} ( {{ $customer->phone }} )</p>
@@ -145,7 +145,7 @@
 
             <!-- Order Details Section -->
             <div class="col-12 mb-4">
-                <div class="card shadow total-summary">
+                <div class="card  total-summary">
                     <h5 class="card-title">Order Details</h5>
                     @foreach ($cartItems as $item)
                         <div class="subtotal d-flex justify-content-between" data-id="{{ $item->id }}">

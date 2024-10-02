@@ -36,11 +36,13 @@
 
         .search-button {
             border-radius: 0 20px 20px 0;
+            width: 50px;
             background-color: #ff7e00;
         }
 
         .fa-search {
             font-size: 18px;
+            color: #fff;
         }
 
         .container {
@@ -59,7 +61,7 @@
         .btn-outline-orange:hover {
             background-color: #ff7e00;
             color: #fff;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .btn-outline-orange.active {
@@ -97,11 +99,11 @@
                             value="{{ request('search') }}" style="border-radius: 20px 0 0 20px;">
                     </div>
                     <div class="col-3 col-sm-3 p-0">
-                        <input type="date" name="start_date" id="start_date" class="form-control"
+                        <input type="date" name="start_date" id="start_date" class="form-control" style="border-radius: 0;"
                             value="{{ request('start_date', $startDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}">
                     </div>
                     <div class="col-3 col-sm-3 p-0">
-                        <input type="date" name="end_date" id="end_date" class="form-control"
+                        <input type="date" name="end_date" id="end_date" class="form-control" style="border-radius: 0;"
                             value="{{ request('end_date', $endDate) }}" max="{{ date('Y-m-d', strtotime('now')) }}">
                     </div>
                     <div class="col-2 col-sm-2 p-0 search-button d-flex justify-content-center">
@@ -114,7 +116,7 @@
         <div class="row">
             @if (request('type') === 'membership')
                 <div class="col-12">
-                    <div class="row">
+                    <div class="row ms-2">
                         <div class="col-lg-12 mb-4 list">
                             @forelse ($orders as $order)
                                 <a href="{{ route('checkout', $order->id) }}" class="card mb-4 text-decoration-none text-dark">
@@ -150,7 +152,7 @@
                 </div>
             @elseif (request('type') === 'complement')
                 <div class="col-12">
-                    <div class="row">
+                    <div class="row ms-2">
                         <div class="col-lg-12 mb-4 list">
                             @forelse ($orderComplements as $orderComplement)
                                 <a href="{{ route('checkout.complement', $orderComplement->id) }}"
@@ -189,10 +191,4 @@
             @endif
         </div>
     </div>
-        <!-- Floating Cart Icon -->
-        <div class="floating-cart">
-            <a href="{{ route('cart.index') }}">
-                <i class="fa fa-shopping-basket"></i>
-            </a>
-        </div>   
 @endsection

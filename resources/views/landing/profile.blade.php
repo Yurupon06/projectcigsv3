@@ -175,13 +175,7 @@
             </a>
             
         </div>
-    </div>
-        <!-- Floating Cart Icon -->
-        <div class="floating-cart">
-            <a href="{{ route('cart.index') }}">
-                <i class="fa fa-shopping-basket"></i>
-            </a>
-        </div>    
+    </div> 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>

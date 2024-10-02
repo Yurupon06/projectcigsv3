@@ -23,6 +23,10 @@
             top: 5px;
             right: 10px;
         }
+
+        .proced:hover {
+            background-color: #ffa500;
+        }
     </style>
 
     <div class="container">
@@ -44,22 +48,23 @@
                                     <span>Rp. <span
                                             class="item-price">{{ number_format($dt->complement->price, 0, '.', '.') }}</span></span>
                                 </div>
-                                <div class="col-4 my-auto text-center">
-                                    <span>Rp. <span
-                                            class="item-total">{{ number_format($dt->total, 0, '.', '.') }}</span></span>
+                                <div class="col-4 my-auto text-right ">
+                                    <!-- <span>Rp. <span
+                                            class="item-total">{{ number_format($dt->total, 0, '.', '.') }}</span></span> -->
                                     <div class="">
-                                        <div class="row gap-0">
-                                            <div class="col-4 minus border border-secondary text-center p-0">
+                                        <div class="row">
+                                            <div class="col-2 minus border border-secondary text-center p-0" style="width: 30px;">
                                                 <i class="fa fa-minus"></i>
                                             </div>
                                             <input class="col-4 text-center item-quantity" type="number"
                                                 name="quantity-{{ $dt->id }}" value="{{ $dt->quantity }}" min="1"
                                                 max="{{ $dt->complement->stok }}" readonly>
-                                            <div class="col-4 plus border border-secondary text-center p-0">
+                                            <div class="col-2 plus border border-secondary text-center p-0" style="width: 30px;">
                                                 <i class="fa fa-plus"></i>
                                             </div>
                                         </div>
                                     </div>
+                                    
                                 </div>
                             </div>
                             <div class="delete-cart position-absolute">
