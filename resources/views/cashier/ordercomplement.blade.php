@@ -116,6 +116,10 @@
             border-radius: 0.375rem; /* Same border radius as other elements */
             margin-right: 10px; /* Space between image and text */
         }
+        .product-list-container {
+            max-height: 400px; /* Adjust as necessary */
+            overflow-y: auto;
+        }
     </style>
 
     <div class="container-fluid mt-5 py-4">
@@ -131,23 +135,26 @@
                 </div>
             @endif
             <div class="col-md-8">
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{{route('cashier.order')}}" type="button" class="btn btn-secondary">MEMBERSHIP</a>
-                    <a href="{{route('cashier.complement')}}" type="button" class="btn btn-primary">COMPLEMENT</a>
-                </div>
+                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
+                    <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
+                </a>
+                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-sm align-items-center btn-complement" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
+                    <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
+                </a>
                 <!-- Product List -->
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body product-list-container">
                         <div class="row">
-                            @forelse($complement as $product)
+                            @forelse($complement as $dt)
                                 <div class="col-md-2 mb-4">
                                     <div class="product-card">
-                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
-                                        <div class="product-name">{{ $product->name }}</div>
-                                        <div class="product-price">{{ number_format($product->price, 0, ',', '.') }} IDR</div>
-                                        <form action="{{ route('cart.added', $product->id) }}" method="POST" class="add-to-cart-form">
+                                        <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
+                                        <div class="product-name">{{ $dt->name }}</div>
+                                        <span>stok : {{$dt->stok}}</span>
+                                        <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
+                                        <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
                                             @csrf
-                                            <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                                            <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Order</button>
                                         </form>
                                     </div>
                                 </div>
