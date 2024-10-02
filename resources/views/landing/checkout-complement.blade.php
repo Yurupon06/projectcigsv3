@@ -156,18 +156,6 @@
 
                     <table>
                         @foreach ($complementItems as $item)
-                            {{-- <div class="subtotal d-flex justify-content-between">
-                            <div class="text-left">
-                                <span><img src="{{ asset('storage/' . $item->complement->image) }}" alt="Complement Image" class="img-complement"></span>
-                                <span>{{ $item->complement->name }} (<span
-                                        class="total-quantity">{{ $item->quantity }}</span> x Rp.
-                                    {{ number_format($item->complement->price, 0, '.', '.') }})</span>
-                            </div>
-                            <div class="text-right">
-                                <span>Rp. <span
-                                        class="total-price">{{ number_format($item->sub_total, 0, '.', '.') }}</span></span>
-                            </div>
-                        </div> --}}
                             <tr>
                                 <td class="text-center">
                                     <img src="{{ asset('storage/' . $item->complement->image) }}" alt="Complement Image"
