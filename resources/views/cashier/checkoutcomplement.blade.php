@@ -31,36 +31,42 @@
                 <h5 class="mb-0">Order # {{ $orderComplement->id }}</h5>
             </div>
             <div class="card-body">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Complement</th>
-                            <th class="text-center">Quantity</th>
-                            <th class="text-right">Sub Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($orderDetails as $dt)
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-hover">
+                        <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
                             <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <img src="{{ asset('storage/' . $dt->complement->image) }}" alt="{{ $dt->complement->name }}" class="img-thumbnail" style="width: 50px; height: 50px; margin-right: 10px;">
-                                        {{ $dt->complement->name }}
-                                    </div>
-                                </td>
-                                <td class="text-center">{{ $dt->quantity }}</td> 
-                                <td class="text-right">Rp {{ number_format($dt->sub_total) }}</td>
+                                <th class="text-left">Complement</th>
+                                <th class="text-center">Quantity</th>
+                                <th class="text-center">Price</th>
+                                <th class="text-end">Sub Total</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="2" class="text-right"><strong>Total</strong></td>
-                            <td class="text-right"><strong>Rp {{ number_format($orderDetails->sum('sub_total')) }}</strong></td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($orderDetails as $dt)
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="{{ asset('storage/' . $dt->complement->image) }}" alt="{{ $dt->complement->name }}" class="img-thumbnail" style="width: 50px; height: 50px; margin-right: 10px;">
+                                            {{ $dt->complement->name }}
+                                        </div>
+                                    </td>
+                                    <td class="text-center">{{ $dt->quantity }}</td> 
+                                    <td class="text-center">{{ number_format($dt->complement->price) }}</td> 
+                                    <td class="text-end">{{ number_format($dt->sub_total) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot style="position: sticky; bottom: 0; background-color: white;">
+                            <tr>
+                                <td colspan="3" class="text-right"><strong>Total</strong></td>
+                                <td class="text-end"><strong>Rp {{ number_format($orderDetails->sum('sub_total')) }}</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
             </div>
+            
+            
 
             @if ($orderComplement->status === 'paid')
             <div class="card-footer d-flex justify-content-end gap-2">
