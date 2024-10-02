@@ -47,7 +47,7 @@
 <div class="container">
     <div class="col">
         @forelse ($memberckin as $dt)
-            <div class="card col-12">
+            <div class="card col-12 mt-2">
                 <div class="card-body">
                     <img src="{{ asset('storage/' . $dt->image) }}" class="card-img" alt="Member Image">
                     <p class="time-text">{{ $dt->created_at->setTimezone('Asia/Jakarta')->format('d/m/Y, H:i') }}</p>

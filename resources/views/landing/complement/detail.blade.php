@@ -2,6 +2,7 @@
 @section('title', isset($setting) ? $setting->app_name . ' - Detail Complement' : 'Detail Complement')
 @section('main')
 
+
     <body class="animsition">
 
         <style>
