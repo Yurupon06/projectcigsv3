@@ -11,6 +11,8 @@ use App\Models\ApplicationSetting;
 use App\Models\Payment;
 use App\Models\Complement;
 use App\Models\Cart;
+use App\Models\OrderComplement;
+use App\Models\OrderDetail;
 use App\Models\Product_categorie;
 use App\Models\MemberCheckin;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class CashierController extends Controller
 {
@@ -71,29 +74,39 @@ class CashierController extends Controller
     {
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
-
+        $filter = $request->input('filter');
+    
         $payments = Payment::with(['order.customer.user', 'order.product'])
-            ->where(function($query) use ($search) {
-                $query->whereHas('order.customer.user', function($q) use ($search) {
-                    $q->where('name', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('order.product', function($q) use ($search) {
-                    $q->where('product_name', 'like', '%' . $search . '%');
-                })
-                ->orWhereHas('order', function($q) use ($search) {
-                    $q->where('id', 'like', '%' . $search . '%')
-                      ->orWhere('status', 'like', '%' . $search . '%');
-                })
-                ->orWhere('amount', 'like', '%' . $search . '%')
-                ->orWhere('amount_given', 'like', '%' . $search . '%')
-                ->orWhere('change', 'like', '%' . $search . '%')
-                ->orWhere('payment_date', 'like', '%' . $search . '%');
+            ->where(function($query) use ($search, $filter) {
+                if ($filter === 'membership') {
+                    $query->whereNotNull('order_id'); 
+                } elseif ($filter === 'complement') {
+                    $query->whereNotNull('order_complement_id'); 
+                }
+                
+                if ($search) {
+                    $query->whereHas('order.customer.user', function($q) use ($search) {
+                        $q->where('name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('order.product', function($q) use ($search) {
+                        $q->where('product_name', 'like', '%' . $search . '%');
+                    })
+                    ->orWhereHas('order', function($q) use ($search) {
+                        $q->where('id', 'like', '%' . $search . '%')
+                          ->orWhere('status', 'like', '%' . $search . '%');
+                    })
+                    ->orWhere('amount', 'like', '%' . $search . '%')
+                    ->orWhere('amount_given', 'like', '%' . $search . '%')
+                    ->orWhere('change', 'like', '%' . $search . '%')
+                    ->orWhere('payment_date', 'like', '%' . $search . '%');
+                }
             })
             ->orderBy('created_at', 'desc')
             ->paginate($perPage);
-
+    
         return view('cashier.payment', compact('payments'));
     }
+    
 
     public function detailpayment($id)
     {
@@ -542,7 +555,7 @@ class CashierController extends Controller
             ]);
         }
     
-        return redirect()->route('cashier.complement')->with('success', 'Item added to cart successfully!');
+        return redirect()->route('cashier.complement');
     }
     public function deleteCart($id)
     {
@@ -550,6 +563,115 @@ class CashierController extends Controller
 
         $cartItem->delete();
 
-        return redirect()->route('cashier.complement')->with('success', 'Item removed from cart successfully!');
+        return redirect()->route('cashier.complement');
     }
+    
+
+    public function updateQuantity(Request $request, $id)
+    {
+        $cartItem = Cart::findOrFail($id);
+        $quantity = $request->input('quantity');
+    
+        $cartItem->quantity = $quantity;
+        $cartItem->total = $quantity * $cartItem->complement->price; 
+    
+        $cartItem->save();
+    
+        return response()->json(['success' => 'Quantity updated successfully!', 'total' => $cartItem->total]);
+    }
+
+    public function checkoutProccess(){
+        $user = Auth::user();
+        $cartItems = Cart::where('user_id', $user->id)->with('complement')->get();
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
+        }
+        $totalAmount = $cartItems->sum('total');
+        $qrToken = Str::random(10);
+        $orderComplement = OrderComplement::create([
+            'user_id' => $user->id,
+            'total_amount' => $totalAmount,
+            'status' => 'unpaid', 
+            'quantity' => $cartItems->count(),
+            'qr_token' => $qrToken, 
+        ]);
+        foreach ($cartItems as $item) {
+            $price = $item->complement->price;
+            $subTotal = $price * $item->quantity;
+            OrderDetail::create([
+                'order_complement_id' => $orderComplement->id,
+                'complement_id' => $item->complement->id,
+                'quantity' => $item->quantity,
+                'sub_total' => $subTotal, 
+            ]);
+        }
+        Cart::where('user_id', $user->id)->delete();
+        return redirect()->route('cashier.checkout', ['id' => $orderComplement->id]);
+    }
+
+
+    public function checkoutComplement($id){
+    $orderComplement = OrderComplement::findOrFail($id);
+    
+    $orderDetails = OrderDetail::where('order_complement_id', $id)->with('complement')->get();
+
+    return view('cashier.checkoutcomplement', compact('orderComplement', 'orderDetails'));
+    }
+
+
+
+
+    public function paymentComplement(Request $request, OrderComplement $orderComplement)
+    {
+        if ($request->input('action') === 'cancel') {
+            $orderComplement->update(['status' => 'canceled']);
+            return redirect()->route('cashier.index')->with('success', 'Order canceled successfully.');
+        }
+
+        $request->validate([
+            'amount_given' => 'required|numeric|min:0',
+        ]);
+
+        $amountGiven = $request->input('amount_given');
+
+        if ($amountGiven < $orderComplement->total_amount) {
+            return redirect()->back()->with('error', 'The amount given is less than the total amount.');
+        }
+
+        $paymentQrToken = Str::random(10);
+        $change = $amountGiven - $orderComplement->total_amount;
+
+        Payment::create([
+            'order_complement_id' => $orderComplement->id,
+            'payment_date' => Carbon::now('Asia/Jakarta'),
+            'amount' => $orderComplement->total_amount,
+            'amount_given' => $amountGiven,
+            'change' => $change,
+            'qr_token' => $paymentQrToken,
+        ]);
+
+        $orderComplement->update(['status' => 'paid']);
+
+        
+
+        return redirect()->route('struk_complement', ['id' => $orderComplement->id])->with('success', 'Payment processed and membership created successfully!');
+    }
+
+
+    public function strukComplement($id){
+        $orderComplement = OrderComplement::with('user')->findOrFail($id);
+        $payment = Payment::where('order_complement_id', $id)->first();
+        $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->with('complement')->get();
+        $payment->payment_date = Carbon::parse($payment->payment_date);
+        $appSetting = ApplicationSetting::first();
+        $user = Auth::user();
+
+        return view('cashier.struk_complement', compact('payment', 'appSetting', 'user', 'orderDetails', 'orderComplement'));
+    }
+    
+    
+
+    
+    
+
 }

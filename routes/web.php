@@ -45,10 +45,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [LandingController::class, 'order'])->name('yourorder.index');
             Route::post('/', [LandingController::class, 'orderStore'])->name('yourorder.update');
             Route::patch('/{id}', [LandingController::class, 'orderCancel'])->name('yourorder.cancel');
+            Route::patch('/complement/{id}', [LandingController::class, 'complementCancel'])->name('complement.cancel');
         });
 
         Route::get('/checking', [LandingController::class, 'beforeOrder'])->name('beforeorder.index');
         Route::get('/checkout/{id}', [LandingController::class, 'checkout'])->name('checkout');
+        Route::get('/checkout/complement/{id}', [LandingController::class, 'showCheckoutComplement'])->name('checkout.complement');
+        Route::post('/checkout/complement', [LandingController::class, 'checkoutComplement'])->name('checkout.complement.store');
         Route::get('/membership/{id}', [LandingController::class, 'membership'])->name('customer.membership');
         Route::get('/history', [LandingController::class, 'history'])->name('landing.history');
         
@@ -111,10 +114,19 @@ Route::middleware('auth')->group(function () {
             Route::get('/complement', [CashierController::class, 'orderComplement'])->name('cashier.complement');
             Route::post('/cart/add/{complementId}', [CashierController::class, 'addToCart'])->name('cart.added');
             Route::delete('/cart/remove/{id}', [CashierController::class, 'deleteCart'])->name('cart.deleted');
+            Route::post('/cart/update/{id}', [CashierController::class, 'updateQuantity'])->name('cart.update');
+            Route::post('/cart/checkout', [CashierController::class, 'checkoutProccess'])->name('cart.checkout');
+            Route::get('/complement/{id}', [CashierController::class, 'checkoutComplement'])->name('cashier.checkout');
+
+
+
+
         });
 
         Route::post('/payments/{order}', [CashierController::class, 'store'])->name('payments.store');
+        Route::post('/payments/complement/{orderComplement}', [CashierController::class, 'paymentComplement'])->name('payments.complement');
         Route::get('/struk-gym/{id}', [CashierController::class, 'showStruk'])->name('struk_gym');
+        Route::get('/struk-complement/{id}', [CashierController::class, 'strukComplement'])->name('struk_complement');
         Route::post('/customer/store', [CashierController::class, 'storeCustomer'])->name('customer.store');
         Route::resource('members', MemberController::class);
         Route::get('/member-details/{qr_token}', [CashierController::class, 'getMemberDetails']);

@@ -245,10 +245,9 @@
             max-width: 800px;
             margin: 0 auto;
         }
-
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @if(session('warning'))
+    @if (session('warning'))
         <script>
             Swal.fire({
                 icon: 'warning',
@@ -263,92 +262,101 @@
     <div class="animsition mb-5">
         <!-- Slider -->
         @if ($member)
-        <div class="member-card">
-            <div class="overlap-group">
-                <div class="d-flex flex-row justify-content-between">
-                    <div class="text-wrapper" style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
-                        @switch($member->status)
-                                  @case('active')
-                                      Active
-                                  @break
-                                  @case('expired')
-                                      Expired
-                                  @break
-                                  @case('inactive')
-                                      You Got Ban !
-                                  @break
-                                  @default
-                                      Lainnya
-                              @endswitch
-                    </div>
-                    <a href="{{route('landing.history')}}" style="color: white"  >
-                        <div> 
-                            <img class="logo-gym" src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Gym Logo" />
-                            <i class="fa-solid fa-chevron-right "></i>
-                        </div> 
-                    </a>
-                    
-                
-                </div>
-                
-                <div class="text-wrapper-2">
-                    NAME : 
-                    <span title="{{ $member->customer->user->name }}">
-                        {{ $member->customer->user->name }}
-                    </span>
-                </div>
-            
-                <div class="text-wrapper-3">MEMBER ID : GYM.{{ $member->id }}</div>
-            
-                @if ($member->status !== 'inactive')
-                    <div class="text-wrapper-4">
-                        EXPIRED : <span style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
-                        {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d/M/Y') }}
-                        </span>
-                    </div>
+            <div class="member-card">
+                <div class="overlap-group">
                     <div class="d-flex flex-row justify-content-between">
-                    <div class="text-wrapper-5 ">
-                        Visit Left : <span style="color: {{ $member->status === 'active' ? 'white' : ($member->status === 'expired' ? 'red' : 'green') }}">
-                            {{ $member->visit }}
-                            @if ($member->visit == 0)
-                                <span>visit habis</span>
-                            @endif
+                        <div class="text-wrapper"
+                            style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
+                            @switch($member->status)
+                                @case('active')
+                                    Active
+                                @break
+
+                                @case('expired')
+                                    Expired
+                                @break
+
+                                @case('inactive')
+                                    You Got Ban !
+                                @break
+
+                                @default
+                                    Lainnya
+                            @endswitch
+                        </div>
+                        <a href="{{ route('landing.history') }}" style="color: white">
+                            <div>
+                                <img class="logo-gym"
+                                    src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
+                                    alt="Gym Logo" />
+                                <i class="fa-solid fa-chevron-right "></i>
+                            </div>
+                        </a>
+
+
+                    </div>
+
+                    <div class="text-wrapper-2">
+                        NAME :
+                        <span title="{{ $member->customer->user->name }}">
+                            {{ $member->customer->user->name }}
                         </span>
                     </div>
-                    @if ($member->status === 'active')
-                    <a href="{{route('getin.index')}}" type="button" class="overlap-btn" >
-                        Get In <i class="fa-solid fa-dumbbell"></i>
-                    </a>
-                    
-                    @else
+
+                    <div class="text-wrapper-3">MEMBER ID : GYM.{{ $member->id }}</div>
+
+                    @if ($member->status !== 'inactive')
+                        <div class="text-wrapper-4">
+                            EXPIRED : <span
+                                style="color: {{ $member->status === 'active' ? 'green' : ($member->status === 'expired' ? 'red' : 'white') }}">
+                                {{ \Carbon\Carbon::parse($member->end_date)->translatedFormat('d/M/Y') }}
+                            </span>
+                        </div>
+                        <div class="d-flex flex-row justify-content-between">
+                            <div class="text-wrapper-5 ">
+                                Visit Left : <span
+                                    style="color: {{ $member->status === 'active' ? 'white' : ($member->status === 'expired' ? 'red' : 'green') }}">
+                                    {{ $member->visit }}
+                                    @if ($member->visit == 0)
+                                        <span>visit habis</span>
+                                    @endif
+                                </span>
+                            </div>
+                            @if ($member->status === 'active')
+                                <a href="{{ route('getin.index') }}" type="button" class="overlap-btn">
+                                    Get In <i class="fa-solid fa-dumbbell"></i>
+                                </a>
+                            @else
+                            @endif
+                        </div>
+
                     @endif
-                    </div>
-                    
-                @endif
+                </div>
             </div>
-        </div>
         @else
-        <section class="section-slide">
-            <div class="wrap-slick1 rs1-slick1">
-                <div class="slick1">
-                    <div class="item-slick1" style="background-image: url(../../assets/images/banner/banner.png);">
-                        <div class="text-overlay">
-                            <h1>Transform Your Body, Elevate Your Life</h1>
-                            <p>Your Journey to a Stronger You Starts Here</p>
+            <section class="section-slide">
+                <div class="wrap-slick1 rs1-slick1">
+                    <div class="slick1">
+                        <div class="item-slick1" style="background-image: url(../../assets/images/banner/banner.png);">
+                            <div class="text-overlay">
+                                <h1>Transform Your Body, Elevate Your Life</h1>
+                                <p>Your Journey to a Stronger You Starts Here</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
         @endif
 
         <section class="about-us">
             <h2>About Us</h2>
-            <p>Welcome to our gym! We offer top-notch facilities and expert trainers to help you achieve your fitness goals. Whether you’re interested in a membership, a single visit, or fitness products, we have something for everyone. Join us and take the first step towards a healthier you!</p>
+            <p>Welcome to our gym! We offer top-notch facilities and expert trainers to help you achieve your fitness goals.
+                Whether you’re interested in a membership, a single visit, or fitness products, we have something for
+                everyone. Join us and take the first step towards a healthier you!</p>
         </section>
 
         <section class="about-us">
-            <h2>Membership</h2>    
+            <h2>Membership</h2>
         </section>
         <!-- Product -->
         <div id="product-section" class="container mt-5">
@@ -362,9 +370,7 @@
                                     <span class="text-black">Rp.{{ number_format($dt->price) }}</span>
                                 </div>
                                 <div class="card-body">
-                                    <ul>
-                                        <li>{{ $dt->description }}</li>
-                                    </ul>
+                                    <p>{{ $dt->description }}</p>
                                 </div>
                                 <div class="card-footer">
                                     <form action="{{ route('beforeorder.index') }}" method="GET">
@@ -382,16 +388,10 @@
             </div>
         </div>
     </div>
-        <!-- Floating Cart Icon -->
-        <div class="floating-cart">
-            <a href="{{ route('cart.index') }}">
-                <i class="fa fa-shopping-basket"></i>
-            </a>
-        </div>
-        <!-- Back to top -->
-        <div class="btn-back-to-top" id="myBtn">
-            <span class="symbol-btn-back-to-top">
-                <i class="zmdi zmdi-chevron-up"></i>
-            </span>
-        </div>
-    @endsection
+    <!-- Back to top -->
+    <div class="btn-back-to-top" id="myBtn">
+        <span class="symbol-btn-back-to-top">
+            <i class="zmdi zmdi-chevron-up"></i>
+        </span>
+    </div>
+@endsection
