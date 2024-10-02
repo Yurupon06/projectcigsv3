@@ -40,10 +40,12 @@
                 </div>
             @endif
             <div class="col-md-8">
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary">MEMBERSHIP</a>
-                    <a href="{{route('cashier.complement')}}" type="button" class="btn btn-secondary">COMPLEMENT</a>
-                </div>
+                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
+                    <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
+                </a>
+                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-sm align-items-center btn-complement" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
+                    <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
+                </a>
 
                 <div class="card">
                     <div class="card-body">

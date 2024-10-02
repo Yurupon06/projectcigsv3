@@ -236,7 +236,7 @@
                     <div class="card-body">
                         <div class="row">
                             @forelse($complement as $product)
-                                <div class="col-md-2 mb-4">
+                                <div class="col-md-4 mb-4"> 
                                     <div class="product-card">
                                         <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
                                         <div class="product-name">{{ $product->name }}</div>
@@ -256,8 +256,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="card summary-card">
                     <div class="summary-content">
                         <div class="summary-title">Order Summary</div>
@@ -265,8 +264,7 @@
                         <!-- Cart Items Display -->
                         <div id="cart-summary">
                             @foreach($cartItems as $item)
-                                <div class="summary-item">
-                                    <img src="{{ asset('storage/' . $item->complement->image) }}" alt="{{ $item->complement->name }}" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-right: 10px;">
+                                <div class="summary-item" style="position: relative;">
                                     <span>{{ $item->complement->name }}</span>
                                     <div class="summary-item-quantity">
                                         <div class="quantity-wrapper">
