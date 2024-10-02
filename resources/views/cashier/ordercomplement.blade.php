@@ -214,10 +214,15 @@
     </style>
 
     <div class="container-fluid mt-5 py-4">
-        <div class="row">   
+        <div class="row">
             @if (session('success'))
                 <div class="alert alert-success small" role="alert">
                     {{ session('success') }}
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-error small" role="alert">
+                    {{ session('error') }}
                 </div>
             @endif
             <div class="col-md-8">
@@ -231,12 +236,12 @@
                     <div class="card-body">
                         <div class="row">
                             @forelse($complement as $product)
-                                <div class="col-md-4 mb-4"> 
+                                <div class="col-md-2 mb-4">
                                     <div class="product-card">
                                         <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
                                         <div class="product-name">{{ $product->name }}</div>
                                         <div class="product-price">{{ number_format($product->price, 0, ',', '.') }} IDR</div>
-                                        <form action="{{route('cart.added', $product->id)}}" method="POST" class="add-to-cart-form">
+                                        <form action="{{ route('cart.added', $product->id) }}" method="POST" class="add-to-cart-form">
                                             @csrf
                                             <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Cart</button>
                                         </form>
@@ -251,22 +256,25 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+
+            <div class="col-md-4">
                 <div class="card summary-card">
                     <div class="summary-content">
                         <div class="summary-title">Order Summary</div>
+
                         <!-- Cart Items Display -->
                         <div id="cart-summary">
                             @foreach($cartItems as $item)
-                                <div class="summary-item" style="position: relative;">
+                                <div class="summary-item">
+                                    <img src="{{ asset('storage/' . $item->complement->image) }}" alt="{{ $item->complement->name }}" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-right: 10px;">
                                     <span>{{ $item->complement->name }}</span>
                                     <div class="summary-item-quantity">
                                         <div class="quantity-wrapper">
                                             <button class="quantity-btn minus-btn" onclick="changeQuantity(this, -1, {{ $item->id }})">-</button>
-                                            <input type="number" class="quantity-input" value="{{ $item->quantity }}" min="1" readonly>
+                                            <input type="number" class="quantity-input" value="{{ $item->quantity }}" min="1">
                                             <button class="quantity-btn plus-btn" onclick="changeQuantity(this, 1, {{ $item->id }})">+</button>
                                         </div>
-                                        <span>x Rp {{ number_format($item->complement->price, 0, ',', '.') }}</span>
+                                        <span>x Rp {{ number_format($item->complement->price) }}</span>
                                     </div>
                                     <!-- Tombol Delete -->
                                     <form action="{{ route('cart.deleted', $item->id) }}" method="POST" class="delete-btn" style="position: absolute; top: 0; right: 0;">
@@ -287,55 +295,57 @@
                             <span>Rp {{ number_format($cartItems->sum('total'), 0, ',', '.') }}</span>
                         </div>
                     </div>
-                    <button type="button" class="btn btn-primary summary-checkout-btn">Proceed to Checkout</button>
+                    <form action="{{ route('cart.checkout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-primary summary-checkout-btn">Proceed to Checkout</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    
 
     <script>
-        function changeQuantity(button, change, cartId) {
-            const input = button.parentElement.querySelector('.quantity-input');
-            const currentValue = parseInt(input.value);
-            const newValue = currentValue + change;
-            if (newValue >= 1) {
-                input.value = newValue;
-                // Kirim request Ajax untuk update quantity
-                updateCartQuantity(cartId, newValue);
-            }
-        }
-
-        function updateCartQuantity(cartId, quantity) {
-            $.ajax({
-                url: '/cart/update/' + cartId,
+        function changeQuantity(button, change, itemId) {
+            const quantityInput = button.closest('.quantity-wrapper').querySelector('.quantity-input');
+            let currentQuantity = parseInt(quantityInput.value);
+            const newQuantity = currentQuantity + change;
+    
+            if (newQuantity < 1) return; 
+    
+            quantityInput.value = newQuantity;
+    
+            fetch(`{{ url('/cashier/cart/update') }}/${itemId}`, {
                 method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    quantity: quantity
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                success: function(response) {
-                    // Update summary cart items
-                    $('#cart-summary').html(response.html);
-                    // Update total
-                    $('.summary-total span:last-child').text('Rp ' + response.total);
-                }
-            });
-        }
+                body: JSON.stringify({ quantity: newQuantity })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
 
-        $('.add-to-cart-form').submit(function(e) {
-            e.preventDefault();
-            var form = $(this);
-            $.ajax({
-                url: form.attr('action'),
-                method: form.attr('method'),
-                data: form.serialize(),
-                success: function(response) {
-                    // Update cart summary dengan data baru
-                    $('#cart-summary').html(response.html);
-                    $('.summary-total span:last-child').text('Rp ' + response.total);
+                    updateOverallTotal();
+                } else {
                 }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    
+        function updateOverallTotal() {
+            const summaryItems = document.querySelectorAll('.summary-item');
+            let overallTotal = 0;
+    
+            summaryItems.forEach(item => {
+                const quantityInput = item.querySelector('.quantity-input');
+                const price = parseFloat(item.querySelector('span:last-child').textContent.replace(/[^\d.-]/g, ''));
+                overallTotal += (quantityInput.value * price);
             });
-        });
+    
+            // Update the overall total display
+            const totalDisplay = document.querySelector('.summary-total span:last-child');
+            totalDisplay.textContent = `Rp ${overallTotal.toLocaleString()}`;
+        }
     </script>
 @endsection

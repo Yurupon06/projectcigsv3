@@ -11,6 +11,7 @@ class Payment extends Model
     protected $table = 'payments';
     protected $fillable = [
         'order_id',
+        'order_complement_id',
         'payment_date',	
         'amount',	
         'amount_given',	
@@ -20,5 +21,8 @@ class Payment extends Model
 
     public function order(){
         return $this->belongsTo(Order::class, 'order_id');
+    }
+    public function ordercomplement(){
+        return $this->belongsTo(OrderComplement::class, 'order_complement_id');
     }
 }
