@@ -111,10 +111,15 @@
             margin-top: 1rem;
         }
         .summary-item img {
-            width: 40px; /* Adjust width as necessary */
-            height: 40px; /* Adjust height as necessary */
-            border-radius: 0.375rem; /* Same border radius as other elements */
-            margin-right: 10px; /* Space between image and text */
+            width: 40px;
+            height: 40px;
+            border-radius: 0.375rem;
+            margin-right: 10px;
+        }
+        /* Scrollable product list */
+        .product-list-container {
+            max-height: 400px; /* Adjust as necessary */
+            overflow-y: auto;
         }
     </style>
 
@@ -137,17 +142,18 @@
                 </div>
                 <!-- Product List -->
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body product-list-container">
                         <div class="row">
-                            @forelse($complement as $product)
+                            @forelse($complement as $dt)
                                 <div class="col-md-2 mb-4">
                                     <div class="product-card">
-                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
-                                        <div class="product-name">{{ $product->name }}</div>
-                                        <div class="product-price">{{ number_format($product->price, 0, ',', '.') }} IDR</div>
-                                        <form action="{{ route('cart.added', $product->id) }}" method="POST" class="add-to-cart-form">
+                                        <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
+                                        <div class="product-name">{{ $dt->name }}</div>
+                                        <span>stok : {{$dt->stok}}</span>
+                                        <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
+                                        <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
                                             @csrf
-                                            <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                                            <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Order</button>
                                         </form>
                                     </div>
                                 </div>
@@ -205,6 +211,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         function changeQuantity(button, change, itemId) {
