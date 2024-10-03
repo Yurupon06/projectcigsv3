@@ -7,11 +7,6 @@
 @section('page', 'Customer / Create')
 @section('main')
     @include('cashier.main')
-    <style>
-        .card-header {
-            background-color: #ff5c00;
-        }
-    </style>
     <div class="container mt-4">
         <h1 class="mb-4">Order Details - Order # {{ $orderComplement->id }}</h1>
 
@@ -25,7 +20,7 @@
         @endif
 
         <div class="card shadow-sm">
-            <div class="card-header text-white">
+            <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">Order # {{ $orderComplement->id }}</h5>
             </div>
             <div class="card-body">
