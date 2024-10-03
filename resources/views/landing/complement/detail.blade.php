@@ -2,17 +2,78 @@
 @section('title', isset($setting) ? $setting->app_name . ' - Detail Complement' : 'Detail Complement')
 @section('main')
 
-<body class="animsition">
 
-    <!-- Product Detail Section -->
-    <section class="sec-product-detail bg0 p-t-65 p-b-60">
-        <div class="container">
-            <div class="row mt-4">
-                <!-- Image Section -->
-                <div class="col-md-6 col-lg-7 p-b-30">
-                    <div class="p-l-25 p-r-30 p-lr-0-lg">
-                        <div class="wrap-pic-w pos-relative" style="overflow: hidden;">
-                            <img src="{{ asset('storage/' . $complement->image) }}" alt="IMG-PRODUCT" class="img-fluid" style="border-radius: 10px;">
+    <body class="animsition">
+
+        <style>
+            /* Custom CSS for responsive adjustments */
+            .wrap-pic-w {
+                position: relative;
+                overflow: hidden;
+                border-radius: 10px;
+            }
+
+            .btn-num-product-down,
+            .btn-num-product-up {
+                border-radius: 5px;
+            }
+
+            .btn-num-product-down:hover {
+                background-color: #ffa500;
+                color: #000;
+            }
+
+            .btn-num-product-up:hover {
+                background-color: #ffa500;
+                color: #000;
+            }
+
+            .addcart {
+                background-color: #000;
+                color: #fff;
+                border-radius: 5px;
+                padding: 5px;
+                margin: 5px;
+            }
+
+            .addcart:hover {
+                background-color: #ffa500;
+                color: #fff;
+            }
+
+            @media (max-width: 767.98px) {
+                .size-204 {
+                    width: 100%;
+                }
+
+                .p-r-50 {
+                    padding-right: 15px;
+                }
+
+                .slick3 img {
+                    max-width: 100%;
+                    height: auto;
+                }
+            }
+
+            .plus:hover,
+            .minus:hover {
+                background-color: #ffa500;
+                color: #fff;
+            }
+        </style>
+
+        <!-- Product Detail Section -->
+        <section class="sec-product-detail bg0 p-t-65 p-b-60">
+            <div class="container">
+                <div class="row">
+                    <!-- Image Section -->
+                    <div class="col-md-6 col-lg-7 p-b-30">
+                        <div class="p-l-25 p-r-30 p-lr-0-lg">
+                            <div class="wrap-pic-w pos-relative" style="overflow: hidden;">
+                                <img src="{{ asset('storage/' . $complement->image) }}" alt="IMG-PRODUCT" class="img-fluid"
+                                    style="border-radius: 10px;">
+                            </div>
                         </div>
                     </div>
                 </div>

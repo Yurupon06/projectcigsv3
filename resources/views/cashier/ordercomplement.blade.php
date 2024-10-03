@@ -211,6 +211,10 @@
                 margin-top: 1rem;
             }
         }
+        .product-list-container {
+            max-height: 400px; /* Adjust as necessary */
+            overflow-y: auto;
+        }
     </style>
 
     <div class="container-fluid mt-5 py-4">
@@ -233,17 +237,18 @@
                     <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
                 </a>
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body product-list-container">
                         <div class="row">
                             @forelse($complement as $product)
                                 <div class="col-md-4 mb-4"> 
                                     <div class="product-card">
-                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
-                                        <div class="product-name">{{ $product->name }}</div>
-                                        <div class="product-price">{{ number_format($product->price, 0, ',', '.') }} IDR</div>
-                                        <form action="{{ route('cart.added', $product->id) }}" method="POST" class="add-to-cart-form">
+                                        <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
+                                        <div class="product-name">{{ $dt->name }}</div>
+                                        <span>stok : {{$dt->stok}}</span>
+                                        <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
+                                        <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
                                             @csrf
-                                            <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                                            <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Order</button>
                                         </form>
                                     </div>
                                 </div>
@@ -346,4 +351,6 @@
             totalDisplay.textContent = `Rp ${overallTotal.toLocaleString()}`;
         }
     </script>
+    
+    
 @endsection

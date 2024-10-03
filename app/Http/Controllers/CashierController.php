@@ -555,7 +555,7 @@ class CashierController extends Controller
             ]);
         }
     
-        return redirect()->route('cashier.complement')->with('success', 'Item added to cart successfully!');
+        return redirect()->route('cashier.complement');
     }
     public function deleteCart($id)
     {
@@ -563,7 +563,7 @@ class CashierController extends Controller
 
         $cartItem->delete();
 
-        return redirect()->route('cashier.complement')->with('success', 'Item removed from cart successfully!');
+        return redirect()->route('cashier.complement');
     }
     
 
