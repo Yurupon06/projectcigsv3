@@ -337,6 +337,7 @@
                                 <div class="mb-3">
                                     <label for="banner_h1_text" class="form-label">Banner H1 Text</label>
 
+
                                     <input type="text" class="form-control @error('banner_h1_text') is-invalid @enderror" id="banner_h1_text" name="banner_h1_text">
 
                                     @error('banner_h1_text')
@@ -346,6 +347,7 @@
                                 
                                 <div class="mb-3">
                                     <label for="banner_h1_color" class="form-label">H1 Paragraph Color</label>
+
 
                                     <input type="color" class="form-control @error('banner_h1_color') is-invalid @enderror" id="banner_h1_color" name="banner_h1_color">
 
@@ -357,6 +359,7 @@
                                 <div class="mb-3">
                                     <label for="banner_p_text" class="form-label">Banner Paragraph Text</label>
 
+
                                     <textarea name="banner_p_text" id="banner_p_text" class="form-control @error('banner_p_text') is-invalid @enderror" rows="3"></textarea>
 
                                     @error('banner_p_text')
@@ -366,7 +369,9 @@
                                 <div class="mb-3">
                                     <label for="banner_p_color" class="form-label">Text Paragraph Color</label>
 
+
                                     <input type="color" class="form-control @error('banner_p_color') is-invalid @enderror" id="banner_p_color" name="banner_p_color">
+
 
                                     @error('banner_p_color')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -375,6 +380,7 @@
 
                                 <div class="mb-3">
                                     <label for="banner_button_text" class="form-label">Banner Button Text</label>
+
 
                                     <input type="text" class="form-control @error('banner_button_text') is-invalid @enderror" id="banner_button_text" name="banner_button_text">
 

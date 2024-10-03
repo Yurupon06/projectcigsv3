@@ -22,13 +22,6 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-        @elseif(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{ session('error') }}
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
         @endif
 
         <div class="card shadow-sm">
@@ -36,7 +29,7 @@
                 <h5 class="mb-0">Order # {{ $orderComplement->id }}</h5>
             </div>
             <div class="card-body">
-                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
                     <table class="table table-hover">
                         <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
                             <tr>

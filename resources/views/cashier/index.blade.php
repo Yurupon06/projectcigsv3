@@ -160,47 +160,63 @@
     <script src="https://cdn.jsdelivr.net/npm/html5-qrcode/minified/html5-qrcode.min.js"></script>
     <script>
     let html5QrcodeScanner = new Html5Qrcode("reader");
-let isScanning = false;
+    let isScanning = false;
 
-function calculateQrboxSize() {
-    const readerWidth = document.getElementById('reader').offsetWidth;
-    return Math.min(350, readerWidth * 0.8); // 80% dari lebar elemen #reader, dengan maksimal 350px
-}
-
-function onScanSuccess(decodedText, decodedResult) {
-    let qrToken = decodedText.trim();
-    let url = `{{ route('cashier.qrscan', ['qr_token' => '__TOKEN__']) }}`.replace('__TOKEN__', qrToken);
-    window.location.href = url;
-}
-
-function onScanFailure(error) {
-    console.warn(`Code scan error = ${error}`);
-}
-
-document.getElementById('toggle-scan-btn').addEventListener('click', function() {
-    if (isScanning) {
-        html5QrcodeScanner.stop().then(() => {
-            document.getElementById('toggle-scan-btn').textContent = 'Start Scan';
-            isScanning = false;
-        }).catch(err => {
-            console.error("Error stopping QR code scanner: ", err);
-        });
-    } else {
-        html5QrcodeScanner.start(
-            { facingMode: "environment" },
-            {
-                fps: 30,
-                qrbox: calculateQrboxSize() // Menggunakan fungsi yang menghitung ukuran qrbox
-            },
-            onScanSuccess,
-            onScanFailure
-        ).then(() => {
-            document.getElementById('toggle-scan-btn').textContent = 'Stop Scan';
-            isScanning = true;
-        }).catch(err => {
-            console.error("Error starting QR code scanner: ", err);
-        });
+    function calculateQrboxSize() {
+        const readerWidth = document.getElementById('reader').offsetWidth;
+        return Math.min(350, readerWidth * 0.8);
     }
-});
+
+    function onScanSuccess(decodedText, decodedResult) {
+        let qrToken = decodedText.trim();
+
+        if (qrToken.startsWith('SCAN_')) {
+            let token = qrToken.split('_')[1];
+            let qrScanUrl = `{{ route('cashier.qrscan', ['qr_token' => '__TOKEN__']) }}`.replace('__TOKEN__', token);
+            window.location.href = qrScanUrl;
+        } else if (qrToken.startsWith('CHECKOUT_')) {
+            let token = qrToken.split('_')[1];
+            let checkoutUrl = `{{ route('cashier.checkout', ['qr_token' => '__TOKEN__']) }}`.replace('__TOKEN__', token);
+            window.location.href = checkoutUrl;
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'QR Code tidak valid!',
+                        confirmButtonText: 'Tutup'
+                    });
+                }
+    }
+
+
+    function onScanFailure(error) {
+        console.warn(`Code scan error = ${error}`);
+    }
+
+    document.getElementById('toggle-scan-btn').addEventListener('click', function() {
+        if (isScanning) {
+            html5QrcodeScanner.stop().then(() => {
+                document.getElementById('toggle-scan-btn').textContent = 'Start Scan';
+                isScanning = false;
+            }).catch(err => {
+                console.error("Error stopping QR code scanner: ", err);
+            });
+        } else {
+            html5QrcodeScanner.start(
+                { facingMode: "environment" },
+                {
+                    fps: 30,
+                    qrbox: calculateQrboxSize() // Menggunakan fungsi yang menghitung ukuran qrbox
+                },
+                onScanSuccess,
+                onScanFailure
+            ).then(() => {
+                document.getElementById('toggle-scan-btn').textContent = 'Stop Scan';
+                isScanning = true;
+            }).catch(err => {
+                console.error("Error starting QR code scanner: ", err);
+            });
+        }
+    });
     </script>
 @endsection

@@ -49,7 +49,7 @@
             }
     
             .receipt-footer {
-                text-align: center; /* Center-align footer content */
+                text-align: center; 
             }
     
             .print-button {
@@ -81,7 +81,6 @@
             .line {
                 border: none;
                 border-top: 1px solid #000;
-                /* Adjust the color if needed */
                 margin: 7px 0;
             }
     
@@ -93,6 +92,12 @@
             img {
                 filter: grayscale(100%);
             }
+            .complement-name {
+                word-wrap: break-word;
+                word-break: break-all;
+                max-width: 80px; /* Atur batas lebar untuk nama */
+            }
+
         </style>
 </head>
 <body>
@@ -133,17 +138,17 @@
         <hr>
         <table class="table">
             <tr>
-                <th>Item</th>
-                <th>Qty</th>
-                <th>Price</th>
+                <th colspan="2">Item</th>
+                <th class="align-center">Price</th>
                 <th class="align-right">Total</th>
             </tr>
             @foreach ($orderDetails as $dt)
             <tr>
-                <td>{{$dt->complement->name}}</td>
-                <td>{{$dt->quantity}}</td>
-                <td>{{number_format($dt->complement->price)}}</td>
+                <td>{{$dt->quantity}} x</td>
+                <td class="complement-name">{{$dt->complement->name}}</td>
+                <td class="align-right">{{number_format($dt->complement->price)}}</td>
                 <td class="align-right">{{number_format($dt->sub_total)}}</td>
+                
             </tr>
             @endforeach
         </table>
@@ -182,8 +187,8 @@
     </div>
 
         
-	<script type="text/javascript">
+	{{-- <script type="text/javascript">
 		window.print();
-	</script>
+	</script> --}}
 </body>
 </html>
