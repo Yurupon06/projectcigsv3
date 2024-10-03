@@ -46,15 +46,26 @@
                                                 class="item-total">{{ number_format($dt->total, 0, '.', '.') }}</span></span>
                                         <div class="">
                                             <div class="row gap-0">
-                                                <div class="col-4 minus border border-secondary text-center p-0">
-                                                    <i class="fa fa-minus"></i>
-                                                </div>
+                                                <form action="{{ route('update.cart') }}" method="POST" class="col-4 d-inline p-0">
+                                                    @csrf
+                                                    <input type="hidden" name="action-{{ $dt->id }}" value="minus">
+                                                    <button type="submit" class="border border-secondary text-center w-100">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </form>
+                                                
                                                 <input class="col-4 text-center item-quantity" type="number"
-                                                    name="quantity-{{ $dt->id }}" value="{{ $dt->quantity }}"
-                                                    min="1" max="{{ $dt->complement->stok }}" readonly>
-                                                <div class="col-4 plus border border-secondary text-center p-0">
-                                                    <i class="fa fa-plus"></i>
-                                                </div>
+                                                       name="quantity-{{ $dt->id }}" value="{{ $dt->quantity }}"
+                                                       min="1" max="{{ $dt->complement->stok }}" readonly>
+                                                
+                                                <form action="{{ route('update.cart') }}" method="POST" class="col-4 d-inline p-0">
+                                                    @csrf
+                                                    <input type="hidden" name="action-{{ $dt->id }}" value="plus">
+                                                    <button type="submit" class="border border-secondary text-center w-100" {{ $dt->quantity >= $dt->complement->stok ? 'disabled' : '' }}>
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </form>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -106,12 +117,6 @@
                         </div>
                         <form id="checkout-form" action="{{ route('checkout.complement.store') }}" method="POST">
                             @csrf
-                            @foreach ($cartItems as $item)
-                                <div class="input-quantity d-none" data-id="{{ $item->id }}">
-                                    <input type="number" name="quantity-{{ $item->id }}" class="item-quantity"
-                                        value="{{ $item->quantity }}" min="1" max="{{ $item->complement->stok }}">
-                                </div>
-                            @endforeach
                             <button type="submit"
                                 class="proced flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer"
                                 style="font-size: 16px; padding: 10px 20px; border-radius: 5px;">
@@ -136,60 +141,5 @@
             </div>
         @endif
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $(document).on('click', '.minus', function() {
-                let input = $(this).siblings('input.item-quantity');
-                let quantity = parseInt(input.val());
-                let price = parseInt($(this).closest('.card-body').find('.item-price').text().replace(
-                    'Rp. ', '').replace('.', ''));
-                let itemId = $(this).closest('.cart-item').data('id');
-                let total = quantity * price;
-                if (quantity > 1) {
-                    input.val(quantity - 1);
-                    $('.subtotal[data-id="' + itemId + '"]').find('span.total-quantity').text(quantity - 1);
-                    $('.input-quantity[data-id="' + itemId + '"]').find('input').val(quantity - 1);
-                    total = (quantity - 1) * price;
-                    $(this).closest('.card-body').find('.item-total').text(new Intl.NumberFormat('id-ID')
-                        .format(total));
-                    $('.subtotal[data-id="' + itemId + '"]').find('.total-price').text(new Intl
-                        .NumberFormat('id-ID').format(total));
-                    updateTotal();
-                }
-            });
-
-            $(document).on('click', '.plus', function() {
-                let input = $(this).siblings('input.item-quantity');
-                let quantity = parseInt(input.val());
-                let max = parseInt(input.attr('max'));
-                let price = parseInt($(this).closest('.card-body').find('.item-price').text().replace(
-                    'Rp. ', '').replace('.', ''));
-                let itemId = $(this).closest('.cart-item').data('id');
-                let total = quantity * price;
-                if (quantity < max) {
-                    input.val(quantity + 1);
-                    $('.subtotal[data-id="' + itemId + '"]').find('span.total-quantity').text(quantity + 1);
-                    $('.input-quantity[data-id="' + itemId + '"]').find('input').val(quantity + 1);
-                    total = (quantity + 1) * price;
-                    $(this).closest('.card-body').find('.item-total').text(new Intl.NumberFormat('id-ID')
-                        .format(total));
-                    $('.subtotal[data-id="' + itemId + '"]').find('.total-price').text(new Intl
-                        .NumberFormat('id-ID').format(total));
-                    updateTotal();
-                }
-            });
-
-            function updateTotal() {
-                let subtotal = 0;
-                $('.item-total').each(function() {
-                    subtotal += parseInt($(this).text().replace('Rp. ', '').replace(',', '').replace('.',
-                        ''));
-                });
-                $('#subtotal-price').text(new Intl.NumberFormat('id-ID').format(subtotal));
-            }
-        });
-    </script>
-
 
 @endsection
