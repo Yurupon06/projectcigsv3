@@ -12,6 +12,10 @@
             top: 5px;
             right: 10px;
         }
+
+        .proced:hover {
+            background-color: #ffa500;
+        }
     </style>
 
     <div class="container">
@@ -58,6 +62,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
                                 </div>
                                 <div class="delete-cart position-absolute">
                                     <form action="{{ route('cart.remove', $dt->id) }}" method="POST" class="delete-btn">
