@@ -1,17 +1,14 @@
 @extends('landing.master')
 @section('title', isset($setting) ? $setting->app_name . ' - Complement' : 'Complement')
 @section('main')
-<style>
-		.container{
-			padding-top: 100px;
-		}
-        .isotope-item {
-            width: 50%; 
-            padding-bottom: 20px;
+    <style>
+        .container {
+            padding-top: 80px;
+            padding-bottom: 100px;
         }
 
         .block2-pic {
-            height: auto; 
+            height: auto;
         }
 
         .block2-txt-child1 {
@@ -23,55 +20,97 @@
             padding: 10px 15px;
         }
 
-		@media only screen and (max-width: 768px) {
-			.flex-w {
-				flex-wrap: nowrap; 
-				overflow-x: auto; 
-			}
+        .block2-pic img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+        }
 
-			.flex-w a {
-				margin-right: 5px; /* Mengurangi jarak antar elemen */
-				padding: 5px 5px;  /* Menyesuaikan padding untuk tampilan yang lebih kecil */
-			}
-		}
-</style>
-<body class="animsition">
-	
-	<div class="">
-		<div class="container">
-			<div class="">
-				<div class="flex-w flex-l-m filter-tope-group m-tb-10">
-                    <a href="{{ route('f&b.index') }}" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ !$category ? 'how-active1' : '' }}" data-filter="*">
-                        All Complements
-                    </a>
-					<div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<i class="bi bi-funnel-fill"></i>
-						</button>
-						<ul class="dropdown-menu">
-						<li>
-							<a href="{{ route('f&b.index', ['category' => 'food']) }}" class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'food' ? 'how-active1' : '' }}" data-filter=".food">
-								Food
-							</a>
-						</li>
-						<li>
-							<a href="{{ route('f&b.index', ['category' => 'drink']) }}" class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'drink' ? 'how-active1' : '' }}" data-filter=".drink">
-								Drink
-							</a>
-						</li>
-						<li>
-							<a href="{{ route('f&b.index', ['category' => 'suplement']) }}" class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'suplement' ? 'how-active1' : '' }}" data-filter=".suplement">
-								Suplement
-							</a>
-						</li>
-						<li>
-							<a href="{{ route('f&b.index', ['category' => 'other']) }}" class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'other' ? 'how-active1' : '' }}" data-filter=".other">
-								Other
-							</a>
-						</li>
-						</ul>
-					  </div>
-                    
+        .floating-cart {
+            position: fixed;
+            bottom: 100px;
+            right: 420px;
+            background-color: #fff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+        }
+
+        .floating-cart:hover {
+            background-color: #FF5722;
+        }
+
+        .floating-cart i {
+            font-size: 20px;
+            color: #FF5722;
+        }
+        .floating-cart:hover i {
+            color: white;
+        }
+        @media screen and (max-width: 576px) {
+            .floating-cart {
+            display: flex;
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            background-color: #fff;
+            color: white;
+            padding: 15px;
+            border-radius: 50%;
+            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: background-color 0.3s ease;
+            }
+        }
+    </style>
+
+    <body class="animsition">
+
+        <div class="container">
+            <div class="d-flex flex-row flex-wrap mb-4">
+                <a href="{{ route('f&b.index') }}"
+                    class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ !$category ? 'how-active1' : '' }}"
+                    data-filter="*">
+                    All Complements
+                </a>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <i class="bi bi-funnel-fill"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{{ route('f&b.index', ['category' => 'food']) }}"
+                                class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'food' ? 'how-active1' : '' }}"
+                                data-filter=".food">
+                                Food
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('f&b.index', ['category' => 'drink']) }}"
+                                class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'drink' ? 'how-active1' : '' }}"
+                                data-filter=".drink">
+                                Drink
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('f&b.index', ['category' => 'suplement']) }}"
+                                class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'suplement' ? 'how-active1' : '' }}"
+                                data-filter=".suplement">
+                                Suplement
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('f&b.index', ['category' => 'other']) }}"
+                                class="dropdown-item stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 {{ $category == 'other' ? 'how-active1' : '' }}"
+                                data-filter=".other">
+                                Other
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <div class="row">

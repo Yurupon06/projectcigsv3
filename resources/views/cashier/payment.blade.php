@@ -38,16 +38,14 @@
                     {{ session('success') }}
                 </div>
             @endif
-            <div class="btn-group" role="group" aria-label="Basic example" style="padding-top: 50px;">
+            <div class="btn-group" role="group" aria-label="Basic example">
                 <a href="{{ route('cashier.payment', ['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')]) }}" 
-                class="btn {{ request('filter') == 'membership' ? 'active' : '' }}" 
-                style="background-color: {{ request('filter') == 'membership' ? '#0056b3' : '#007bff' }}; color: white; border-radius: 10px 0 0 10px; padding: 10px 20px;">
-                    <i class="fas fa-user-tag"></i> MEMBERSHIP
+                   class="btn btn-primary {{ request('filter') == 'membership' ? 'active' : '' }}">
+                    MEMBERSHIP
                 </a>
                 <a href="{{ route('cashier.payment', ['filter' => 'complement', 'per_page' => request('per_page')]) }}" 
-                class="btn {{ request('filter') == 'complement' ? 'active' : '' }}" 
-                style="background-color: {{ request('filter') == 'complement' ? '#ff5c00' : '#ff7e00' }}; color: white; border-radius: 0 10px 10px 0 ; padding: 10px 20px;">
-                    <i class="fas fa-gift"></i> COMPLEMENT
+                   class="btn btn-primary {{ request('filter') == 'complement' ? 'active' : '' }}">
+                    COMPLEMENT
                 </a>
             </div>
             <div class="col-12">
@@ -60,7 +58,7 @@
                                     <input type="text" name="search" class="form-control"
                                         placeholder="Search Payments" value="{{ request('search') }}"
                                         style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
-                                    <input type="hidden" name="filter" value="{{ request('filter') }}"> <!-- Tambahkan filter -->
+                                    <input type="hidden" name="filter" value="{{ request('filter') }}"> 
                                     <button type="submit" class="btn btn-primary"
                                         style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 10px; font-size: 14px;">
                                         <i class="fas fa-search"></i>
@@ -77,8 +75,8 @@
                                         <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                         <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                                     </select>
-                                    <input type="hidden" name="filter" value="{{ request('filter') }}"> <!-- Tambahkan filter -->
-                                    <input type="hidden" name="search" value="{{ request('search') }}"> <!-- Tambahkan search -->
+                                    <input type="hidden" name="filter" value="{{ request('filter') }}"> 
+                                    <input type="hidden" name="search" value="{{ request('search') }}"> 
                                 </form>
                             </div>
                         </div>
@@ -110,8 +108,7 @@
                                         </td>
                             
                                         @if(request('filter') == 'membership' || !request('filter'))
-                                            @if($dt->order) <!-- Pastikan data order ada sebelum ditampilkan -->
-                                                <!-- Data dari order_id (Membership) -->
+                                            @if($dt->order)
                                                 <td>
                                                     <a class="u" href="{{ route('cashier.detailpayment', $dt->id )}}">
                                                     {{ $dt->order->customer->user->name }}</a>
@@ -123,11 +120,11 @@
                                                 </td>
                                             @endif
                                         @elseif(request('filter') == 'complement')
-                                            @if($dt->orderComplement) <!-- Pastikan data orderComplement ada sebelum ditampilkan -->
-                                                <!-- Data dari order_complement_id (Complement) -->
+                                            @if($dt->orderComplement)
                                                 <td>
-                                                    <a class="u" href="{{ route('cashier.checkout', $dt->ordercomplement->id )}}">
-                                                    {{ $dt->ordercomplement->id }}</a>
+                                                    <a class="u" href="{{ route('cashier.checkout', $dt->ordercomplement->qr_token )}}">
+                                                    {{ $dt->ordercomplement->id }}
+                                                    </a>
                                                 </td>
                                             @endif
                                         @endif

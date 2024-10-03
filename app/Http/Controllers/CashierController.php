@@ -606,14 +606,14 @@ class CashierController extends Controller
             ]);
         }
         Cart::where('user_id', $user->id)->delete();
-        return redirect()->route('cashier.checkout', ['id' => $orderComplement->id]);
+        return redirect()->route('cashier.checkout', ['qr_token' => $orderComplement->qr_token]);
     }
 
 
-    public function checkoutComplement($id){
-    $orderComplement = OrderComplement::findOrFail($id);
+    public function checkoutComplement($qr_token){
+        $orderComplement = OrderComplement::where('qr_token', $qr_token)->first();
     
-    $orderDetails = OrderDetail::where('order_complement_id', $id)->with('complement')->get();
+    $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->with('complement')->get();
 
     return view('cashier.checkoutcomplement', compact('orderComplement', 'orderDetails'));
     }
