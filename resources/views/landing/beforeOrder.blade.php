@@ -7,7 +7,7 @@
             padding: 12px 20px;
             background-color: #000000;
             color: #fff;
-            border-radius: 30px;
+            border-radius: 0;
             text-decoration: none;
             font-size: 16px;
             font-weight: bold;
@@ -26,8 +26,8 @@
     <div class="container mt-4 flex-wrap">
         <div class="row">
             <div class="col-md-12 ">
-                <div class="shadow p-3" style="border-radius: 20px">
-                    <div class="wrap-table-shopping-cart" style="border-radius: 20px">
+                <div class="p-3">
+                    <div class="wrap-table-shopping-cart" style="border-radius: 0px">
                         <table class="table align-items-center mb-0">
                             <tr>
                                 <th>Name</th>
@@ -57,8 +57,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 mt-4" style="border-radius: 20px">
-                <div class="shadow p-3" style="border-radius: 20px">
+            <div class="col-md-12 mt-4">
+                <div class="p-3" style="border-radius: 0px">
                     <form id="checkoutForm" action="{{ route('yourorder.update') }}" method="POST">
                         @csrf
                         <input type="hidden" name="product_id" value="{{ $product['product_id'] }}">

@@ -135,7 +135,7 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            bottom: 80px;
+            bottom: 90px;
             right: 15px;
             background-color: #FF5722;
             box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);

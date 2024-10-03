@@ -58,7 +58,7 @@
             margin-bottom: 1rem;
         }
         .summary-item {
-            font-size: 0.875rem;
+            font-size: 0.700rem;
             margin-bottom: 0.5rem;
             display: flex;
             justify-content: space-between;
@@ -68,29 +68,31 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            padding-top: 0.8rem;
+            padding-bottom: 0.2rem;
         }
         .quantity-input {
-            width: 50px;
+            width: 20px;
             text-align: center;
             border: 1px solid #ddd;
             border-radius: 0.375rem;
-            height: 30px;
+            height: 20px;
         }
         .quantity-wrapper {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            width: 110px;
+            justify-content: center;
+            width: 75px;
         }
         .quantity-btn {
             background-color: #e9ecef;
             border: none;
-            padding: 0 10px;
-            font-size: 1.2rem;
+            padding: 1px;
+            font-size: 1rem;
             cursor: pointer;
             border-radius: 0.375rem;
-            height: 30px;
-            width: 30px;
+            height: 20px;
+            width: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -110,11 +112,104 @@
             width: 100%;
             margin-top: 1rem;
         }
-        .summary-item img {
-            width: 40px; /* Adjust width as necessary */
-            height: 40px; /* Adjust height as necessary */
-            border-radius: 0.375rem; /* Same border radius as other elements */
-            margin-right: 10px; /* Space between image and text */
+        .col-md-5 {
+            width: 33%;
+        }
+        @media (min-width: 992px) { 
+            .col-md-4 {
+                width: 25%; 
+                height: 100%;
+            }
+            .col-md-5 {
+                width: 33%; 
+            }
+            .product-card {
+                padding: 0.25rem; 
+                font-size: 0.85rem; 
+            }
+            .product-card img {
+                height: 100%; 
+            }
+            .product-name {
+                font-size: 0.75rem; 
+            }
+            .product-price {
+                font-size: 0.75rem; 
+            }
+            .add-to-cart-btn {
+                font-size: 0.65rem; 
+                padding: 0.25rem 0.5rem; 
+            }
+            .summary-card {
+                display: flex;
+                flex-direction: column;
+                background-color: #f8f9fa;
+                border: 1px solid #ddd;
+                border-radius: 0.375rem;
+                padding: 1rem;
+                height: 100%;
+            }
+            .summary-content {
+                flex-grow: 1;
+            }
+            .summary-title {
+                font-size: 1rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+            .summary-item {
+                font-size: 0.875rem;
+                margin-bottom: 0.5rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .summary-item-quantity {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            .quantity-input {
+                width: 40px;
+                text-align: center;
+                border: 1px solid #ddd;
+                margin: 0 5px;
+                height: 30px;
+            }
+            .quantity-wrapper {
+                width: 100px;
+                margin-right: 4rem;
+                display: flex;
+            }
+            .quantity-btn {
+                background-color: #e9ecef;
+                border: none;
+                padding: 0 10px;
+                padding-right: 10px;
+                font-size: 1.2rem;
+                cursor: pointer;
+                border-radius: 0.375rem;
+                height: 30px;
+                width: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .quantity-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+            .summary-total {
+                font-size: 1rem;
+                font-weight: 700;
+                margin-top: 1rem;
+                display: flex;
+                justify-content: space-between;
+            }
+            .summary-checkout-btn {
+                width: 100%;
+                margin-top: 1rem;
+            }
         }
         .product-list-container {
             max-height: 400px; /* Adjust as necessary */
@@ -135,18 +230,17 @@
                 </div>
             @endif
             <div class="col-md-8">
-                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
+                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
                     <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
                 </a>
-                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-sm align-items-center btn-complement" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
+                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-sm align-items-center" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
                     <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
                 </a>
-                <!-- Product List -->
                 <div class="card">
                     <div class="card-body product-list-container">
                         <div class="row">
-                            @forelse($complement as $dt)
-                                <div class="col-md-2 mb-4">
+                            @forelse($complement as $product)
+                                <div class="col-md-4 mb-4"> 
                                     <div class="product-card">
                                         <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
                                         <div class="product-name">{{ $dt->name }}</div>
@@ -167,8 +261,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="card summary-card">
                     <div class="summary-content">
                         <div class="summary-title">Order Summary</div>
@@ -176,8 +269,7 @@
                         <!-- Cart Items Display -->
                         <div id="cart-summary">
                             @foreach($cartItems as $item)
-                                <div class="summary-item">
-                                    <img src="{{ asset('storage/' . $item->complement->image) }}" alt="{{ $item->complement->name }}" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-right: 10px;">
+                                <div class="summary-item" style="position: relative;">
                                     <span>{{ $item->complement->name }}</span>
                                     <div class="summary-item-quantity">
                                         <div class="quantity-wrapper">
@@ -187,10 +279,11 @@
                                         </div>
                                         <span>x Rp {{ number_format($item->complement->price) }}</span>
                                     </div>
-                                    <form action="{{ route('cart.deleted', $item->id) }}" method="POST" class="delete-btn">
+                                    <!-- Tombol Delete -->
+                                    <form action="{{ route('cart.deleted', $item->id) }}" method="POST" class="delete-btn" style="position: absolute; top: 0; right: 0;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">
+                                        <button type="submit" class="btn btn-danger btn-sm" style="font-size: 8px; padding: 1px 3px; margin-bottom: 5px;">
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </form>
@@ -198,6 +291,7 @@
                             @endforeach
                         </div>
 
+                        
                         <!-- Total Harga -->
                         <div class="summary-total">
                             <span>Total</span>
