@@ -37,7 +37,7 @@
         }
         .add-to-cart-btn {
             font-size: 0.75rem;
-            padding: 0.375rem 0.75rem;
+            padding: 0.200rem 0.60rem;
         }
         /* Flexbox for the summary card */
         .summary-card {
@@ -110,114 +110,15 @@
             width: 100%;
             margin-top: 1rem;
         }
-        .col-md-5 {
-            width: 33%;
+        .summary-item img {
+            width: 40px; /* Adjust width as necessary */
+            height: 40px; /* Adjust height as necessary */
+            border-radius: 0.375rem; /* Same border radius as other elements */
+            margin-right: 10px; /* Space between image and text */
         }
-        @media (min-width: 992px) { 
-            .col-md-4 {
-                width: 25%; 
-                height: 100%;
-            }
-            .col-md-5 {
-                width: 33%; 
-            }
-            .product-card {
-                padding: 0.25rem; 
-                font-size: 0.85rem; 
-            }
-            .product-card img {
-                height: 100%; 
-            }
-            .product-name {
-                font-size: 0.75rem; 
-            }
-            .product-price {
-                font-size: 0.75rem; 
-            }
-            .add-to-cart-btn {
-                font-size: 0.65rem; 
-                padding: 0.25rem 0.5rem; 
-            }
-            .summary-card {
-                display: flex;
-                flex-direction: column;
-                background-color: #f8f9fa;
-                border: 1px solid #ddd;
-                border-radius: 0.375rem;
-                padding: 1rem;
-                height: 100%;
-            }
-            .summary-content {
-                flex-grow: 1;
-            }
-            .summary-title {
-                font-size: 1rem;
-                font-weight: 600;
-                margin-bottom: 1rem;
-            }
-            .summary-item {
-                font-size: 0.875rem;
-                margin-bottom: 0.5rem;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            .summary-item-quantity {
-                display: flex;
-                align-items: center;
-                gap: 5px;
-            }
-            .quantity-input {
-                width: 40px;
-                text-align: center;
-                border: 1px solid #ddd;
-                margin: 0 5px;
-                height: 30px;
-            }
-            .quantity-wrapper {
-                width: 100px;
-                margin-right: 4rem;
-                display: flex;
-            }
-            .quantity-btn {
-                background-color: #e9ecef;
-                border: none;
-                padding: 0 10px;
-                padding-right: 10px;
-                font-size: 1.2rem;
-                cursor: pointer;
-                border-radius: 0.375rem;
-                height: 30px;
-                width: 30px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .quantity-btn:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-            .summary-total {
-                font-size: 1rem;
-                font-weight: 700;
-                margin-top: 1rem;
-                display: flex;
-                justify-content: space-between;
-            }
-            .summary-checkout-btn {
-                width: 100%;
-                margin-top: 1rem;
-            }
-            .summary-item img {
-                width: 40px; /* Adjust width as necessary */
-                height: 40px; /* Adjust height as necessary */
-                border-radius: 0.375rem; /* Same border radius as other elements */
-                margin-right: 10px; /* Space between image and text */
-            }
-            .product-list-container {
-                max-height: 400px; /* Adjust as necessary */
-                overflow-y: auto;
-            }
+        .product-list-container {
+            max-height: 400px; /* Adjust as necessary */
+            overflow-y: auto;
         }
     </style>
 
@@ -234,10 +135,10 @@
                 </div>
             @endif
             <div class="col-md-8">
-                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
+                <a href="{{ route('cashier.order') }}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
                     <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
                 </a>
-                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-sm align-items-center btn-complement" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
+                <a href="{{ route('cashier.complement') }}" type="button" class="btn btn-sm align-items-center btn-complement" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
                     <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
                 </a>
                 <!-- Product List -->
@@ -246,15 +147,22 @@
                         <div class="row">
                             @forelse($complement as $dt)
                                 <div class="col-md-2 mb-4">
-                                    <div class="product-card">
+                                    <div class="product-card" style="opacity: {{ $dt->stok < 1 ? '0.5' : '1' }};">
                                         <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
                                         <div class="product-name">{{ $dt->name }}</div>
-                                        <span>stok : {{$dt->stok}}</span>
+                                        <span>stok: {{ $dt->stok }}</span>
                                         <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
-                                        <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
-                                            @csrf
-                                            <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Order</button>
-                                        </form>
+                                        @if ($dt->stok < 1)
+                                            <div class="out-of-stock-overlay">
+                                            <span class="btn btn-danger add-to-cart-btn">Out of Stock</span>
+                                    </div>
+
+                                        @else
+                                            <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
+                                                @csrf
+                                                <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Order</button>
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             @empty
@@ -275,13 +183,8 @@
                         <!-- Cart Items Display -->
                         <div id="cart-summary">
                             @foreach($cartItems as $item)
-                                <div class="summary-item" style="position: relative;">
                                 <div class="summary-item">
                                     <img src="{{ asset('storage/' . $item->complement->image) }}" alt="{{ $item->complement->name }}" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-right: 10px;">
-
-                                <div class="summary-item">
-                                    <img src="{{ asset('storage/' . $item->complement->image) }}" alt="{{ $item->complement->name }}" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-right: 10px;">
-
                                     <span>{{ $item->complement->name }}</span>
                                     <div class="summary-item-quantity">
                                         <div class="quantity-wrapper">
@@ -291,11 +194,6 @@
                                         </div>
                                         <span>x Rp {{ number_format($item->complement->price) }}</span>
                                     </div>
-                                    <!-- Tombol Delete -->
-                                    <form action="{{ route('cart.deleted', $item->id) }}" method="POST" class="delete-btn" style="position: absolute; top: 0; right: 0;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" style="font-size: 8px; padding: 1px 3px; margin-bottom: 5px;">
                                     <form action="{{ route('cart.deleted', $item->id) }}" method="POST" class="delete-btn">
                                         @csrf
                                         @method('DELETE')
@@ -332,7 +230,7 @@
     
             quantityInput.value = newQuantity;
     
-            fetch(`{{ url('/cashier/cart/update') }}/${itemId}`, {
+            fetch({{ url('/cashier/cart/update') }}/${itemId}, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -363,7 +261,7 @@
     
             // Update the overall total display
             const totalDisplay = document.querySelector('.summary-total span:last-child');
-            totalDisplay.textContent = `Rp ${overallTotal.toLocaleString()}`;
+            totalDisplay.textContent = Rp ${overallTotal.toLocaleString()};
         }
     </script>
     

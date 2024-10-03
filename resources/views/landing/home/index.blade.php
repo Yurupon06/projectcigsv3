@@ -122,10 +122,11 @@
 
         .card h3 {
             margin-bottom: 15px;
+            color: {{ isset($landingSetting->product_h1_color_1) ? $landingSetting->product_h1_color_1: '#fff' }};
         }
 
         .card p {
-            color: #ddd; 
+            color: {{ isset($landingSetting->product_p_color_1) ? $landingSetting->product_p_color_1: '#fff' }}; 
         }
 
         .card a {
@@ -161,7 +162,7 @@
         .about-us p {
             font-family: 'Open Sans', sans-serif;
             font-size: 18px;
-            color: #000;
+            color: {{ isset($landingSetting->about_us_text_color) ? $landingSetting->about_us_text_color: '#000' }};
             line-height: 1.6;
             max-width: 800px;
             margin: 0 auto;
@@ -210,6 +211,16 @@
                 flex: 1 1 100%;
             }
         }
+
+        .banner_h1_color {
+            color: {{ isset($landingSetting->banner_h1_color) ? $landingSetting->banner_h1_color: '#fff' }};
+        }
+        .banner_p_color {
+            color: {{ isset($landingSetting->banner_p_color) ? $landingSetting->banner_p_color: '#fff' }};
+        }
+        .banner_button_color {
+            color: {{ isset($landingSetting->banner_button_color) ? $landingSetting->banner_button_color: '#000' }};
+        }
     </style>
 
     <div class="animsition mb-5">
@@ -219,11 +230,11 @@
                 <div class="slick1">
                     <div class="item-slick1" style="background-image: url('{{ isset($landingSetting) ? asset('storage/' . $landingSetting->banner_image) : asset('assets/images/banner/banner.png') }}');">
                         <div class="text-overlay">
-                        <h1 style="color: {{ $landingSetting->banner_h1_color }}">{{ isset($landingSetting->banner_h1_text) ? $landingSetting->banner_h1_text : 'Join Our Gym Membership Today!' }}</h1>
+                        <h1 class="banner_h1_color">{{ isset($landingSetting->banner_h1_text) ? $landingSetting->banner_h1_text : 'Join Our Gym Membership Today!' }}</h1>
 
-                        <p style="color: {{ $landingSetting->banner_P_color }}">{{ isset($landingSetting->banner_p_text) ? $landingSetting->banner_p_text : 'Start your journey to a stronger, healthier you with our special membership offers!' }}</p>
+                        <p class="banner_p_color">{{ isset($landingSetting->banner_p_text) ? $landingSetting->banner_p_text : 'Start your journey to a stronger, healthier you with our special membership offers!' }}</p>
 
-                            <a href="{{ route('landing.index') }}" class="btn fw-bold" style="color: {{ $landingSetting->banner_button_text }}"> {{ isset($landingSetting->banner_button_text) ? $landingSetting->banner_button_text : 'Get Started' }}</a>
+                            <a href="{{ route('landing.index') }}" class="btn fw-bold banner_button_color"> {{ isset($landingSetting->banner_button_text) ? $landingSetting->banner_button_text : 'Get Started' }}</a>
                         </div>
                     </div>
                 </div>
@@ -233,7 +244,7 @@
         <!-- About Us Section -->
         <section class="about-us">
             <h2>About Us</h2>
-            <p style="color: {{ $landingSetting->about_us_text }}">{{ isset($landingSetting->about_us_text) ? $landingSetting->about_us_text : 'Welcome to our gym! We offer top-notch facilities and expert trainers to help you achieve your fitness goals. Whether you’re interested in a membership, a single visit, or fitness products, we have something for everyone. Join us and take the first step towards a healthier you!' }}</p>
+            <p>{{ isset($landingSetting->about_us_text) ? $landingSetting->about_us_text : 'Welcome to our gym! We offer top-notch facilities and expert trainers to help you achieve your fitness goals. Whether you’re interested in a membership, a single visit, or fitness products, we have something for everyone. Join us and take the first step towards a healthier you!' }}</p>
         </section>
 
         <!-- Cards Section -->
@@ -242,8 +253,8 @@
             <div class="card">
                 <img src="{{ isset($landingSetting) ? asset('storage/' . $landingSetting->product_image_1) : asset('assets/images/banner/banner2.png') }}" alt="Membership Image">
                 <div class="card-content">
-                    <h3 style="color: {{ $landingSetting->product_h1_color_1 }}">{{ isset($landingSetting->product_h1_text_1) ? $landingSetting->product_h1_text_1 : 'Exclusive Membership' }}</h3>
-                    <p style="color: {{ $landingSetting->product_p_color_1 }}">{{ isset($landingSetting->product_p_text_1) ? $landingSetting->product_p_text_1 : 'Get unlimited access to our gym with special membership plans. Enjoy lower rates and personalized training.' }}</p>
+                    <h3>{{ isset($landingSetting->product_h1_text_1) ? $landingSetting->product_h1_text_1 : 'Exclusive Membership' }}</h3>
+                    <p>{{ isset($landingSetting->product_p_text_1) ? $landingSetting->product_p_text_1 : 'Get unlimited access to our gym with special membership plans. Enjoy lower rates and personalized training.' }}</p>
                     <a href="{{ route('landing.index') }}">{{ isset($landingSetting->product_link_1) ? $landingSetting->product_link_1 : 'Explore Membership' }}</a>
 
                 </div>
@@ -253,8 +264,8 @@
             <div class="card">
                 <img src="{{ isset($landingSetting) ? asset('storage/' . $landingSetting->product_image_2) : asset('assets/images/banner/bradcam_1.png') }}" alt="Single Visit Image">
                 <div class="card-content">
-                    <h3 style="color: {{ $landingSetting->product_h1_color_2 }}">{{ isset($landingSetting->product_h1_text_2) ? $landingSetting->product_h1_text_2 : 'Single Visit' }}</h3>
-                    <p style="color: {{ $landingSetting->product_p_color_2 }}">{{ isset($landingSetting->product_p_text_2) ? $landingSetting->product_p_text_2 : 'Purchase a one-time pass for a day’s access to our gym. Ideal for trying us out without commitment.' }}</p>
+                    <h3>{{ isset($landingSetting->product_h1_text_2) ? $landingSetting->product_h1_text_2 : 'Single Visit' }}</h3>
+                    <p>{{ isset($landingSetting->product_p_text_2) ? $landingSetting->product_p_text_2 : 'Purchase a one-time pass for a days access to our gym. Ideal for trying us out without commitment.' }}</p>
                     <a href="{{ route('landing.index') }}">{{ isset($landingSetting->product_link_2) ? $landingSetting->product_link_2 : 'Get Single Pass' }}</a>
 
                 </div>
@@ -264,8 +275,8 @@
             <div class="card">
                 <img src="{{ isset($landingSetting) ? asset('storage/' . $landingSetting->product_image_3) : asset('assets/images/banner/complement.jpg') }}" alt="Products Image">
                 <div class="card-content">
-                    <h3 style="color: {{ $landingSetting->product_h1_color_3 }}">{{ isset($landingSetting->product_h1_text_3) ? $landingSetting->product_h1_text_3 : 'Buy Products' }}</h3>
-                    <p style="color: {{ $landingSetting->product_p_color_3 }}">{{ isset($landingSetting->product_p_text_3) ? $landingSetting->product_p_text_3 : 'Explore our fitness products including supplements, gear, and apparel to enhance your workouts.' }}</p>
+                    <h3>{{ isset($landingSetting->product_h1_text_3) ? $landingSetting->product_h1_text_3 : 'Buy Products' }}</h3>
+                    <p>{{ isset($landingSetting->product_p_text_3) ? $landingSetting->product_p_text_3 : 'Explore our fitness products including supplements, gear, and apparel to enhance your workouts.' }}</p>
                     <a href="{{ route('landing.index') }}">{{ isset($landingSetting->product_link_3) ? $landingSetting->product_link_3 : 'Shop Now' }}</a>
 
                 </div>
