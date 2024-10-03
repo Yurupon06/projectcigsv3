@@ -38,16 +38,14 @@
                     {{ session('success') }}
                 </div>
             @endif
-            <div class="btn-group" role="group" aria-label="Basic example" style="padding-top: 50px;">
+            <div class="btn-group" role="group" aria-label="Basic example">
                 <a href="{{ route('cashier.payment', ['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')]) }}" 
-                class="btn {{ request('filter') == 'membership' ? 'active' : '' }}" 
-                style="background-color: {{ request('filter') == 'membership' ? '#0056b3' : '#007bff' }}; color: white; border-radius: 10px 0 0 10px; padding: 10px 20px;">
-                    <i class="fas fa-user-tag"></i> MEMBERSHIP
+                   class="btn btn-primary {{ request('filter') == 'membership' ? 'active' : '' }}">
+                    MEMBERSHIP
                 </a>
                 <a href="{{ route('cashier.payment', ['filter' => 'complement', 'per_page' => request('per_page')]) }}" 
-                class="btn {{ request('filter') == 'complement' ? 'active' : '' }}" 
-                style="background-color: {{ request('filter') == 'complement' ? '#ff5c00' : '#ff7e00' }}; color: white; border-radius: 0 10px 10px 0 ; padding: 10px 20px;">
-                    <i class="fas fa-gift"></i> COMPLEMENT
+                   class="btn btn-primary {{ request('filter') == 'complement' ? 'active' : '' }}">
+                    COMPLEMENT
                 </a>
             </div>
             <div class="col-12">
