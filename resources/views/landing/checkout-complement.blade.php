@@ -121,6 +121,12 @@
         .container {
             padding-bottom: 100px;
         }
+
+        .img-complement {
+            max-width: 40px;
+            max-height: 40px;
+            object-fit: contain;
+        }
     </style>
 
     <div class="container mt-4">
@@ -147,19 +153,24 @@
             <div class="col-12 mb-4">
                 <div class="card shadow total-summary">
                     <h5 class="card-title">Order Details</h5>
-                    @foreach ($complementItems as $item)
-                        <div class="subtotal d-flex justify-content-between">
-                            <div class="text-left">
-                                <span>{{ $item->complement->name }} (<span
-                                        class="total-quantity">{{ $item->quantity }}</span> x Rp.
-                                    {{ number_format($item->complement->price, 0, '.', '.') }})</span>
-                            </div>
-                            <div class="text-right">
-                                <span>Rp. <span
-                                        class="total-price">{{ number_format($item->sub_total, 0, '.', '.') }}</span></span>
-                            </div>
-                        </div>
-                    @endforeach
+
+                    <table>
+                        @foreach ($complementItems as $item)
+                            <tr>
+                                <td class="text-center">
+                                    <img src="{{ asset('storage/' . $item->complement->image) }}" alt="Complement Image"
+                                        class="img-complement">
+                                </td>
+                                <td>
+                                    {{ $item->complement->name }} ({{ $item->quantity }} x Rp.
+                                    {{ number_format($item->complement->price, 0, '.', '.') }})
+                                </td>
+                                <td class="text-end">
+                                    Rp. {{ number_format($item->sub_total, 0, '.', '.') }}
+                                </td>
+                            </tr>
+                        @endforeach
+                    </table>
                     <hr>
                     <div class="d-flex justify-content-between">
                         <div>
