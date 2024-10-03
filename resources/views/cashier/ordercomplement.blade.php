@@ -208,16 +208,16 @@
                 width: 100%;
                 margin-top: 1rem;
             }
-        .summary-item img {
-            width: 40px; /* Adjust width as necessary */
-            height: 40px; /* Adjust height as necessary */
-            border-radius: 0.375rem; /* Same border radius as other elements */
-            margin-right: 10px; /* Space between image and text */
-        }
-        .product-list-container {
-            max-height: 400px; /* Adjust as necessary */
-            overflow-y: auto;
-        }
+            .summary-item img {
+                width: 40px; /* Adjust width as necessary */
+                height: 40px; /* Adjust height as necessary */
+                border-radius: 0.375rem; /* Same border radius as other elements */
+                margin-right: 10px; /* Space between image and text */
+            }
+            .product-list-container {
+                max-height: 400px; /* Adjust as necessary */
+                overflow-y: auto;
+            }
     </style>
 
     <div class="container-fluid mt-5 py-4">
@@ -265,8 +265,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="card summary-card">
                     <div class="summary-content">
                         <div class="summary-title">Order Summary</div>
@@ -274,8 +273,12 @@
                         <!-- Cart Items Display -->
                         <div id="cart-summary">
                             @foreach($cartItems as $item)
+<<<<<<< HEAD
+                                <div class="summary-item" style="position: relative;">
+=======
                                 <div class="summary-item">
                                     <img src="{{ asset('storage/' . $item->complement->image) }}" alt="{{ $item->complement->name }}" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-right: 10px;">
+>>>>>>> ffadb3c79d24964c68d0805e848097b7d09b9cd8
                                     <span>{{ $item->complement->name }}</span>
                                     <div class="summary-item-quantity">
                                         <div class="quantity-wrapper">
@@ -285,11 +288,18 @@
                                         </div>
                                         <span>x Rp {{ number_format($item->complement->price) }}</span>
                                     </div>
+<<<<<<< HEAD
                                     <!-- Tombol Delete -->
                                     <form action="{{ route('cart.deleted', $item->id) }}" method="POST" class="delete-btn" style="position: absolute; top: 0; right: 0;">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm" style="font-size: 8px; padding: 1px 3px; margin-bottom: 5px;">
+=======
+                                    <form action="{{ route('cart.deleted', $item->id) }}" method="POST" class="delete-btn">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+>>>>>>> ffadb3c79d24964c68d0805e848097b7d09b9cd8
                                             <i class="fa fa-trash"></i>
                                         </button>
                                     </form>
