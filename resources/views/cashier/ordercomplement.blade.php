@@ -58,7 +58,7 @@
             margin-bottom: 1rem;
         }
         .summary-item {
-            font-size: 0.700rem;
+            font-size: 0.875rem;
             margin-bottom: 0.5rem;
             display: flex;
             justify-content: space-between;
@@ -68,31 +68,29 @@
             display: flex;
             align-items: center;
             gap: 5px;
-            padding-top: 0.8rem;
-            padding-bottom: 0.2rem;
         }
         .quantity-input {
-            width: 20px;
+            width: 50px;
             text-align: center;
             border: 1px solid #ddd;
             border-radius: 0.375rem;
-            height: 20px;
+            height: 30px;
         }
         .quantity-wrapper {
             display: flex;
             align-items: center;
-            justify-content: center;
-            width: 75px;
+            justify-content: space-between;
+            width: 110px;
         }
         .quantity-btn {
             background-color: #e9ecef;
             border: none;
-            padding: 1px;
-            font-size: 1rem;
+            padding: 0 10px;
+            font-size: 1.2rem;
             cursor: pointer;
             border-radius: 0.375rem;
-            height: 20px;
-            width: 20px;
+            height: 30px;
+            width: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -210,6 +208,15 @@
                 width: 100%;
                 margin-top: 1rem;
             }
+        .summary-item img {
+            width: 40px; /* Adjust width as necessary */
+            height: 40px; /* Adjust height as necessary */
+            border-radius: 0.375rem; /* Same border radius as other elements */
+            margin-right: 10px; /* Space between image and text */
+        }
+        .product-list-container {
+            max-height: 400px; /* Adjust as necessary */
+            overflow-y: auto;
         }
     </style>
 
@@ -226,24 +233,26 @@
                 </div>
             @endif
             <div class="col-md-8">
-                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
+                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
                     <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
                 </a>
-                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-sm align-items-center" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
+                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-sm align-items-center btn-complement" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
                     <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
                 </a>
+                <!-- Product List -->
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body product-list-container">
                         <div class="row">
-                            @forelse($complement as $product)
-                                <div class="col-md-4 mb-4"> 
+                            @forelse($complement as $dt)
+                                <div class="col-md-2 mb-4">
                                     <div class="product-card">
-                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}">
-                                        <div class="product-name">{{ $product->name }}</div>
-                                        <div class="product-price">{{ number_format($product->price, 0, ',', '.') }} IDR</div>
-                                        <form action="{{ route('cart.added', $product->id) }}" method="POST" class="add-to-cart-form">
+                                        <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
+                                        <div class="product-name">{{ $dt->name }}</div>
+                                        <span>stok : {{$dt->stok}}</span>
+                                        <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
+                                        <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
                                             @csrf
-                                            <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                                            <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Order</button>
                                         </form>
                                     </div>
                                 </div>
@@ -256,7 +265,8 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+
+            <div class="col-md-4">
                 <div class="card summary-card">
                     <div class="summary-content">
                         <div class="summary-title">Order Summary</div>
@@ -264,7 +274,8 @@
                         <!-- Cart Items Display -->
                         <div id="cart-summary">
                             @foreach($cartItems as $item)
-                                <div class="summary-item" style="position: relative;">
+                                <div class="summary-item">
+                                    <img src="{{ asset('storage/' . $item->complement->image) }}" alt="{{ $item->complement->name }}" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-right: 10px;">
                                     <span>{{ $item->complement->name }}</span>
                                     <div class="summary-item-quantity">
                                         <div class="quantity-wrapper">
@@ -286,7 +297,6 @@
                             @endforeach
                         </div>
 
-                        
                         <!-- Total Harga -->
                         <div class="summary-total">
                             <span>Total</span>
@@ -346,4 +356,6 @@
             totalDisplay.textContent = `Rp ${overallTotal.toLocaleString()}`;
         }
     </script>
+    
+    
 @endsection

@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\MemberCheckin;
 use App\Models\OrderComplement;
+use App\Models\OrderDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -62,8 +63,8 @@ class LandingController extends Controller
     {
         $currentDate = Carbon::now('Asia/Jakarta');
         Member::where('end_date', '<', $currentDate)
-        ->where('status', '<>', 'inactive')
-        ->update(['status' => 'expired']);
+            ->where('status', '<>', 'inactive')
+            ->update(['status' => 'expired']);
 
         Member::where('visit', 0)
             ->where('status', '<>', 'inactive')
@@ -101,7 +102,7 @@ class LandingController extends Controller
         ]);
 
         $user = Auth::user();
-        
+
         if ($user && $user->role === 'customer') {
             $user->update([
                 'name' => $request->name,
@@ -117,10 +118,10 @@ class LandingController extends Controller
                 ]
             );
 
-        return redirect()->route('landing.profile')->with('success', 'Profile updated successfully.');
+            return redirect()->route('landing.profile')->with('success', 'Profile updated successfully.');
+        }
+        abort(403);
     }
-    abort(403);
-}
 
 
     public function updatePassword(Request $request)
@@ -146,7 +147,7 @@ class LandingController extends Controller
     public function order(Request $request)
     {
         $user = Auth::user();
-        
+
         $cartCount = $this->getUniqueCartItemCount();
         $search = $request->input('search');
         $startDate = $request->input('start_date');
@@ -159,7 +160,7 @@ class LandingController extends Controller
 
             if ($member && $member->status == 'inactive') {
                 return redirect()->route('landing.index')
-                                 ->with('warning', 'You got banned. Please contact support.');
+                    ->with('warning', 'You got banned. Please contact support.');
             }
 
             if (!$startDate && !$endDate) {
@@ -167,9 +168,9 @@ class LandingController extends Controller
             }
 
             $ordersQuery = Order::where('customer_id', $customer->id)
-                                ->orderBy('created_at', 'desc');
+                ->orderBy('created_at', 'desc');
             $orderComplementsQuery = OrderComplement::where('user_id', $user->id)
-                                ->orderBy('created_at', 'desc');
+                ->orderBy('created_at', 'desc');
 
             if ($search) {
                 $ordersQuery->whereHas('product', function ($query) use ($search) {
@@ -178,15 +179,15 @@ class LandingController extends Controller
 
                 $orderComplementsQuery->where(function ($query) use ($search) {
                     $query->where('total_amount', 'like', "%{$search}%")
-                          ->orWhere('status', 'like', "%{$search}%");
+                        ->orWhere('status', 'like', "%{$search}%");
                 });
             }
 
             if ($startDate && $endDate) {
                 $ordersQuery->whereDate('order_date', '>=', $startDate)
-                            ->whereDate('order_date', '<=', $endDate);
+                    ->whereDate('order_date', '<=', $endDate);
                 $orderComplementsQuery->whereDate('created_at', '>=', $startDate)
-                            ->whereDate('created_at', '<=', $endDate);
+                    ->whereDate('created_at', '<=', $endDate);
             } elseif ($startDate) {
                 $ordersQuery->whereDate('order_date', '>=', $startDate);
                 $orderComplementsQuery->whereDate('created_at', '>=', $startDate);
@@ -254,7 +255,7 @@ class LandingController extends Controller
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         $cartCount = $this->getUniqueCartItemCount();
         if (auth()->id() !== $order->customer->user_id) {
-            abort(404); 
+            abort(404);
         }
 
         return view('landing.checkout', compact('order', 'member', 'cartCount'));
@@ -266,9 +267,9 @@ class LandingController extends Controller
         $user = Auth::user();
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-        $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
+        $complementItems = OrderDetail::with('complement')->where('order_complement_id', $id)->get();
 
-        return view('landing.checkout-complement', compact('orderComplement', 'customer', 'member', 'cartItems'));
+        return view('landing.checkout-complement', compact('orderComplement', 'customer', 'member', 'complementItems'));
     }
 
     public function complementCancel($id)
@@ -278,13 +279,12 @@ class LandingController extends Controller
         return redirect()->route('yourorder.index', ['type' => 'complement'])->with('success', 'Successfully Cancel The Complement.');
     }
 
-    public function checkoutComplement( Request $request) {
+    public function checkoutComplement(Request $request)
+    {
         $userId = auth()->id();
 
-        DB::beginTransaction();
-
-        try {
-            $cartItems = cart::where('user_id', $userId)->with('complement')->get();
+        return DB::transaction(function () use ($userId, $request) {
+            $cartItems = Cart::where('user_id', $userId)->with('complement')->get();
 
             if ($cartItems->isEmpty()) {
                 return redirect()->back()->with('error', 'Your cart is empty.');
@@ -292,35 +292,45 @@ class LandingController extends Controller
 
             $totalAmount = 0;
             $totalQuantity = 0;
-
-            foreach ($cartItems as $item) {
-                $newQuantity = $request->input('quantity-' . $item->id);
-                
-                $newQuantity = min($newQuantity, $item->complement->stok);
-
-                $item->quantity = $newQuantity;
-                $item->total = $newQuantity * $item->complement->price;
-                $item->save();
-
-                $totalAmount += $item->total;
-                $totalQuantity += $item->quantity;
-            }
+            $orderDetails = [];
 
             $orderComplement = OrderComplement::create([
                 'user_id' => $userId,
-                'total_amount' => $totalAmount,
+                'total_amount' => 0,
                 'status' => 'unpaid',
-                'quantity' => $totalQuantity,
+                'quantity' => 0,
                 'qr_token' => Str::random(10),
             ]);
 
-            DB::commit();
+            foreach ($cartItems as $item) {
+                $requestedQuantity = $request->input("quantity-{$item->id}", 1);
+                $newQuantity = min($requestedQuantity, $item->complement->stok);
+                $itemTotal = $newQuantity * $item->complement->price;
+
+                $totalAmount += $itemTotal;
+                $totalQuantity += $newQuantity;
+
+                $orderDetails[] = [
+                    'order_complement_id' => $orderComplement->id,
+                    'complement_id' => $item->complement->id,
+                    'quantity' => $newQuantity,
+                    'sub_total' => $itemTotal,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+
+            $orderComplement->update([
+                'total_amount' => $totalAmount,
+                'quantity' => $totalQuantity,
+            ]);
+
+            OrderDetail::insert($orderDetails);
+
+            Cart::where('user_id', $userId)->delete();
 
             return redirect()->route('checkout.complement', ['id' => $orderComplement->id])->with('success', 'Order created successfully.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return redirect()->back()->with('error', 'An error occurred while processing your order. Please try again.');
-        }
+        });
     }
 
     public function beforeOrder(Request $request)
@@ -333,7 +343,7 @@ class LandingController extends Controller
 
         if ($member && $member->status == 'inactive') {
             return redirect()->route('landing.index')
-                             ->with('warning', 'You got banned. Please contact support.');
+                ->with('warning', 'You got banned. Please contact support.');
         }
 
         if (!$customer || !$customer->phone || !$customer->born || !$customer->gender) {
@@ -355,25 +365,24 @@ class LandingController extends Controller
             ->where('status', '<>', 'inactive')
             ->update(['status' => 'expired']);
 
-            $user = Auth::user();
+        $user = Auth::user();
 
-    if ($user && $user->role === 'customer') {
-        $customer = Customer::where('user_id', $user->id)->first();
+        if ($user && $user->role === 'customer') {
+            $customer = Customer::where('user_id', $user->id)->first();
 
-        if (!$customer) {
-            abort(403);
+            if (!$customer) {
+                abort(403);
+            }
+
+            $member = Member::with('customer.user')->findOrFail($id);
+            $cartCount = $this->getUniqueCartItemCount();
+
+            if ($member->customer_id !== $customer->id) {
+                abort(403);
+            }
+            return view('landing.membership', compact('member', 'cartCount'));
         }
-
-        $member = Member::with('customer.user')->findOrFail($id);
-        $cartCount = $this->getUniqueCartItemCount();
-
-        if ($member->customer_id !== $customer->id) {
-            abort(403);
-        }
-        return view('landing.membership', compact('member', 'cartCount'));
-    }
-    abort(403);
-
+        abort(403);
     }
 
     public function history()
@@ -382,29 +391,29 @@ class LandingController extends Controller
         $customer = Customer::where('user_id', $user->id)->first();
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         $cartCount = $this->getUniqueCartItemCount();
-        
+
         if ($member) {
             $memberckin = MemberCheckin::where('member_id', $member->id)->with('member.customer')->orderBy('created_at', 'desc')->paginate(5);
         } else {
             $memberckin = collect();
         }
-    
+
         return view('landing.history', compact('memberckin', 'member', 'cartCount'));
     }
 
     public function complement(Request $request)
     {
         $category = $request->get('category');
-    
+
         $complement = $category ? Complement::where('category', $category)->get() : Complement::all();
-        
+
 
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         $cartCount = $this->getUniqueCartItemCount();
 
-        return view('landing.complement.index', compact('complement', 'user', 'customer', 'member', 'category','cartCount'));
+        return view('landing.complement.index', compact('complement', 'user', 'customer', 'member', 'category', 'cartCount'));
     }
     public function complementDetail($id, request $request)
     {
@@ -419,15 +428,15 @@ class LandingController extends Controller
     public function addToCart(Request $request, $complementId)
     {
         $user = Auth::user();
-        
+
         $complement = complement::findOrFail($complementId);
-    
+
         $quantity = $request->input('quantity', 1);
-    
+
         $cartItem = cart::where('user_id', $user->id)
-                        ->where('complement_id', $complement->id)
-                        ->first();
-    
+            ->where('complement_id', $complement->id)
+            ->first();
+
         if ($cartItem) {
             $newQuantity = $cartItem->quantity + $quantity;
             $cartItem->update([
@@ -442,24 +451,24 @@ class LandingController extends Controller
                 'total' => $quantity * $complement->price
             ]);
         }
-    
+
         return redirect()->route('cart.index')->with('success', 'Item added to cart successfully!');
     }
 
 
-    public function cart ()
+    public function cart()
     {
         $user = Auth::user();
-    
+
         // Ambil customer dan member seperti sebelumnya
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
-        
+
         // Ambil data cart berdasarkan user yang sedang login
         $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
         $cartCount = $this->getUniqueCartItemCount();
 
-    
+
         return view('landing.cart.index', compact('user', 'customer', 'member', 'cartItems', 'cartCount'));
     }
 

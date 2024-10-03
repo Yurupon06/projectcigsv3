@@ -73,54 +73,43 @@
 					  </div>
                     
                 </div>
-			</div>
-			<div class="bg0 m-t-23 p-b-140">
-				<div class="container">
-					<div class="row isotope-grid">
-						@forelse($complement as $dt)
-						<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item ">
-							<div class="block2">
-								<div class="block2-pic hov-img0" style="width: 15rem !important; height: 15rem;">
-									<img style="width: 100%" src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
-									<a href="{{route('complement.detail', $dt->id)}}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
-										Quick View
-									</a>
-								</div>
-								<div class="block2-txt flex-w flex-t p-t-14">
-									<div class="block2-txt-child1 flex-col-l ">
-										<a href="" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-											{{ $dt->name }}
-										</a>
-										<span class="stext-105 cl3">
-												Rp. {{ number_format($dt->price) }}
-										</span>
-					
-									</div>
-								</div>
-							</div>
-						</div>
-						@empty
-						<p class="text-center">No Complement found.</p>
-						@endforelse
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-		
-        <!-- Floating Cart Icon -->
-        <div class="floating-cart">
-            <a href="{{ route('cart.index') }}">
-                <i class="fa fa-shopping-basket"></i>
-            </a>
+            </div>
+            <div class="row">
+                @forelse($complement as $dt)
+                    <div class="col-6 mb-4">
+                        <div>
+                            <div class="block2-pic hov-img0">
+
+                                <a href="{{ route('complement.detail', $dt->id) }}">
+                                    <img src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
+                                </a>
+                            </div>
+                            <div>
+                                <div class="d-flex flex-column text-center">
+                                    <a href="{{ route('complement.detail', $dt->id) }}" style="color:rgb(0, 0, 0);">
+                                    <span>
+                                        {{ $dt->name }}
+                                    </span>
+                                    </a>
+                                    <span class="stext-105 cl3">
+                                        Rp. {{ number_format($dt->price) }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <p class="text-center">No Complement found.</p>
+                @endforelse
+            </div>
         </div>
 
-	<!-- Back to top -->
-	<div class="btn-back-to-top" id="myBtn">
-		<span class="symbol-btn-back-to-top">
-			<i class="zmdi zmdi-chevron-up"></i>
-		</span>
-	</div>
+        <!-- Back to top -->
+        <div class="btn-back-to-top" id="myBtn">
+            <span class="symbol-btn-back-to-top">
+                <i class="zmdi zmdi-chevron-up"></i>
+            </span>
+        </div>
 
-</body>
+    </body>
 @endsection

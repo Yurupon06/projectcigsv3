@@ -164,8 +164,7 @@
                                             <strong>Order Date:</strong>
                                             {{ \Carbon\Carbon::parse($orderComplement->created_at)->translatedFormat('d F Y H:i') }}
                                             <br>
-                                            <strong>Total Amount:</strong>Rp
-                                            {{ number_format($orderComplement->total_amount) }}
+                                            <strong>Total Amount: </strong>Rp {{ number_format($orderComplement->total_amount) }}
                                             <br>
                                             <strong>Status:</strong>
                                             <span class="status-badge"
