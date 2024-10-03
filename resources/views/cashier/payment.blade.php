@@ -58,7 +58,7 @@
                                     <input type="text" name="search" class="form-control"
                                         placeholder="Search Payments" value="{{ request('search') }}"
                                         style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
-                                    <input type="hidden" name="filter" value="{{ request('filter') }}"> <!-- Tambahkan filter -->
+                                    <input type="hidden" name="filter" value="{{ request('filter') }}"> 
                                     <button type="submit" class="btn btn-primary"
                                         style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 10px; font-size: 14px;">
                                         <i class="fas fa-search"></i>
@@ -75,8 +75,8 @@
                                         <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                         <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                                     </select>
-                                    <input type="hidden" name="filter" value="{{ request('filter') }}"> <!-- Tambahkan filter -->
-                                    <input type="hidden" name="search" value="{{ request('search') }}"> <!-- Tambahkan search -->
+                                    <input type="hidden" name="filter" value="{{ request('filter') }}"> 
+                                    <input type="hidden" name="search" value="{{ request('search') }}"> 
                                 </form>
                             </div>
                         </div>
@@ -108,8 +108,7 @@
                                         </td>
                             
                                         @if(request('filter') == 'membership' || !request('filter'))
-                                            @if($dt->order) <!-- Pastikan data order ada sebelum ditampilkan -->
-                                                <!-- Data dari order_id (Membership) -->
+                                            @if($dt->order)
                                                 <td>
                                                     <a class="u" href="{{ route('cashier.detailpayment', $dt->id )}}">
                                                     {{ $dt->order->customer->user->name }}</a>
@@ -121,11 +120,11 @@
                                                 </td>
                                             @endif
                                         @elseif(request('filter') == 'complement')
-                                            @if($dt->orderComplement) <!-- Pastikan data orderComplement ada sebelum ditampilkan -->
-                                                <!-- Data dari order_complement_id (Complement) -->
+                                            @if($dt->orderComplement)
                                                 <td>
-                                                    <a class="u" href="{{ route('cashier.checkout', $dt->ordercomplement->id )}}">
-                                                    {{ $dt->ordercomplement->id }}</a>
+                                                    <a class="u" href="{{ route('cashier.checkout', $dt->ordercomplement->qr_token )}}">
+                                                    {{ $dt->ordercomplement->id }}
+                                                    </a>
                                                 </td>
                                             @endif
                                         @endif

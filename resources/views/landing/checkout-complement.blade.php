@@ -177,7 +177,6 @@
                 @if ($orderComplement->status === 'unpaid')
                     <div class="alert alert-warning">
                         Complete your payment.
-                        <br>
                     </div>
                 @endif
             </div>
@@ -187,7 +186,7 @@
                     <div class="qr-code-container">
                         <div class="mt-3">Go To Cashier And Show The QrCode To Pay</div>
                         <br>
-                        {!! QrCode::size(200)->generate($orderComplement->qr_token) !!}
+                        {!! QrCode::size(200)->generate('CHECKOUT_' . $orderComplement->qr_token) !!}
                     </div>
                     <br>
                 @endif
