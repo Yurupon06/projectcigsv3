@@ -111,15 +111,20 @@
             margin-top: 1rem;
         }
         .summary-item img {
-            width: 40px; /* Adjust width as necessary */
-            height: 40px; /* Adjust height as necessary */
-            border-radius: 0.375rem; /* Same border radius as other elements */
-            margin-right: 10px; /* Space between image and text */
+            width: 40px;
+            height: 40px;
+            border-radius: 0.375rem;
+            margin-right: 10px;
         }
         .product-list-container {
-            max-height: 400px; /* Adjust as necessary */
+            max-height: 400px;
             overflow-y: auto;
         }
+        .complement-name {
+                word-wrap: break-word;
+                word-break: break-all;
+                max-width: 80px; 
+            }
     </style>
 
     <div class="container-fluid mt-5 py-4">
@@ -146,7 +151,7 @@
                     <div class="card-body product-list-container">
                         <div class="row">
                             @forelse($complement as $dt)
-                                <div class="col-md-2 mb-4">
+                            <div class="col-md-2 mb-4" data-complement-id="{{ $dt->id }}">
                                     <div class="product-card" style="opacity: {{ $dt->stok < 1 ? '0.5' : '1' }};">
                                         <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
                                         <div class="product-name">{{ $dt->name }}</div>
@@ -165,6 +170,8 @@
                                         @endif
                                     </div>
                                 </div>
+                            </div>
+                            
                             @empty
                                 <div class="col-md-12">
                                     <p>No products available.</p>
@@ -185,7 +192,7 @@
                             @foreach($cartItems as $item)
                                 <div class="summary-item">
                                     <img src="{{ asset('storage/' . $item->complement->image) }}" alt="{{ $item->complement->name }}" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-right: 10px;">
-                                    <span>{{ $item->complement->name }}</span>
+                                    <span class="complement-name">{{ $item->complement->name }}</span>
                                     <div class="summary-item-quantity">
                                         <div class="quantity-wrapper">
                                             <button class="quantity-btn minus-btn" onclick="changeQuantity(this, -1, {{ $item->id }})">-</button>
@@ -220,50 +227,60 @@
         </div>
     </div>
 
-    <script>
-        function changeQuantity(button, change, itemId) {
-            const quantityInput = button.closest('.quantity-wrapper').querySelector('.quantity-input');
-            let currentQuantity = parseInt(quantityInput.value);
-            const newQuantity = currentQuantity + change;
-    
-            if (newQuantity < 1) return; 
-    
-            quantityInput.value = newQuantity;
-    
-            fetch({{ url('/cashier/cart/update') }}/${itemId}, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ quantity: newQuantity })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+<script>
+function changeQuantity(button, change, itemId) {
+    const quantityInput = button.closest('.quantity-wrapper').querySelector('.quantity-input');
+    let currentQuantity = parseInt(quantityInput.value);
+    const newQuantity = currentQuantity + change;
 
-                    updateOverallTotal();
-                } else {
-                }
-            })
-            .catch(error => console.error('Error:', error));
+    if (newQuantity < 1) return;
+
+    quantityInput.value = newQuantity;
+
+    fetch(`{{ url('/cashier/cart/update') }}/${itemId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ quantity: newQuantity })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateOverallTotal();
+            updateStockDisplay(data.complement_id, data.new_stock);  // Update stock display if necessary
+        } else {
+            alert(data.error);
         }
-    
-        function updateOverallTotal() {
-            const summaryItems = document.querySelectorAll('.summary-item');
-            let overallTotal = 0;
-    
-            summaryItems.forEach(item => {
-                const quantityInput = item.querySelector('.quantity-input');
-                const price = parseFloat(item.querySelector('span:last-child').textContent.replace(/[^\d.-]/g, ''));
-                overallTotal += (quantityInput.value * price);
-            });
-    
-            // Update the overall total display
-            const totalDisplay = document.querySelector('.summary-total span:last-child');
-            totalDisplay.textContent = Rp ${overallTotal.toLocaleString()};
-        }
-    </script>
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function updateOverallTotal() {
+    const summaryItems = document.querySelectorAll('.summary-item');
+    let overallTotal = 0;
+
+    summaryItems.forEach(item => {
+        const quantityInput = item.querySelector('.quantity-input');
+        const price = parseFloat(item.querySelector('span:last-child').textContent.replace(/[^\d.-]/g, ''));
+        overallTotal += (quantityInput.value * price);
+    });
+
+    // Update the overall total display
+    const totalDisplay = document.querySelector('.summary-total span:last-child');
+    totalDisplay.textContent = `Rp ${overallTotal.toLocaleString()}`;
+}
+
+function updateStockDisplay(complementId, newStock) {
+    const productCard = document.querySelector(`[data-complement-id="${complementId}"]`);
+    if (productCard) {
+        const stockDisplay = productCard.querySelector('.product-stock');
+        stockDisplay.textContent = `stok : ${newStock}`;
+    }
+}
+</script>
+
     
     
 @endsection

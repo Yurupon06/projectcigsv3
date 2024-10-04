@@ -95,7 +95,7 @@
             .complement-name {
                 word-wrap: break-word;
                 word-break: break-all;
-                max-width: 80px; /* Atur batas lebar untuk nama */
+                max-width: 80px; 
             }
 
         </style>
