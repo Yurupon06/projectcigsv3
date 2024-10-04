@@ -37,7 +37,7 @@
         }
         .add-to-cart-btn {
             font-size: 0.75rem;
-            padding: 0.200rem 0.60rem;
+            padding: 0.375rem 0.75rem;
         }
         /* Flexbox for the summary card */
         .summary-card {
@@ -153,10 +153,7 @@
                                         <span class="product-stock">stok: {{ $dt->stok }}</span>
                                         <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
                                         @if ($dt->stok < 1)
-                                            <div class="out-of-stock-overlay">
-                                            <span class="btn btn-danger add-to-cart-btn">Out of Stock</span>
-                                    </div>
-
+                                            <button type="button" class="btn btn-secondary add-to-cart-btn" disabled>Out of Stock</button>
                                         @else
                                             <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
                                                 @csrf
