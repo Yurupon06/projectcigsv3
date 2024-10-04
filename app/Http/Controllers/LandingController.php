@@ -476,7 +476,7 @@ class LandingController extends Controller
 
         $complement = complement::findOrFail($complementId);
 
-        $quantity = $request->input('quantity', 1);
+        $quantity = $request->input('quantity');
 
         $cartItem = cart::where('user_id', $user->id)
             ->where('complement_id', $complement->id)
@@ -484,9 +484,9 @@ class LandingController extends Controller
 
         if ($cartItem) {
             $newQuantity = $cartItem->quantity + $quantity;
-            if ($complement->stok < $newQuantity) {
-                return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
-            }
+            // if ($complement->stok < $newQuantity) {
+            //     return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
+            // }
             $cartItem->update([
                 'quantity' => $newQuantity,
                 'total' => $newQuantity * $complement->price
