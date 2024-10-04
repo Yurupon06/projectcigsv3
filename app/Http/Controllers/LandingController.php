@@ -275,9 +275,24 @@ class LandingController extends Controller
     public function complementCancel($id)
     {
         $orderComplement = OrderComplement::findOrFail($id);
-        $orderComplement->update(['status' => 'canceled']);
-        return redirect()->route('yourorder.index', ['type' => 'complement'])->with('success', 'Successfully Cancel The Complement.');
+        $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->get();
+    
+        foreach ($orderDetails as $detail) {
+            $complement = Complement::findOrFail($detail->complement_id);
+    
+            $complement->update([
+                'stok' => $complement->stok + $detail->quantity,
+            ]);
+    
+            $detail->delete();
+        }
+    
+        $orderComplement->delete();
+    
+        return redirect()->route('yourorder.index', ['type' => 'complement'])->with('success', 'Successfully Cancelled The Complement, Restored Stock, and Deleted the Order.');
     }
+    
+    
 
     public function updateCart(Request $request) 
     {

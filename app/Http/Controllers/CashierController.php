@@ -675,11 +675,22 @@ class CashierController extends Controller
 
 
 
-    public function paymentComplement(Request $request, OrderComplement $orderComplement)
+    public function paymentComplement(Request $request, $id)
     {
+        $orderComplement = OrderComplement::findOrFail($id);
+
         if ($request->input('action') === 'cancel') {
-            $orderComplement->update(['status' => 'canceled']);
-            return redirect()->route('cashier.index')->with('success', 'Order canceled successfully.');
+            $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->get();
+            foreach ($orderDetails as $detail) {
+                $complement = Complement::findOrFail($detail->complement_id);
+                $complement->update([
+                    'stok' => $complement->stok + $detail->quantity,
+                ]);
+        
+                $detail->delete();
+            }
+            $orderComplement->delete();
+            return redirect()->route('cashier.complement')->with('success', 'Order canceled successfully.');
         }
 
         $request->validate([
