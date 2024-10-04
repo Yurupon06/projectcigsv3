@@ -283,6 +283,7 @@ class LandingController extends Controller
     {
         $cart = cart::where('user_id', auth()->id())->get();
         foreach ($cart as $item) {
+            $complement = complement::findOrFail($item->complement_id);
             $inputQuantity = $request->input("action-{$item->id}");
             $newQuantity = $item->quantity;
             $totalItems = $item->total;
@@ -291,9 +292,23 @@ class LandingController extends Controller
             if ($inputQuantity === "plus") {
                 if ($item->quantity < $complementStock) {
                     $newQuantity = $item->quantity + 1;
+                    if ($complement->stok < $newQuantity) {
+                        return response()->json(['error' => 'Stok tidak mencukupi!'], 400);
+                    }
+            
+                    $complement->update([
+                        'stok' => $complement->stok - $newQuantity
+                    ]);
                 }
             } else if ($inputQuantity === "minus") {
                 $newQuantity = $item->quantity - 1;
+                if ($complement->stok < $newQuantity) {
+                    return response()->json(['error' => 'Stok tidak mencukupi!'], 400);
+                }
+        
+                $complement->update([
+                    'stok' => $complement->stok - $newQuantity
+                ]);
             }
 
             if ($newQuantity > 0 && $newQuantity <= $complementStock) {
@@ -502,11 +517,9 @@ class LandingController extends Controller
     {
         $user = Auth::user();
 
-        // Ambil customer dan member seperti sebelumnya
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
 
-        // Ambil data cart berdasarkan user yang sedang login
         $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
         $cartCount = $this->getUniqueCartItemCount();
 

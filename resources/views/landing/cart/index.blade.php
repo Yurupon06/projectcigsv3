@@ -42,8 +42,7 @@
                                     </div>
                                     <div class="col-5 d-flex flex-column my-auto">
                                         <span>{{ $dt->complement->name }}</span>
-                                        <span>Rp. <span
-                                                class="item-price">{{ number_format($dt->complement->price, 0, '.', '.') }}</span></span>
+                                        <span>Rp. <span class="item-price">{{ number_format($dt->complement->price, 0, '.', '.') }}</span></span>
                                     </div>
                                     <div class="col-4 my-auto text-center">
                                         <span>Rp. <span
