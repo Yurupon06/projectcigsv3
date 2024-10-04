@@ -49,7 +49,7 @@
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-header py-2 navigation-links">
-                        <a href="{{ route('cashier.payment') }}">Back</a>
+                        <a href="{{ route('cashier.payment', ['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')]) }}">Back</a>
                     </div>
                     <div class="card-header py-1 mt-1">
                         <h6>Payment Details</h6>

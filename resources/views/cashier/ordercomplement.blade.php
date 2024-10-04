@@ -37,7 +37,7 @@
         }
         .add-to-cart-btn {
             font-size: 0.75rem;
-            padding: 0.200rem 0.60rem;
+            padding: 0.375rem 0.75rem;
         }
         /* Flexbox for the summary card */
         .summary-card {
@@ -111,20 +111,15 @@
             margin-top: 1rem;
         }
         .summary-item img {
-            width: 40px;
-            height: 40px;
-            border-radius: 0.375rem;
-            margin-right: 10px;
+            width: 40px; /* Adjust width as necessary */
+            height: 40px; /* Adjust height as necessary */
+            border-radius: 0.375rem; /* Same border radius as other elements */
+            margin-right: 10px; /* Space between image and text */
         }
         .product-list-container {
-            max-height: 400px;
+            max-height: 400px; /* Adjust as necessary */
             overflow-y: auto;
         }
-        .complement-name {
-                word-wrap: break-word;
-                word-break: break-all;
-                max-width: 80px; 
-            }
     </style>
 
     <div class="container-fluid mt-5 py-4">
@@ -151,17 +146,14 @@
                     <div class="card-body product-list-container">
                         <div class="row">
                             @forelse($complement as $dt)
-                            <div class="col-md-2 mb-4" data-complement-id="{{ $dt->id }}">
+                                <div class="col-md-2 mb-4">
                                     <div class="product-card" style="opacity: {{ $dt->stok < 1 ? '0.5' : '1' }};">
                                         <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
                                         <div class="product-name">{{ $dt->name }}</div>
                                         <span>stok: {{ $dt->stok }}</span>
                                         <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
                                         @if ($dt->stok < 1)
-                                            <div class="out-of-stock-overlay">
-                                            <span class="btn btn-danger add-to-cart-btn">Out of Stock</span>
-                                    </div>
-
+                                            <button type="button" class="btn btn-secondary add-to-cart-btn" disabled>Out of Stock</button>
                                         @else
                                             <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
                                                 @csrf
@@ -170,8 +162,6 @@
                                         @endif
                                     </div>
                                 </div>
-                            </div>
-                            
                             @empty
                                 <div class="col-md-12">
                                     <p>No products available.</p>

@@ -34,6 +34,9 @@
     font-size: 20px;
     text-decoration: none;
 }
+.about_us_text_color {
+    color: {{ isset($landingSetting->about_us_text_color) ? $landingSetting->about_us_text_color: '#000' }};
+}
 
 </style>
 <footer class="footer">
@@ -41,7 +44,7 @@
         <div class="row">
             <div class="col-md-4">
                 <h5>About Us</h5>
-                <p style="color: {{ $landingSetting->about_us_text_color }}">{{ isset($landingSetting->about_us_text) ? $landingSetting->about_us_text : 'We are committed to providing the best fitness experience. Our gym is equipped with state-of-the-art equipment and staffed by highly trained professionals.' }}</p>
+                <p class="about_us_text_color">{{ isset($landingSetting->about_us_text) ? $landingSetting->about_us_text : 'We are committed to providing the best fitness experience. Our gym is equipped with state-of-the-art equipment and staffed by highly trained professionals.' }}</p>
             </div>
             <div class="col-md-4">
                 <h5>Contact Us</h5>
