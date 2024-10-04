@@ -37,7 +37,7 @@
         }
         .add-to-cart-btn {
             font-size: 0.75rem;
-            padding: 0.375rem 0.75rem;
+            padding: 0.200rem 0.60rem;
         }
         /* Flexbox for the summary card */
         .summary-card {
@@ -140,10 +140,10 @@
                 </div>
             @endif
             <div class="col-md-8">
-                <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
+                <a href="{{ route('cashier.order') }}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #007bff; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
                     <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
                 </a>
-                <a href="{{route('cashier.complement')}}" type="button" class="btn btn-sm align-items-center btn-complement" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
+                <a href="{{ route('cashier.complement') }}" type="button" class="btn btn-sm align-items-center btn-complement" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
                     <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
                 </a>
                 <!-- Product List -->
@@ -152,15 +152,23 @@
                         <div class="row">
                             @forelse($complement as $dt)
                             <div class="col-md-2 mb-4" data-complement-id="{{ $dt->id }}">
-                                <div class="product-card">
-                                    <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
-                                    <div class="product-name">{{ $dt->name }}</div>
-                                    <span class="product-stock">stok : {{ $dt->stok }}</span>
-                                    <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
-                                    <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
-                                        @csrf
-                                        <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Order</button>
-                                    </form>
+                                    <div class="product-card" style="opacity: {{ $dt->stok < 1 ? '0.5' : '1' }};">
+                                        <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
+                                        <div class="product-name">{{ $dt->name }}</div>
+                                        <span>stok: {{ $dt->stok }}</span>
+                                        <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
+                                        @if ($dt->stok < 1)
+                                            <div class="out-of-stock-overlay">
+                                            <span class="btn btn-danger add-to-cart-btn">Out of Stock</span>
+                                    </div>
+
+                                        @else
+                                            <form action="{{ route('cart.added', $dt->id) }}" method="POST" class="add-to-cart-form">
+                                                @csrf
+                                                <button type="submit" class="btn btn-primary add-to-cart-btn">Add to Order</button>
+                                            </form>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                             
@@ -219,7 +227,7 @@
         </div>
     </div>
 
-    <script>
+<script>
 function changeQuantity(button, change, itemId) {
     const quantityInput = button.closest('.quantity-wrapper').querySelector('.quantity-input');
     let currentQuantity = parseInt(quantityInput.value);
@@ -241,7 +249,7 @@ function changeQuantity(button, change, itemId) {
     .then(data => {
         if (data.success) {
             updateOverallTotal();
-            updateStockDisplay(data.complement_id, data.new_stock);  // Call updateStockDisplay to reflect the updated stock
+            updateStockDisplay(data.complement_id, data.new_stock);  // Update stock display if necessary
         } else {
             alert(data.error);
         }
@@ -271,8 +279,8 @@ function updateStockDisplay(complementId, newStock) {
         stockDisplay.textContent = `stok : ${newStock}`;
     }
 }
+</script>
 
-    </script>
     
     
 @endsection

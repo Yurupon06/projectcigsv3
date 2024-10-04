@@ -279,6 +279,38 @@ class LandingController extends Controller
         return redirect()->route('yourorder.index', ['type' => 'complement'])->with('success', 'Successfully Cancel The Complement.');
     }
 
+    public function updateCart(Request $request) 
+    {
+        $cart = cart::where('user_id', auth()->id())->get();
+        foreach ($cart as $item) {
+            $inputQuantity = $request->input("action-{$item->id}");
+            $newQuantity = $item->quantity;
+            $totalItems = $item->total;
+            $complementStock = $item->complement->stok;
+            
+            if ($inputQuantity === "plus") {
+                if ($item->quantity < $complementStock) {
+                    $newQuantity = $item->quantity + 1;
+                }
+            } else if ($inputQuantity === "minus") {
+                $newQuantity = $item->quantity - 1;
+            }
+
+            if ($newQuantity > 0 && $newQuantity <= $complementStock) {
+                $item->update([
+                    'quantity' => $newQuantity,
+                    'total' => $newQuantity * $item->complement->price
+                ]);
+            }
+
+            if ($newQuantity <= 0) {
+                $item->delete();
+            }
+        }
+
+        return redirect()->back();
+    }
+
     public function checkoutComplement(Request $request)
     {
         $userId = auth()->id();
@@ -303,18 +335,15 @@ class LandingController extends Controller
             ]);
 
             foreach ($cartItems as $item) {
-                $requestedQuantity = $request->input("quantity-{$item->id}", 1);
-                $newQuantity = min($requestedQuantity, $item->complement->stok);
-                $itemTotal = $newQuantity * $item->complement->price;
-
+                $itemTotal = $item->quantity * $item->complement->price;
                 $totalAmount += $itemTotal;
-                $totalQuantity += $newQuantity;
+                $totalQuantity += $item->quantity;
 
                 $orderDetails[] = [
                     'order_complement_id' => $orderComplement->id,
                     'complement_id' => $item->complement->id,
-                    'quantity' => $newQuantity,
-                    'sub_total' => $itemTotal,
+                    'quantity' => $item->quantity,
+                    'sub_total' => $item->total,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
@@ -422,7 +451,11 @@ class LandingController extends Controller
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         $cartCount = $this->getUniqueCartItemCount();
-        return view('landing.complement.detail', compact('complement', 'user', 'customer', 'member', 'cartCount'));
+
+        if($complement->stok > 0) {
+            return view('landing.complement.detail', compact('complement', 'user', 'customer', 'member', 'cartCount'));
+        }
+        abort(404);
     }
 
     public function addToCart(Request $request, $complementId)

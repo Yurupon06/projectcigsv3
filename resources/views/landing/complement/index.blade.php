@@ -4,7 +4,7 @@
     <style>
         .container {
             padding-top: 80px;
-            padding-bottom: 100px;
+            padding-bottom: 200px;
         }
 
         .block2-pic {
@@ -22,48 +22,24 @@
 
         .block2-pic img {
             width: 100%;
-            max-height: 200px;
+            max-height: 150px;
             object-fit: cover;
         }
 
-        .floating-cart {
-            position: fixed;
-            bottom: 100px;
-            right: 420px;
-            background-color: #fff;
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: background-color 0.3s ease;
+        .out-of-stock {
+            opacity: 0.7;
         }
 
-        .floating-cart:hover {
-            background-color: #FF5722;
-        }
-
-        .floating-cart i {
-            font-size: 20px;
-            color: #FF5722;
-        }
-        .floating-cart:hover i {
-            color: white;
-        }
-        @media screen and (max-width: 576px) {
-            .floating-cart {
+        .out-of-stock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
             display: flex;
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            background-color: #fff;
-            color: white;
-            padding: 15px;
-            border-radius: 50%;
-            box-shadow: 0 3px 2px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-            transition: background-color 0.3s ease;
-            }
+            justify-content: center;
+            align-items: center;
         }
     </style>
 
@@ -116,24 +92,53 @@
             <div class="row">
                 @forelse($complement as $dt)
                     <div class="col-6 mb-4">
-                        <div>
+                        <div class="position-relative {{ $dt->stok == 0 ? 'out-of-stock' : '' }} text-center">
                             <div class="block2-pic hov-img0">
-
-                                <a href="{{ route('complement.detail', $dt->id) }}">
+                                @if ($dt->stok > 0)
+                                    <a href="{{ route('complement.detail', $dt->id) }}">
+                                        <img src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
+                                    </a>
+                                @else
                                     <img src="storage/{{ $dt->image }}" alt="{{ $dt->name }}">
-                                </a>
+                                    <h1 class="out-of-stock-overlay">
+                                        <span class="badge bg-danger">Out of Stock</span>
+                                    </h1>
+                                @endif
                             </div>
                             <div>
-                                <div class="d-flex flex-column text-center">
-                                    <a href="{{ route('complement.detail', $dt->id) }}" style="color:rgb(0, 0, 0);">
-                                    <span>
-                                        {{ $dt->name }}
-                                    </span>
+                                @if ($dt->stok > 0)
+                                <div class="mt-2">
+                                    <a href="{{ route('complement.detail', $dt->id) }}" class="text-dark">
+                                        <h6>
+                                            {{ $dt->name }}
+                                        </h6>
+                                        <div class="stext-105 cl3">
+                                            Rp. {{ number_format($dt->price) }}
+                                        </div>
                                     </a>
-                                    <span class="stext-105 cl3">
-                                        Rp. {{ number_format($dt->price) }}
-                                    </span>
+                                    <form action="{{ route('cart.add', $dt->id) }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-dark btn-add-to-cart">
+                                            Add to <i class="fa fa-cart-plus"></i>
+                                        </button>
+                                    </form>
                                 </div>
+                                @else
+                                <div class="mt-2">
+                                    <div>
+                                        <h6>
+                                            {{ $dt->name }}
+                                        </h6>
+                                        <div class="stext-105 cl3">
+                                            Rp. {{ number_format($dt->price) }}
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-secondary" disabled>
+                                        Out of Stock
+                                    </button>
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>

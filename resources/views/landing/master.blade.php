@@ -196,9 +196,9 @@
                     <p>Complement</p>
                 </a>
                 @else
-                <a href="{{ route('landing.index') }}#product-section" class="{{ request()->routeIs('customer.membership') || request()->is('history') ? 'active' : 'text-dark'}}">
-                    <i class="bi bi-person-vcard fs-3"></i>
-                    <p>Membership</p>
+                <a href="{{ route('f&b.index') }}" class="{{ request()->routeIs('f&b.index') || request()->is('f&b') ? 'active' : 'text-dark'}}">
+                    <i class="bi bi-basket2 fs-3"></i>
+                    <p>Complement</p>
                 </a>
                 @endif
             </div>

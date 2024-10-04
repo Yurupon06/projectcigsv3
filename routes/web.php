@@ -23,6 +23,7 @@ use App\Http\Controllers\ComplementController;
 Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
 
 Route::get('/cart', [LandingController::class, 'cart'])->name('cart.index');
+Route::post('/cart', [LandingController::class, 'updateCart'])->name('update.cart');
 Route::get('/', [LandingController::class, 'home'])->name('home.index');
 // Auth
 Route::middleware('auth')->group(function () {
