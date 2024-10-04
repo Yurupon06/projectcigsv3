@@ -536,16 +536,28 @@ class CashierController extends Controller
     
         $quantity = $request->input('quantity', 1);
     
+        if ($complement->stok < $quantity) {
+            return redirect()->back()->with('error', 'Stok tidak mencukupi.');
+        }
+    
         $cartItem = cart::where('user_id', $user->id)
                         ->where('complement_id', $complement->id)
                         ->first();
     
         if ($cartItem) {
             $newQuantity = $cartItem->quantity + $quantity;
+            if ($complement->stok < $newQuantity) {
+                return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
+            }
+    
             $cartItem->update([
                 'quantity' => $newQuantity,
                 'total' => $newQuantity * $complement->price
             ]);
+            $complement->update([
+                'stok' => $complement->stok - $quantity
+            ]);
+    
         } else {
             cart::create([
                 'user_id' => $user->id,
@@ -553,32 +565,74 @@ class CashierController extends Controller
                 'quantity' => $quantity,
                 'total' => $quantity * $complement->price
             ]);
+    
+            $complement->update([
+                'stok' => $complement->stok - $quantity
+            ]);
         }
     
-        return redirect()->route('cashier.complement');
+        return redirect()->route('cashier.complement')->with('success', 'Item berhasil ditambahkan ke keranjang.');
     }
+    
     public function deleteCart($id)
     {
         $cartItem = cart::findOrFail($id);
-
+    
+        $complement = complement::findOrFail($cartItem->complement_id);
+    
+        $complement->update([
+            'stok' => $complement->stok + $cartItem->quantity
+        ]);
+    
         $cartItem->delete();
-
-        return redirect()->route('cashier.complement');
+    
+        return redirect()->route('cashier.complement')->with('success', 'Item berhasil dihapus dari keranjang, stok telah diperbarui.');
     }
+    
     
 
     public function updateQuantity(Request $request, $id)
     {
         $cartItem = Cart::findOrFail($id);
-        $quantity = $request->input('quantity');
+        $newQuantity = $request->input('quantity');
+        $currentQuantity = $cartItem->quantity;
     
-        $cartItem->quantity = $quantity;
-        $cartItem->total = $quantity * $cartItem->complement->price; 
+        $complement = complement::findOrFail($cartItem->complement_id);
+    
+        if ($newQuantity > $currentQuantity) {
+            $difference = $newQuantity - $currentQuantity;
+    
+            if ($complement->stok < $difference) {
+                return response()->json(['error' => 'Stok tidak mencukupi!'], 400);
+            }
+    
+            $complement->update([
+                'stok' => $complement->stok - $difference
+            ]);
+        }
+    
+        if ($newQuantity < $currentQuantity) {
+            $difference = $currentQuantity - $newQuantity;
+    
+            $complement->update([
+                'stok' => $complement->stok + $difference
+            ]);
+        }
+    
+        $cartItem->quantity = $newQuantity;
+        $cartItem->total = $newQuantity * $complement->price; 
     
         $cartItem->save();
     
-        return response()->json(['success' => 'Quantity updated successfully!', 'total' => $cartItem->total]);
+        return response()->json([
+            'success' => 'Quantity updated successfully!',
+            'total' => $cartItem->total,
+            'complement_id' => $complement->id,
+            'new_stock' => $complement->stok
+        ]);
     }
+    
+    
 
     public function checkoutProccess(){
         $user = Auth::user();

@@ -439,9 +439,15 @@ class LandingController extends Controller
 
         if ($cartItem) {
             $newQuantity = $cartItem->quantity + $quantity;
+            if ($complement->stok < $newQuantity) {
+                return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
+            }
             $cartItem->update([
                 'quantity' => $newQuantity,
                 'total' => $newQuantity * $complement->price
+            ]);
+            $complement->update([
+                'stok' => $complement->stok - $quantity
             ]);
         } else {
             cart::create([
@@ -449,6 +455,9 @@ class LandingController extends Controller
                 'complement_id' => $complement->id,
                 'quantity' => $quantity,
                 'total' => $quantity * $complement->price
+            ]);
+            $complement->update([
+                'stok' => $complement->stok - $quantity
             ]);
         }
 
@@ -476,6 +485,11 @@ class LandingController extends Controller
     public function deleteCart($id)
     {
         $cartItem = cart::findOrFail($id);
+        $complement = complement::findOrFail($cartItem->complement_id);
+    
+        $complement->update([
+            'stok' => $complement->stok + $cartItem->quantity
+        ]);
 
         $cartItem->delete();
 
