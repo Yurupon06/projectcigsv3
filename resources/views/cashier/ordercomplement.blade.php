@@ -146,11 +146,11 @@
                     <div class="card-body product-list-container">
                         <div class="row">
                             @forelse($complement as $dt)
-                                <div class="col-md-2 mb-4">
+                                <div class="col-md-2 mb-4" data-complement-id="{{ $dt->id }}">
                                     <div class="product-card" style="opacity: {{ $dt->stok < 1 ? '0.5' : '1' }};">
                                         <img src="{{ asset('storage/' . $dt->image) }}" alt="{{ $dt->name }}">
                                         <div class="product-name">{{ $dt->name }}</div>
-                                        <span>stok: {{ $dt->stok }}</span>
+                                        <span class="product-stock">stok: {{ $dt->stok }}</span>
                                         <div class="product-price">{{ number_format($dt->price, 0, ',', '.') }} IDR</div>
                                         @if ($dt->stok < 1)
                                             <button type="button" class="btn btn-secondary add-to-cart-btn" disabled>Out of Stock</button>
@@ -182,7 +182,7 @@
                             @foreach($cartItems as $item)
                                 <div class="summary-item">
                                     <img src="{{ asset('storage/' . $item->complement->image) }}" alt="{{ $item->complement->name }}" style="width: 40px; height: 40px; border-radius: 0.375rem; margin-right: 10px;">
-                                    <span class="complement-name">{{ $item->complement->name }}</span>
+                                    <span>{{ $item->complement->name }}</span>
                                     <div class="summary-item-quantity">
                                         <div class="quantity-wrapper">
                                             <button class="quantity-btn minus-btn" onclick="changeQuantity(this, -1, {{ $item->id }})">-</button>
@@ -216,6 +216,7 @@
             </div>
         </div>
     </div>
+    
 
 <script>
 function changeQuantity(button, change, itemId) {
@@ -239,7 +240,7 @@ function changeQuantity(button, change, itemId) {
     .then(data => {
         if (data.success) {
             updateOverallTotal();
-            updateStockDisplay(data.complement_id, data.new_stock);  // Update stock display if necessary
+            updateStockDisplay(data.complement_id, data.new_stock);  
         } else {
             alert(data.error);
         }

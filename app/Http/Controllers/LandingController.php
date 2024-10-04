@@ -275,41 +275,68 @@ class LandingController extends Controller
     public function complementCancel($id)
     {
         $orderComplement = OrderComplement::findOrFail($id);
-        $orderComplement->update(['status' => 'canceled']);
-        return redirect()->route('yourorder.index', ['type' => 'complement'])->with('success', 'Successfully Cancel The Complement.');
+        $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->get();
+    
+        foreach ($orderDetails as $detail) {
+            $complement = Complement::findOrFail($detail->complement_id);
+    
+            $complement->update([
+                'stok' => $complement->stok + $detail->quantity,
+            ]);
+    
+            $detail->delete();
+        }
+    
+        $orderComplement->delete();
+    
+        return redirect()->route('yourorder.index', ['type' => 'complement'])->with('success', 'Successfully Cancelled The Complement, Restored Stock, and Deleted the Order.');
     }
+    
+    
 
     public function updateCart(Request $request) 
     {
-        $cart = cart::where('user_id', auth()->id())->get();
-        foreach ($cart as $item) {
-            $inputQuantity = $request->input("action-{$item->id}");
-            $newQuantity = $item->quantity;
-            $totalItems = $item->total;
-            $complementStock = $item->complement->stok;
-            
+        $cartItems = cart::where('user_id', auth()->id())->get(); // Ambil semua item di cart user yang login
+    
+        foreach ($cartItems as $cartItem) {
+            $complement = complement::findOrFail($cartItem->complement_id); // Ambil complement yang sesuai dengan cart item
+    
+            $inputQuantity = $request->input("action-{$cartItem->id}"); // Ambil input kuantitas berdasarkan action yang diambil (plus/minus)
+            $newQuantity = $cartItem->quantity; // Kuantitas saat ini
+    
+            // Jika input adalah "plus", tambahkan kuantitas
             if ($inputQuantity === "plus") {
-                if ($item->quantity < $complementStock) {
-                    $newQuantity = $item->quantity + 1;
+                $newQuantity += 1;
+    
+                // Cek apakah stok mencukupi untuk menambah kuantitas
+                if ($complement->stok < 1) {
+                    return redirect()->back()->withErrors(['error' => 'Stok tidak mencukupi!']);
                 }
-            } else if ($inputQuantity === "minus") {
-                $newQuantity = $item->quantity - 1;
-            }
-
-            if ($newQuantity > 0 && $newQuantity <= $complementStock) {
-                $item->update([
-                    'quantity' => $newQuantity,
-                    'total' => $newQuantity * $item->complement->price
+    
+                // Kurangi stok complement
+                $complement->update([
+                    'stok' => $complement->stok - 1
+                ]);
+    
+            // Jika input adalah "minus", kurangi kuantitas
+            } else if ($inputQuantity === "minus" && $newQuantity > 1) {
+                $newQuantity -= 1;
+    
+                // Tambah kembali stok complement
+                $complement->update([
+                    'stok' => $complement->stok + 1
                 ]);
             }
-
-            if ($newQuantity <= 0) {
-                $item->delete();
-            }
+    
+            // Update kuantitas dan total cart item
+            $cartItem->quantity = $newQuantity;
+            $cartItem->total = $newQuantity * $complement->price;
+            $cartItem->save();
         }
-
-        return redirect()->back();
+    
+        return redirect()->back(); // Kembali ke halaman sebelumnya setelah update
     }
+    
 
     public function checkoutComplement(Request $request)
     {
@@ -464,7 +491,7 @@ class LandingController extends Controller
 
         $complement = complement::findOrFail($complementId);
 
-        $quantity = $request->input('quantity', 1);
+        $quantity = $request->input('quantity');
 
         $cartItem = cart::where('user_id', $user->id)
             ->where('complement_id', $complement->id)
@@ -472,9 +499,9 @@ class LandingController extends Controller
 
         if ($cartItem) {
             $newQuantity = $cartItem->quantity + $quantity;
-            if ($complement->stok < $newQuantity) {
-                return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
-            }
+            // if ($complement->stok < $newQuantity) {
+            //     return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
+            // }
             $cartItem->update([
                 'quantity' => $newQuantity,
                 'total' => $newQuantity * $complement->price
@@ -502,11 +529,9 @@ class LandingController extends Controller
     {
         $user = Auth::user();
 
-        // Ambil customer dan member seperti sebelumnya
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
 
-        // Ambil data cart berdasarkan user yang sedang login
         $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
         $cartCount = $this->getUniqueCartItemCount();
 

@@ -93,7 +93,7 @@
 
                             <!-- Product Stock -->
                             <span class="stext-100 cl3" style="font-size: 16px; color: #666;">
-                                Stok: <span class="stock">{{ $complement->stok }}</span>
+                                Stok: <span class="">{{ $complement->stok }}</span>
                             </span>
 
                             <!-- Product Description -->
