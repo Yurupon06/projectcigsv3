@@ -281,50 +281,47 @@ class LandingController extends Controller
 
     public function updateCart(Request $request) 
     {
-        $cart = cart::where('user_id', auth()->id())->get();
-        foreach ($cart as $item) {
-            $complement = complement::findOrFail($item->complement_id);
-            $inputQuantity = $request->input("action-{$item->id}");
-            $newQuantity = $item->quantity;
-            $totalItems = $item->total;
-            $complementStock = $item->complement->stok;
-            
+        $cartItems = cart::where('user_id', auth()->id())->get(); // Ambil semua item di cart user yang login
+    
+        foreach ($cartItems as $cartItem) {
+            $complement = complement::findOrFail($cartItem->complement_id); // Ambil complement yang sesuai dengan cart item
+    
+            $inputQuantity = $request->input("action-{$cartItem->id}"); // Ambil input kuantitas berdasarkan action yang diambil (plus/minus)
+            $newQuantity = $cartItem->quantity; // Kuantitas saat ini
+    
+            // Jika input adalah "plus", tambahkan kuantitas
             if ($inputQuantity === "plus") {
-                if ($item->quantity < $complementStock) {
-                    $newQuantity = $item->quantity + 1;
-                    if ($complement->stok < $newQuantity) {
-                        return response()->json(['error' => 'Stok tidak mencukupi!'], 400);
-                    }
-            
-                    $complement->update([
-                        'stok' => $complement->stok - $newQuantity
-                    ]);
+                $newQuantity += 1;
+    
+                // Cek apakah stok mencukupi untuk menambah kuantitas
+                if ($complement->stok < 1) {
+                    return redirect()->back()->withErrors(['error' => 'Stok tidak mencukupi!']);
                 }
-            } else if ($inputQuantity === "minus") {
-                $newQuantity = $item->quantity - 1;
-                if ($complement->stok < $newQuantity) {
-                    return response()->json(['error' => 'Stok tidak mencukupi!'], 400);
-                }
-        
+    
+                // Kurangi stok complement
                 $complement->update([
-                    'stok' => $complement->stok - $newQuantity
+                    'stok' => $complement->stok - 1
+                ]);
+    
+            // Jika input adalah "minus", kurangi kuantitas
+            } else if ($inputQuantity === "minus" && $newQuantity > 1) {
+                $newQuantity -= 1;
+    
+                // Tambah kembali stok complement
+                $complement->update([
+                    'stok' => $complement->stok + 1
                 ]);
             }
-
-            if ($newQuantity > 0 && $newQuantity <= $complementStock) {
-                $item->update([
-                    'quantity' => $newQuantity,
-                    'total' => $newQuantity * $item->complement->price
-                ]);
-            }
-
-            if ($newQuantity <= 0) {
-                $item->delete();
-            }
+    
+            // Update kuantitas dan total cart item
+            $cartItem->quantity = $newQuantity;
+            $cartItem->total = $newQuantity * $complement->price;
+            $cartItem->save();
         }
-
-        return redirect()->back();
+    
+        return redirect()->back(); // Kembali ke halaman sebelumnya setelah update
     }
+    
 
     public function checkoutComplement(Request $request)
     {
