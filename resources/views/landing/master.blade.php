@@ -209,7 +209,7 @@
                 </a>
             </div>
         </div>
-        <div id="floating-cart" class="{{ request()->is('cart', 'checking*', 'getin', 'history', 'checkout*', 'complement*', 'edit*') ? 'd-none' : 'd-block' }}">
+        <div id="floating-cart" class="{{ request()->is('cart', 'checking*', 'getin', 'history', 'checkout*', 'edit*') ? 'd-none' : 'd-block' }}">
             <a href="{{ route('cart.index') }}"> 
                 <i class="fa fa-shopping-cart fs-4 mt-3"></i>
             </a>
