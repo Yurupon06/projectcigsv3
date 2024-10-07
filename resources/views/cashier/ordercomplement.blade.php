@@ -128,8 +128,7 @@
                 <div class="alert alert-success small" role="alert">
                     {{ session('success') }}
                 </div>
-            @endif
-            @if (session('error'))
+            @elseif (session('error'))
                 <div class="alert alert-error small" role="alert">
                     {{ session('error') }}
                 </div>
@@ -186,7 +185,8 @@
                                     <div class="summary-item-quantity">
                                         <div class="quantity-wrapper">
                                             <button class="quantity-btn minus-btn" onclick="changeQuantity(this, -1, {{ $item->id }})">-</button>
-                                            <input type="number" class="quantity-input" value="{{ $item->quantity }}" min="1">
+                                            <input type="number" class="quantity-input" value="{{ $item->quantity }}" min="1" max="{{ $item->complement->stok }}">
+
                                             <button class="quantity-btn plus-btn" onclick="changeQuantity(this, 1, {{ $item->id }})">+</button>
                                         </div>
                                         <span>x Rp {{ number_format($item->complement->price) }}</span>
@@ -222,30 +222,35 @@
 function changeQuantity(button, change, itemId) {
     const quantityInput = button.closest('.quantity-wrapper').querySelector('.quantity-input');
     let currentQuantity = parseInt(quantityInput.value);
+    const maxQuantity = parseInt(quantityInput.getAttribute('max')); // Mendapatkan stok maksimum
     const newQuantity = currentQuantity + change;
 
-    if (newQuantity < 1) return;
+    // Cek jika quantity yang baru tidak melebihi stok maksimum dan tidak kurang dari 1
+    if (newQuantity >= 1 && newQuantity <= maxQuantity) {
+        quantityInput.value = newQuantity;
 
-    quantityInput.value = newQuantity;
-
-    fetch(`{{ url('/cashier/cart/update') }}/${itemId}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-        },
-        body: JSON.stringify({ quantity: newQuantity })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            updateOverallTotal();
-            updateStockDisplay(data.complement_id, data.new_stock);  
-        } else {
-            alert(data.error);
-        }
-    })
-    .catch(error => console.error('Error:', error));
+        // Kirim update quantity ke server
+        fetch(`{{ url('/cashier/cart/update') }}/${itemId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ quantity: newQuantity })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateOverallTotal();
+                updateStockDisplay(data.complement_id, data.new_stock);  
+            } else {
+                alert(data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    } else if (newQuantity > maxQuantity) {
+        alert('Quantity exceeds available stock!');
+    }
 }
 
 function updateOverallTotal() {

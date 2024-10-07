@@ -62,7 +62,7 @@
                                             <form action="{{ route('update.cart') }}" method="POST" class="col-4 d-inline p-0">
                                                 @csrf
                                                 <input type="hidden" name="action-{{ $dt->id }}" value="plus">
-                                                <button type="submit" class="border border-secondary text-center w-100" {{ $dt->complement->stok < 1 ? 'disabled' : '' }}>
+                                                <button type="submit" class="border border-secondary text-center w-100" {{ $dt->complement->stok <= $dt->quantity ? 'disabled' : '' }}>
                                                     <i class="fa fa-plus"></i>
                                                 </button>
                                             </form>
