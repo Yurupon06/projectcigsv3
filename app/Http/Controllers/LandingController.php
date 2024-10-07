@@ -464,10 +464,7 @@ class LandingController extends Controller
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
         $cartCount = $this->getUniqueCartItemCount();
 
-        // if($complement->stok > 0) {
-            return view('landing.complement.detail', compact('complement', 'user', 'customer', 'member', 'cartCount'));
-        // }
-        // abort(404);
+        return view('landing.complement.detail', compact('complement', 'user', 'customer', 'member', 'cartCount'));
     }
 
     public function addToCart(Request $request, $complementId)
