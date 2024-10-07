@@ -554,9 +554,7 @@ class CashierController extends Controller
                 'quantity' => $newQuantity,
                 'total' => $newQuantity * $complement->price
             ]);
-            $complement->update([
-                'stok' => $complement->stok - $quantity
-            ]);
+
     
         } else {
             cart::create([
@@ -566,9 +564,7 @@ class CashierController extends Controller
                 'total' => $quantity * $complement->price
             ]);
     
-            $complement->update([
-                'stok' => $complement->stok - $quantity
-            ]);
+
         }
     
         return redirect()->route('cashier.complement')->with('success', 'Item berhasil ditambahkan ke keranjang.');
@@ -580,9 +576,7 @@ class CashierController extends Controller
     
         $complement = complement::findOrFail($cartItem->complement_id);
     
-        $complement->update([
-            'stok' => $complement->stok + $cartItem->quantity
-        ]);
+
     
         $cartItem->delete();
     
@@ -606,17 +600,13 @@ class CashierController extends Controller
                 return response()->json(['error' => 'Stok tidak mencukupi!'], 400);
             }
     
-            $complement->update([
-                'stok' => $complement->stok - $difference
-            ]);
+
         }
     
         if ($newQuantity < $currentQuantity) {
             $difference = $currentQuantity - $newQuantity;
     
-            $complement->update([
-                'stok' => $complement->stok + $difference
-            ]);
+
         }
     
         $cartItem->quantity = $newQuantity;
@@ -640,6 +630,7 @@ class CashierController extends Controller
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
+    
         $totalAmount = $cartItems->sum('total');
         $qrToken = Str::random(10);
         $orderComplement = OrderComplement::create([
@@ -649,19 +640,34 @@ class CashierController extends Controller
             'quantity' => $cartItems->count(),
             'qr_token' => $qrToken, 
         ]);
+    
         foreach ($cartItems as $item) {
             $price = $item->complement->price;
             $subTotal = $price * $item->quantity;
+            $complement = $item->complement;
+            
+            if ($complement->stok < $item->quantity) {
+                return redirect()->back()->with('error', "Stok untuk {$complement->name} tidak mencukupi sisa {$complement->stok}.");
+            }
+            $complement->stok -= $item->quantity;
+            $complement->save(); // Update stock
+    
+            // Create order detail
             OrderDetail::create([
                 'order_complement_id' => $orderComplement->id,
                 'complement_id' => $item->complement->id,
                 'quantity' => $item->quantity,
                 'sub_total' => $subTotal, 
             ]);
+    
+            // Reduce complement stock
         }
+    
         Cart::where('user_id', $user->id)->delete();
+    
         return redirect()->route('cashier.checkout', ['qr_token' => $orderComplement->qr_token]);
     }
+    
 
 
     public function checkoutComplement($qr_token){

@@ -312,20 +312,14 @@ class LandingController extends Controller
                 if ($complement->stok < 1) {
                     return redirect()->back()->withErrors(['error' => 'Stok tidak mencukupi!']);
                 }
-    
-                // Kurangi stok complement
-                $complement->update([
-                    'stok' => $complement->stok - 1
-                ]);
+
     
             // Jika input adalah "minus", kurangi kuantitas
             } else if ($inputQuantity === "minus" && $newQuantity > 1) {
                 $newQuantity -= 1;
     
                 // Tambah kembali stok complement
-                $complement->update([
-                    'stok' => $complement->stok + 1
-                ]);
+
             }
     
             // Update kuantitas dan total cart item
@@ -362,6 +356,16 @@ class LandingController extends Controller
             ]);
 
             foreach ($cartItems as $item) {
+                $complement = $item->complement; // Ambil data complement
+
+                // Cek apakah stok mencukupi
+                if ($complement->stok < $item->quantity) {
+                    return redirect()->back()->with('error', "Stok untuk {$complement->name} tidak mencukupi sisa {$complement->stok}.");
+                }
+    
+                // Kurangi stok
+                $complement->stok -= $item->quantity;
+                $complement->save();
                 $itemTotal = $item->quantity * $item->complement->price;
                 $totalAmount += $itemTotal;
                 $totalQuantity += $item->quantity;
@@ -506,9 +510,7 @@ class LandingController extends Controller
                 'quantity' => $newQuantity,
                 'total' => $newQuantity * $complement->price
             ]);
-            $complement->update([
-                'stok' => $complement->stok - $quantity
-            ]);
+
         } else {
             cart::create([
                 'user_id' => $user->id,
@@ -516,9 +518,7 @@ class LandingController extends Controller
                 'quantity' => $quantity,
                 'total' => $quantity * $complement->price
             ]);
-            $complement->update([
-                'stok' => $complement->stok - $quantity
-            ]);
+
         }
 
         return redirect()->route('cart.index')->with('success', 'Item added to cart successfully!');
@@ -545,9 +545,7 @@ class LandingController extends Controller
         $cartItem = cart::findOrFail($id);
         $complement = complement::findOrFail($cartItem->complement_id);
     
-        $complement->update([
-            'stok' => $complement->stok + $cartItem->quantity
-        ]);
+
 
         $cartItem->delete();
 
