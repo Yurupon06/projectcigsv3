@@ -2,7 +2,6 @@
 @section('title', isset($setting) ? $setting->app_name . ' - Detail Complement' : 'Detail Complement')
 @section('main')
 
-
     <body class="animsition">
 
         <style>
@@ -36,6 +35,13 @@
                 margin: 5px;
             }
 
+            .disable-cart {
+                color: #fff;
+                border-radius: 5px;
+                padding: 5px;
+                margin: 5px;
+            }
+
             .addcart:hover {
                 background-color: #ffa500;
                 color: #fff;
@@ -61,27 +67,48 @@
                 background-color: #ffa500;
                 color: #fff;
             }
+
+            .out-of-stock {
+            opacity: 0.5;
+            }
+
+            .out-of-stock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            }
         </style>
 
         <!-- Product Detail Section -->
-        <section class="sec-product-detail bg0 p-t-65 p-b-60">
+        <section class="sec-product-detail bg0 p-t-80 p-b-60">
             <div class="container">
                 <div class="row">
                     <!-- Image Section -->
-                    <div class="col-md-6 col-lg-7 p-b-30">
+                    <div class="col-6 p-b-30">
                         <div class="p-l-25 p-r-30 p-lr-0-lg">
                             <div class="wrap-pic-w pos-relative" style="overflow: hidden;">
                                 <img src="{{ asset('storage/' . $complement->image) }}" alt="IMG-PRODUCT" class="img-fluid"
-                                    style="border-radius: 10px;">
+                                style="border-radius: 10px;">
+                                @if ($complement->stok == 0)
+                                <h1 class="out-of-stock-overlay">
+                                    <span class="badge bg-danger">Out of Stock</span>
+                                </h1>
+                                @endif
                             </div>
                         </div>
                     </div>
 
                     <!-- Product Details Section -->
-                    <div class="col-md-6 col-lg-5 p-b-30">
+                    <div class="col-6 p-b-30">
                         <div class="p-r-50 p-t-5 p-lr-0-lg ms-2">
                             <!-- Product Name -->
-                            <h4 class="mtext-105 cl2 js-name-detail p-b-14"
+                            <h4 class="mtext-105 cl2 js-name-detail"
                                 style="font-size: 32px; font-weight: bold; color: #333;">
                                 {{ $complement->name }}
                             </h4>
@@ -93,19 +120,19 @@
 
                             <!-- Product Stock -->
                             <span class="stext-100 cl3" style="font-size: 16px; color: #666;">
-                                Stok: <span class="">{{ $complement->stok }}</span>
+                                Stok: <span class="stock">{{ $complement->stok ?? 0 }}</span>
                             </span>
 
                             <!-- Product Description -->
-                            <p class="stext-102 cl3 p-t-23" style="font-size: 16px; line-height: 1.8; color: #777;">
+                            <p class="stext-102 cl3 mb-0" style="font-size: 16px;color: #777;">
                                 {{ $complement->description }}
                             </p>
 
                             <!-- Add to Cart Section -->
-                            <div class="d-flex align-items-center justify-content-end pt-2">
+                            <div class="d-flex align-items-center justify-content-end">
                                 <form action="{{ route('cart.add', $complement->id) }}" method="POST">
                                     @csrf
-                                    <div class="d-flex justify-content-between p-3">
+                                    <div class="d-flex justify-content-between p-3 {{ $complement->stok == 0 ? 'out-of-stock' : '' }}">
                                         <div class="minus px-2 border border-secondary">
                                             <i class="bi bi-dash fs-3"></i>
                                         </div>
@@ -119,10 +146,16 @@
                                     <div class="total-price text-center">Total: Rp. <span id="total-price"></span></div>
 
                                     <!-- Add to Cart Button -->
+                                    @if($complement->stok > 0)
                                     <button type="submit"
                                         class="addcart flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn3 p-lr-15 trans-04 js-addcart-detail">
                                         Add to Cart
                                     </button>
+                                    @else
+                                    <button class="disable-cart stext-101 cl0 size-101 bg-secondary p-lr-15 trans-04 out-of-stock" disabled>
+                                        Out of Stock
+                                    </button>
+                                    @endif
                                 </form>
 
                             </div>
@@ -153,7 +186,11 @@
 
                 function updateStockDisplay() {
                     const quantity = parseInt($('#quantity').val());
-                    $('.stock').text(stock - quantity);
+                    if (stock == 0) {
+                        $('.stock').text('0');
+                    } else {
+                        $('.stock').text(stock - quantity);
+                    }
                 }
 
                 $('.minus').click(function() {
