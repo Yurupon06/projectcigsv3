@@ -111,6 +111,7 @@
                             <i class="fa fa-search"></i>
                         </button>
                     </div>
+                </div>
             </form>
         </div>
         <div class="row">
