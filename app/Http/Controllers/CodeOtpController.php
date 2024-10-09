@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CodeOtp;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -15,6 +16,12 @@ class CodeOtpController extends Controller
         ]);
 
         $phone = $request->phone;
+
+        $userExists = User::where('phone', $phone)->exists();
+
+        if ($userExists) {
+            return response()->json(['success' => false, 'message' => 'Nomor telepon telah terdaftar'], 409);
+        }
 
         $otp = rand(100000, 999999);
 
