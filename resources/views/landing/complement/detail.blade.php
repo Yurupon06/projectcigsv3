@@ -120,7 +120,7 @@
 
                             <!-- Product Stock -->
                             <span class="stext-100 cl3" style="font-size: 16px; color: #666;">
-                                Stok: <span class="stock">{{ $complement->stok ?? 0 }}</span>
+                                Stok: <span class="">{{ $complement->stok ?? 0 }}</span>
                             </span>
 
                             <!-- Product Description -->
@@ -143,7 +143,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="total-price text-center">Total: Rp. <span id="total-price"></span></div>
+                                    {{-- <div class="total-price text-center">Total: Rp. <span id="total-price"></span></div> --}}
 
                                     <!-- Add to Cart Button -->
                                     @if($complement->stok > 0)
