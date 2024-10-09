@@ -500,9 +500,9 @@ class LandingController extends Controller
 
         if ($cartItem) {
             $newQuantity = $cartItem->quantity + $quantity;
-            // if ($complement->stok < $newQuantity) {
-            //     return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
-            // }
+            if ($complement->stok < $newQuantity) {
+                return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
+            }
             $cartItem->update([
                 'quantity' => $newQuantity,
                 'total' => $newQuantity * $complement->price
