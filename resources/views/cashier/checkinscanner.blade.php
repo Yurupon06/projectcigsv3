@@ -38,7 +38,6 @@
             display: none;
         }
 
-        /* Media query untuk layar kecil seperti mobile */
         @media (max-width: 768px) {
             #reader {
                 height: auto;
@@ -96,8 +95,8 @@
             </div>
         </div>
     </div>
-
-    <!-- Success and error sounds -->
+    
+    {{-- Success and error sounds --}}
     <audio id="success-sound" src="../../assets/sound/success.mp3"></audio>
     <audio id="error-sound" src="../../assets/sound/Error2.mp3"></audio>
 

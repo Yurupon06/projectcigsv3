@@ -168,6 +168,21 @@
 
 <body>
     <main class="container">
+        <div id="alertContainer"></div> <!-- Tempat untuk menampilkan alert -->
+        @if($message = session('success'))
+        <div class="alert alert-success my-2 text-success" role="alert">{{ $message }}</div>
+        @elseif ($message = session('error'))
+        <div class="alert alert-danger my-2 text-danger" role="alert">{{ $message }}</div>
+        @endif
+        @if ($errors->any())
+        <div class="alert alert-danger mb-3">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8 col-sm-10">
                 <div class="card">
@@ -188,12 +203,19 @@
                             <div class="form-floating mb-2">
                                 <input type="number" class="form-control @error('phone') is-invalid @enderror" id="floatingPhone" name="phone" value="{{ old('phone') }}" required autocomplete="phone">
                                 <label for="floatingEmail">Phone</label>
-                                @error('phone')
-                                    <div class="invalid-feedback">{{ $message }}</div>
+                            </div>
+                            <div class="mb-2">
+                                <button type="button" class="btn btn-secondary w-100" onclick="sendOtp()">Kirim OTP</button>
+                            </div>
+                            <div class="form-floating mb-2">
+                                <input type="number" class="form-control" id="floatingOtp" name="otp" placeholder="Masukkan OTP" required autocomplete="off">
+                                <label for="floatingOtp">Masukkan OTP</label>
+                                @error('otp')
+                                <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="form-floating mb-2">
-                                <input type="password" class="form-control @error('password') is-invalid @enderror" id="floatingPassword" name="password" required autocomplete="new-password">
+                                <input type="password" class="form-control @error('password') is-invalid @enderror" id="floatingPassword" value="{{ old('password') }}" name="password" required autocomplete="new-password">
                                 <label for="floatingPassword">Password</label>
                                 <i class="fa fa-eye-slash input-icon" id="togglePasswordIcon" onclick="togglePassword('floatingPassword', 'togglePasswordIcon')"></i>
                                 @error('password')
@@ -201,11 +223,12 @@
                                 @enderror
                             </div>
                             <div class="form-floating mb-2">
-                                <input type="password" class="form-control" id="floatingPasswordConfirm" name="password_confirmation" required autocomplete="new-password">
+                                <input type="password" class="form-control" id="floatingPasswordConfirm" value="{{ old('password_confirmation') }}" name="password_confirmation" required autocomplete="new-password">
                                 <label for="floatingPasswordConfirm">Confirm Password</label>
                                 <i class="fa fa-eye-slash input-icon" id="togglePasswordConfirmationIcon" onclick="togglePassword('floatingPasswordConfirm', 'togglePasswordConfirmationIcon')"></i>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Register</button>                        </form>
+                            <button type="submit" class="btn btn-primary w-100">Register</button>                        
+                        </form>
                     </div>
                     <div class="card-footer text-center">
                         <p>Already have an account? <a href="{{ route('login') }}" style="color: #ff4b2b;">Login</a></p>
@@ -230,10 +253,55 @@
             }
         }
 
+        function sendOtp() {
+            const phone = document.getElementById('floatingPhone').value;
+
+            if (!phone) {
+                showError("Masukkan nomor telepon terlebih dahulu.");
+                return;
+            }
+            fetch("{{ route('send-otp') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({ phone: phone })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess("OTP telah dikirim ke nomor " + phone); // Menampilkan pesan sukses
+                } else {
+                    showError(data.message || "Gagal mengirim OTP, coba lagi.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                showError("Terjadi kesalahan, coba lagi.");
+            });
+        }
+
+        function showError(message) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-danger my-2 text-danger" role="alert">${message}</div>
+            `;
+        }
+
+        function showSuccess(message) {
+            const alertContainer = document.getElementById('alertContainer');
+            alertContainer.innerHTML = `
+                <div class="alert alert-success my-2 text-success" role="alert">${message}</div>
+            `;
+        }
     </script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous"></script>
 </body>
+
+
+
 
 </html>

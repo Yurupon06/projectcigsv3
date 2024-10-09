@@ -296,33 +296,28 @@ class LandingController extends Controller
 
     public function updateCart(Request $request) 
     {
-        $cartItems = cart::where('user_id', auth()->id())->get(); // Ambil semua item di cart user yang login
+        $cartItems = cart::where('user_id', auth()->id())->get(); 
     
         foreach ($cartItems as $cartItem) {
-            $complement = complement::findOrFail($cartItem->complement_id); // Ambil complement yang sesuai dengan cart item
+            $complement = complement::findOrFail($cartItem->complement_id);
     
-            $inputQuantity = $request->input("action-{$cartItem->id}"); // Ambil input kuantitas berdasarkan action yang diambil (plus/minus)
-            $newQuantity = $cartItem->quantity; // Kuantitas saat ini
+            $inputQuantity = $request->input("action-{$cartItem->id}");
+            $newQuantity = $cartItem->quantity; 
     
-            // Jika input adalah "plus", tambahkan kuantitas
             if ($inputQuantity === "plus") {
                 $newQuantity += 1;
     
-                // Cek apakah stok mencukupi untuk menambah kuantitas
                 if ($complement->stok < 1) {
                     return redirect()->back()->withErrors(['error' => 'Stok tidak mencukupi!']);
                 }
 
     
-            // Jika input adalah "minus", kurangi kuantitas
             } else if ($inputQuantity === "minus" && $newQuantity > 1) {
                 $newQuantity -= 1;
     
-                // Tambah kembali stok complement
 
             }
     
-            // Update kuantitas dan total cart item
             $cartItem->quantity = $newQuantity;
             $cartItem->total = $newQuantity * $complement->price;
             $cartItem->save();
@@ -501,7 +496,7 @@ class LandingController extends Controller
         if ($cartItem) {
             $newQuantity = $cartItem->quantity + $quantity;
             if ($complement->stok < $newQuantity) {
-                return redirect()->back()->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
+                return redirect()->route('cart.index')->with('error', 'Stok tidak mencukupi untuk menambahkan lebih banyak.');
             }
             $cartItem->update([
                 'quantity' => $newQuantity,
