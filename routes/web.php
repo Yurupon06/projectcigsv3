@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api;
 use App\Http\Controllers\LandingSettingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -16,9 +17,16 @@ use App\Http\Controllers\MemberCheckinController;
 use App\Http\Controllers\ProductCategorieController;
 use App\Http\Controllers\ApplicationSettingController;
 use App\Http\Controllers\ComplementController;
-
+use App\Http\Controllers\CodeOtpController;
+use App\Models\CodeOtp;
 
 // Public
+Route::get('/test-api', function () {
+    return view('test-api');
+})->name('test-api');
+Route::post('/api', [api::class, 'api'])->name('api');
+
+Route::post('/send-otp', [CodeOtpController::class, 'sendOtp'])->name('send-otp');
 
 Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
 
@@ -149,4 +157,5 @@ Route::middleware('guest')->group(function (){
     Route::post('/forgot', [AuthController::class, 'forgot'])->name('forgot');
     Route::get('/reset/{token}', fn(string $token) => view('auth.reset-password', ['token' => $token]))->name('password.reset');
     Route::post('/reset', [AuthController::class, 'reset'])->name('reset');
+
 });
