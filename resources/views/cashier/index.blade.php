@@ -36,6 +36,10 @@
         color: #ff7e00;
     }
 
+    .hidden {
+        display: none;
+    }
+
     @media screen and (max-width: 768px) {
         .page {
             display: none;
@@ -52,29 +56,38 @@
         <div class="row">
             <div class="col-md-12 d-flex flex-column flex-md-row">
                 <div class="col-md-8 me-md-2 mb-4 mb-md-0 mt-4" style="overflow: hidden;">
-                <a href="{{ route('cashier.index', ['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')]) }}" type="button" class=" {{ request('filter', 'membership') == 'membership' ? 'active' : '' }} btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
-                    <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
-                </a>
-                <a href="{{route('cashier.index', ['filter' => 'complement', 'per_page' => request('per_page')]) }}" type="button" class=" {{ request('filter', 'membership') == 'complement' ? 'active' : '' }} btn btn-sm align-items-center btn-complement mx-2" style="font-size: 12px; padding: 10px 12px; background-color:#007bff; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
-                    <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
-                </a>
+                    <a href="{{ route('cashier.index', ['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')]) }}" type="button" 
+                        class=" {{ request('filter') == 'membership' ? 'active' : '' }} btn btn-primary btn-sm align-items-center btn-membership" 
+                        style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
+                        <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
+                    </a>
+
+                    <a href="{{ route('cashier.index', ['filter' => 'complement', 'search' => request('search'), 'per_page' => request('per_page')]) }}" type="button" 
+                        class=" {{ request('filter') == 'complement' ? 'active' : '' }} btn btn-sm align-items-center btn-complement mx-2" 
+                        style="font-size: 12px; padding: 10px 12px; background-color:#007bff; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
+                        <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
+                    </a>
                     <div class="card mb-4">
                         <div class="card-header pb-0 py-1">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="mb-2 page">Cashier</h6>
                                 <div class="input-group" style="max-width: 300px;">
                                     <form method="GET" action="{{ route('cashier.index') }}" class="d-flex w-100 pt-2">
-                                        <input type="text" name="search" class="form-control"
-                                            placeholder="Search orders" value="{{ request('search') }}"
-                                            style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
-                                        <button type="submit" class="btn btn-primary"
-                                            style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 10px; font-size: 14px;">
+                                        <input type="text" name="search" class="form-control" placeholder="Search orders" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
+                                        <input type="hidden" name="filter" value="{{ request('filter') }}">
+                                        <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 10px; font-size: 14px;">
                                             <i class="fas fa-search"></i>
                                         </button>
                                     </form>
                                 </div>
                                 <div class="d-flex align-items-center my-3">
                                     <form method="GET" action="{{ route('cashier.index') }}" class="d-flex">
+                                        <select name="filter" id="filter" class="form-select form-select-sm w-auto me-3 hidden" onchange="this.form.submit()">
+                                            <option value="membership" {{ request('filter') == 'membership' ? 'selected' : '' }}>Membership</option>
+                                            <option value="complement" {{ request('filter') == 'complement' ? 'selected' : '' }}>Complement</option>
+                                        </select>
+
+                                        <!-- Pagination Control -->
                                         <label for="per_page" class="form-label me-2 mt-2">Show:</label>
                                         <select name="per_page" id="per_page" class="form-select form-select-sm w-auto me-3" onchange="this.form.submit()">
                                             <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
@@ -83,6 +96,7 @@
                                             <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                                         </select>
                                     </form>
+
                                 </div>
                             </div>
                         </div>
@@ -172,16 +186,14 @@
                             </div>
                         </div>
                         <div class="container-fluid">
-                        <div class="row">
-                            @if (request('filter') == 'membership')
-                            {{ $orders->appends(['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')])->links('pagination::bootstrap-5') }}
-
-                            @else
-                            {{ $orders->appends(['filter' => 'complement', 'per_page' => request('per_page')])->links('pagination::bootstrap-5') }}
-
-                            @endif
+                            <div class="row">
+                                @if (request('filter') == 'membership')
+                                    {{ $orders->appends(['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')])->links('pagination::bootstrap-5') }}
+                                @elseif (request('filter'))
+                                    {{ $orders->appends(['filter' => 'complement', 'search' => request('search'), 'per_page' => request('per_page')])->links('pagination::bootstrap-5') }}
+                                @endif
+                            </div>
                         </div>
-                    </div>
                     </div>
                 </div>
 
