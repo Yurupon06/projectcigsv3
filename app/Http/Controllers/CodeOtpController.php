@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CodeOtp;
 use App\Models\User;
+use App\Models\ApplicationSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -12,7 +13,7 @@ class CodeOtpController extends Controller
     public function sendOtp(Request $request)
     {
         $request->validate([
-            'phone' => 'required|string|min:5',
+            'phone' => 'required|string|max:13',
         ]);
 
         $phone = $request->phone;
@@ -24,6 +25,7 @@ class CodeOtpController extends Controller
         }
 
         $otp = rand(100000, 999999);
+        $app = ApplicationSetting::pluck('app_name')->first();
 
         CodeOtp::updateOrCreate(
             ['phone' => $phone],
@@ -36,7 +38,7 @@ class CodeOtpController extends Controller
             'gateway' => '6283836949076',
             'number' => $phone,
             'type' => 'text',
-            'message' => 'Code OTP : ' . $otp,
+            'message' => '*' . $otp. '* is your *' .$app. '* Verivication code.',
         ]);
 
         return response()->json(['success' => true, 'message' => 'OTP sent successfully']);
