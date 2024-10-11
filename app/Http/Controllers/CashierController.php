@@ -58,11 +58,12 @@ class CashierController extends Controller
                     return $query->where(function ($q) use ($search) {
                         $q->where('id', 'like', "%{$search}%")
                           ->orWhere('total_amount', 'like', "%{$search}%");
+
                     });
                 })
                 ->orderBy('created_at', 'desc');
         }
-    
+
         if ($ordersQuery) {
             $orders = $ordersQuery->paginate($perPage)->appends([
                 'search' => $search,

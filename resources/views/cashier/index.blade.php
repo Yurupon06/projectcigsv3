@@ -67,6 +67,7 @@
                         style="font-size: 12px; padding: 10px 12px; background-color:#007bff; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
                         <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
                     </a>
+
                     <div class="card mb-4">
                         <div class="card-header pb-0 py-1">
                             <div class="d-flex justify-content-between align-items-center">
@@ -194,6 +195,7 @@
                                 @endif
                             </div>
                         </div>
+                    </div>
                     </div>
                 </div>
 
