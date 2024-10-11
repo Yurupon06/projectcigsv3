@@ -56,18 +56,19 @@ class CashierController extends Controller
             $ordersQuery = OrderComplement::where('status', 'unpaid')
                 ->when($search, function ($query, $search) {
                     return $query->where(function ($q) use ($search) {
-                        $q->where('order_complement_id', 'like', "%{$search}%")
-                          ->orWhere('amount', 'like', "%{$search}%");
+                        $q->where('id', 'like', "%{$search}%")
+                          ->orWhere('total_amount', 'like', "%{$search}%");
+
                     });
                 })
                 ->orderBy('created_at', 'desc');
         }
-    
-        // Paginate the query results
+
         if ($ordersQuery) {
             $orders = $ordersQuery->paginate($perPage)->appends([
                 'search' => $search,
                 'filter' => $filterType,
+                'per_page' => $perPage
             ]);
         } else {
             $orders = new \Illuminate\Pagination\LengthAwarePaginator([], 0, $perPage);
