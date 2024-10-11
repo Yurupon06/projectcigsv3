@@ -521,7 +521,7 @@ class CashierController extends Controller
         $checkin = MemberCheckin::create([
             'member_id' => $member->id,
             'qr_token' => $qrToken,
-            'image' => $imagePath, // Store the image path in the database
+            'image' => $imagePath, 
         ]);
     
         $newQrToken = Str::random(10);
@@ -599,8 +599,6 @@ class CashierController extends Controller
         $cartItem = cart::findOrFail($id);
     
         $complement = complement::findOrFail($cartItem->complement_id);
-    
-
     
         $cartItem->delete();
     

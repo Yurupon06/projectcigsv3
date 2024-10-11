@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\CodeOtp;
 use App\Models\Customer;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -22,32 +23,37 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255|unique:users',
-            // 'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:13',
             'password' => 'required|string|min:3|confirmed',
+            'otp' => 'required|numeric|digits:6',
+        ], [
+            'otp.digits' => 'OTP harus terdiri dari 6 digit.',
         ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+        $otpRecord = CodeOtp::where('phone', $request->phone)->first();
+    
+        if (!$otpRecord || $otpRecord->otp != $request->otp) {
+            return redirect()->route('register')->with('error', 'OTP tidak valid atau salah.')->withInput();
         }
-
+    
         $user = User::create([
             'name' => $request->name,
-            // 'email' => $request->email,
             'phone' => $request->phone,
-            'password' => $request->password,
-            'role' => 'customer'
+            'password' => bcrypt($request->password), 
+            'role' => 'customer',
         ]);
-
+    
         Customer::create([
             'user_id' => $user->id,
-            'phone' => $user->phone,  
+            'phone' => $user->phone,
         ]);
-
-        return redirect()->route('login');
+    
+        $otpRecord->delete();
+    
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
     }
+    
 
     public function showLoginForm()
     {
