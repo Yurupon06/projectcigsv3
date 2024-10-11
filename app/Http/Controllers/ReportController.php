@@ -50,6 +50,6 @@ class ReportController extends Controller
                 'message' => $message,
             ]);
 
-        return redirect()->back()->with('status', 'Message sent successfully!');
+        return redirect()->route('report.send')->with('success', 'Message sent successfully!');
     }
 }

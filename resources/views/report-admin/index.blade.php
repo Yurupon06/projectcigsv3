@@ -7,6 +7,9 @@
 @section('page', 'Report')
 @section('main')
     @include('dashboard.main')
+    @if($message = session('success'))
+    <div class="alert alert-success my-2" role="alert">{{ $message }}</div>
+    @endif
     <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
         <form id="form" method="POST" action="{{route('report.send')}}">
             @csrf
