@@ -28,6 +28,8 @@ Route::get('/test-api', function () {
 })->name('test-api');
 Route::post('/api', [api::class, 'api'])->name('api');
 Route::post('/send-otp', [CodeOtpController::class, 'sendOtp'])->name('send-otp');
+Route::view('/validate-otp', 'auth.validate-otp')->name('validate-otp');
+Route::post('/validate-otp', [CodeOtpController::class, 'validateOtp'])->name('validate-otp');
 
 Route::get('/report', [ReportController::class, 'index'])->name('report.index');
 Route::post('/report', [ReportController::class, 'report'])->name('report.send');

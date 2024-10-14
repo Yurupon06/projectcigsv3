@@ -17,6 +17,7 @@ class CodeOtpController extends Controller
         ]);
 
         $phone = $request->phone;
+        session(['phone' => $phone]);
 
         $userExists = User::where('phone', $phone)->exists();
 
@@ -25,22 +26,71 @@ class CodeOtpController extends Controller
         }
 
         $otp = rand(100000, 999999);
-        $app = ApplicationSetting::pluck('app_name')->first();
+        // $app = ApplicationSetting::pluck('app_name')->first();
+        $setting = ApplicationSetting::first();
 
         CodeOtp::updateOrCreate(
             ['phone' => $phone],
             ['otp' => $otp]
         );
 
-        $api = Http::baseUrl('https://app.japati.id/')
-        ->withToken('API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112')
+        $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)
         ->post('/api/send-message', [
-            'gateway' => '6283836949076',
+            'gateway' => $setting->japati_gateway,
             'number' => $phone,
             'type' => 'text',
-            'message' => '*' . $otp. '* is your *' .$app. '* Verivication code.',
+            'message' => '*' . $otp. '* is your *' .$setting->app_name. '* Verivication code.',
         ]);
 
         return response()->json(['success' => true, 'message' => 'OTP sent successfully']);
+    }
+
+    public function sendOtpForgotPassword(Request $request)
+    {
+        $request->validate([
+            'phone' => 'required|string|max:13',
+        ]);
+
+        $phone = $request->phone;
+        session(['phone' => $phone]);
+
+        $otp = rand(100000, 999999);
+        $setting = ApplicationSetting::first();
+
+        CodeOtp::updateOrCreate(
+            ['phone' => $phone],
+            ['otp' => $otp]
+        );
+
+        $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)
+        ->post('/api/send-message', [
+            'gateway' => $setting->japati_gateway,
+            'number' => $phone,
+            'type' => 'text',
+            'message' => 'Your OTP code is ' . $otp . ' from ' . $setting->app_name . '.',
+        ]);
+
+        return redirect()->route('validate-otp');
+    }
+
+    public function validateOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required|numeric|digits:6',
+        ]);
+
+        $otp = $request->otp;
+        $phone = session('phone');
+
+        $codeOtp = CodeOtp::where('phone', $phone)->first();
+
+        if ($codeOtp && $codeOtp->otp == $otp) {
+            $codeOtp->delete();
+            return response()->json(['success' => true, 'message' => 'OTP verified successfully']);
+        } else {
+            return response()->json(['success' => false, 'message' => 'Invalid OTP'], 401);
+        }
     }
 }
