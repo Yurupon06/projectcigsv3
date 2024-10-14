@@ -71,9 +71,11 @@
                         <div class="card-header pb-0 py-1">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h6 class="mb-2 page">Cashier</h6>
+
                                 <div class="input-group" style="max-width: 300px;">
                                     <form method="GET" action="{{ route('cashier.index') }}" class="d-flex w-100 pt-2">
-                                        <input type="text" name="search" class="form-control" placeholder="Search orders" value="{{ request('search') }}" style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
+                                        <input type="text" name="search" class="form-control" placeholder="Search orders" value="{{ request('search') }}" 
+                                        style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
                                         <input type="hidden" name="filter" value="{{ request('filter') }}">
                                         <button type="submit" class="btn btn-primary" style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 10px; font-size: 14px;">
                                             <i class="fas fa-search"></i>
