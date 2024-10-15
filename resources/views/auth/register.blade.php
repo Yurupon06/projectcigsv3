@@ -202,7 +202,7 @@
                             </div>
                             <div class="form-floating mb-2">
                                 <input type="number" class="form-control @error('phone') is-invalid @enderror" id="floatingPhone" name="phone" value="{{ old('phone') }}" required autocomplete="phone">
-                                <label for="floatingEmail">Phone</label>
+                                <label for="floatingPhone">Phone</label>
                             </div>
                             <div class="mb-2">
                                 <button type="button" class="btn btn-secondary w-100" onclick="sendOtp()">Kirim OTP</button>

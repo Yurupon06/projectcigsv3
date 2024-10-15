@@ -17,7 +17,6 @@ class CodeOtpController extends Controller
         ]);
 
         $phone = $request->phone;
-        session(['phone' => $phone]);
 
         $userExists = User::where('phone', $phone)->exists();
 
@@ -55,6 +54,12 @@ class CodeOtpController extends Controller
         $phone = $request->phone;
         session(['phone' => $phone]);
 
+        $userExists = User::where('phone', $phone)->exists();
+
+        if (!$userExists) {
+            return redirect()->back()->with('error', 'Nomor telepon tidak terdaftar');
+        }
+
         $otp = rand(100000, 999999);
         $setting = ApplicationSetting::first();
 
@@ -72,7 +77,7 @@ class CodeOtpController extends Controller
             'message' => 'Your OTP code is ' . $otp . ' from ' . $setting->app_name . '.',
         ]);
 
-        return redirect()->route('validate-otp');
+        return redirect()->route('validate-otp')->with('success', 'OTP sent successfully');
     }
 
     public function validateOtp(Request $request)
@@ -88,9 +93,9 @@ class CodeOtpController extends Controller
 
         if ($codeOtp && $codeOtp->otp == $otp) {
             $codeOtp->delete();
-            return response()->json(['success' => true, 'message' => 'OTP verified successfully']);
+            return redirect()->route('password.reset')->with('success', 'OTP verified successfully');
         } else {
-            return response()->json(['success' => false, 'message' => 'Invalid OTP'], 401);
+            return redirect()->back()->with('error', 'Invalid OTP');
         }
     }
 }

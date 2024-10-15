@@ -131,7 +131,7 @@
                         @if($message = session('status'))
                         <div class="alert alert-success my-2 text-success" role="alert">{{ $message }}</div>
                         @endif
-                        <form action="{{ route('send-otp') }}" method="POST">
+                        <form action="{{ route('send-otp-forgot-password') }}" method="POST">
                             @csrf
                             <div class="form-floating mb-3">
                                 <input name="phone" type="phone" class="form-control @error('phone') is-invalid @enderror" id="floatingInput" placeholder="081234567890" value="{{ old('phone') }}" required>
@@ -153,6 +153,18 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (Session::has('error'))
+            {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '{{ Session::get('error') }}',
+                })
+            }
+        @endif
+    </script>
 </body>
 
 </html>

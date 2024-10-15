@@ -68,11 +68,11 @@
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.2);
         }
 
-        .form-control[name="email"] {
+        .form-control[name="phone"] {
             background-color: #4a4a4a; 
         }
 
-        .form-control[name="email"]::placeholder {
+        .form-control[name="phone"]::placeholder {
             color: #b0b0b0; 
         }
 
@@ -132,12 +132,12 @@
                     </div>
                     <form class="card-body" action="{{ route('reset') }}" method="POST">
                         @csrf
-                        <input name="token" type="hidden" value="{{ request('token') }}">
+                        {{-- <input name="token" type="hidden" value="{{ request('token') }}"> --}}
 
                         <div class="mb-3">
-                            <label for="floatingInput" class="form-label">Email address</label>
-                            <input name="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" value="{{ old('email', request('email')) }}" readonly>
-                            @error('email')
+                            <label for="floatingInput" class="form-label">Phone Number</label>
+                            <input name="phone" type="text" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" value="{{ session('phone') }}" readonly>
+                            @error('phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
