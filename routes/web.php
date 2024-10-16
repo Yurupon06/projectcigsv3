@@ -163,5 +163,4 @@ Route::middleware('guest')->group(function (){
     Route::post('/forgot', [AuthController::class, 'forgot'])->name('forgot');
     Route::view('/reset', 'auth.reset-password')->name('password.reset');
     Route::post('/reset', [AuthController::class, 'reset'])->name('reset');
-
 });

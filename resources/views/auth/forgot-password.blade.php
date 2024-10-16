@@ -133,9 +133,8 @@
                         @endif
                         <form action="{{ route('send-otp-forgot-password') }}" method="POST">
                             @csrf
-                            <div class="form-floating mb-3">
-                                <input name="phone" type="phone" class="form-control @error('phone') is-invalid @enderror" id="floatingInput" placeholder="081234567890" value="{{ old('phone') }}" required>
-                                <label for="floatingInput">Phone Number</label>
+                            <div class="mb-3">
+                                <input name="phone" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="13" class="form-control @error('phone') is-invalid @enderror" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ old('phone') }}" required>
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -164,6 +163,14 @@
                 })
             }
         @endif
+    </script>
+    <script>
+        function maxLength(input) {
+            const maxLength = 13;
+            if (input.value.length > maxLength) {
+                input.value = input.value.slice(0, maxLength);
+            }
+        }
     </script>
 </body>
 

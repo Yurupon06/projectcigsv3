@@ -25,7 +25,6 @@ class CodeOtpController extends Controller
         }
 
         $otp = rand(100000, 999999);
-        // $app = ApplicationSetting::pluck('app_name')->first();
         $setting = ApplicationSetting::first();
 
         CodeOtp::updateOrCreate(
@@ -57,7 +56,7 @@ class CodeOtpController extends Controller
         $userExists = User::where('phone', $phone)->exists();
 
         if (!$userExists) {
-            return redirect()->back()->with('error', 'Nomor telepon tidak terdaftar');
+            return redirect()->back()->with('error', 'Phone not found');
         }
 
         $otp = rand(100000, 999999);
@@ -74,7 +73,7 @@ class CodeOtpController extends Controller
             'gateway' => $setting->japati_gateway,
             'number' => $phone,
             'type' => 'text',
-            'message' => 'Your OTP code is ' . $otp . ' from ' . $setting->app_name . '.',
+            'message' => '*' . $otp. '* is your *' .$setting->app_name. '* Verivication code.',
         ]);
 
         return redirect()->route('validate-otp')->with('success', 'OTP sent successfully');

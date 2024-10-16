@@ -128,7 +128,7 @@
             <div class="col-lg-6 col-md-8 col-sm-10">
                 <div class="card">
                     <div class="card-header">
-                        <p>Masukan kode OTP yang telah dikirimkan ke nomor
+                        <p class="mb-0">Please enter the OTP code sent to
                             <strong>{{ '+' . substr(session('phone'), 0, 2) . '*********' . substr(session('phone'), -2) }}</strong>
                         </p>
                     </div>
@@ -136,7 +136,8 @@
                         <form action="{{ route('validate-otp') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <input type="text"  minlength="6" maxlength="6"
+                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                    minlength="6" maxlength="6"
                                     class="form-control text-center @error('otp') is-invalid @enderror" id="otp"
                                     name="otp" placeholder="XXXXXX" required>
                                 @error('otp')
