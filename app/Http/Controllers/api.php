@@ -12,15 +12,16 @@ use Illuminate\Support\Facades\Auth;
 class api extends Controller
 {
    public function api(){
-    $user = Auth::user();
-    $appName = ApplicationSetting::all();
-    $api = Http::baseUrl('https://app.japati.id/')
-    ->withToken('API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112')
+    $app = ApplicationSetting::first();
+    $user = Auth::user()->first();
+    $appName = ApplicationSetting::first();
+    $api = Http::baseUrl($app->japati_url)
+    ->withToken($app->japati_token)
     ->post('/api/send-message', [
-        'gateway' => '6283836949076',
+        'gateway' => $app->japati_gateway,
         'number' => '6281293962019',
         'type' => 'text',
-        'message' => 'Hai *'.$user->pluck('name')->first(). '* Welcome To *' .$appName->pluck('app_name')->first().'*',
+        'message' => 'Hai *'.$user->name. '* Welcome To *' .$appName->app_name.'*',
     ]);
     return redirect()->route('test-api')->with('success', 'berhasi terkirim.');
    }
