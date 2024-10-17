@@ -8,6 +8,18 @@
 @section('main')
     @include('cashier.main')
 
+    @if (session('success'))
+        <div style="color: green;">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div style="color: red;">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <style>
         .navigation-links {
             display: flex;
@@ -158,7 +170,7 @@
                                                     onclick="return confirm('Are you sure you want to cancel this Order ?')">Cancel
                                                     Order</button>
                                                 <button type="submit" name="action" value="process"
-                                                    class="btn btn-success">Process Payment</button>
+                                                    class="btn btn-success" id="processPaymentBtn">Process Payment</button>
                                             </form>
                                         </td>
                                     </tr>
@@ -249,5 +261,47 @@
             input.value = input.value.slice(0, -1);
             calculateChange();
         }
+    </script>
+
+    <script>
+        const data = {
+        phone: '{{ $order->customer->phone }}',
+        customer_name: '{{ $order->customer->user->name }}',
+        amount: totalAmount,
+        order_date: '{{ \Carbon\Carbon::parse($order->order_date)->toDateString() }}',
+        _token: '{{ csrf_token() }}'
+    };
+
+    // Kirim request AJAX ke server
+    $.ajax({
+        url: '{{ route('send.payment.message') }}',
+        type: 'POST',
+        data: data,
+        success: function(response) {
+            if (response.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Payment Processed',
+                    text: 'Payment notification sent to WhatsApp!',
+                }).then(() => {
+                    // Redirect setelah sukses
+                    window.location.href = '{{ route('cashier.index') }}';
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: response.message,
+                });
+            }
+        },
+        error: function(response) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to send WhatsApp notification.',
+            });
+        }
+    });
     </script>
 @endsection

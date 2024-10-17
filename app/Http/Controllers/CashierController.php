@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -53,7 +54,7 @@ class CashierController extends Controller
                 ->where('status', 'unpaid') // Only unpaid memberships
                 ->orderBy('order_date', 'desc');
         } elseif ($filterType === 'complement') {
-            $ordersQuery = OrderComplement::where('status', 'unpaid')
+            $ordersQuery = OrderComplement::where('status', 'unpaid')->with('user')
                 ->when($search, function ($query, $search) {
                     return $query->where(function ($q) use ($search) {
                         $q->where('id', 'like', "%{$search}%")
@@ -175,6 +176,7 @@ class CashierController extends Controller
 
         $order->update(['status' => 'paid']);
 
+        // Proses pembaruan atau pembuatan anggota
         $productCategory = $order->product->productcat;
         $cycle = (int) $productCategory->cycle;
         $visit = (int) $productCategory->visit;
@@ -185,15 +187,7 @@ class CashierController extends Controller
         $existingMember = Member::where('customer_id', $order->customer_id)->first();
 
         if ($existingMember) {
-            if ($existingMember->status === 'expired') {
-                $existingMember->update([
-                    'start_date' => $startDate,
-                    'end_date' => $endDate,
-                    'status' => 'active',
-                    'qr_token' => $memberQrToken,
-                    'visit' => $visit,
-                ]);
-            } elseif ($existingMember->status === 'inactive') {
+            if ($existingMember->status === 'expired' || $existingMember->status === 'inactive') {
                 $existingMember->update([
                     'start_date' => $startDate,
                     'end_date' => $endDate,
@@ -222,7 +216,39 @@ class CashierController extends Controller
             ]);
         }
 
+        $this->sendPaymentMessage($order);
+
         return redirect()->route('struk_gym', ['id' => $order->id])->with('success', 'Payment processed and membership created successfully!');
+    }
+
+    private function sendPaymentMessage(Order $order)
+    {
+        $customerName = $order->customer->user->name;
+        $phone = $order->customer->phone; 
+        $amount = $order->total_amount;
+        $paymentDate = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s'); 
+
+        $message = "Dear *$customerName*, your payment of *Rp $amount* has been received on *$paymentDate*. Thank you for using our service!";
+
+        $this->sendMessage($phone, $message);
+    }
+
+    private function sendMessage($phone, $message)
+    {
+        // Mengirimkan pesan menggunakan API WhatsApp
+        $api = Http::baseUrl('https://app.japati.id/')
+            ->withToken('API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112')
+            ->post('/api/send-message', [
+                'gateway' => '6283836949076', 
+                'number' => $phone, 
+                'type' => 'text',
+                'message' => $message,
+            ]);
+
+        if (!$api->successful()) {
+            \Log::error('Failed to send message', ['response' => $api->body()]);
+            throw new \Exception('Failed to send message');
+        }
     }
 
     public function showStruk($id)
@@ -236,12 +262,22 @@ class CashierController extends Controller
         $user = Auth::user();
         $appSetting = ApplicationSetting::first();
 
-        $member = Member::where('customer_id', $order->customer_id)->first();
+        $customerName = $order->customer->user->name;
         $memberQrToken = $member ? $member->qr_token : null;
+        $appName = $appSetting ? $appSetting->app_name : 'App Name';
+
+        $orderDate = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
+        $productName = $payment->order->product->product_name;
+        $amount = $payment->amount;
+        $qrToken = $memberQrToken;
+
+        $message = "Dear *$customerName*, your order for *$productName* on *$orderDate* with an amount of *Rp $amount* has been processed. Please use this QR token for check-in: *$qrToken*. Thank you for using *$appName*!";
+
+        $this->sendMessage($order->customer->phone, $message);
 
         return view('cashier.struk_gym', compact('order', 'payment', 'appSetting', 'visit', 'user', 'memberQrToken'));
     }
-
+        
     public function membercashier(Request $request)
     {
         $search = $request->input('search');
@@ -283,30 +319,49 @@ class CashierController extends Controller
     
 
     public function storeCustomer(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255|unique:users',
-            'phone' => 'required|string|max:15',
+{
+    $request->validate([
+        'name' => 'required|string|max:255|unique:users',
+        'phone' => 'required|string|max:15',
+    ]);
+
+    // Membuat user baru
+    $user = User::create([
+        'name' => $request->name,
+        'phone' => $request->phone,
+        'role' => 'customer',
+    ]);
+
+    // Menyimpan customer ke tabel customer
+    $customer = Customer::create([
+        'user_id' => $user->id,
+        'phone' => $user->phone,
+        // Tambahkan born dan gender jika ada di request
+        'born' => $request->born ?? null,
+        'gender' => $request->gender ?? null,
+    ]);
+
+    // Logika untuk mengirim pesan WhatsApp
+    $apiUrl = 'https://app.japati.id/api/send-message';
+    $apiToken = 'API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112';
+    $showForgotForm = url('/forgot'); // Sesuaikan dengan route forgot password
+
+    $message = "Halo, *{$user->name}!* Selamat datang di aplikasi kami. Untuk mengatur kata sandi Anda, silakan kunjungi: *{$showForgotForm}*";
+
+    Http::withToken($apiToken)
+        ->post($apiUrl, [
+            'gateway' => '6283836949076', // Ganti dengan nomor pengirim
+            'number' => $user->phone,
+            'type' => 'text',
+            'message' => $message,
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'role' => 'customer',
-        ]);
+    return redirect()->route('cashier.order')->with([
+        'success' => 'Customer added successfully.',
+        'new_customer_id' => $customer->id,
+    ]);
+}
 
-        $customer = Customer::create([
-            'user_id' => $user->id,
-            'phone' => $user->phone,
-            'born' => $request->born,
-            'gender' => $request->gender,
-        ]);
-
-        return redirect()->route('cashier.order')->with([
-            'success' => 'Customer added successfully.',
-            'new_customer_id' => $customer->id
-        ]);
-    }
 
     public function order()
     {
@@ -487,57 +542,102 @@ class CashierController extends Controller
     }
 
     public function storeCheckin(Request $request)
-    {
-        $request->validate([
-            'qr_token' => 'required|string',
-            'image' => 'nullable|string', 
+{
+    // Validasi input
+    $request->validate([
+        'qr_token' => 'required|string',
+        'image' => 'nullable|string', 
+    ]);
+
+    $qrToken = $request->input('qr_token');
+
+    // Cek apakah QR code sudah pernah digunakan
+    $existingCheckin = MemberCheckin::where('qr_token', $qrToken)->first();
+    if ($existingCheckin) {
+        return response()->json(['success' => false, 'message' => 'QR code has already been used.']);
+    }
+
+    // Ambil data member berdasarkan qr_token
+    $member = Member::where('qr_token', $qrToken)->first();
+    if (!$member) {
+        return response()->json(['success' => false, 'message' => 'Member not found.']);
+    }
+
+    // Kurangi jumlah visit member
+    $member->decrement('visit');
+
+    // Proses penyimpanan gambar jika ada
+    $imagePath = null;
+    if ($request->filled('image')) {
+        $imageData = $request->input('image');
+        $image = str_replace('data:image/png;base64,', '', $imageData);
+        $image = str_replace(' ', '+', $image);
+        $imageName = 'checkin_' . time() . '.png';
+        $imagePath = 'checkins/' . $imageName;
+        Storage::disk('public')->put($imagePath, base64_decode($image));
+    }
+
+    // Simpan data check-in ke database
+    $checkin = MemberCheckin::create([
+        'member_id' => $member->id,
+        'qr_token' => $qrToken,
+        'image' => $imagePath,
+    ]);
+
+    // Generate QR token baru
+    $newQrToken = Str::random(10);
+    $member->update(['qr_token' => $newQrToken]);
+
+    // Ambil data yang diperlukan untuk mengirim pesan
+    $customerName = $member->customer->user->name; // Pastikan relasi ini benar
+    $checkInDate = $checkin->created_at->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+    $imageUrl = asset('storage/' . $checkin->image);
+
+    // Kirim pesan
+    $this->sendCheckinMessage($member->customer->phone, $customerName, $imageUrl, $checkInDate);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Check-in recorded successfully',
+        'new_qr_token' => $newQrToken,
+    ]);
+}
+
+// Fungsi untuk mengirim pesan
+protected function sendCheckInMessage($phone, $customerName, $imageUrl, $checkInDate)
+{
+    // Buat pesan untuk dikirim
+    $message = "Hai *$customerName*, Anda telah check-in pada tanggal *$checkInDate*. Gambar check-in Anda: *$imageUrl.";
+
+    // Menggunakan Http Client untuk mengirim pesan
+    $api = Http::baseUrl('https://app.japati.id/')
+        ->withToken('API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112')
+        ->post('/api/send-message', [
+            'gateway' => '6283836949076', // Sesuaikan dengan gateway yang digunakan
+            'number' => $phone,
+            'type' => 'text',
+            'message' => $message,
         ]);
-    
-        $qrToken = $request->input('qr_token');
-    
-        $existingCheckin = MemberCheckin::where('qr_token', $qrToken)->first();
-    
-        if ($existingCheckin) {
-            return response()->json(['success' => false, 'message' => 'QR code has already been used.']);
-        }
-    
-        $member = Member::where('qr_token', $qrToken)->first();
-    
-        if (!$member) {
-            return response()->json(['success' => false, 'message' => 'Member not found.']);
-        }
-    
-        $member->decrement('visit');
-    
-        $imagePath = null;
-        if ($request->filled('image')) {
-            $imageData = $request->input('image');
-            $image = str_replace('data:image/png;base64,', '', $imageData);
-            $image = str_replace(' ', '+', $image);
-            $imageName = 'checkin_' . time() . '.png';
-            $imagePath = 'checkins/' . $imageName;
-            Storage::disk('public')->put($imagePath, base64_decode($image));
-        }
-    
-        $checkin = MemberCheckin::create([
-            'member_id' => $member->id,
-            'qr_token' => $qrToken,
-            'image' => $imagePath, 
-        ]);
-    
-        $newQrToken = Str::random(10);
-        $member->update([
-            'qr_token' => $newQrToken
-        ]);
-    
-        return response()->json([
-            'success' => true,
-            'message' => 'Check-in recorded successfully',
-            'new_qr_token' => $newQrToken
+
+    // Cek jika pengiriman pesan gagal
+    if ($api->failed()) {
+        \Log::error('Gagal mengirim pesan WhatsApp', [
+            'phone' => $phone,
+            'response' => $api->json(),
         ]);
     }
-    
+}
 
+public function handleCheckIn(Request $request)
+{
+    $phone = $request->input('phone');
+    $customerName = $request->input('name');
+    $checkInDate = $request->input('checkInDate');
+    $imageUrl = $request->input('imageUrl'); // Jika ada URL gambar yang diterima dari request
+
+    // Panggil metode untuk mengirim pesan
+    $this->sendCheckInMessage($phone, $customerName, $imageUrl, $checkInDate);
+}
 
         public function showCheckIn()
         {

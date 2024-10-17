@@ -158,7 +158,8 @@
                                     <thead>
                                         <tr>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">No</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Order Id</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Name</th>
+                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Order Date</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Total Amount</th>
                                         </tr>
                                     </thead>
@@ -174,7 +175,10 @@
                                                 </td>
                                                 <td>
                                                     <a class="u" href="{{ route('cashier.checkout', $dt->qr_token) }}">
-                                                    {{ $dt->id }}</a>
+                                                    {{$dt->user->name}}</a>
+                                                </td>
+                                                <td>
+                                                    {{ \Carbon\Carbon::parse($dt->created_at)->translatedFormat('d F Y H:i') }}
                                                 </td>
                                                 <td>
                                                     Rp {{ number_format($dt->total_amount) }}

@@ -5,11 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title> {{ isset($setting) ? $setting->app_name . ' - Check-In Scanner' : 'Check-In Scanner' }}</title>
+    <title>{{ isset($setting) ? $setting->app_name . ' - Check-In Scanner' : 'Check-In Scanner' }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="icon" type="image/png"
-        href="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
-
+          href="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
     <style>
         #reader {
             width: 100%;
@@ -40,7 +39,6 @@
 
         @media (max-width: 768px) {
             #reader {
-                height: auto;
                 max-height: 300px;
             }
 
@@ -58,9 +56,7 @@
 <body>
     <div class="container mt-5 text-center">
         @if (session('message'))
-            <script>
-                alert('{{ session('message') }}');
-            </script>
+            <script>alert('{{ session('message') }}');</script>
         @endif
         <a href="{{ route('cashier.membercheckin') }}" style="text-decoration: none; color:black;">
             <h1>Scan QR Code</h1>
@@ -96,7 +92,6 @@
         </div>
     </div>
     
-    {{-- Success and error sounds --}}
     <audio id="success-sound" src="../../assets/sound/success.mp3"></audio>
     <audio id="error-sound" src="../../assets/sound/Error2.mp3"></audio>
 
@@ -107,10 +102,8 @@
 
         function onScanSuccess(decodedText) {
             if (scanCompleted) return;
-
             scanCompleted = true;
 
-            // Capture image from video stream
             const video = document.querySelector('#reader video');
             const canvas = document.createElement('canvas');
             canvas.width = video.videoWidth;
@@ -127,12 +120,8 @@
                         errorMessage.textContent = data.error;
                         errorMessage.style.display = 'block';
                         scanCompleted = false;
-
                         document.getElementById('error-sound').play();
-
-                        setTimeout(() => {
-                            errorMessage.style.display = 'none';
-                        }, 3000);
+                        setTimeout(() => { errorMessage.style.display = 'none'; }, 3000);
                     } else {
                         document.getElementById('name').textContent = data.name;
                         document.getElementById('phone').textContent = data.phone;
@@ -140,11 +129,9 @@
 
                         const successMessage = document.getElementById('success-message');
                         const countdown = document.getElementById('countdown');
-                        const errorMessage = document.getElementById('error-message');
                         successMessage.style.display = 'block';
                         countdown.style.display = 'block';
-                        errorMessage.style.display = 'none';
-
+                        document.getElementById('error-message').style.display = 'none';
                         document.getElementById('success-sound').play();
 
                         let countdownValue = 5;
@@ -161,35 +148,31 @@
                         }, 1000);
 
                         fetch('/store-checkin', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
-                                        'content')
-                                },
-                                body: JSON.stringify({
-                                    qr_token: decodedText,
-                                    image: imageBase64
-                                })
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            body: JSON.stringify({
+                                qr_token: decodedText,
+                                image: imageBase64
                             })
-                            .then(response => response.json())
-                            .then(result => {
-                                if (result.success) {
-                                    console.log('Check-in recorded successfully');
-                                    console.log('New QR token:', result.new_qr_token);
-                                } else {
-                                    const errorMessage = document.getElementById('error-message');
-                                    errorMessage.textContent = result.message;
-                                    errorMessage.style.display = 'block';
-
-                                    document.getElementById('error-sound').play();
-
-                                    setTimeout(() => {
-                                        errorMessage.style.display = 'none';
-                                    }, 3000);
-                                }
-                            })
-                            .catch(error => console.error('Error:', error));
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                console.log('Check-in recorded successfully');
+                                console.log('New QR token:', result.new_qr_token);
+                                sendCheckinMessage(result.new_qr_token); // Call send message function
+                            } else {
+                                const errorMessage = document.getElementById('error-message');
+                                errorMessage.textContent = result.message;
+                                errorMessage.style.display = 'block';
+                                document.getElementById('error-sound').play();
+                                setTimeout(() => { errorMessage.style.display = 'none'; }, 3000);
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
 
                         html5QrcodeScanner.stop().then(ignore => {
                             console.log("QR code scanning stopped.");
@@ -203,38 +186,48 @@
                     const errorMessage = document.getElementById('error-message');
                     errorMessage.textContent = 'Invalid QR Code.';
                     errorMessage.style.display = 'block';
-
                     document.getElementById('error-sound').play();
-
                     scanCompleted = false;
-
-                    setTimeout(() => {
-                        errorMessage.style.display = 'none';
-                    }, 5000);
+                    setTimeout(() => { errorMessage.style.display = 'none'; }, 5000);
                 });
         }
 
-        html5QrcodeScanner.start({
-                facingMode: "environment"
-            }, {
-                fps: 30,
-                qrbox: function(viewfinderWidth, viewfinderHeight) {
-                    // Adjust the qrbox size based on the viewfinder size (making it responsive)
-                    var minEdgePercentage = 0.8;  // 80% of the smaller edge
-                    var minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-                    var qrboxSize = Math.floor(minEdge * minEdgePercentage);
-                    return {
-                        width: qrboxSize,
-                        height: qrboxSize
-                    };
+        function sendCheckinMessage(newQrToken) {
+            fetch('/send-checkin-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    phone: document.getElementById('phone').textContent,
+                    name: document.getElementById('name').textContent,
+                    checkInDate: document.getElementById('expiration').textContent
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    console.log('WhatsApp message sent successfully');
+                } else {
+                    console.error('Error sending WhatsApp message:', result.message);
                 }
-            },
-            onScanSuccess
-        ).catch(err => {
-            console.error("Error starting QR code scanner: ", err);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        html5QrcodeScanner.start({
+            facingMode: "environment"
+        }, {
+            fps: 30,
+            qrbox: function(viewportSize) {
+                const minDim = Math.min(viewportSize.width, viewportSize.height);
+                return { width: Math.floor(minDim * 0.8), height: Math.floor(minDim * 0.8) };
+            }
+        }, onScanSuccess)
+        .catch(err => {
+            console.error("Unable to start scanning:", err);
         });
     </script>
-
 </body>
-
 </html>
