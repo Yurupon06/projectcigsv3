@@ -8,6 +8,12 @@
 @section('main')
     @include('cashier.main')
 
+    @if(session('message'))
+        <div class="alert alert-success">
+            {{ session('message') }}
+        </div>
+    @endif
+
     <style>
         @media screen and (max-width: 768px) {
                 .page {

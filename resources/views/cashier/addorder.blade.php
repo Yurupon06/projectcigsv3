@@ -120,23 +120,24 @@
             <!-- Additional Card on the Right -->
             <div class="col-md-4">
                 <div class="card" style="height: 100%">
-                    <div class="card-header text-uppercase font-weight-bolder opacity-20 text-centersmall text-center py-2 mt-2">
+                    <div class="card-header text-uppercase font-weight-bolder opacity-20 text-center py-2 mt-2">
                         <h6>For Register Customer</h6>
                     </div>
                     <div class="modal-body pt-4 px-3">
+                        @if(session('success'))
+                            <div class="alert alert-success">{{ session('success') }}</div>
+                        @elseif(session('error'))
+                            <div class="alert alert-danger">{{ session('error') }}</div>
+                        @endif
                         <form id="addCustomerForm" action="{{ route('customer.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label small">Name</label>
                                 <input type="text" id="name" name="name" class="form-control form-control-sm" required>
                             </div>
-                            {{-- <div class="mb-3">
-                                <label for="email" class="form-label small">Email</label>
-                                <input type="email" id="email" name="email" class="form-control form-control-sm" required>
-                            </div> --}}
                             <div class="mb-3">
                                 <label for="phone" class="form-label small">Phone</label>
-                                <input type="number" id="phone" name="phone" class="form-control form-control-sm" required>
+                                <input type="tel" id="phone" name="phone" class="form-control form-control-sm" required>
                             </div>
                             <div class="text-end">
                                 <button type="submit" class="btn btn-primary">Add Customer</button>
@@ -145,6 +146,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
     <script>
