@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ApplicationSetting;
 use Carbon\Carbon;
 use App\Models\cart;
 use App\Models\Order;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LandingController extends Controller
@@ -55,6 +58,29 @@ class LandingController extends Controller
             $customer = Customer::where('user_id', $user->id)->first();
             $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
             $cartCount = $this->getUniqueCartItemCount();
+            $qrToken = $member->qr_token;
+            $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
+            $filePath = storage_path('app/public/' . $fileName);
+
+            if (Storage::disk('public')->exists($fileName)) {
+                return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
+            }
+
+            $qrcode = QrCode::format('png')->size(250)->generate($qrToken);
+            Storage::disk('public')->put($fileName, $qrcode);
+
+            $setting = ApplicationSetting::first();
+            $message = "Here is your QR code.\nScan it to cashier and get in!";
+            $api = Http::baseUrl($setting->japati_url)
+            ->withToken($setting->japati_token)
+            ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
+            ->post('/api/send-message', [
+                'gateway' => $setting->japati_gateway,
+                'number' => $user->phone,
+                'type' => 'media',
+                'message' => $message,
+            ]);
+
             return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
         }
     }
@@ -139,6 +165,17 @@ class LandingController extends Controller
 
         $user->update([
             'password' => Hash::make($request->password),
+        ]);
+
+        $setting = ApplicationSetting::first();
+        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully.";
+        $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)
+        ->post('/api/send-message', [
+            'gateway' => $setting->japati_gateway,
+            'number' => $user->phone,
+            'type' => 'text',
+            'message' => $message,
         ]);
 
         return redirect()->route('landing.profile')->with('success', 'Password updated successfully.');
@@ -234,8 +271,28 @@ class LandingController extends Controller
             'total_amount' => $request->total_amount,
             'status' => 'unpaid',
             'qr_token' => $qrToken,
-
         ]);
+
+        $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
+        $filePath = storage_path('app/public/' . $fileName);
+        $qrcode = QrCode::format('png')->size(250)->generate($qrToken);
+        Storage::disk('public')->put($fileName, $qrcode);
+
+        $setting = ApplicationSetting::first();
+        $message = "*Orders Details*:\n\nProduct Name: *" . $order->product->product_name . "*\nOrder Date: *" . $order->order_date . "*\nTotal Amount: *Rp. " . number_format($order->total_amount, 0, ',', '.') . "*\n\nThank you for order!\nScan the QR code to cashier to pay the order.";
+        $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)
+        ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
+        ->post('/api/send-message', [
+            'gateway' => $setting->japati_gateway,
+            'number' => $user->phone,
+            'type' => 'media',
+            'message' => $message,
+        ]);
+
+        if (Storage::disk('public')->exists($fileName)) {
+            Storage::disk('public')->delete($fileName);
+        }
 
         return redirect()->route('checkout', ['id' => $order->id])->with('success', 'Order created successfully.');
     }
@@ -340,6 +397,7 @@ class LandingController extends Controller
 
             $totalAmount = 0;
             $totalQuantity = 0;
+            $qrToken = Str::random(10);
             $orderDetails = [];
 
             $orderComplement = OrderComplement::create([
@@ -347,7 +405,7 @@ class LandingController extends Controller
                 'total_amount' => 0,
                 'status' => 'unpaid',
                 'quantity' => 0,
-                'qr_token' => Str::random(10),
+                'qr_token' => $qrToken,
             ]);
 
             foreach ($cartItems as $item) {
@@ -383,6 +441,35 @@ class LandingController extends Controller
             OrderDetail::insert($orderDetails);
 
             Cart::where('user_id', $userId)->delete();
+
+            $items = '';
+            foreach ($orderDetails as $detail) {
+                $complement = Complement::find($detail['complement_id']);
+
+                $items .= $complement->name . ' (' . $detail['quantity'] . 'x Rp' . number_format($complement->price, 0, '.', '.') . ') = *Rp' . number_format($detail['sub_total'], 0, '.', '.') . "*\n";
+            }
+
+            $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
+            $filePath = storage_path('app/public/' . $fileName);
+            $qrcode = QrCode::format('png')->size(250)->generate($qrToken);
+            Storage::disk('public')->put($fileName, $qrcode);
+
+            $user = Auth::user();
+            $setting = ApplicationSetting::first();
+            $message = "*Orders Details*:\n\n*Product*:\n" . $items . "\n*Total*: *Rp. " . number_format($totalAmount, 0, '.', '.') . "*\n\nThank you for order!\nScan the QR code to cashier to pay the order.";
+            $api = Http::baseUrl($setting->japati_url)
+            ->withToken($setting->japati_token)
+            ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
+            ->post('/api/send-message', [
+                'gateway' => $setting->japati_gateway,
+                'number' => $user->phone,
+                'type' => 'media',
+                'message' => $message,
+            ]);
+
+            if (Storage::disk('public')->exists($fileName)) {
+                Storage::disk('public')->delete($fileName);
+            }
 
             return redirect()->route('checkout.complement', ['id' => $orderComplement->id])->with('success', 'Order created successfully.');
         });

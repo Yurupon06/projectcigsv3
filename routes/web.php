@@ -16,6 +16,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MemberCheckinController;
 use App\Http\Controllers\ProductCategorieController;
 use App\Http\Controllers\ApplicationSettingController;
+use App\Http\Controllers\ChangePhoneController;
 use App\Http\Controllers\ComplementController;
 use App\Http\Controllers\CodeOtpController;
 use App\Http\Controllers\ReportController;
@@ -37,8 +38,7 @@ Route::get('/cart', [LandingController::class, 'cart'])->name('cart.index');
 Route::post('/cart', [LandingController::class, 'updateCart'])->name('update.cart');
 Route::get('/', [LandingController::class, 'home'])->name('home.index');
 // Auth
-Route::middleware('auth')->group(function () {
-    Route::get('/home', [LandingController::class, 'index'])->name('landing.index');    
+Route::middleware('auth')->group(function () {   
     // Customer
     Route::middleware('customer')->group(function () {
         Route::get('/home', [LandingController::class, 'index'])->name('landing.index');
@@ -149,6 +149,12 @@ Route::middleware('auth')->group(function () {
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Change Phone Number
+    Route::view('/change-phone', 'auth.change-phone')->name('change-phone');
+    Route::post('/change-phone', [ChangePhoneController::class, 'changePhone'])->name('change-phone');
+    Route::view('/validate-otp-phone', 'landing.validate-otp')->name('validate-otp-phone');
+    Route::post('/validate-otp-phone', [ChangePhoneController::class, 'validateOtp'])->name('validate-otp-phone');
 });
 
 Route::middleware('guest')->group(function (){
@@ -156,10 +162,12 @@ Route::middleware('guest')->group(function (){
     Route::post('/register', [AuthController::class, 'register']);
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
-    Route::get('/forgot', [AuthController::class, 'showForgotForm'])->name('show-forgot');
-    Route::post('/send-otp-forgot-password', [CodeOtpController::class, 'sendOtpForgotPassword'])->name('send-otp-forgot-password');
+    
     Route::view('/validate-otp', 'auth.validate-otp')->name('validate-otp');
     Route::post('/validate-otp', [CodeOtpController::class, 'validateOtp'])->name('validate-otp');
     Route::view('/reset', 'auth.reset-password')->name('password.reset');
     Route::post('/reset', [AuthController::class, 'reset'])->name('reset');
 });
+
+Route::get('/forgot', [AuthController::class, 'showForgotForm'])->name('show-forgot');
+Route::post('/send-otp-forgot-password', [CodeOtpController::class, 'sendOtpForgotPassword'])->name('send-otp-forgot-password');

@@ -71,12 +71,8 @@
                 <span>{{ $user->name }}</span>
             </div>
             <div class="profile-field">
-                <span>Email:</span>
-                <span>{{ $user->email }}</span>
-            </div>
-            <div class="profile-field">
                 <span>Phone:</span>
-                <span>{{ $customer->phone ?? 'Not filled' }}</span>
+                <span>{{ $user->phone ?? 'Not filled' }}</span>
             </div>
             <div class="profile-field">
                 <span>Date of Birth:</span>
@@ -115,14 +111,12 @@
                                 value="{{ Auth::user()->name }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" class="form-control"
-                                value="{{ Auth::user()->email }}" required>
-                        </div>
-                        <div class="form-group">
                             <label for="phone">Phone</label>
-                            <input type="text" id="phone" name="phone" class="form-control"
-                                value="{{ $customer->phone ?? '' }}" required>
+                            <div class="position-relative">
+                                <input type="text" id="phone" name="phone" class="form-control"
+                                value="{{ Auth::user()->phone ?? '' }}" readonly>
+                                <a href="{{ route('change-phone') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="born">Date of Birth</label>
@@ -156,9 +150,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="changePasswordModalLabel">Change Password</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
                 </div>
                 <form action="{{ route('update.password.admin') }}" method="POST">
                     @csrf
@@ -178,9 +169,12 @@
                                 class="form-control" required>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <a href="{{ route('show-forgot') }}" class="d-block text-decoration-none">I forgot my password</a>
+                        <div class="pt-4">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
                     </div>
                 </form>
             </div>

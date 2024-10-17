@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Forgot Password</title>
+    <title>Change Phone Number</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
@@ -79,13 +79,6 @@
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.2);
         }
 
-        .form-control:read-only {
-            background-color: #3c3c3c;
-            color: #a0a0a0;
-            border: 1px solid #ff4b2b;
-            box-shadow: 0 4px 10px rgba(255, 75, 43, 0.2);
-        }
-
         .invalid-feedback {
             color: #ff4b2b;
         }
@@ -131,25 +124,21 @@
             <div class="col-lg-6 col-md-8 col-sm-10">
                 <div class="card">
                     <div class="card-header">
-                        <img src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
-                        <h1 class="h3">Forgot Password</h1>
+                        <p class="mb-0">Please enter your new phone number</p>
                     </div>
                     <div class="card-body">
-                        @if($message = session('status'))
-                        <div class="alert alert-success my-2 text-success" role="alert">{{ $message }}</div>
-                        @endif
-                        <p>Enter your phone number to receive OTP</p>
-                        <form action="{{ route('send-otp-forgot-password') }}" method="POST">
+                        <form action="{{ route('change-phone') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <input name="phone" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="13" class="form-control text-center @error('phone') is-invalid @enderror" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ auth()->user()->phone ?? old('phone') }}" {{ isset(auth()->user()->phone) ? 'readonly' : 'required' }}>
+                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="13"
+                                    class="form-control text-center" id="phone"
+                                    name="phone" placeholder="08XXXXXXXXXX" value="{{ auth()->user()->phone }}" required>
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button class="w-100 btn btn-primary" type="submit">Send OTP</button>
+                            <button class="w-100 btn btn-primary" type="submit">Submit</button>
                         </form>
-                        <a href="{{ isset(auth()->user()->phone) ? url()->previous() : route('login') }}" class="btn btn-back w-100 mt-3">Back</a>
                     </div>
                 </div>
             </div>

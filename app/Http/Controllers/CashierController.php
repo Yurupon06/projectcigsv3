@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class CashierController extends Controller
@@ -390,14 +391,25 @@ class CashierController extends Controller
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return redirect()->route('cashier.profill')->with('warning', 'Current password does not match.');
+            return redirect()->route('cashier.profile')->with('warning', 'Current password does not match.');
         }
 
         $user->update([
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('cashier.profill')->with('success', 'Password updated successfully.');
+        $setting = ApplicationSetting::first();
+        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully.";
+        $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)
+        ->post('/api/send-message', [
+            'gateway' => $setting->japati_gateway,
+            'number' => $user->phone,
+            'type' => 'text',
+            'message' => $message,
+        ]);
+
+        return redirect()->route('cashier.profile')->with('success', 'Password updated successfully.');
     }
 
     public function struk($paymentId)
@@ -507,6 +519,12 @@ class CashierController extends Controller
         }
     
         $member->decrement('visit');
+
+        $fileName = 'qrcodes/qrcode_' . $member->qr_token . '.png';
+        $filePath = storage_path('app/public/' . $fileName);
+        if (Storage::disk('public')->exists($fileName)) {
+            Storage::disk('public')->delete($fileName);
+        }
     
         $imagePath = null;
         if ($request->filled('image')) {
