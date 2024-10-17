@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\api;
 use App\Http\Controllers\LandingSettingController;
 use Illuminate\Support\Facades\Route;
@@ -27,7 +28,7 @@ Route::get('/test-api', function () {
     return view('test-api');
 })->name('test-api');
 Route::post('/api', [api::class, 'api'])->name('api');
-Route::post('/send-otp', [CodeOtpController::class, 'sendOtp'])->name('send-otp');
+
 
 Route::get('/report', [ReportController::class, 'index'])->name('report.index');
 Route::post('/report', [ReportController::class, 'report'])->name('report.send');

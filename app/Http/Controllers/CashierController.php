@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -603,7 +604,7 @@ class CashierController extends Controller
     
         $cartItem->delete();
     
-        return redirect()->route('cashier.complement')->with('success', 'Item berhasil dihapus dari keranjang, stok telah diperbarui.');
+        return redirect()->route('cashier.complement')->with('success', 'Item berhasil dihapus dari keranjang');
     }
     
     
@@ -647,8 +648,9 @@ class CashierController extends Controller
     
     
 
-    public function checkoutProccess(){
+    public function checkoutProccess() {
         $user = Auth::user();
+        $app = ApplicationSetting::first();
         $cartItems = Cart::where('user_id', $user->id)->with('complement')->get();
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
@@ -668,28 +670,42 @@ class CashierController extends Controller
             $price = $item->complement->price;
             $subTotal = $price * $item->quantity;
             $complement = $item->complement;
-            
+    
             if ($complement->stok < $item->quantity) {
                 return redirect()->back()->with('error', "Stok untuk {$complement->name} tidak mencukupi sisa {$complement->stok}.");
             }
-            $complement->stok -= $item->quantity;
-            $complement->save(); // Update stock
     
-            // Create order detail
+            $complement->stok -= $item->quantity;
+    
+            if ($complement->stok == 0) {
+                $phone = $user->phone; 
+                $message = "Stok untuk *$complement->name* sudah habis.";
+                
+                $api = Http::baseUrl($app->japati_url)
+                ->withToken($app->japati_token)
+                ->post('/api/send-message', [
+                    'gateway' => $app->japati_gateway,
+                    'number' => '6281293962019',
+                    'type' => 'text',
+                    'message' => $message,
+                ]);
+            }
+    
+            $complement->save(); 
+    
             OrderDetail::create([
                 'order_complement_id' => $orderComplement->id,
                 'complement_id' => $item->complement->id,
                 'quantity' => $item->quantity,
                 'sub_total' => $subTotal, 
             ]);
-    
-            // Reduce complement stock
         }
     
         Cart::where('user_id', $user->id)->delete();
     
         return redirect()->route('cashier.checkout', ['qr_token' => $orderComplement->qr_token]);
     }
+    
     
 
 
