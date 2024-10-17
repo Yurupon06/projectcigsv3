@@ -152,7 +152,7 @@
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-floating mb-3">
-                            <input name="phone" type="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" value="{{ old('phone') }}" required>
+                            <input name="phone" type="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ old('phone') }}" required>
                             <label for="floatingInput">phone address</label>
                             @error('phone')
                             <div class="invalid-feedback">{{ $message }}</div>
