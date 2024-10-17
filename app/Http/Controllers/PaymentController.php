@@ -11,7 +11,7 @@ class PaymentController extends Controller
     {
         $search = $request->input('search');
         $filter = $request->input('filter');
-        $perPage = $request->input('per_page', 10);
+        $perPage = $request->input('per_page', 5);
 
         $query = Payment::query();
 
