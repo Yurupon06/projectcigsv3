@@ -77,7 +77,7 @@ class AuthController extends Controller
             }
         }
 
-        return redirect()->back()->withErrors(['email' => 'Invalid credentials'])->withInput();
+        return redirect()->back()->withErrors(['phone' => 'Invalid credentials'])->withInput();
     }
 
     public function logout()
@@ -91,53 +91,19 @@ class AuthController extends Controller
         return view('auth.forgot-password');
     }
 
-    public function forgot(Request $request)
+    public function reset(Request $request)
     {
         $request->validate([
-            'phone' => 'required|phone',
+            'phone' => 'required|string|max:13',
+            'password' => 'required|string|min:3|confirmed',
         ]);
 
         $user = User::where('phone', $request->phone)->first();
 
-        if (!$user) {
-            return back()->withErrors(['phone' => 'phone not found']);
-        }
-        if ($user->role == 'admin') {
-            return back()->withErrors(['phone' => 'Invalid phone']);
-        }
-
-        $status = Password::sendResetLink(
-            $request->only('phone')
-        );
-
-        return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __($status)])
-            : back()->withErrors(['phone' => __($status)]);
-    }
-
-    public function reset(Request $request)
-    {
-        $request->validate([
-            'token' => 'required',
-            'phone' => 'required|phone',
-            'password' => 'required|string|min:3|confirmed',
+        $user->update([
+            'password' => Hash::make($request->password),
         ]);
 
-        $status = Password::reset(
-            $request->only('phone', 'password', 'password_confirmation', 'token'),
-            function (User $user, string $password) {
-                $user->forceFill([
-                    'password' => Hash::make($password)
-                ])->setRememberToken(Str::random(60));
-
-                $user->save();
-
-                event(new PasswordReset($user));
-            }
-        );
-
-        return $status === Password::PASSWORD_RESET
-            ? redirect()->route('login')->with('status', __($status))->with('success', 'Password reset successfully')
-            : back()->withErrors(['phone' => [__($status)]]);
+        return redirect()->route('login')->with('success', 'Password reset successfully');
     }
 }

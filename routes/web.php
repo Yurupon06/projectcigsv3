@@ -157,8 +157,9 @@ Route::middleware('guest')->group(function (){
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/forgot', [AuthController::class, 'showForgotForm'])->name('show-forgot');
-    Route::post('/forgot', [AuthController::class, 'forgot'])->name('forgot');
-    Route::get('/reset/{token}', fn(string $token) => view('auth.reset-password', ['token' => $token]))->name('password.reset');
+    Route::post('/send-otp-forgot-password', [CodeOtpController::class, 'sendOtpForgotPassword'])->name('send-otp-forgot-password');
+    Route::view('/validate-otp', 'auth.validate-otp')->name('validate-otp');
+    Route::post('/validate-otp', [CodeOtpController::class, 'validateOtp'])->name('validate-otp');
+    Route::view('/reset', 'auth.reset-password')->name('password.reset');
     Route::post('/reset', [AuthController::class, 'reset'])->name('reset');
-
 });
