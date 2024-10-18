@@ -350,7 +350,7 @@ class CashierController extends Controller
 
     Http::withToken($apiToken)
         ->post($apiUrl, [
-            'gateway' => '6283836949076', // Ganti dengan nomor pengirim
+            'gateway' => '6283836949076', 
             'number' => $user->phone,
             'type' => 'text',
             'message' => $message,
@@ -563,10 +563,8 @@ class CashierController extends Controller
         return response()->json(['success' => false, 'message' => 'Member not found.']);
     }
 
-    // Kurangi jumlah visit member
     $member->decrement('visit');
 
-    // Proses penyimpanan gambar jika ada
     $imagePath = null;
     if ($request->filled('image')) {
         $imageData = $request->input('image');
@@ -607,13 +605,13 @@ class CashierController extends Controller
 protected function sendCheckInMessage($phone, $customerName, $imageUrl, $checkInDate)
 {
     // Buat pesan untuk dikirim
-    $message = "Hai *$customerName*, Anda telah check-in pada tanggal *$checkInDate*. Gambar check-in Anda: *$imageUrl.";
+    $message = "Hai *$customerName*, Anda telah check-in pada tanggal *$checkInDate*. Gambar check-in Anda: *$imageUrl*.";
 
     // Menggunakan Http Client untuk mengirim pesan
     $api = Http::baseUrl('https://app.japati.id/')
         ->withToken('API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112')
         ->post('/api/send-message', [
-            'gateway' => '6283836949076', // Sesuaikan dengan gateway yang digunakan
+            'gateway' => '6283836949076', 
             'number' => $phone,
             'type' => 'text',
             'message' => $message,
@@ -633,7 +631,7 @@ public function handleCheckIn(Request $request)
     $phone = $request->input('phone');
     $customerName = $request->input('name');
     $checkInDate = $request->input('checkInDate');
-    $imageUrl = $request->input('imageUrl'); // Jika ada URL gambar yang diterima dari request
+    $imageUrl = $request->input('imageUrl'); 
 
     // Panggil metode untuk mengirim pesan
     $this->sendCheckInMessage($phone, $customerName, $imageUrl, $checkInDate);
