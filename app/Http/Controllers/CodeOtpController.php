@@ -21,7 +21,7 @@ class CodeOtpController extends Controller
         $userExists = User::where('phone', $phone)->exists();
 
         if ($userExists) {
-            return response()->json(['success' => false, 'message' => 'Nomor telepon telah terdaftar'], 409);
+            return response()->json(['success' => false, 'message' => 'Phone already exists!'], 409);
         }
 
         $otp = rand(100000, 999999);

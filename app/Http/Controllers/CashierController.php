@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -447,14 +446,25 @@ class CashierController extends Controller
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return redirect()->route('cashier.profill')->with('warning', 'Current password does not match.');
+            return redirect()->route('cashier.profile')->with('warning', 'Current password does not match.');
         }
 
         $user->update([
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('cashier.profill')->with('success', 'Password updated successfully.');
+        $setting = ApplicationSetting::first();
+        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully.";
+        $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)
+        ->post('/api/send-message', [
+            'gateway' => $setting->japati_gateway,
+            'number' => $user->phone,
+            'type' => 'text',
+            'message' => $message,
+        ]);
+
+        return redirect()->route('cashier.profile')->with('success', 'Password updated successfully.');
     }
 
     public function struk($paymentId)
@@ -566,6 +576,12 @@ class CashierController extends Controller
 
     // Kurangi jumlah visit member
     $member->decrement('visit');
+
+    $fileName = 'qrcodes/qrcode_' . $member->qr_token . '.png';
+        $filePath = storage_path('app/public/' . $fileName);
+        if (Storage::disk('public')->exists($fileName)) {
+            Storage::disk('public')->delete($fileName);
+        }
 
     // Proses penyimpanan gambar jika ada
     $imagePath = null;
@@ -823,9 +839,9 @@ public function handleCheckIn(Request $request)
     public function paymentComplement(Request $request, $id)
     {
         $orderComplement = OrderComplement::findOrFail($id);
+        $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->get();
 
         if ($request->input('action') === 'cancel') {
-            $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->get();
             foreach ($orderDetails as $detail) {
                 $complement = Complement::findOrFail($detail->complement_id);
                 $complement->update([
@@ -862,7 +878,23 @@ public function handleCheckIn(Request $request)
 
         $orderComplement->update(['status' => 'paid']);
 
-        
+        $items = '';
+        foreach ($orderDetails as $detail) {
+            $complement = Complement::find($detail['complement_id']);
+
+            $items .= $complement->name . ' (' . $detail['quantity'] . ' x Rp. ' . number_format($complement->price, 0, '.', '.') . ') = *Rp. ' . number_format($detail['sub_total'], 0, '.', '.') . "*\n";
+        }
+
+        $setting = ApplicationSetting::first();
+        $message = "*Successfuly Paid!*\n\n*Product*:\n" . $items . "\n*Total Amount*: *Rp. " . number_format($orderComplement->total_amount, 0, ',', '.') . "*\n*Amount Given*: *Rp. " . number_format($amountGiven, 0, ',', '.') . "*\n*Change*: *Rp. " . number_format($change, 0, ',', '.') . "*\n\nThank you for order!";
+        $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)
+        ->post('/api/send-message', [
+            'gateway' => $setting->japati_gateway,
+            'number' => $orderComplement->user->phone,
+            'type' => 'text',
+            'message' => $message,
+        ]);
 
         return redirect()->route('struk_complement', ['id' => $orderComplement->id])->with('success', 'Payment processed and membership created successfully!');
     }
