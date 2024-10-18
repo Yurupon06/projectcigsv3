@@ -17,13 +17,7 @@ class OrderComplement extends Model
         'qr_token',	
     ];
 
-/*************  ✨ Codeium Command ⭐  *************/
-    /**
-     * Get the user that owns the OrderComplement
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-/******  5b782275-4a8e-4ef3-9c6f-30852dd5ef3b  *******/    public function user(){
+    public function user(){
         return $this->belongsTo(User::class, 'user_id');
     }
 
