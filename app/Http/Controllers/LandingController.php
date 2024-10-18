@@ -356,7 +356,7 @@ class LandingController extends Controller
             ]);
 
             foreach ($cartItems as $item) {
-                $complement = $item->complement; // Ambil data complement
+                $complement = $item->complement; 
 
                 // Cek apakah stok mencukupi
                 if ($complement->stok < $item->quantity) {

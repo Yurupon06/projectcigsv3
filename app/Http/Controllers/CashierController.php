@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -345,7 +344,7 @@ class CashierController extends Controller
     // Logika untuk mengirim pesan WhatsApp
     $apiUrl = 'https://app.japati.id/api/send-message';
     $apiToken = 'API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112';
-    $showForgotForm = url('/forgot'); // Sesuaikan dengan route forgot password
+    $showForgotForm = url('/forgot'); 
 
     $message = "Halo, *{$user->name}!* Selamat datang di aplikasi kami. Untuk mengatur kata sandi Anda, silakan kunjungi: *{$showForgotForm}*";
 
