@@ -170,7 +170,7 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
-                        <a href="{{ route('show-forgot') }}" class="d-block text-decoration-none">I forgot my password</a>
+                        {{-- <a href="{{ route('show-forgot') }}" class="d-block text-decoration-none">I forgot my password</a> --}}
                         <div class="pt-4">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save changes</button>
