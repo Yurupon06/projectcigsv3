@@ -17,6 +17,10 @@
             color: #ff7e00;
         }
 
+        .hidden {
+            display: none;
+        }
+
         @media screen and (max-width: 768px) {
                 .page {
                 display: none;
@@ -68,6 +72,12 @@
                             </div>
                             <div class="d-flex align-items-center my-3">
                                 <form method="GET" action="{{ route('cashier.payment') }}" class="d-flex">
+                                    <select name="filter" id="filter" class="form-select form-select-sm w-auto me-3 hidden" onchange="this.form.submit()">
+                                        <option value="membership" {{ request('filter') == 'membership' ? 'selected' : '' }}>Membership</option>
+                                        <option value="complement" {{ request('filter') == 'complement' ? 'selected' : '' }}>Complement</option>
+                                    </select>
+
+                                    <!-- Pagination Control -->
                                     <label for="per_page" class="form-label me-2 mt-2">Show:</label>
                                     <select name="per_page" id="per_page" class="form-select form-select-sm w-auto me-3" onchange="this.form.submit()">
                                         <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
@@ -75,8 +85,6 @@
                                         <option value="25" {{ request('per_page') == 25 ? 'selected' : '' }}>25</option>
                                         <option value="50" {{ request('per_page') == 50 ? 'selected' : '' }}>50</option>
                                     </select>
-                                    <input type="hidden" name="filter" value="{{ request('filter') }}"> 
-                                    <input type="hidden" name="search" value="{{ request('search') }}"> 
                                 </form>
                             </div>
                         </div>
@@ -92,6 +100,7 @@
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Customer Name</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">order id</th>
                                         @elseif(request('filter') == 'complement')
+                                        <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Customer Name</th>
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">order complement</th>
                                         @endif
                                         <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">amount</th>
@@ -121,6 +130,9 @@
                                             @endif
                                         @elseif(request('filter') == 'complement')
                                             @if($dt->orderComplement)
+                                                <td>
+                                                    {{ $dt->ordercomplement->user->name }}</a>
+                                                </td>
                                                 <td>
                                                     <a class="u" href="{{ route('cashier.checkout', $dt->ordercomplement->qr_token )}}">
                                                     {{ $dt->ordercomplement->id }}

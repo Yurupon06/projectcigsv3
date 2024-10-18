@@ -162,8 +162,7 @@
         <header class="header-v2 fixed-top m-auto">
             <div class="wrap-header-mobile">
                 <div class="logo-mobile">
-                    <img src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"
-                        alt="logo">
+                    <img src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}"alt="logo">
                 </div>
                 @if(request()->is('checking*','checkout*', 'edit*', 'getin', 'history', 'complement*', 'cart'))
                     <a href="javascript:history.back()" class="text-dark fs-3">

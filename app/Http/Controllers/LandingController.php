@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ApplicationSetting;
 use Carbon\Carbon;
 use App\Models\cart;
 use App\Models\Order;
@@ -10,6 +9,7 @@ use App\Models\Member;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\complement;
+use App\Models\ApplicationSetting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\MemberCheckin;
@@ -55,6 +55,7 @@ class LandingController extends Controller
     {
         $user = Auth::user();
         if ($user && $user->role === 'customer') {
+            $app = ApplicationSetting::first();
             $customer = Customer::where('user_id', $user->id)->first();
             $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
             $cartCount = $this->getUniqueCartItemCount();
@@ -387,6 +388,8 @@ class LandingController extends Controller
     public function checkoutComplement(Request $request)
     {
         $userId = auth()->id();
+        
+        
 
         return DB::transaction(function () use ($userId, $request) {
             $cartItems = Cart::where('user_id', $userId)->with('complement')->get();
@@ -431,6 +434,22 @@ class LandingController extends Controller
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
+
+                if ($complement->stok == 0) {
+                    $app = ApplicationSetting::first();
+                    $user = Auth::user();
+                    $phone = $user->phone; 
+                    $message = "Stok untuk *$complement->name* sudah habis.";
+                    
+                    $api = Http::baseUrl($app->japati_url)
+                    ->withToken($app->japati_token)
+                    ->post('/api/send-message', [
+                        'gateway' => $app->japati_gateway,
+                        'number' => $phone,
+                        'type' => 'text',
+                        'message' => $message,
+                    ]);
+                }
             }
 
             $orderComplement->update([

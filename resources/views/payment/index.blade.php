@@ -7,6 +7,13 @@
 @section('page', 'Payment')
 @section('main')
     @include('dashboard.main')
+
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+
     <div class="container-fluid pb-4">
         <div class="row">
             @if (session('success'))
@@ -18,10 +25,14 @@
                 <div class="card my-4">
                     <div class="card-header pb-0 py-1">
                         <div class="d-flex  align-items-center">
-                        <a href="{{ route('payment.index', ['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')]) }}" type="button" class=" {{ request('filter') == 'membership' ? 'active' : '' }} btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
+                        <a href="{{ route('payment.index', ['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')]) }}" type="button" 
+                        class=" {{ request('filter') == 'membership' ? 'active' : '' }} btn btn-primary btn-sm align-items-center btn-membership" 
+                        style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
                             <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
                         </a>
-                        <a href="{{route('payment.index', ['filter' => 'complement', 'per_page' => request('per_page')]) }}" type="button" class=" {{ request('filter') == 'complement' ? 'active' : '' }} btn btn-sm align-items-center btn-complement mx-2" style="font-size: 12px; padding: 10px 12px; background-color:#007bff; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
+                        <a href="{{route('payment.index', ['filter' => 'complement', 'per_page' => request('per_page')]) }}" type="button" 
+                        class=" {{ request('filter') == 'complement' ? 'active' : '' }} btn btn-sm align-items-center btn-complement mx-2" 
+                        style="font-size: 12px; padding: 10px 12px; background-color:#007bff; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
                             <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
                         </a>
 
@@ -31,6 +42,7 @@
                                     <input type="text" name="search" class="form-control"
                                         placeholder="Search Payments" value="{{ request('search') }}"
                                         style="border-radius: 20px 0 0 20px; height: 38px; font-size: 14px;">
+                                        <input type="hidden" name="filter" value="{{ request('filter') }}">
                                     <button type="submit" class="btn btn-primary"
                                         style="background-color: #ff7e00; border-radius: 0 20px 20px 0; height: 38px; padding: 0 10px; font-size: 14px;">
                                         <i class="fas fa-search"></i>
@@ -41,7 +53,12 @@
                             <!-- Form Pagination -->
                             <div class="d-flex align-items-center my-3" style="margin-left: auto">
                                 <form method="GET" action="{{ route('payment.index') }}" class="d-flex">
-                                    <input type="hidden" name="search" value="{{ request('search') }}">
+                                    <select name="filter" id="filter" class="form-select form-select-sm w-auto me-3 hidden" onchange="this.form.submit()">
+                                        <option value="membership" {{ request('filter') == 'membership' ? 'selected' : '' }}>Membership</option>
+                                        <option value="complement" {{ request('filter') == 'complement' ? 'selected' : '' }}>Complement</option>
+                                    </select>
+
+                                    <!-- Pagination Control -->
                                     <label for="per_page" class="form-label me-2 mt-2">Show:</label>
                                     <select name="per_page" id="per_page" class="form-select form-select-sm w-auto me-3" onchange="this.form.submit()">
                                         <option value="5" {{ request('per_page') == 5 ? 'selected' : '' }}>5</option>
@@ -184,10 +201,10 @@
                     <!-- Pagination Links -->
                     <div class="container-fluid">
                         <div class="row">
-                            @if (request('filter') == 'complement')
-                            {{ $payment->appends(['filter' => 'complement', 'per_page' => request('per_page')])->links('pagination::bootstrap-5') }}
-                            @else
-                            {{ $payment->appends(['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')])->links('pagination::bootstrap-5') }}
+                            @if (request('filter') == 'membership')
+                                {{ $payment->appends(['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')])->links('pagination::bootstrap-5') }}
+                            @elseif (request('filter'))
+                                {{ $payment->appends(['filter' => 'complement', 'search' => request('search'), 'per_page' => request('per_page')])->links('pagination::bootstrap-5') }}
                             @endif
                         </div>
                     </div>

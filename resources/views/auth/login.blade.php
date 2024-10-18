@@ -32,8 +32,15 @@
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
             padding: 1.5rem;
             background-color: #404040;
-            max-width: 400px;
-            margin: 2rem auto;
+            max-width: 90vh;
+            margin: auto;
+        }
+
+        .card-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
         }
 
         .btn-primary {
@@ -80,12 +87,13 @@
         }
 
         .form-links a {
-            color: #ff4b2b;
+            color: #fff;
             text-decoration: none;
         }
 
         .form-links a:hover {
             text-decoration: underline;
+            color: #ff1c1c;
         }
 
         h1 {
@@ -94,9 +102,8 @@
         }
 
         .logo {
-            display: block;
-            margin: 0 auto 0.10rem auto;
-            width: 150px;
+            margin-bottom: 1rem;
+            width: 130px;
             height: auto;
         }
 
@@ -138,9 +145,9 @@
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
-                    <div class="card-content">
+                    <div class="card-content d-flex justify-content-center align-items-center">
                         <img src="{{ isset($setting) && $setting->app_logo ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
-                        <h1 class="h3 mb-3 fw-normal">Sign In</h1>
+                        <h1 class="h3 mb-3 fw-bold text-center">Sign In</h1>
                     </div>
                     <form action="{{ route('login') }}" method="POST">
                         @csrf

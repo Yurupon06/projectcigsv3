@@ -32,7 +32,7 @@
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.3);
             padding: 1.5rem;
             background-color: #404040;
-            max-height: 90vh;
+            max-height: 95vh;
             max-width: 500px;
             width: 100%;
             margin: auto;
@@ -227,12 +227,13 @@
                                 <label for="floatingPasswordConfirm">Confirm Password</label>
                                 <i class="fa fa-eye-slash input-icon" id="togglePasswordConfirmationIcon" onclick="togglePassword('floatingPasswordConfirm', 'togglePasswordConfirmationIcon')"></i>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">Register</button>                        
+                            <button type="submit" class="btn btn-primary w-100">Register</button>    
+                            <div class="card-footer text-center">
+                                <p>Already have an account? <a href="{{ route('login') }}" style="color: #ff4b2b;">Login</a></p>
+                            </div>                    
                         </form>
                     </div>
-                    <div class="card-footer text-center">
-                        <p>Already have an account? <a href="{{ route('login') }}" style="color: #ff4b2b;">Login</a></p>
-                    </div>
+                    
                 </div>
             </div>
         </div>

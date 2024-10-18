@@ -79,7 +79,8 @@ class DashboardController extends Controller
         }
 
         // Fetch daily orders for the selected range
-        $orders = Order::whereBetween('order_date', [$startDate, $endDate])
+        $orders = Order::where('status', 'paid')
+            ->whereBetween('order_date', [$startDate, $endDate])
             ->selectRaw('DATE(order_date) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date')
