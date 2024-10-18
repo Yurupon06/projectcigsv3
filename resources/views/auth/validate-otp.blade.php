@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Forgot Password</title>
+    <title>Validate OTP</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
+    <link rel="icon" type="image/png"
+        href="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}">
 
     <style>
         body {
@@ -56,11 +58,11 @@
             border: 1px solid #ff4b2b;
         }
 
-        .form-floating > label {
+        .form-floating>label {
             color: #bfbfbf;
         }
 
-        .form-floating > .form-control:focus ~ label {
+        .form-floating>.form-control:focus~label {
             color: #ffffff;
         }
 
@@ -102,6 +104,7 @@
             .container {
                 padding: 2rem 1.5rem;
             }
+
             .card-header h1 {
                 font-size: 1.5rem;
             }
@@ -111,6 +114,7 @@
             .container {
                 padding: 2rem 1rem;
             }
+
             .card-header h1 {
                 font-size: 1.25rem;
             }
@@ -124,26 +128,24 @@
             <div class="col-lg-6 col-md-8 col-sm-10">
                 <div class="card">
                     <div class="card-header">
-                        <img src="{{ isset($setting) ? asset('storage/' . $setting->app_logo) : asset('assets/images/logo_gym.png') }}" alt="Logo" class="logo">
-                        <h1 class="h3">Forgot Password</h1>
+                        <p class="mb-0">Please enter the OTP code sent to
+                            <strong>{{ '+' . substr(session('phone'), 0, 2) . '*********' . substr(session('phone'), -2) }}</strong>
+                        </p>
                     </div>
                     <div class="card-body">
-                        @if($message = session('status'))
-                        <div class="alert alert-success my-2 text-success" role="alert">{{ $message }}</div>
-                        @endif
-                        <form action="{{ route('send-otp-forgot-password') }}" method="POST">
+                        <form action="{{ route('validate-otp') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <input name="phone" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="13" class="form-control @error('phone') is-invalid @enderror" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ old('phone') }}" required>
-                                @error('phone')
+                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                    minlength="6" maxlength="6"
+                                    class="form-control text-center @error('otp') is-invalid @enderror" id="otp"
+                                    name="otp" placeholder="XXXXXX" required>
+                                @error('otp')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <button class="w-100 btn btn-primary" type="submit">Send OTP</button>
+                            <button class="w-100 btn btn-primary" type="submit">Submit</button>
                         </form>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="{{ route('login') }}" class="btn btn-back w-100">Back</a>
                     </div>
                 </div>
             </div>
@@ -151,7 +153,9 @@
     </main>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous">
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         @if (Session::has('error'))
@@ -164,14 +168,8 @@
             }
         @endif
     </script>
-    <script>
-        function maxLength(input) {
-            const maxLength = 13;
-            if (input.value.length > maxLength) {
-                input.value = input.value.slice(0, maxLength);
-            }
-        }
-    </script>
 </body>
 
+
 </html>
+

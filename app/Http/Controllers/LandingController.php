@@ -9,6 +9,7 @@ use App\Models\Member;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\complement;
+use App\Models\ApplicationSetting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\MemberCheckin;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Http;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class LandingController extends Controller
@@ -52,10 +54,11 @@ class LandingController extends Controller
     {
         $user = Auth::user();
         if ($user && $user->role === 'customer') {
+            $app = ApplicationSetting::first();
             $customer = Customer::where('user_id', $user->id)->first();
             $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
             $cartCount = $this->getUniqueCartItemCount();
-            return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
+            return view('landing.getin', compact('user', 'customer', 'member', 'cartCount', 'app'));
         }
     }
 
@@ -330,6 +333,8 @@ class LandingController extends Controller
     public function checkoutComplement(Request $request)
     {
         $userId = auth()->id();
+        
+        
 
         return DB::transaction(function () use ($userId, $request) {
             $cartItems = Cart::where('user_id', $userId)->with('complement')->get();
@@ -373,6 +378,22 @@ class LandingController extends Controller
                     'created_at' => now(),
                     'updated_at' => now(),
                 ];
+
+                if ($complement->stok == 0) {
+                    $app = ApplicationSetting::first();
+                    $user = Auth::user();
+                    $phone = $user->phone; 
+                    $message = "Stok untuk *$complement->name* sudah habis.";
+                    
+                    $api = Http::baseUrl($app->japati_url)
+                    ->withToken($app->japati_token)
+                    ->post('/api/send-message', [
+                        'gateway' => $app->japati_gateway,
+                        'number' => $phone,
+                        'type' => 'text',
+                        'message' => $message,
+                    ]);
+                }
             }
 
             $orderComplement->update([

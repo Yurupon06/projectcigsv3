@@ -68,11 +68,11 @@
             box-shadow: 0 4px 10px rgba(255, 75, 43, 0.2);
         }
 
-        .form-control[name="email"] {
+        .form-control[name="phone"] {
             background-color: #4a4a4a; 
         }
 
-        .form-control[name="email"]::placeholder {
+        .form-control[name="phone"]::placeholder {
             color: #b0b0b0; 
         }
 
@@ -132,12 +132,11 @@
                     </div>
                     <form class="card-body" action="{{ route('reset') }}" method="POST">
                         @csrf
-                        <input name="token" type="hidden" value="{{ request('token') }}">
 
                         <div class="mb-3">
-                            <label for="floatingInput" class="form-label">Email address</label>
-                            <input name="email" type="email" class="form-control {{ $errors->has('email') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="name@example.com" value="{{ old('email', request('email')) }}" readonly>
-                            @error('email')
+                            <label for="floatingInput" class="form-label">Phone Number</label>
+                            <input name="phone" type="text" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" value="{{ session('phone') }}" readonly>
+                            @error('phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
@@ -159,7 +158,6 @@
                         </div>
                         
                         <button class="w-100 btn btn-primary btn-lg mb-3" type="submit">Submit</button>
-                        <a href="{{ url()->previous() }}" class="btn btn-back w-100">Back</a>
                     </form>
                 </div>
             </div>
@@ -168,6 +166,18 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (Session::has('success'))
+            {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '{{ Session::get('success') }}',
+                })
+            }
+        @endif
+    </script>
 </body>
 
 </html>
