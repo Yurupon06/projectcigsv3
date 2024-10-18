@@ -140,12 +140,8 @@
                 <span>{{ $user->name }}</span>
             </div>
             <div class="profile-field">
-                <span>Email:</span>
-                <span>{{ $user->email ?? 'Not filled' }}</span>
-            </div>
-            <div class="profile-field">
                 <span>Phone:</span>
-                <span>{{ $customer->phone ?? 'Not filled' }}</span>
+                <span>{{ $user->phone ?? 'Not filled' }}</span>
             </div>
 
             <div class="profile-field">
