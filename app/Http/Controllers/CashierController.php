@@ -724,9 +724,9 @@ class CashierController extends Controller
     public function paymentComplement(Request $request, $id)
     {
         $orderComplement = OrderComplement::findOrFail($id);
+        $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->get();
 
         if ($request->input('action') === 'cancel') {
-            $orderDetails = OrderDetail::where('order_complement_id', $orderComplement->id)->get();
             foreach ($orderDetails as $detail) {
                 $complement = Complement::findOrFail($detail->complement_id);
                 $complement->update([
@@ -763,7 +763,23 @@ class CashierController extends Controller
 
         $orderComplement->update(['status' => 'paid']);
 
-        
+        $items = '';
+        foreach ($orderDetails as $detail) {
+            $complement = Complement::find($detail['complement_id']);
+
+            $items .= $complement->name . ' (' . $detail['quantity'] . ' x Rp. ' . number_format($complement->price, 0, '.', '.') . ') = *Rp. ' . number_format($detail['sub_total'], 0, '.', '.') . "*\n";
+        }
+
+        $setting = ApplicationSetting::first();
+        $message = "*Successfuly Paid!*\n\n*Product*:\n" . $items . "\n*Total Amount*: *Rp. " . number_format($orderComplement->total_amount, 0, ',', '.') . "*\n*Amount Given*: *Rp. " . number_format($amountGiven, 0, ',', '.') . "*\n*Change*: *Rp. " . number_format($change, 0, ',', '.') . "*\n\nThank you for order!";
+        $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)
+        ->post('/api/send-message', [
+            'gateway' => $setting->japati_gateway,
+            'number' => $orderComplement->user->phone,
+            'type' => 'text',
+            'message' => $message,
+        ]);
 
         return redirect()->route('struk_complement', ['id' => $orderComplement->id])->with('success', 'Payment processed and membership created successfully!');
     }

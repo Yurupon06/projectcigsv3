@@ -129,10 +129,6 @@ Route::middleware('auth')->group(function () {
             Route::post('/cart/update/{id}', [CashierController::class, 'updateQuantity'])->name('cart.update');
             Route::post('/cart/checkout', [CashierController::class, 'checkoutProccess'])->name('cart.checkout');
             Route::get('/complement/{qr_token}', [CashierController::class, 'checkoutComplement'])->name('cashier.checkout');
-
-
-
-
         });
 
         Route::post('/payments/{order}', [CashierController::class, 'store'])->name('payments.store');

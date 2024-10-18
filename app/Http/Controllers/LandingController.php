@@ -446,7 +446,7 @@ class LandingController extends Controller
             foreach ($orderDetails as $detail) {
                 $complement = Complement::find($detail['complement_id']);
 
-                $items .= $complement->name . ' (' . $detail['quantity'] . 'x Rp' . number_format($complement->price, 0, '.', '.') . ') = *Rp' . number_format($detail['sub_total'], 0, '.', '.') . "*\n";
+                $items .= $complement->name . ' (' . $detail['quantity'] . ' x Rp' . number_format($complement->price, 0, '.', '.') . ') = *Rp' . number_format($detail['sub_total'], 0, '.', '.') . "*\n";
             }
 
             $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
