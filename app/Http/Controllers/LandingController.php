@@ -41,6 +41,7 @@ class LandingController extends Controller
             return view('landing.profile.editProfile', compact('user', 'customer', 'member', 'cartCount'));
         }
     }
+
     public function changePass()
     {
         $user = Auth::user();
@@ -51,6 +52,29 @@ class LandingController extends Controller
             return view('landing.profile.changepass', compact('user', 'customer', 'member', 'cartCount'));
         }
     }
+
+    public function changePhoneCustomer()
+    {
+        $user = Auth::user();
+        if ($user && $user->role === 'customer') {
+            $customer = Customer::where('user_id', $user->id)->first();
+            $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+            $cartCount = $this->getUniqueCartItemCount();
+            return view('landing.change-phone', compact('user', 'customer', 'member', 'cartCount'));
+        }
+    }
+
+    public function showValidateOtpCustomer()
+    {
+        $user = Auth::user();
+        if ($user && $user->role === 'customer') {
+            $customer = Customer::where('user_id', $user->id)->first();
+            $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
+            $cartCount = $this->getUniqueCartItemCount();
+            return view('landing.validate-otp', compact('user', 'customer', 'member', 'cartCount'));
+        }
+    }
+
     public function getIn()
     {
         $user = Auth::user();
@@ -67,8 +91,7 @@ class LandingController extends Controller
                 return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
             }
 
-            $qrcode = QrCode::format('png')->size(250)->generate($qrToken);
-            Storage::disk('public')->put($fileName, $qrcode);
+            $qrcode = QrCode::format('png')->size(250)->margin(1)->generate($qrToken, $filePath);
 
             $setting = ApplicationSetting::first();
             $message = "Here is your QR code.\nScan it to cashier and get in!";
@@ -122,9 +145,8 @@ class LandingController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
             'phone' => 'required|string|max:20',
-            'born' => 'required|date',
+            'born' => 'required|date|before:today',
             'gender' => 'required|in:men,women',
         ]);
 
@@ -133,7 +155,7 @@ class LandingController extends Controller
         if ($user && $user->role === 'customer') {
             $user->update([
                 'name' => $request->name,
-                'email' => $request->email,
+                'phone' => $request->phone,
             ]);
 
             $customer = Customer::updateOrCreate(
@@ -169,7 +191,7 @@ class LandingController extends Controller
         ]);
 
         $setting = ApplicationSetting::first();
-        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully.";
+        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully. If you didn't make this change, please contact us immediately.";
         $api = Http::baseUrl($setting->japati_url)
         ->withToken($setting->japati_token)
         ->post('/api/send-message', [
@@ -276,8 +298,7 @@ class LandingController extends Controller
 
         $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
         $filePath = storage_path('app/public/' . $fileName);
-        $qrcode = QrCode::format('png')->size(250)->generate($qrToken);
-        Storage::disk('public')->put($fileName, $qrcode);
+        $qrcode = QrCode::format('png')->size(250)->margin(1)->generate($qrToken, $filePath);
 
         $setting = ApplicationSetting::first();
         $message = "*Orders Details*:\n\nProduct Name: *" . $order->product->product_name . "*\nOrder Date: *" . $order->order_date . "*\nTotal Amount: *Rp. " . number_format($order->total_amount, 0, ',', '.') . "*\n\nThank you for order!\nScan the QR code to cashier to pay the order.";
@@ -349,8 +370,6 @@ class LandingController extends Controller
     
         return redirect()->route('yourorder.index', ['type' => 'complement'])->with('success', 'Successfully Cancelled The Complement, Restored Stock, and Deleted the Order.');
     }
-    
-    
 
     public function updateCart(Request $request) 
     {
@@ -470,8 +489,7 @@ class LandingController extends Controller
 
             $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
             $filePath = storage_path('app/public/' . $fileName);
-            $qrcode = QrCode::format('png')->size(250)->generate($qrToken);
-            Storage::disk('public')->put($fileName, $qrcode);
+            $qrcode = QrCode::format('png')->size(250)->margin(1)->generate($qrToken, $filePath);
 
             $user = Auth::user();
             $setting = ApplicationSetting::first();

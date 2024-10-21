@@ -22,8 +22,6 @@ use App\Http\Controllers\ComplementController;
 use App\Http\Controllers\CodeOtpController;
 use App\Http\Controllers\ReportController;
 
-
-
 // Public
 Route::get('/test-api', function () {
     return view('test-api');
@@ -35,8 +33,6 @@ Route::post('/send-struk-message/{id}', [CashierController::class, 'sendStrukMes
 Route::post('/store-checkin', [CashierController::class, 'storeCheckIn'])->name('cashier.storeCheckIn');
 Route::post('/send-checkin-message', [CashierController::class, 'sendCheckInMessage'])->name('cashier.sendCheckInMessage');
 Route::post('/check-in', [CashierController::class, 'handleCheckIn']);
-
-
 
 Route::get('/report', [ReportController::class, 'index'])->name('report.index');
 Route::post('/report', [ReportController::class, 'report'])->name('report.send');
@@ -54,6 +50,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/', [LandingController::class, 'profile'])->name('landing.profile');
             Route::post('/', [LandingController::class, 'profileUpdate'])->name('update.profile');
             Route::post('/password', [LandingController::class, 'updatePassword'])->name('update.password');
+            Route::get('/change-phone', [LandingController::class, 'changePhoneCustomer'])->name('change-phone-customer');
+            Route::get('/validate-otp', [LandingController::class, 'showValidateOtpCustomer'])->name('validate-otp-customer');
         });
         route::prefix('/edit')->group(function () {
             Route::get('/profile', [LandingController::class, 'editProfile'])->name('landing.edit');
@@ -79,9 +77,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/cart/add/{complementId}', [LandingController::class, 'addToCart'])->name('cart.add');
         Route::delete('/cart/remove/{id}', [LandingController::class, 'deleteCart'])->name('cart.remove');
         Route::post('/update-cart-cookie', [LandingController::class, 'updateCartCookie']);
-
-
-
     });
 
     // Admin
@@ -101,12 +96,13 @@ Route::middleware('auth')->group(function () {
         Route::prefix('/admin')->group(function () {
             Route::get('/profile', [DashboardController::class, 'profile'])->name('dashboard.profile');
             Route::post('/profile', [DashboardController::class, 'profileUpdate'])->name('update.profile.admin');
+            Route::view('/change-phone', 'dashboard.change-phone')->name('change-phone-admin');
+            Route::view('/validate-otp', 'dashboard.validate-otp')->name('validate-otp-admin');
             Route::post('/profile/password', [DashboardController::class, 'updatePassword'])->name('update.password.admin');
         });
 
         Route::resource('application-setting', ApplicationSettingController::class);
         Route::resource('landing-settings', LandingSettingController::class);
-
     });
 
     // Cashier
@@ -137,6 +133,8 @@ Route::middleware('auth')->group(function () {
             Route::post('/cart/update/{id}', [CashierController::class, 'updateQuantity'])->name('cart.update');
             Route::post('/cart/checkout', [CashierController::class, 'checkoutProccess'])->name('cart.checkout');
             Route::get('/complement/{qr_token}', [CashierController::class, 'checkoutComplement'])->name('cashier.checkout');
+            Route::view('/change-phone', 'cashier.change-phone')->name('change-phone-cashier');
+            Route::view('/validate-otp', 'cashier.validate-otp')->name('validate-otp-cashier');
         });
 
         Route::post('/payments/{order}', [CashierController::class, 'store'])->name('payments.store');
@@ -155,9 +153,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Change Phone Number
-    Route::view('/change-phone', 'auth.change-phone')->name('change-phone');
     Route::post('/change-phone', [ChangePhoneController::class, 'changePhone'])->name('change-phone');
-    Route::view('/validate-otp-phone', 'landing.validate-otp')->name('validate-otp-phone');
     Route::post('/validate-otp-phone', [ChangePhoneController::class, 'validateOtp'])->name('validate-otp-phone');
 });
 
@@ -166,12 +162,11 @@ Route::middleware('guest')->group(function (){
     Route::post('/register', [AuthController::class, 'register']);
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
-    Route::view('/validate-otp', 'auth.validate-otp')->name('validate-otp');
-    Route::post('/validate-otp', [CodeOtpController::class, 'validateOtp'])->name('validate-otp');
-    
 });
 
 Route::get('/forgot', [AuthController::class, 'showForgotForm'])->name('show-forgot');
-Route::post('/send-otp-forgot-password', [CodeOtpController::class, 'sendOtpForgotPassword'])->name('send-otp-forgot-password');
-Route::view('/reset', 'auth.reset-password')->name('password.reset');
+Route::post('/send-otp-forgot', [CodeOtpController::class, 'sendOtpForgotPassword'])->name('send-otp-forgot');
+Route::view('/validate-otp', 'auth.validate-otp')->name('validate-otp');
+Route::post('/validate-otp', [CodeOtpController::class, 'validateOtp'])->name('validate-otp');
+Route::get('/reset/{token}', [AuthController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset', [AuthController::class, 'reset'])->name('reset');
