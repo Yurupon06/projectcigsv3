@@ -64,7 +64,7 @@ class LandingController extends Controller
             $filePath = storage_path('app/public/' . $fileName);
 
             if (Storage::disk('public')->exists($fileName)) {
-                return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
+                return view('landing.getin', compact('user', 'customer', 'member', 'cartCount', 'app'));
             }
 
             $qrcode = QrCode::format('png')->size(250)->generate($qrToken);
@@ -82,7 +82,7 @@ class LandingController extends Controller
                 'message' => $message,
             ]);
 
-            return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
+            return view('landing.getin', compact('user', 'customer', 'member', 'cartCount', 'app'));
         }
     }
 

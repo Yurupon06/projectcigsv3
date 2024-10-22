@@ -15,6 +15,7 @@ use App\Models\OrderComplement;
 use App\Models\OrderDetail;
 use App\Models\Product_categorie;
 use App\Models\MemberCheckin;
+use BaconQrCode\Encoder\QrCode;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
@@ -216,44 +217,17 @@ class CashierController extends Controller
             ]);
         }
 
-        $this->sendPaymentMessage($order);
-
         return redirect()->route('struk_gym', ['id' => $order->id])->with('success', 'Payment processed and membership created successfully!');
     }
 
-    private function sendPaymentMessage(Order $order)
-    {
-        $customerName = $order->customer->user->name;
-        $phone = $order->customer->phone; 
-        $amount = $order->total_amount;
-        $paymentDate = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s'); 
-
-        $message = "Dear *$customerName*, your payment of *Rp $amount* has been received on *$paymentDate*. Thank you for using our service!";
-
-        $this->sendMessage($phone, $message);
-    }
-
-    private function sendMessage($phone, $message)
-    {
-        // Mengirimkan pesan menggunakan API WhatsApp
-        $api = Http::baseUrl('https://app.japati.id/')
-            ->withToken('API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112')
-            ->post('/api/send-message', [
-                'gateway' => '6283836949076', 
-                'number' => $phone, 
-                'type' => 'text',
-                'message' => $message,
-            ]);
-
-        if (!$api->successful()) {
-            \Log::error('Failed to send message', ['response' => $api->body()]);
-            throw new \Exception('Failed to send message');
-        }
-    }
 
     public function showStruk($id)
     {
         $order = Order::with('customer', 'product')->findOrFail($id);
+        $customer = $order->customer; 
+        $phone = $customer->phone;
+
+        // Ambil data pembayaran, member, dan produk terkait
         $payment = Payment::where('order_id', $id)->first();
         $member = Member::where('customer_id', $order->customer_id)->first();
         $product = $order->product;
@@ -262,20 +236,49 @@ class CashierController extends Controller
         $user = Auth::user();
         $appSetting = ApplicationSetting::first();
 
+        // Ambil detail customer, token QR, dan informasi aplikasi
         $customerName = $order->customer->user->name;
         $memberQrToken = $member ? $member->qr_token : null;
         $appName = $appSetting ? $appSetting->app_name : 'App Name';
 
+        // Menyimpan QR Code di storage
+        $fileName = 'qrcode_order/qrcode_' . $memberQrToken . '.png';
+        $filePath = storage_path('app/public/' . $fileName);
+
+        // Format detail pesanan
         $orderDate = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
         $productName = $payment->order->product->product_name;
         $amount = $payment->amount;
         $qrToken = $memberQrToken;
+        
+        // Generate QR code dan simpan
+        $qrcode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(250)->generate($qrToken);
+        Storage::disk('public')->put($fileName, $qrcode);
 
+        // Buat pesan yang akan dikirim melalui WhatsApp
         $message = "Dear *$customerName*, your order for *$productName* on *$orderDate* with an amount of *Rp $amount* has been processed. Please use this QR token for check-in: *$qrToken*. Thank you for using *$appName*!";
 
-        $this->sendMessage($order->customer->phone, $message);
+        // Mengirimkan pesan menggunakan API WhatsApp
+        $api = Http::baseUrl($appSetting->japati_url)
+            ->withToken($appSetting->japati_token)
+            ->post('/api/send-message', [
+                'gateway' => $appSetting->japati_gateway, 
+                'number' => $phone, 
+                'type' => 'media',
+                'message' => $message,
+                'media_file' => Storage::url($fileName), 
+                // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg',
+            ]);
 
-        return view('cashier.struk_gym', compact('order', 'payment', 'appSetting', 'visit', 'user', 'memberQrToken'));
+        // Cek apakah pengiriman berhasil
+        if (!$api->successful()) {
+            \Log::error('Failed to send message', ['response' => $api->body()]);
+            throw new \Exception('Failed to send message');
+        }
+
+        // Kembalikan view setelah berhasil
+        return view('cashier.struk_gym', compact('order', 'appSetting', 'visit','payment', 'member', 'product', 'productcat', 'visit', 'user', 'appSetting', 'customerName', 'memberQrToken', 'appName', 'orderDate', 'productName', 'amount', 'qrToken'));
+
     }
         
     public function membercashier(Request $request)
@@ -336,25 +339,25 @@ class CashierController extends Controller
     $customer = Customer::create([
         'user_id' => $user->id,
         'phone' => $user->phone,
-        // Tambahkan born dan gender jika ada di request
-        'born' => $request->born ?? null,
-        'gender' => $request->gender ?? null,
     ]);
 
     // Logika untuk mengirim pesan WhatsApp
-    $apiUrl = 'https://app.japati.id/api/send-message';
-    $apiToken = 'API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112';
+    $setting = ApplicationSetting::first();
+    $appName = $setting ? $setting->app_name : 'App Name';
     $showForgotForm = url('/forgot'); 
 
-    $message = "Halo, *{$user->name}!* Selamat datang di aplikasi kami. Untuk mengatur kata sandi Anda, silakan kunjungi: *{$showForgotForm}*";
+    $message = "Hello, ". $user->name . "! Welcome to our application *$appName*. To set your password, please visit: *". $showForgotForm . "*";
 
-    Http::withToken($apiToken)
-        ->post($apiUrl, [
-            'gateway' => '6283836949076', 
-            'number' => $user->phone,
+    // Mengirim pesan WhatsApp
+    $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)  
+        ->post( '/api/send-message', [ 
+            'gateway' => $setting->japati_gateway, 
+            'number' => $request->phone,
             'type' => 'text',
             'message' => $message,
         ]);
+
 
     return redirect()->route('cashier.order')->with([
         'success' => 'Customer added successfully.',
@@ -366,10 +369,10 @@ class CashierController extends Controller
     public function order()
     {
         $customer = Customer::whereHas('user', function ($query) {
-            $query->where('role', 'customer'); // Hanya user dengan role 'customer'
+            $query->where('role', 'customer'); 
         })
         ->whereDoesntHave('members', function ($query) {
-            $query->where('status', 'inactive'); // Kecualikan member dengan status 'inactive'
+            $query->where('status', 'inactive'); 
         })
         ->with('user')
 
@@ -553,101 +556,126 @@ class CashierController extends Controller
     }
 
     public function storeCheckin(Request $request)
-{
-    // Validasi input
-    $request->validate([
-        'qr_token' => 'required|string',
-        'image' => 'nullable|string', 
-    ]);
-
-    $qrToken = $request->input('qr_token');
-
-    // Cek apakah QR code sudah pernah digunakan
-    $existingCheckin = MemberCheckin::where('qr_token', $qrToken)->first();
-    if ($existingCheckin) {
-        return response()->json(['success' => false, 'message' => 'QR code has already been used.']);
-    }
-
-    // Ambil data member berdasarkan qr_token
-    $member = Member::where('qr_token', $qrToken)->first();
-    if (!$member) {
-        return response()->json(['success' => false, 'message' => 'Member not found.']);
-    }
-
-    $member->decrement('visit');
-
-    // Proses penyimpanan gambar jika ada
-    $imagePath = null;
-    if ($request->filled('image')) {
-        $imageData = $request->input('image');
-        $image = str_replace('data:image/png;base64,', '', $imageData);
-        $image = str_replace(' ', '+', $image);
-        $imageName = 'checkin_' . time() . '.png';
-        $imagePath = 'checkins/' . $imageName;
-        Storage::disk('public')->put($imagePath, base64_decode($image));
-    }
-
-    // Simpan data check-in ke database
-    $checkin = MemberCheckin::create([
-        'member_id' => $member->id,
-        'qr_token' => $qrToken,
-        'image' => $imagePath,
-    ]);
-
-    // Generate QR token baru
-    $newQrToken = Str::random(10);
-    $member->update(['qr_token' => $newQrToken]);
-
-    // Ambil data yang diperlukan untuk mengirim pesan
-    $customerName = $member->customer->user->name; // Pastikan relasi ini benar
-    $checkInDate = $checkin->created_at->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
-    $imageUrl = asset('storage/' . $checkin->image);
-
-    // Kirim pesan
-    $this->sendCheckinMessage($member->customer->phone, $customerName, $imageUrl, $checkInDate);
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Check-in recorded successfully',
-        'new_qr_token' => $newQrToken,
-    ]);
-}
-
-// Fungsi untuk mengirim pesan
-protected function sendCheckInMessage($phone, $customerName, $imageUrl, $checkInDate)
-{
-    // Buat pesan untuk dikirim
-    $message = "Hai *$customerName*, Anda telah check-in pada tanggal *$checkInDate*. Gambar check-in Anda: *$imageUrl*.";
-
-    // Menggunakan Http Client untuk mengirim pesan
-    $api = Http::baseUrl('https://app.japati.id/')
-        ->withToken('API-TOKEN-tDby9Tpokldf0Xc03om7oNgkX45zJTFtLZ94oNsITsD828VJdZq112')
-        ->post('/api/send-message', [
-            'gateway' => '6283836949076', 
-            'number' => $phone,
-            'type' => 'text',
-            'message' => $message,
+    {
+        // Validasi input
+        $request->validate([
+            'qr_token' => 'required|string',
+            'image' => 'nullable|string', 
         ]);
 
-    // Cek jika pengiriman pesan gagal
-    if ($api->failed()) {
-        \Log::error('Gagal mengirim pesan WhatsApp', [
-            'phone' => $phone,
-            'response' => $api->json(),
+        $qrToken = $request->input('qr_token');
+
+        // Cek apakah QR code sudah pernah digunakan
+        $existingCheckin = MemberCheckin::where('qr_token', $qrToken)->first();
+        if ($existingCheckin) {
+            return response()->json(['success' => false, 'message' => 'QR code has already been used.']);
+        }
+
+        // Ambil data member berdasarkan qr_token
+        $member = Member::where('qr_token', $qrToken)->first();
+        if (!$member) {
+            return response()->json(['success' => false, 'message' => 'Member not found.']);
+        }
+
+        $member->decrement('visit');
+
+        // Proses penyimpanan gambar jika ada
+        $imagePath = null;
+        if ($request->filled('image')) {
+            $imageData = $request->input('image');
+            $image = str_replace('data:image/png;base64,', '', $imageData);
+            $image = str_replace(' ', '+', $image);
+            $imageName = 'checkin_' . time() . '.png';
+            $imagePath = 'checkins/' . $imageName;
+            Storage::disk('public')->put($imagePath, base64_decode($image));
+        }
+
+        // Simpan data check-in ke database
+        $checkin = MemberCheckin::create([
+            'member_id' => $member->id,
+            'qr_token' => $qrToken,
+            'image' => $imagePath,
+        ]);
+
+        // Generate QR token baru
+        $newQrToken = Str::random(10);
+        $member->update(['qr_token' => $newQrToken]);
+
+        $phone = $member->customer->phone;
+        $setting = ApplicationSetting::first();
+        $customerName = $member->customer->user->name;
+        $checkInDate = $checkin->created_at->setTimezone('Asia/Jakarta')->format('Y-m-d H:i:s');
+
+        // Cek keberadaan file gambar sebelum mengirim
+        $fullImagePath = storage_path('app/public/' . $imagePath);
+        if (!file_exists($fullImagePath)) {
+            \Log::error('Image file not found: ' . $fullImagePath);
+            return response()->json(['success' => false, 'message' => 'Image file not found.'], 500);
+        }
+
+        $phoneNumber = preg_replace('/[^0-9]/', '', $phone); 
+        $phoneNumber = '+62' . substr($phoneNumber, 1);
+
+        $message = "Hello *$customerName*, you have successfully checked in on *$checkInDate*. Here is your check-in image: $imagePath";
+        $apiCustomer = Http::baseUrl($setting->japati_url)
+            ->withToken($setting->japati_token)
+            // ->attach('media_file', fopen(storage_path('app/public/'.$imagePath), 'r'), basename($imagePath))
+            ->post('/api/send-message', [
+                'gateway' => $setting->japati_gateway,
+                'number' => $phone,
+                'type' => 'media',
+                'message' => $message,
+                'media_file' => Storage::url($checkin->image),
+                // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg',
+            ]);
+
+        // Ambil respons dari API customer
+        $responseCustomer = $apiCustomer->json();
+        $httpStatusCustomer = $apiCustomer->status();
+
+        
+        if ($httpStatusCustomer == 200 && isset($responseCustomer['success']) && $responseCustomer['success'] == true) {
+            // Jika pengiriman ke customer berhasil, kirim pesan ke admin
+            $admins = User::where('role', 'admin')->get();
+        
+            foreach ($admins as $admin) {
+                $adminPhone = $admin->phone;
+                $messageAdmin = "Hello Admin, customer $customerName has successfully checked in on $checkInDate. Image path: $imagePath.";
+        
+                // Kirim pesan ke admin
+                $apiAdmin = Http::baseUrl($setting->japati_url)
+                    ->withToken($setting->japati_token)
+                    ->post('/api/send-message', [
+                        'gateway' => $setting->japati_gateway,
+                        'number' => $adminPhone,
+                        'type' => 'media',
+                        'message' => $messageAdmin,
+                        'media_file' => Storage::url($checkin->image),
+                        // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg', 
+                    ]);
+        
+                $responseAdmin = $apiAdmin->json();
+                $httpStatusAdmin = $apiAdmin->status();
+        
+                // Log status pengiriman ke admin
+                if ($httpStatusAdmin == 200 && isset($responseAdmin['success']) && $responseAdmin['success'] == true) {
+                    \Log::info("Notification sent to admin (phone: $adminPhone) successfully.");
+                } else {
+                    \Log::error("Failed to send notification to admin (phone: $adminPhone). Status: " . $httpStatusAdmin);
+                }
+            }
+        } else {
+            // Jika pengiriman ke customer gagal, catat ke dalam log
+            \Log::error('Failed to send check-in message to customer. Status: ' . $httpStatusCustomer);
+        }
+        
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Check-in recorded successfully',
+            'new_qr_token' => $newQrToken,
         ]);
     }
-}
-
-public function handleCheckIn(Request $request)
-{
-    $phone = $request->input('phone');
-    $customerName = $request->input('name');
-    $checkInDate = $request->input('checkInDate');
-    $imageUrl = $request->input('imageUrl'); 
-
-    // Panggil metode untuk mengirim pesan
-    $this->sendCheckInMessage($phone, $customerName, $imageUrl, $checkInDate);
-}
 
         public function showCheckIn()
         {

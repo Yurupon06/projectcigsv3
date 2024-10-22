@@ -337,10 +337,10 @@
             <section class="section-slide">
                 <div class="wrap-slick1 rs1-slick1">
                     <div class="slick1">
-                        <div class="item-slick1" style="background-image: url(../../assets/images/banner/banner.png);">
+                        <div class="item-slick1" style="background-image: url('{{ isset($landingSetting) ? asset('storage/' . $landingSetting->banner_image) : asset('assets/images/banner/banner.png') }}');">
                             <div class="text-overlay">
-                                <h1>Transform Your Body, Elevate Your Life</h1>
-                                <p>Your Journey to a Stronger You Starts Here</p>
+                                <h1>{{ isset($landingSetting->banner_h1_text) ? $landingSetting->banner_h1_text : 'Transform Your Body, Elevate Your Life' }}</h1>
+                                <p>{{ isset($landingSetting->banner_p_text) ? $landingSetting->banner_p_text : 'Your Journey to a Stronger You Starts Here' }}</p>
                             </div>
                         </div>
                     </div>
@@ -350,9 +350,9 @@
 
         <section class="about-us">
             <h2>About Us</h2>
-            <p>Welcome to our gym! We offer top-notch facilities and expert trainers to help you achieve your fitness goals.
+            <p>{{ isset($landingSetting->about_us_text) ? $landingSetting->about_us_text : 'Welcome to our gym! We offer top-notch facilities and expert trainers to help you achieve your fitness goals.
                 Whether you’re interested in a membership, a single visit, or fitness products, we have something for
-                everyone. Join us and take the first step towards a healthier you!</p>
+                everyone. Join us and take the first step towards a healthier you!' }}</p>
         </section>
 
         <section class="about-us">
