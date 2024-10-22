@@ -179,7 +179,6 @@ class DashboardController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
             'born' => 'required|date',
             'gender' => 'required|in:men,women',
         ]);
@@ -188,13 +187,11 @@ class DashboardController extends Controller
         $customer = Customer::where('user_id', $user->id)->first();
         $user->update([
             'name' => $request->name,
-            'phone' => $request->phone,
         ]);
 
         $customer = Customer::updateOrCreate(
             ['user_id' => $user->id],
             [
-                'phone' => $request->phone,
                 'born' => $request->born,
                 'gender' => $request->gender,
             ]
