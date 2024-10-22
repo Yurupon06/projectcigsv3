@@ -98,7 +98,7 @@
             </div>
             <div class="profile-field">
                 <span>Gender:</span>
-                <span>{{ $customer->gender ?? 'Not filled' }}</span>
+                <span class="text-capitalize">{{ $customer->gender ?? 'Not filled' }}</span>
             </div>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
                 Update Profile
@@ -130,7 +130,7 @@
                             <div class="position-relative">
                                 <input type="text" id="phone" name="phone" class="form-control"
                                 value="{{ $user->phone ?? '' }}" readonly>
-                                <a href="{{ route('change-phone') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a>
+                                <a href="{{ route('change-phone-cashier') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a>
                             </div>
                         </div>
                         <div class="form-group">
@@ -185,7 +185,7 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
-                        {{-- <a href="{{ route('show-forgot') }}" class="d-block text-decoration-none">I forgot my password</a> --}}
+                        <a href="{{ route('show-forgot') }}" class="d-block text-decoration-none">I forgot my password</a>
                         <div class="pt-4">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save changes</button>

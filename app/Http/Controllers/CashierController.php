@@ -412,7 +412,6 @@ class CashierController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
             'phone' => 'required|string|max:20',
             'born' => 'required|date',
             'gender' => 'required|in:men,women',
@@ -421,7 +420,7 @@ class CashierController extends Controller
         $user = Auth::user();
         $user->update([
             'name' => $request->name,
-            'email' => $request->email,
+            'phone' => $request->phone,
         ]);
 
         $customer = Customer::updateOrCreate(
@@ -454,7 +453,7 @@ class CashierController extends Controller
         ]);
 
         $setting = ApplicationSetting::first();
-        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully.";
+        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully. If you didn't make this change, please contact us immediately.";
         $api = Http::baseUrl($setting->japati_url)
         ->withToken($setting->japati_token)
         ->post('/api/send-message', [

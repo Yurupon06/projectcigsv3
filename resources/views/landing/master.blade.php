@@ -202,7 +202,7 @@
                 @endif
             </div>
             <div class="nav-bottom-item col-3">
-                <a href="{{ route('landing.profile') }}" class="{{ request()->routeIs('landing.profile') ? 'active' : 'text-dark'}}">
+                <a href="{{ route('landing.profile') }}" class="{{ request()->routeIs('landing.profile') || request()->is('profile*','edit*') ? 'active' : 'text-dark'}}">
                     <i class="bi bi-person-fill fs-3"></i>
                     <p>Profile</p>
                 </a>
