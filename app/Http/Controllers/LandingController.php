@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\cart;
 use App\Models\Order;
 use App\Models\Member;
+use App\Models\User;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\complement;
@@ -88,7 +89,7 @@ class LandingController extends Controller
             $filePath = storage_path('app/public/' . $fileName);
 
             if (Storage::disk('public')->exists($fileName)) {
-                return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
+                return view('landing.getin', compact('user', 'customer', 'member', 'cartCount', 'app'));
             }
 
             $qrcode = QrCode::format('png')->size(250)->margin(1)->generate($qrToken);
@@ -106,7 +107,7 @@ class LandingController extends Controller
                 'message' => $message,
             ]);
 
-            return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
+            return view('landing.getin', compact('user', 'customer', 'member', 'cartCount', 'app'));
         }
     }
 
@@ -433,7 +434,7 @@ class LandingController extends Controller
             ]);
 
             foreach ($cartItems as $item) {
-                $complement = $item->complement; // Ambil data complement
+                $complement = $item->complement; 
 
                 // Cek apakah stok mencukupi
                 if ($complement->stok < $item->quantity) {
@@ -458,18 +459,26 @@ class LandingController extends Controller
 
                 if ($complement->stok == 0) {
                     $app = ApplicationSetting::first();
-                    $user = Auth::user();
-                    $phone = $user->phone; 
-                    $message = "Stok untuk *$complement->name* sudah habis.";
-                    
-                    $api = Http::baseUrl($app->japati_url)
-                    ->withToken($app->japati_token)
-                    ->post('/api/send-message', [
-                        'gateway' => $app->japati_gateway,
-                        'number' => $phone,
-                        'type' => 'text',
-                        'message' => $message,
-                    ]);
+                    $adminUsers = User::where('role', 'admin')->get(); 
+                    if ($adminUsers->isNotEmpty()) {
+                        foreach ($adminUsers as $admin) {
+                            if ($admin->phone) { 
+                                $phone = $admin->phone;
+                                $message = "Halo *$admin->role* Stok untuk *$complement->name* sudah habis.";
+                
+                                $api = Http::baseUrl($app->japati_url)
+                                    ->withToken($app->japati_token)
+                                    ->post('/api/send-message', [
+                                        'gateway' => $app->japati_gateway,
+                                        'number' => $phone,
+                                        'type' => 'text',
+                                        'message' => $message,
+                                    ]);
+                            }
+                        }
+                    } else {
+                        return redirect()->back()->with('error', 'No admin users found.');
+                    }
                 }
             }
 

@@ -201,29 +201,5 @@
 		window.print();
 	</script> --}}
 
-    <script>
-         function sendWhatsAppMessage(orderId) {
-        $.ajax({
-            url: '/send-whatsapp-message/' + orderId, 
-            type: 'POST',
-            data: {
-                _token: '{{ csrf_token() }}'
-            },
-            success: function(response) {
-                alert('Pesan WhatsApp berhasil dikirim!');
-            },
-            error: function(xhr, status, error) {
-                alert('Gagal mengirim pesan WhatsApp.');
-            }
-        });
-    }
-
-    // Event listener ketika tombol diklik
-    $('#printStruk').on('click', function() {
-        var orderId = {{ $order->id }};
-        printStruk(); // Cetak struk
-        sendWhatsAppMessage(orderId); // Kirim pesan WhatsApp
-    });
-    </script>
 </body>
 </html>
