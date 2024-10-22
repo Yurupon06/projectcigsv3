@@ -92,8 +92,8 @@ class LandingController extends Controller
                 return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
             }
 
-            $qrcode = QrCode::format('png')->size(250)->margin(1)->generate($qrToken, $filePath);
-
+            $qrcode = QrCode::format('png')->size(250)->margin(1)->generate($qrToken);
+            Storage::disk('public')->put($fileName, $qrcode);
             $setting = ApplicationSetting::first();
             $message = "Here is your QR code.\nScan it to cashier and get in!";
             $api = Http::baseUrl($setting->japati_url)
@@ -299,8 +299,8 @@ class LandingController extends Controller
 
         $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
         $filePath = storage_path('app/public/' . $fileName);
-        $qrcode = QrCode::format('png')->size(250)->margin(1)->generate($qrToken, $filePath);
-
+        $qrcode = QrCode::format('png')->size(250)->margin(1)->generate('SCAN_' . $qrToken);
+        Storage::disk('public')->put($fileName, $qrcode);
         $setting = ApplicationSetting::first();
         $message = "*Orders Details*:\n\nProduct Name: *" . $order->product->product_name . "*\nOrder Date: *" . $order->order_date . "*\nTotal Amount: *Rp. " . number_format($order->total_amount, 0, ',', '.') . "*\n\nThank you for order!\nScan the QR code to cashier to pay the order.";
         $api = Http::baseUrl($setting->japati_url)
@@ -462,7 +462,7 @@ class LandingController extends Controller
                         foreach ($adminUsers as $admin) {
                             if ($admin->phone) { 
                                 $phone = $admin->phone;
-                                $message = "Halo *$admin->role* Stok untuk *$complement->name* sudah habis.";
+                                $message = "Halo *$admin->name* Stok untuk *$complement->name* sudah habis.";
                 
                                 $api = Http::baseUrl($app->japati_url)
                                     ->withToken($app->japati_token)

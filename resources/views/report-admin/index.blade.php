@@ -30,9 +30,18 @@
                 </div>
             </div>
         <div style="width: 100%; margin: 0 auto;">
-            <img src="{{ $quickChartUrl }}" alt="Report Chart">
+            <canvas id="myChart"></canvas>
+
     
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Prepare chart data from the controller
+        const chartData = {!! $chartDataJson !!};
 
+        // Create the chart
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, chartData);
+    </script>
 @endsection

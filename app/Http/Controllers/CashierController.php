@@ -798,7 +798,7 @@ public function handleCheckIn(Request $request)
                     foreach ($adminUsers as $admin) {
                         if ($admin->phone) { 
                             $phone = $admin->phone;
-                            $message = "Halo *$admin->role* Stok untuk *$complement->name* sudah habis.";
+                            $message = "Halo *$admin->name* Stok untuk *$complement->name* sudah habis.";
             
                             $api = Http::baseUrl($app->japati_url)
                                 ->withToken($app->japati_token)

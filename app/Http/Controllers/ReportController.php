@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Payment;
 use App\Models\User;
 use App\Models\Member;
+use App\Models\Order;
+use App\Models\OrderComplement;
 use App\Models\ApplicationSetting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
@@ -59,10 +61,28 @@ class ReportController extends Controller
             ->orderBy('date')
             ->pluck('total_member', 'date')
             ->toArray(); 
+
+        $orders = Order::where('status', 'paid')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('total_order', 'date')
+            ->toArray(); 
+
+        $orderComplements = OrderComplement::where('status', 'paid')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order_complement')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('total_order_complement', 'date')
+            ->toArray(); 
     
         $paymentData = array_merge($allDates, $payments); 
         $userData = array_merge($allDates, $users); 
         $memberData = array_merge($allDates, $members); 
+        $orderData = array_merge($allDates, $orders); 
+        $orderComplementData = array_merge($allDates, $orderComplements); 
     
         $chartData = [
             'type' => 'line',
@@ -74,24 +94,40 @@ class ReportController extends Controller
                         'data' => array_values($paymentData),
                         'borderColor' => 'rgba(75, 192, 192, 1)',
                         'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                        'fill' => true,
-                        'tension' => 0.1
+                        
+                        
+                    ],
+                    [
+                        'label' => 'Order Member',
+                        'data' => array_values($orderData),
+                        'borderColor' => 'rgba(245, 40, 145, 1)',
+                        'backgroundColor' => 'rgba(245, 40, 145, 0.2)',
+                        
+                        
+                    ],
+                    [
+                        'label' => 'Order Complement',
+                        'data' => array_values($orderComplementData),
+                        'borderColor' => 'rgba(175, 140, 221, 1)',
+                        'backgroundColor' => 'rgba(175, 140, 221, 0.2)',
+                        
+                        
                     ],
                     [
                         'label' => 'Users',
                         'data' => array_values($userData),
                         'borderColor' => 'rgba(54, 162, 235, 1)',
                         'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
-                        'fill' => true,
-                        'tension' => 0.1
+                        
+                        
                     ],
                     [
                         'label' => 'Members',
                         'data' => array_values($memberData),
                         'borderColor' => 'rgba(255, 206, 86, 1)',
                         'backgroundColor' => 'rgba(255, 206, 86, 0.2)',
-                        'fill' => true,
-                        'tension' => 0.1
+                        
+                        
                     ]
                 ]
             ],
@@ -119,7 +155,7 @@ class ReportController extends Controller
 
         $quickChartUrl = "https://quickchart.io/chart?c=" . urlencode($chartDataJson);
 
-        return view('report-admin.index', compact('quickChartUrl', 'app', 'filter', 'startDate', 'endDate'));
+        return view('report-admin.index', compact('quickChartUrl', 'app', 'filter', 'startDate', 'endDate', 'chartDataJson'));
     }
 
     public function report(Request $request) {
@@ -165,7 +201,7 @@ class ReportController extends Controller
                 'type' => 'text',
                 'message' => $message,
             ]);
-        return redirect()->route('report.send')->with('success', 'Message sent successfully!');
+        return redirect()->route('report.index')->with('success', 'Message sent successfully!');
     }
 
 
@@ -218,6 +254,7 @@ class ReportController extends Controller
             ->orderBy('date')
             ->pluck('total_member', 'date')
             ->toArray(); 
+
     
         $paymentData = array_merge($allDates, $payments); 
         $userData = array_merge($allDates, $users); 
@@ -288,59 +325,6 @@ class ReportController extends Controller
     
     
 
-
-    private function generateChartImage($totalMember, $totalUser, $totalPayment)
-    {
-        // Data untuk chart
-        $dataPoints = [
-            $totalMember, // Jumlah anggota
-            $totalUser,   // Jumlah pengguna
-            $totalPayment, // Jumlah total pembayaran (hitung berdasarkan count)
-        ];
-    
-        $labels = ['Total Members', 'Total Users', 'Total Sales'];
-    
-        $chartData = [
-            'labels' => $labels,
-            'datasets' => [
-                [
-                    'label' => 'Total Statistics',
-                    'data' => $dataPoints,
-                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                    'borderColor' => 'rgba(75, 192, 192, 1)',
-                    'borderWidth' => 1,
-                ],
-            ],
-        ];
-    
-        $chartDataJson = json_encode($chartData);
-    
-        // Tentukan nilai maksimum sumbu Y (misalnya, menambah 20% dari nilai tertinggi)
-        $maxYValue = max($dataPoints) * 1.2; // Mengambil nilai tertinggi dan menambahkannya 20%
-    
-        // Generate chart using Chart.js and convert to image
-        $chartImageUrl = "https://quickchart.io/chart?c=" . urlencode("{
-            type: 'bar',
-            data: $chartDataJson,
-            options: {
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true, // Memastikan sumbu Y mulai dari 0
-                        min: 0, // Menetapkan nilai minimum untuk sumbu Y
-                        max: $maxYValue, // Menetapkan nilai maksimum untuk sumbu Y
-                        ticks: {
-                            callback: function(value) {
-                                return value; // Format nilai yang ditampilkan
-                            }
-                        }
-                    }
-                }
-            }
-        }");
-    
-        return $chartImageUrl; // Return URL of the chart image
-    }
     
     
     
