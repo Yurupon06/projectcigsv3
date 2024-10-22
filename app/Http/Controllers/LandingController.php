@@ -89,7 +89,7 @@ class LandingController extends Controller
             $filePath = storage_path('app/public/' . $fileName);
 
             if (Storage::disk('public')->exists($fileName)) {
-                return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
+                return view('landing.getin', compact('user', 'customer', 'member', 'cartCount', 'app'));
             }
 
             $qrcode = QrCode::format('png')->size(250)->margin(1)->generate($qrToken, $filePath);
@@ -106,7 +106,7 @@ class LandingController extends Controller
                 'message' => $message,
             ]);
 
-            return view('landing.getin', compact('user', 'customer', 'member', 'cartCount'));
+            return view('landing.getin', compact('user', 'customer', 'member', 'cartCount', 'app'));
         }
     }
 
@@ -432,7 +432,7 @@ class LandingController extends Controller
             ]);
 
             foreach ($cartItems as $item) {
-                $complement = $item->complement; // Ambil data complement
+                $complement = $item->complement; 
 
                 // Cek apakah stok mencukupi
                 if ($complement->stok < $item->quantity) {
