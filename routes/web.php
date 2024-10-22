@@ -26,7 +26,10 @@ use App\Http\Controllers\ReportController;
 Route::get('/test-api', function () {
     return view('test-api');
 })->name('test-api');
+
 Route::post('/api', [api::class, 'api'])->name('api');
+Route::post('/api-test', [LandingController::class, 'generate']);
+
 Route::post('/send-otp', [CodeOtpController::class, 'sendOtp'])->name('send-otp');
 Route::post('/send-payment-message', [CodeOtpController::class, 'sendPaymentMessage'])->name('send.payment.message');
 Route::post('/send-struk-message/{id}', [CashierController::class, 'sendStrukMessage']);
@@ -34,7 +37,9 @@ Route::post('/store-checkin', [CashierController::class, 'storeCheckIn'])->name(
 Route::post('/send-checkin-message', [CashierController::class, 'sendCheckInMessage'])->name('cashier.sendCheckInMessage');
 Route::post('/check-in', [CashierController::class, 'handleCheckIn']);
 
+
 Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+Route::get('/report/pdf', [ReportController::class, 'generateReport'])->name('report.pdf');
 Route::post('/report', [ReportController::class, 'report'])->name('report.send');
 
 Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
