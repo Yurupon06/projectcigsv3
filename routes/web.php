@@ -27,10 +27,13 @@ use App\Http\Controllers\ReportController;
 Route::get('/test-api', function () {
     return view('test-api');
 })->name('test-api');
+
 Route::post('/api', [api::class, 'api'])->name('api');
+Route::post('/api-test', [LandingController::class, 'generate']);
 
 
 Route::get('/report', [ReportController::class, 'index'])->name('report.index');
+Route::get('/report/pdf', [ReportController::class, 'generateReport'])->name('report.pdf');
 Route::post('/report', [ReportController::class, 'report'])->name('report.send');
 
 Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');

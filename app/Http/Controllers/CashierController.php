@@ -678,17 +678,26 @@ class CashierController extends Controller
             $complement->stok -= $item->quantity;
     
             if ($complement->stok == 0) {
-                $phone = $user->phone; 
-                $message = "Stok untuk *$complement->name* sudah habis.";
-                
-                $api = Http::baseUrl($app->japati_url)
-                ->withToken($app->japati_token)
-                ->post('/api/send-message', [
-                    'gateway' => $app->japati_gateway,
-                    'number' => '6281293962019',
-                    'type' => 'text',
-                    'message' => $message,
-                ]);
+                $adminUsers = User::where('role', 'admin')->get(); 
+                if ($adminUsers->isNotEmpty()) {
+                    foreach ($adminUsers as $admin) {
+                        if ($admin->phone) { 
+                            $phone = $admin->phone;
+                            $message = "Halo *$admin->role* Stok untuk *$complement->name* sudah habis.";
+            
+                            $api = Http::baseUrl($app->japati_url)
+                                ->withToken($app->japati_token)
+                                ->post('/api/send-message', [
+                                    'gateway' => $app->japati_gateway,
+                                    'number' => $phone,
+                                    'type' => 'text',
+                                    'message' => $message,
+                                ]);
+                        }
+                    }
+                } else {
+                    return redirect()->back()->with('error', 'No admin users found.');
+                }
             }
     
             $complement->save(); 

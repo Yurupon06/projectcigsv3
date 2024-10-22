@@ -32,7 +32,7 @@
         </div>
         <div class="card-body text-center">
             <div class="qr-code p-4" style="background-color: #fff; border-radius: 15px; display: inline-block;">
-                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(250)->mergeString(Storage::get($app->app_logo))->generate($member->qr_token)) !!} ">
+                <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(250)->style('round')->mergeString(Storage::get($app->app_logo), .3)->generate($member->qr_token)) !!} ">
             </div>
         </div>
     </div>
