@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ApplicationSetting;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Order;
@@ -12,6 +13,7 @@ use App\Models\Customer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 
 class DashboardController extends Controller
 {
@@ -177,7 +179,6 @@ class DashboardController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
             'phone' => 'required|string|max:20',
             'born' => 'required|date',
             'gender' => 'required|in:men,women',
@@ -187,7 +188,7 @@ class DashboardController extends Controller
         $customer = Customer::where('user_id', $user->id)->first();
         $user->update([
             'name' => $request->name,
-            'email' => $request->email,
+            'phone' => $request->phone,
         ]);
 
         $customer = Customer::updateOrCreate(
@@ -212,13 +213,24 @@ class DashboardController extends Controller
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
-            return redirect()->route('dashboard.profil')->with('warning', 'Current password does not match.');
+            return redirect()->route('dashboard.profile')->with('warning', 'Current password does not match.');
         }
 
         $user->update([
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('dashboard.profil')->with('success', 'Password updated successfully.');
+        $setting = ApplicationSetting::first();
+        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully. If you didn't make this change, please contact us immediately.";
+        $api = Http::baseUrl($setting->japati_url)
+        ->withToken($setting->japati_token)
+        ->post('/api/send-message', [
+            'gateway' => $setting->japati_gateway,
+            'number' => $user->phone,
+            'type' => 'text',
+            'message' => $message,
+        ]);
+
+        return redirect()->route('dashboard.profile')->with('success', 'Password updated successfully.');
     }
 }

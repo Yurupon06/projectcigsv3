@@ -129,7 +129,7 @@
                 <div class="card">
                     <div class="card-header">
                         <p class="mb-0">Please enter the OTP code sent to
-                            <strong>{{ '+' . substr(session('phone'), 0, 2) . '*********' . substr(session('phone'), -2) }}</strong>
+                            <strong>{{ substr(session('phone'), 0, 2) . '*********' . substr(session('phone'), -2) }}</strong>
                         </p>
                     </div>
                     <div class="card-body">

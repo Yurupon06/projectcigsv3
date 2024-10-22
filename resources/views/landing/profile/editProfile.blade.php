@@ -38,10 +38,6 @@
         }
     }
 
-    .btn-primary {
-        background-color: #ff8500;
-        border-color: #ff8500;
-    }
 
     .btn-primary:hover {
         background-color: #ff5500;
@@ -60,14 +56,11 @@
                        value="{{ Auth::user()->name }}" required>
             </div>
             <div class="form-group">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" class="form-control"
-                       value="{{ Auth::user()->email }}" required>
-            </div>
-            <div class="form-group">
                 <label for="phone">Phone</label>
-                <input type="text" id="phone" name="phone" class="form-control"
-                       value="{{ $customer->phone ?? '' }}" required>
+                <div class="position-relative">
+                    <input type="text" id="phone" name="phone" class="form-control" value="{{ $user->phone ?? '' }}" readonly>
+                    <a href="{{ route('change-phone-customer') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a>
+                </div>
             </div>
             <div class="form-group">
                 <label for="born">Date of Birth</label>

@@ -141,6 +141,8 @@
     <main class="container">
         @if($message = session('success'))
         <div class="alert alert-success my-2 text-success" role="alert">{{ $message }}</div>
+        @elseif ($message = session('error'))
+        <div class="alert alert-danger my-2 text-danger" role="alert">{{ $message }}</div>
         @endif
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -153,7 +155,7 @@
                         @csrf
                         <div class="form-floating mb-3">
                             <input name="phone" type="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ old('phone') }}" required>
-                            <label for="floatingInput">phone address</label>
+                            <label for="floatingInput">Phone Number</label>
                             @error('phone')
                             <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

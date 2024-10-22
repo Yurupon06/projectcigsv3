@@ -117,7 +117,6 @@
                 <h5 class="card-title">Profile</h5>
                 <div class="card-text">
                     <p>{{ $order->customer->user->name }} ( {{ $order->customer->phone }} )</p>
-                    <p>{{ $order->customer->user->email }}</p>
                 </div>
             </div>
         </div>

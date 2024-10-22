@@ -404,4 +404,24 @@
             <i class="zmdi zmdi-chevron-up"></i>
         </span>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        @if (Session::has('success'))
+            {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '{{ Session::get('success') }}',
+                })
+            }
+        @elseif (Session::has('error'))
+            {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '{{ Session::get('error') }}',
+                })
+            }
+        @endif
+    </script>
 @endsection

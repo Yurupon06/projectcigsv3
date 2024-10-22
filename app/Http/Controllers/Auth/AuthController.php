@@ -10,8 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
@@ -40,6 +39,7 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'phone' => $request->phone,
+            'phone_verified_at' => now(),
             'password' => bcrypt($request->password), 
             'role' => 'customer',
         ]);
@@ -91,19 +91,92 @@ class AuthController extends Controller
         return view('auth.forgot-password');
     }
 
+    public function showResetForm(Request $request)
+    {
+        $token = $request->segment(2);
+        $phone = $request->query('phone');
+
+        $resetToken = DB::table('password_reset_tokens')
+        ->where('phone', $phone)
+        ->where('token', $token)
+        ->first();
+
+        if (!$resetToken) {
+            if (Auth::check()) {
+                $roleRedirects = [
+                    'customer' => '/home',
+                    'cashier' => '/cashier',
+                    'admin' => '/dashboard',
+                ];
+
+                $role = Auth::user()->role;
+
+                if (isset($roleRedirects[$role])) {
+                    return redirect($roleRedirects[$role])->with('error', 'The reset link has expired or is invalid.');
+                }
+            }
+            return redirect()->route('login')->with('error', 'The reset link has expired or is invalid.');
+        }
+
+        return view('auth.reset-password');
+    }
+
     public function reset(Request $request)
     {
         $request->validate([
+            'token' => 'required',
             'phone' => 'required|string|max:13',
             'password' => 'required|string|min:3|confirmed',
         ]);
 
-        $user = User::where('phone', $request->phone)->first();
+        $token = $request->input('token');
+        $phone = $request->input('phone');
+        $password = $request->input('password');
+
+        $resetToken = DB::table('password_reset_tokens')
+        ->where('phone', $phone)
+        ->where('token', $token)
+        ->first();
+
+        if (!$resetToken) {
+            if (Auth::check()) {
+                $roleRedirects = [
+                    'customer' => '/home',
+                    'cashier' => '/cashier',
+                    'admin' => '/dashboard',
+                ];
+
+                $role = Auth::user()->role;
+
+                if (isset($roleRedirects[$role])) {
+                    return redirect($roleRedirects[$role])->with('error', 'Request parameters have been tampered with.');
+                }
+            }
+            return redirect()->route('login')->with('error', 'Request parameters have been tampered with.');
+        }
+
+        $user = User::where('phone', $phone)->first();
 
         $user->update([
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($password),
         ]);
 
+        DB::table('password_reset_tokens')->where('phone', $phone)->delete();
+        session()->forget('phone');
+
+        if (Auth::check()) {
+            $roleRedirects = [
+                'customer' => '/home',
+                'cashier' => '/cashier',
+                'admin' => '/dashboard',
+            ];
+
+            $role = Auth::user()->role;
+
+            if (isset($roleRedirects[$role])) {
+                return redirect($roleRedirects[$role])->with('success', 'Password reset successfully');
+            }
+        }
         return redirect()->route('login')->with('success', 'Password reset successfully');
     }
 }
