@@ -260,25 +260,25 @@
     <script>
         const ctx1 = document.getElementById('chart-bars').getContext('2d');
         new Chart(ctx1, {
-            type: 'bar',
-            data: {
-                labels: {!! json_encode($dates) !!},
-                datasets: [{
-                    label: 'Orders',
-                    data: {!! json_encode($ordersData) !!},
-                    backgroundColor: 'rgb(36, 111, 154)'
-                }]
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($dates) !!},
+            datasets: [{
+                label: 'Combined Orders and Complements',
+                data: {!! json_encode($combinedData) !!},
+                backgroundColor: 'rgb(36, 111, 154)'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
             },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
 
         const ctx2 = document.getElementById('chart-line').getContext('2d');
         new Chart(ctx2, {

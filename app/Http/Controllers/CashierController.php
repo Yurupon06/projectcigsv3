@@ -415,7 +415,6 @@ class CashierController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . Auth::id(),
             'phone' => 'required|string|max:20',
             'born' => 'required|date',
             'gender' => 'required|in:men,women',
@@ -424,7 +423,7 @@ class CashierController extends Controller
         $user = Auth::user();
         $user->update([
             'name' => $request->name,
-            'email' => $request->email,
+            'phone' => $request->phone,
         ]);
 
         $customer = Customer::updateOrCreate(
@@ -457,7 +456,7 @@ class CashierController extends Controller
         ]);
 
         $setting = ApplicationSetting::first();
-        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully.";
+        $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully. If you didn't make this change, please contact us immediately.";
         $api = Http::baseUrl($setting->japati_url)
         ->withToken($setting->japati_token)
         ->post('/api/send-message', [
@@ -815,17 +814,26 @@ class CashierController extends Controller
             $complement->stok -= $item->quantity;
     
             if ($complement->stok == 0) {
-                $phone = $user->phone; 
-                $message = "Stok untuk *$complement->name* sudah habis.";
-                
-                $api = Http::baseUrl($app->japati_url)
-                ->withToken($app->japati_token)
-                ->post('/api/send-message', [
-                    'gateway' => $app->japati_gateway,
-                    'number' => '6281293962019',
-                    'type' => 'text',
-                    'message' => $message,
-                ]);
+                $adminUsers = User::where('role', 'admin')->get(); 
+                if ($adminUsers->isNotEmpty()) {
+                    foreach ($adminUsers as $admin) {
+                        if ($admin->phone) { 
+                            $phone = $admin->phone;
+                            $message = "Halo *$admin->role* Stok untuk *$complement->name* sudah habis.";
+            
+                            $api = Http::baseUrl($app->japati_url)
+                                ->withToken($app->japati_token)
+                                ->post('/api/send-message', [
+                                    'gateway' => $app->japati_gateway,
+                                    'number' => $phone,
+                                    'type' => 'text',
+                                    'message' => $message,
+                                ]);
+                        }
+                    }
+                } else {
+                    return redirect()->back()->with('error', 'No admin users found.');
+                }
             }
     
             $complement->save(); 

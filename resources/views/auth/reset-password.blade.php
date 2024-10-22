@@ -132,10 +132,11 @@
                     </div>
                     <form class="card-body" action="{{ route('reset') }}" method="POST">
                         @csrf
+                        <input type="hidden" name="token" value="{{ request('token') }}">
 
                         <div class="mb-3">
                             <label for="floatingInput" class="form-label">Phone Number</label>
-                            <input name="phone" type="text" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" value="{{ session('phone') }}" readonly>
+                            <input name="phone" type="text" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" value="{{ request('phone') }}" readonly>
                             @error('phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

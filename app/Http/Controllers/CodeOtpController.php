@@ -6,6 +6,8 @@ use App\Models\CodeOtp;
 use App\Models\User;
 use App\Models\ApplicationSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
 class CodeOtpController extends Controller
@@ -59,6 +61,9 @@ class CodeOtpController extends Controller
             return redirect()->back()->with('error', 'Phone not found');
         }
 
+        CodeOtp::where('phone', $phone)->delete();
+        DB::table('password_reset_tokens')->where('phone', $phone)->delete();
+
         $otp = rand(100000, 999999);
         $setting = ApplicationSetting::first();
 
@@ -91,8 +96,14 @@ class CodeOtpController extends Controller
         $codeOtp = CodeOtp::where('phone', $phone)->first();
 
         if ($codeOtp && $codeOtp->otp == $otp) {
+            $token = Str::random(60);
+            DB::table('password_reset_tokens')->insert([
+                'phone' => $phone,
+                'token' => $token,
+                'created_at' => now(),
+            ]);
             $codeOtp->delete();
-            return redirect()->route('password.reset')->with('success', 'OTP verified successfully');
+            return redirect()->route('password.reset',['token' => $token, 'phone' => $phone])->with('success', 'OTP verified successfully');
         } else {
             return redirect()->back()->with('error', 'Invalid OTP');
         }

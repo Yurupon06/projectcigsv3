@@ -151,7 +151,7 @@
 
             <div class="profile-field">
                 <span>Gender:</span>
-                <span>{{ $customer->gender ?? 'Not filled' }}</span>
+                <span class="text-capitalize">{{ $customer->gender ?? 'Not filled' }}</span>
             </div>
 
         </div>

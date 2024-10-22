@@ -138,8 +138,8 @@
                         @if($message = session('status'))
                         <div class="alert alert-success my-2 text-success" role="alert">{{ $message }}</div>
                         @endif
-                        <p>Enter your phone number to receive OTP</p>
-                        <form action="{{ route('send-otp-forgot-password') }}" method="POST">
+                        <p class="text-center">Enter your phone number to receive OTP code</p>
+                        <form action="{{ route('send-otp-forgot') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <input name="phone" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="13" class="form-control text-center @error('phone') is-invalid @enderror" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ auth()->user()->phone ?? old('phone') }}" {{ isset(auth()->user()->phone) ? 'readonly' : 'required' }}>

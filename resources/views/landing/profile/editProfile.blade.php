@@ -59,7 +59,7 @@
                 <label for="phone">Phone</label>
                 <div class="position-relative">
                     <input type="text" id="phone" name="phone" class="form-control" value="{{ $user->phone ?? '' }}" readonly>
-                    <a href="{{ route('change-phone') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a>
+                    <a href="{{ route('change-phone-customer') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a>
                 </div>
             </div>
             <div class="form-group">
