@@ -252,7 +252,7 @@ class CashierController extends Controller
         $qrToken = $memberQrToken;
         
         // Generate QR code dan simpan
-        $qrcode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(250)->generate($qrToken);
+        $qrcode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(250)->margin(1)->generate($qrToken);
         Storage::disk('public')->put($fileName, $qrcode);
 
         // Buat pesan yang akan dikirim melalui WhatsApp
@@ -261,16 +261,17 @@ class CashierController extends Controller
         // Mengirimkan pesan menggunakan API WhatsApp
         $api = Http::baseUrl($appSetting->japati_url)
             ->withToken($appSetting->japati_token)
+            ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
             ->post('/api/send-message', [
                 'gateway' => $appSetting->japati_gateway, 
                 'number' => $phone, 
                 'type' => 'media',
                 'message' => $message,
-                'media_file' => Storage::url($fileName), 
+                // 'media_file' => Storage::url($fileName), 
                 // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg',
             ]);
 
-        // Cek apakah pengiriman berhasil
+        // Cek apakah pengiriman berhasilk
         if (!$api->successful()) {
             \Log::error('Failed to send message', ['response' => $api->body()]);
             throw new \Exception('Failed to send message');
@@ -619,13 +620,13 @@ class CashierController extends Controller
         $message = "Hello *$customerName*, you have successfully checked in on *$checkInDate*. Here is your check-in image: $imagePath";
         $apiCustomer = Http::baseUrl($setting->japati_url)
             ->withToken($setting->japati_token)
-            // ->attach('media_file', fopen(storage_path('app/public/'.$imagePath), 'r'), basename($imagePath))
+            ->attach('media_file', fopen(storage_path('app/public/'.$imagePath), 'r'), basename($imagePath))
             ->post('/api/send-message', [
                 'gateway' => $setting->japati_gateway,
                 'number' => $phone,
                 'type' => 'media',
                 'message' => $message,
-                'media_file' => Storage::url($checkin->image),
+                // 'media_file' => Storage::url($checkin->image),
                 // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg',
             ]);
 
