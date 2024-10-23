@@ -16,6 +16,7 @@ use App\Models\OrderDetail;
 use App\Models\Product_categorie;
 use App\Models\MemberCheckin;
 use BaconQrCode\Encoder\QrCode;
+use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
@@ -329,6 +330,7 @@ class CashierController extends Controller
         'phone' => 'required|string|max:15',
     ]);
 
+
     // Membuat user baru
     $user = User::create([
         'name' => $request->name,
@@ -339,15 +341,23 @@ class CashierController extends Controller
     // Menyimpan customer ke tabel customer
     $customer = Customer::create([
         'user_id' => $user->id,
-        'phone' => $user->phone,
+        'phone' => $request->phone,
+    ]);
+
+    $token = Str::random(60);
+    DB::table('password_reset_tokens')->insert([
+        'phone' => $request->phone,
+        'token' => $token,
+        'created_at' => now(),
     ]);
 
     // Logika untuk mengirim pesan WhatsApp
     $setting = ApplicationSetting::first();
     $appName = $setting ? $setting->app_name : 'App Name';
-    $showForgotForm = url('/forgot'); 
+    $showForgotForm = ENV('APP_URL') . '/reset/'.$token.'?phone='.$request->phone;
+    
 
-    $message = "Hello, ". $user->name . "! Welcome to our application *$appName*. To set your password, please visit: *". $showForgotForm . "*";
+    $message = "Hello, ". $user->name . "! Welcome to our application *$appName*. To set your password, please visit: ". $showForgotForm;
 
     // Mengirim pesan WhatsApp
     $api = Http::baseUrl($setting->japati_url)
@@ -645,12 +655,13 @@ class CashierController extends Controller
                 // Kirim pesan ke admin
                 $apiAdmin = Http::baseUrl($setting->japati_url)
                     ->withToken($setting->japati_token)
+                    ->attach('media_file', fopen(storage_path('app/public/'.$imagePath), 'r'), basename($imagePath))
                     ->post('/api/send-message', [
                         'gateway' => $setting->japati_gateway,
                         'number' => $adminPhone,
                         'type' => 'media',
                         'message' => $messageAdmin,
-                        'media_file' => Storage::url($checkin->image),
+                        // 'media_file' => Storage::url($checkin->image),
                         // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg', 
                     ]);
         

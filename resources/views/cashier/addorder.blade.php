@@ -38,7 +38,12 @@
                 <div class="alert alert-success small" role="alert">
                     {{ session('success') }}
                 </div>
+            @elseif (session('error'))
+                <div class="alert alert-danger small" role="alert">
+                    {{ session('error') }}
+                </div>
             @endif
+            
             <div class="col-md-8">
                 <a href="{{route('cashier.order')}}" type="button" class="btn btn-primary btn-sm align-items-center btn-membership" style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
                     <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
@@ -161,7 +166,7 @@
             document.getElementById('visit').value = visit;
         });
     </script>
-    <script>
+    <!-- <script>
         document.getElementById('customer_search').addEventListener('input', function() {
             var searchValue = this.value.toLowerCase();
             var select = document.getElementById('customer_id');
@@ -191,7 +196,7 @@
                 selectedCustomerInput.value = '';
             }
         });
-    </script>
+    </script> -->
     <script>
         document.getElementById('customer_id').addEventListener('change', function() {
             var selectedOption = this.options[this.selectedIndex];
@@ -200,7 +205,7 @@
             document.getElementById('selected_customer').value = name + ' (' + phone + ')';
         });
     </script>
-    <script>
+    <!-- <script>
         document.addEventListener('DOMContentLoaded', function() {
             const customerSearch = document.getElementById('customer_search');
             const customerSearchResults = document.getElementById('customer_search_results');
@@ -251,7 +256,7 @@
                 }
             });
         });
-    </script>
+    </script> -->
     <script>
         $(document).ready(function() {
             $('#customer_id').select2({
@@ -259,5 +264,14 @@
                 allowClear: true
             });
         });
+    </script>
+    <script>
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+            });
+        @endif
     </script>
 @endsection
