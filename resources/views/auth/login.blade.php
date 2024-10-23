@@ -141,6 +141,8 @@
     <main class="container">
         @if($message = session('success'))
         <div class="alert alert-success my-2 text-success" role="alert">{{ $message }}</div>
+        @elseif ($message = session('error'))
+        <div class="alert alert-danger my-2 text-danger" role="alert">{{ $message }}</div>
         @endif
         <div class="row justify-content-center">
             <div class="col-md-6">

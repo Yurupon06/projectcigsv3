@@ -258,11 +258,21 @@
             });
         </script>
     @endif
+    
 
     <div class="animsition mb-5">
         <!-- Slider -->
         @if ($member)
             <div class="member-card">
+                @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @elseif (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
                 <div class="overlap-group">
                     <div class="d-flex flex-row justify-content-between">
                         <div class="text-wrapper"

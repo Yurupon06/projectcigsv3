@@ -17,6 +17,7 @@ class ChangePhoneController extends Controller
             'phone' => 'required|string|max:13',
         ]);
 
+        $user = Auth::user();
         $phone = $request->phone;
         session(['phone' => $phone]);
 
@@ -43,7 +44,11 @@ class ChangePhoneController extends Controller
             'message' => '*' . $otp. '* is your *' .$setting->app_name. '* Verivication code.',
         ]);
 
-        return redirect()->route('validate-otp-phone')->with('success', 'OTP sent successfully');
+        if(Auth::user()->role === 'customer') {
+            return redirect()->route('validate-otp-customer')->with('success', 'OTP sent successfully');
+        }
+
+        return redirect()->back()->with('send', 'OTP sent successfully');
     }
 
     public function validateOtp(Request $request)
@@ -52,17 +57,28 @@ class ChangePhoneController extends Controller
             'otp' => 'required|numeric|digits:6',
         ]);
 
+        
+        $user = Auth::user();
         $otp = $request->otp;
         $phone = session('phone');
 
-        $codeOtp = CodeOtp::where('phone', $phone)->first();
-        $user = Auth::user();
+        $codeOtp = CodeOtp::where('phone', $user->phone)->first();
         $setting = ApplicationSetting::first();
 
         if ($codeOtp && $codeOtp->otp == $otp) {
             $codeOtp->delete();
 
-            $message = "Hello, *" . $user->name . "*.\nYour phone number has been changed successfully.";
+            $message = "Hello, *" . $user->name . "*.\nYour *" . $setting->app_name . "* account is now connected with *" . $phone . "* number. If you didn't make this change, please contact us immediately.";
+            $api = Http::baseUrl($setting->japati_url)
+            ->withToken($setting->japati_token)
+            ->post('/api/send-message', [
+                'gateway' => $setting->japati_gateway,
+                'number' => $user->phone,
+                'type' => 'text',
+                'message' => $message,
+            ]);
+
+            $message = "This phone number is now connected with *" . $user->name . "* account from *" . $setting->app_name . "*. If you have questions or need help, please contact us.";
             $api = Http::baseUrl($setting->japati_url)
             ->withToken($setting->japati_token)
             ->post('/api/send-message', [
@@ -78,13 +94,11 @@ class ChangePhoneController extends Controller
             ]);
 
             if(Auth::user()->role === 'customer') {
-                return redirect()->route('landing.index')->with('success', 'OTP verified successfully');
+                return redirect()->route('landing.index')->with('success', 'Phone number updated successfully!');
             }
-
-            return redirect()->route('home.index')->with('success', 'OTP verified successfully');
+            return redirect()->back()->with('success', 'Phone number updated successfully!');
         } else {
-            return redirect()->back()->with('error', 'Invalid OTP');
+            return redirect()->back()->withInput()->with('invalid-otp', 'Invalid OTP');
         }
     }
-
 }

@@ -90,7 +90,10 @@
             </div>
             <div class="profile-field">
                 <span>Phone:</span>
-                <span>{{ $user->phone ?? 'Not filled' }}</span>
+                <span>
+                    <button class="btn btn-warning mt-2" data-toggle="modal" data-target="#changePhoneModal">Change Phone Number</button>
+                    <span>{{ $user->phone ?? 'Not filled' }}</span>
+                </span>
             </div>
             <div class="profile-field">
                 <span>Date of Birth:</span>
@@ -98,7 +101,7 @@
             </div>
             <div class="profile-field">
                 <span>Gender:</span>
-                <span>{{ $customer->gender ?? 'Not filled' }}</span>
+                <span class="text-capitalize">{{ $customer->gender ?? 'Not filled' }}</span>
             </div>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editProfileModal">
                 Update Profile
@@ -130,7 +133,7 @@
                             <div class="position-relative">
                                 <input type="text" id="phone" name="phone" class="form-control"
                                 value="{{ $user->phone ?? '' }}" readonly>
-                                <a href="{{ route('change-phone') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a>
+                                {{-- <a href="{{ route('change-phone-cashier') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a> --}}
                             </div>
                         </div>
                         <div class="form-group">
@@ -154,6 +157,62 @@
                         <button type="submit" class="btn btn-primary">Save changes</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Phone Number Modal -->
+    <div class="modal fade" id="changePhoneModal" tabindex="-1" role="dialog"
+        aria-labelledby="changePhoneModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePhoneModalLabel">Change Phone Number</h5>
+                </div>
+                <div class="modal-body">
+                    <h6 class="mb-3 text-center">Please enter your new phone number</h6>
+                    <form action="{{ route('change-phone') }}" method="POST">
+                        @csrf
+                        <div class="form-group mb-3">
+                            <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="13"
+                                class="form-control text-center" id="phone"
+                                name="phone" placeholder="08XXXXXXXXXX" value="{{ auth()->user()->phone }}" required>
+                            @error('phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Validate OTP Modal -->
+    <div class="modal fade" id="validateOTPModal" tabindex="-1" role="dialog" aria-labelledby="validateOTPModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="validateOTPModalLabel">Validate OTP</h5>
+                </div>
+                <div class="modal-body">
+                    <h6 class="mb-3 text-center">Please enter the OTP code sent to
+                        <strong>{{ substr(session('phone'), 0, 2) . '*********' . substr(session('phone'), -2) }}</strong>
+                    </h6>
+                    <form action="{{ route('validate-otp-phone') }}" method="POST">
+                        @csrf
+                        <div class="form-group mb-3">
+                            <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                minlength="6" maxlength="6"
+                                class="form-control text-center @error('otp') is-invalid @enderror" id="otp"
+                                name="otp" placeholder="XXXXXX" required>
+                            @error('otp')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Submit</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -185,7 +244,7 @@
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
-                        {{-- <a href="{{ route('show-forgot') }}" class="d-block text-decoration-none">I forgot my password</a> --}}
+                        <a href="{{ route('show-forgot') }}" class="d-block text-decoration-none">I forgot my password</a>
                         <div class="pt-4">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                             <button type="submit" class="btn btn-primary">Save changes</button>
@@ -196,16 +255,48 @@
         </div>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script>
-        document.querySelector('form').addEventListener('submit', function(event) {
-            var currentPassword = document.getElementById('current_password').value;
-            var newPassword = document.getElementById('password').value;
-            var confirmPassword = document.getElementById('password_confirmation').value;
+        $(document).ready(function() {
+            $('form').submit(function(event) {
+            var currentPassword = $('#current_password').val();
+            var newPassword = $('#password').val();
+            var confirmPassword = $('#password_confirmation').val();
 
             if ((newPassword || confirmPassword) && (!currentPassword || !newPassword || !confirmPassword)) {
                 event.preventDefault();
                 alert('Please fill in all fields if you are changing your password.');
             }
+            });
+
+            @if(session('send'))
+            $('#validateOTPModal').modal('show');
+            @elseif(session('invalid-otp'))
+            $('#validateOTPModal').modal('show');
+                Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: '{{ session('invalid-otp') }}',
+                    })
+            @elseif(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '{{ session('success') }}',
+                })
+            @elseif(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: '{{ session('error') }}',
+                })
+            @endif
+
+            $('#validateOTPModal').on('hide.bs.modal', function (e) {
+            if (!confirm('Are you sure you want to cancel the process?')) {
+                e.preventDefault();
+            }
+            });
         });
     </script>
 @endsection
