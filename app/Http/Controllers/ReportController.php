@@ -214,6 +214,11 @@ class ReportController extends Controller
                 'message' => $message, // Pesan yang menyertakan semua informasi
                 "media_file" => $pdfPath,
             ]);
+
+        if (!$apiCustomer->ok()) {
+            logger($apiCustomer->json());
+            return redirect()->back()->with('error', 'Failed to send message');
+        }
     
         return redirect()->route('report.index')->with('success', 'Message and report sent successfully!');
     }
