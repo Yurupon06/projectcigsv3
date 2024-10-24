@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\cart;
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Member;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Customer;
-use App\Models\complement;
+use App\Models\Complement;
 use App\Models\ApplicationSetting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -29,7 +29,7 @@ class LandingController extends Controller
     public function getUniqueCartItemCount()
     {
         $user = Auth::user();
-        return $user ? cart::where('user_id', $user->id)->distinct('complement_id')->count('complement_id') : 0;
+        return $user ? Cart::where('user_id', $user->id)->distinct('complement_id')->count('complement_id') : 0;
     }
 
     public function editProfile()
