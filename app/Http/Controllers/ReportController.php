@@ -24,7 +24,7 @@ class ReportController extends Controller
     
         if ($filter == 'Hari') {
             $startDate = Carbon::yesterday();
-            $endDate = Carbon::today();
+            $endDate = Carbon::now();
         } elseif ($filter == 'Minggu') {
             $startDate = Carbon::now()->subWeek();
             $endDate = Carbon::now();
@@ -133,17 +133,17 @@ class ReportController extends Controller
             ],
             'options' => [
                 'responsive' => true,
+                
                 'scales' => [
                     'x' => [
                         'title' => [
                             'display' => true,
-                            'text' => 'Tanggal'
-                        ]
+                        ],
+                        
                     ],
                     'y' => [
                         'title' => [
                             'display' => true,
-                            'text' => 'Jumlah'
                         ],
                         'beginAtZero' => true
                     ]
@@ -164,7 +164,6 @@ class ReportController extends Controller
         $startDate = Carbon::today(); 
         $endDate = Carbon::today();  
 
-        // Mengambil data berdasarkan filter
         if ($filter == 'Hari') {
             $payments = Payment::whereDate('created_at', Carbon::today())->get();
             $user = User::whereDate('created_at', Carbon::today())->get();
@@ -207,117 +206,149 @@ class ReportController extends Controller
 
     
 
-    // Inside your controller method
+   
+
     public function generateReport(Request $request) {
-        $filter = $request->input('filter', 'Bulan'); 
-        $app = ApplicationSetting::first();
+         $filter = $request->input('filter', 'Bulan'); 
+         $app = ApplicationSetting::first();
+     
+         $startDate = Carbon::today();
+         $endDate = Carbon::today();
+     
+         if ($filter == 'Hari') {
+             $startDate = Carbon::yesterday();
+             $endDate = Carbon::now();
+         } elseif ($filter == 'Minggu') {
+             $startDate = Carbon::now()->subWeek();
+             $endDate = Carbon::now();
+         } elseif ($filter == 'Bulan') {
+             $startDate = Carbon::now()->subMonth(); 
+             $endDate = Carbon::now();
+         }
+         
+
+         $allDates = [];
+         $currentDate = $startDate->copy();
+         while ($currentDate->lte($endDate)) {
+             $allDates[$currentDate->format('Y-m-d')] = 0; 
+             $currentDate->addDay();
+         }
+     
+         $payments = Payment::whereBetween('created_at', [$startDate, $endDate])
+         ->selectRaw('DATE(created_at) as date, COUNT(*) as total_payment')
+         ->groupBy('date')
+         ->orderBy('date')
+         ->pluck('total_payment', 'date')
+         ->toArray(); 
     
-        $startDate = Carbon::today();
-        $endDate = Carbon::today();
+         $users = User::whereBetween('created_at', [$startDate, $endDate])
+         ->selectRaw('DATE(created_at) as date, COUNT(*) as total_user')
+         ->groupBy('date')
+         ->orderBy('date')
+         ->pluck('total_user', 'date')
+         ->toArray(); 
     
-        if ($filter == 'Hari') {
-            $startDate = Carbon::yesterday();
-            $endDate = Carbon::today();
-        } elseif ($filter == 'Minggu') {
-            $startDate = Carbon::now()->subWeek();
-            $endDate = Carbon::now();
-        } elseif ($filter == 'Bulan') {
-            $startDate = Carbon::now()->subMonth(); 
-            $endDate = Carbon::now();
-        }
+         $members = Member::whereBetween('created_at', [$startDate, $endDate])
+         ->selectRaw('DATE(created_at) as date, COUNT(*) as total_member')
+         ->groupBy('date')
+         ->orderBy('date')
+         ->pluck('total_member', 'date')
+         ->toArray(); 
     
-        $allDates = [];
-        $currentDate = $startDate->copy();
-        while ($currentDate->lte($endDate)) {
-            $allDates[$currentDate->format('Y-m-d')] = 0; 
-            $currentDate->addDay();
-        }
+         $orders = Order::where('status', 'paid')
+             ->whereBetween('created_at', [$startDate, $endDate])
+             ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order')
+             ->groupBy('date')
+             ->orderBy('date')
+             ->pluck('total_order', 'date')
+             ->toArray(); 
     
-        $payments = Payment::whereBetween('created_at', [$startDate, $endDate])
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_payment')
-            ->groupBy('date')
-            ->orderBy('date')
-            ->pluck('total_payment', 'date')
-            ->toArray(); 
-    
+         $orderComplements = OrderComplement::where('status', 'paid')
+             ->whereBetween('created_at', [$startDate, $endDate])
+             ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order_complement')
+             ->groupBy('date')
+             ->orderBy('date')
+             ->pluck('total_order_complement', 'date')
+             ->toArray(); 
+
         
-        $users = User::whereBetween('created_at', [$startDate, $endDate])
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_user')
-            ->groupBy('date')
-            ->orderBy('date')
-            ->pluck('total_user', 'date')
-            ->toArray(); 
     
-        $members = Member::whereBetween('created_at', [$startDate, $endDate])
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_member')
-            ->groupBy('date')
-            ->orderBy('date')
-            ->pluck('total_member', 'date')
-            ->toArray(); 
+         $paymentData = array_merge($allDates, $payments); 
+         $userData = array_merge($allDates, $users); 
+         $memberData = array_merge($allDates, $members); 
+         $orderData = array_merge($allDates, $orders); 
+         $orderComplementData = array_merge($allDates, $orderComplements); 
+    
+         $chartData = [
+             'type' => 'line',
+             'data' => [
+                 'labels' => array_keys($allDates), 
+                 'datasets' => [
+                     [
+                         'label' => 'Payments',
+                         'data' => array_values($paymentData),
+                         'borderColor' => 'rgba(75, 192, 192, 1)',
+                         'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
+                     ],
+                     [
+                         'label' => 'Order Member',
+                         'data' => array_values($orderData),
+                         'borderColor' => 'rgba(245, 40, 145, 1)',
+                         'backgroundColor' => 'rgba(245, 40, 145, 0.2)',
+                     ],
+                     [
+                         'label' => 'Order Complement',
+                         'data' => array_values($orderComplementData),
+                         'borderColor' => 'rgba(175, 140, 221, 1)',
+                         'backgroundColor' => 'rgba(175, 140, 221, 0.2)',
+                     ],
+                     [
+                         'label' => 'Users',
+                         'data' => array_values($userData),
+                         'borderColor' => 'rgba(54, 162, 235, 1)',
+                         'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
+                     ],
+                     [
+                         'label' => 'Members',
+                         'data' => array_values($memberData),
+                         'borderColor' => 'rgba(255, 206, 86, 1)',
+                         'backgroundColor' => 'rgba(255, 206, 86, 0.2)',
+                     ]
+                 ]
+             ],
+             'options' => [
+                 'responsive' => true,
+                 'scales' => [
+                     'x' => [
+                         'title' => [
+                             'display' => true,
+                             'text' => 'Tanggal'
+                         ],
+                     ],
+                     'y' => [
+                         'title' => [
+                             'display' => true,
+                         ],
+                         'beginAtZero' => true
+                     ]
+                 ]
+             ]
+         ];
+    
+         $chartDataJson = json_encode($chartData);
+    
+         $quickChartUrl = "https://quickchart.io/chart?c=" . urlencode($chartDataJson);
+         
+         $html = view('report-admin.pdf', compact('quickChartUrl', 'app', 'filter', 'startDate', 'endDate','paymentData', 'userData', 'memberData', 'orderData', 'orderComplementData'))->render();
 
-    
-        $paymentData = array_merge($allDates, $payments); 
-        $userData = array_merge($allDates, $users); 
-        $memberData = array_merge($allDates, $members); 
-    
-        $chartData = [
-            'type' => 'line',
-            'data' => [
-                'labels' => array_keys($allDates), 
-                'datasets' => [
-                    [
-                        'label' => 'Payments',
-                        'data' => array_values($paymentData),
-                        'borderColor' => 'rgba(75, 192, 192, 1)',
-                        'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                        'fill' => true,
-                        'tension' => 0.1
-                    ],
-                    [
-                        'label' => 'Users',
-                        'data' => array_values($userData),
-                        'borderColor' => 'rgba(54, 162, 235, 1)',
-                        'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
-                        'fill' => true,
-                        'tension' => 0.1
-                    ],
-                    [
-                        'label' => 'Members',
-                        'data' => array_values($memberData),
-                        'borderColor' => 'rgba(255, 206, 86, 1)',
-                        'backgroundColor' => 'rgba(255, 206, 86, 0.2)',
-                        'fill' => true,
-                        'tension' => 0.1
-                    ]
-                ]
-            ],
-            'options' => [
-                'responsive' => true,
-                'scales' => [
-                    'x' => [
-                        'title' => [
-                            'display' => true,
-                            'text' => 'Tanggal'
-                        ]
-                    ],
-                    'y' => [
-                        'title' => [
-                            'display' => true,
-                            'text' => 'Jumlah'
-                        ],
-                        'beginAtZero' => true
-                    ]
-                ]
-            ]
-        ];
-    
-        $chartDataJson = json_encode($chartData);
+        //  return view('report-admin.pdf', compact('quickChartUrl', 'app', 'filter', 'startDate', 'endDate','paymentData', 'userData', 'memberData', 'orderData', 'orderComplementData'));
 
-        $quickChartUrl = "https://quickchart.io/chart?c=" . urlencode($chartDataJson);
-    
 
-        return view('report-admin.pdf', compact('quickChartUrl', 'app', 'filter', 'startDate', 'endDate'));
-    }
+         $mpdf = new Mpdf();
+         $mpdf->WriteHTML($html);
+         return $mpdf->Output('Report_' . now()->format('YmdHis') . '.pdf', 'I');   
+     }
+    
     
     
     
