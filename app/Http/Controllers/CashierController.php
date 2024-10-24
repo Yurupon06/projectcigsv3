@@ -362,7 +362,7 @@ class CashierController extends Controller
     $showForgotForm = ENV('APP_URL') . '/reset/'.$token.'?phone='.$request->phone;
     
 
-    $message = "Hello, ". $user->name . "! Welcome to our application *$appName*. To set your password, please visit: ". $showForgotForm;
+    $message = "Hello, ". $user->name . "! Welcome to our application *$appName*. To set your password, please visit ". $showForgotForm;
 
     // Mengirim pesan WhatsApp
     $api = Http::baseUrl($setting->japati_url)
@@ -637,7 +637,7 @@ class CashierController extends Controller
         $phoneNumber = preg_replace('/[^0-9]/', '', $phone); 
         $phoneNumber = '+62' . substr($phoneNumber, 1);
 
-        $message = "Hello *$customerName*, you have successfully checked in on *$checkInDate*. Here is your check-in image: $imagePath";
+        $message = "Hello *$customerName* You have successfully checked in.\n\nDate: *$checkInDate*.\nThank you!";
         $apiCustomer = Http::baseUrl($setting->japati_url)
             ->withToken($setting->japati_token)
             ->attach('media_file', fopen(storage_path('app/public/'.$imagePath), 'r'), basename($imagePath))
@@ -661,7 +661,7 @@ class CashierController extends Controller
         
             foreach ($admins as $admin) {
                 $adminPhone = $admin->phone;
-                $messageAdmin = "Hello Admin, customer $customerName has successfully checked in on $checkInDate. Image path: $imagePath.";
+                $messageAdmin = "Hello *$admin->name.*\nCustomer: *$customerName* has successfully checked in.\n\nDate: *$checkInDate*";
         
                 // Kirim pesan ke admin
                 $apiAdmin = Http::baseUrl($setting->japati_url)
