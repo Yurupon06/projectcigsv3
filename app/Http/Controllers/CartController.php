@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\cart;
+use App\Models\Cart;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
@@ -34,7 +34,7 @@ class CartController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(cart $cart)
+    public function show(Cart $cart)
     {
         //
     }
@@ -42,7 +42,7 @@ class CartController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(cart $cart)
+    public function edit(Cart $cart)
     {
         //
     }
@@ -50,7 +50,7 @@ class CartController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, cart $cart)
+    public function update(Request $request, Cart $cart)
     {
         //
     }
@@ -58,7 +58,7 @@ class CartController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(cart $cart)
+    public function destroy(Cart $cart)
     {
         //
     }

@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\cart;
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Member;
 use App\Models\User;
 use App\Models\Product;
 use App\Models\Customer;
-use App\Models\complement;
+use App\Models\Complement;
 use App\Models\ApplicationSetting;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -29,7 +29,7 @@ class LandingController extends Controller
     public function getUniqueCartItemCount()
     {
         $user = Auth::user();
-        return $user ? cart::where('user_id', $user->id)->distinct('complement_id')->count('complement_id') : 0;
+        return $user ? Cart::where('user_id', $user->id)->distinct('complement_id')->count('complement_id') : 0;
     }
 
     public function editProfile()
@@ -374,10 +374,10 @@ class LandingController extends Controller
 
     public function updateCart(Request $request) 
     {
-        $cartItems = cart::where('user_id', auth()->id())->get(); 
+        $cartItems = Cart::where('user_id', auth()->id())->get(); 
     
         foreach ($cartItems as $cartItem) {
-            $complement = complement::findOrFail($cartItem->complement_id);
+            $complement = Complement::findOrFail($cartItem->complement_id);
     
             $inputQuantity = $request->input("action-{$cartItem->id}");
             $newQuantity = $cartItem->quantity; 
@@ -392,8 +392,6 @@ class LandingController extends Controller
     
             } else if ($inputQuantity === "minus" && $newQuantity > 1) {
                 $newQuantity -= 1;
-    
-
             }
     
             $cartItem->quantity = $newQuantity;
@@ -606,7 +604,7 @@ class LandingController extends Controller
     }
     public function complementDetail($id, request $request)
     {
-        $complement = complement::findOrFail($id);
+        $complement = Complement::findOrFail($id);
         $user = Auth::user();
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
@@ -619,11 +617,11 @@ class LandingController extends Controller
     {
         $user = Auth::user();
 
-        $complement = complement::findOrFail($complementId);
+        $complement = Complement::findOrFail($complementId);
 
         $quantity = $request->input('quantity');
 
-        $cartItem = cart::where('user_id', $user->id)
+        $cartItem = Cart::where('user_id', $user->id)
             ->where('complement_id', $complement->id)
             ->first();
 
@@ -638,7 +636,7 @@ class LandingController extends Controller
             ]);
 
         } else {
-            cart::create([
+            Cart::create([
                 'user_id' => $user->id,
                 'complement_id' => $complement->id,
                 'quantity' => $quantity,
@@ -658,7 +656,7 @@ class LandingController extends Controller
         $customer = $user ? Customer::where('user_id', $user->id)->first() : null;
         $member = $customer ? Member::where('customer_id', $customer->id)->first() : null;
 
-        $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
+        $cartItems = Cart::where('user_id', $user->id)->with('complement')->get();
         $cartCount = $this->getUniqueCartItemCount();
 
 
@@ -668,11 +666,9 @@ class LandingController extends Controller
 
     public function deleteCart($id)
     {
-        $cartItem = cart::findOrFail($id);
-        $complement = complement::findOrFail($cartItem->complement_id);
+        $cartItem = Cart::findOrFail($id);
+        $complement = Complement::findOrFail($cartItem->complement_id);
     
-
-
         $cartItem->delete();
 
         return redirect()->route('cart.index')->with('success', 'Item removed from cart successfully!');

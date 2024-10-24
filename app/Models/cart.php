@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class cart extends Model
+class Cart extends Model
 {
     use HasFactory;
     protected $table = 'carts';
@@ -21,6 +21,6 @@ class cart extends Model
     }
 
     public function complement(){
-        return $this->belongsTo(complement::class, 'complement_id');
+        return $this->belongsTo(Complement::class, 'complement_id');
     }
 }
