@@ -31,7 +31,7 @@ class ChangePhoneController extends Controller
         $setting = ApplicationSetting::first();
 
         CodeOtp::updateOrCreate(
-            ['phone' => $user->phone],
+            ['phone' => $phone],
             ['otp' => $otp]
         );
 
@@ -39,18 +39,16 @@ class ChangePhoneController extends Controller
         ->withToken($setting->japati_token)
         ->post('/api/send-message', [
             'gateway' => $setting->japati_gateway,
-            'number' => $user->phone,
+            'number' => $phone,
             'type' => 'text',
             'message' => '*' . $otp. '* is your *' .$setting->app_name. '* Verivication code.',
         ]);
 
         if(Auth::user()->role === 'customer') {
             return redirect()->route('validate-otp-customer')->with('success', 'OTP sent successfully');
-        } elseif (Auth::user()->role === 'admin') {
-            return redirect()->route('validate-otp-admin')->with('success', 'OTP sent successfully');
-        } elseif (Auth::user()->role === 'cashier') {
-            return redirect()->route('validate-otp-cashier')->with('success', 'OTP sent successfully');
         }
+
+        return redirect()->back()->with('send', 'OTP sent successfully');
     }
 
     public function validateOtp(Request $request)
@@ -70,7 +68,7 @@ class ChangePhoneController extends Controller
         if ($codeOtp && $codeOtp->otp == $otp) {
             $codeOtp->delete();
 
-            $message = "Hello, *" . $user->name . "*.\nYour phone number has been changed successfully. If you didn't make this change, please contact us immediately.";
+            $message = "Hello, *" . $user->name . "*.\nYour *" . $setting->app_name . "* account is now connected with *" . $phone . "* number. If you didn't make this change, please contact us immediately.";
             $api = Http::baseUrl($setting->japati_url)
             ->withToken($setting->japati_token)
             ->post('/api/send-message', [
@@ -96,13 +94,11 @@ class ChangePhoneController extends Controller
             ]);
 
             if(Auth::user()->role === 'customer') {
-                return redirect()->route('landing.index')->with('success', 'OTP verified successfully');
+                return redirect()->route('landing.index')->with('success', 'Phone number updated successfully!');
             }
-
-            return redirect()->route('home.index')->with('success', 'OTP verified successfully');
+            return redirect()->back()->with('success', 'Phone number updated successfully!');
         } else {
-            return redirect()->back()->with('error', 'Invalid OTP');
+            return redirect()->back()->withInput()->with('invalid-otp', 'Invalid OTP');
         }
     }
-
 }
