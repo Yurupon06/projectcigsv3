@@ -57,12 +57,11 @@ class ChangePhoneController extends Controller
             'otp' => 'required|numeric|digits:6',
         ]);
 
-        
         $user = Auth::user();
         $otp = $request->otp;
         $phone = session('phone');
 
-        $codeOtp = CodeOtp::where('phone', $user->phone)->first();
+        $codeOtp = CodeOtp::where('phone', $phone)->first();
         $setting = ApplicationSetting::first();
 
         if ($codeOtp && $codeOtp->otp == $otp) {
@@ -96,9 +95,9 @@ class ChangePhoneController extends Controller
             if(Auth::user()->role === 'customer') {
                 return redirect()->route('landing.index')->with('success', 'Phone number updated successfully!');
             }
-            return redirect()->back()->with('success', 'Phone number updated successfully!');
+            return redirect()->route('home.index')->with('success', 'Phone number updated successfully!');
         } else {
-            return redirect()->back()->withInput()->with('invalid-otp', 'Invalid OTP');
+            return redirect()->back()->with('invalid-otp', 'Invalid OTP');
         }
     }
 }

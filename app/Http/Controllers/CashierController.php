@@ -328,6 +328,12 @@ class CashierController extends Controller
         'phone' => 'required|string|max:15',
     ]);
 
+    $userExists = User::where('phone', $request->phone)->exists();
+
+        if ($userExists) {
+            return redirect()->route('cashier.order')->with('error', 'Phone already registered');
+        }
+
     // Membuat user baru
     $user = User::create([
         'name' => $request->name,
@@ -577,6 +583,12 @@ class CashierController extends Controller
         }
 
         $member->decrement('visit');
+
+        $fileName = 'qrcodes/qrcode_' . $member->qr_token . '.png';
+        $filePath = storage_path('app/public/' . $fileName);
+        if (Storage::disk('public')->exists($fileName)) {
+            Storage::disk('public')->delete($fileName);
+        }
 
         // Proses penyimpanan gambar jika ada
         $imagePath = null;
