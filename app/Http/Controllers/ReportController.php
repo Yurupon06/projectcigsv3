@@ -159,11 +159,12 @@ class ReportController extends Controller
     }
 
     public function report(Request $request) {
-        $filter = $request->input('filter', 'Hari');
+        $filter = $request->input('filter', 'Hari'); // Ambil filter dari request
         $app = ApplicationSetting::first();
         $startDate = Carbon::today(); 
         $endDate = Carbon::today();  
-
+    
+        // Menentukan data berdasarkan filter
         if ($filter == 'Hari') {
             $payments = Payment::whereDate('created_at', Carbon::today())->get();
             $user = User::whereDate('created_at', Carbon::today())->get();
@@ -183,171 +184,211 @@ class ReportController extends Controller
             $startDate = Carbon::now()->startOfMonth()->format('d-m-Y');
             $endDate = Carbon::now()->format('d-m-Y');
         }
-
+    
+        // Menghitung total
         $totalMember = $member->count();
         $totalUser = $user->count();
         $total = $payments->sum('amount');
         $totalAmount = number_format($total);
         $totalPayment = $payments->count();
-
-        $message = "Data *$app->app_name* pada *$filter* ini dari *$startDate* - *$endDate* :\ntotal sales : *Rp $totalAmount*\nnew user : *$totalUser*\nnew member : *$totalMember*";
-
-        $api = Http::baseUrl($app->japati_url)
+    
+        // Menggabungkan pesan
+        $message = "Data *$app->app_name* pada *$filter* ini dari *$startDate* - *$endDate* :\n" .
+                   "Total sales : *Rp $totalAmount*\n" .
+                   "New user : *$totalUser*\n" .
+                   "New member : *$totalMember*\n" .
+                   "Here is your report:";
+    
+        // Menyimpan PDF
+        $pdfPath = $this->generatePdf($filter);
+        // dd($pdfPath); // Mengambil path PDF yang dihasilkan
+    
+        // Mengirim PDF sebagai media file dengan pesan
+        $apiCustomer = Http::baseUrl($app->japati_url)
             ->withToken($app->japati_token)
+            ->attach('media_file', fopen($pdfPath, 'r'), basename($pdfPath)) // Mengupload file PDF
             ->post('/api/send-message', [
                 'gateway' => $app->japati_gateway,
                 'number' => '081293962019',
-                'type' => 'text',
-                'message' => $message,
+                'type' => 'media',
+                'message' => $message, // Pesan yang menyertakan semua informasi
+                "media_file" => $pdfPath,
             ]);
-        return redirect()->route('report.index')->with('success', 'Message sent successfully!');
+    
+        return redirect()->route('report.index')->with('success', 'Message and report sent successfully!');
+    }
+    
+    
+    
+
+
+     public function generateChartData($filter) {
+        $app = ApplicationSetting::first();
+        $startDate = Carbon::today();
+        $endDate = Carbon::today();
+    
+        if ($filter == 'Hari') {
+            $startDate = Carbon::yesterday();
+            $endDate = Carbon::now();
+        } elseif ($filter == 'Minggu') {
+            $startDate = Carbon::now()->subWeek();
+            $endDate = Carbon::now();
+        } elseif ($filter == 'Bulan') {
+            $startDate = Carbon::now()->subMonth(); 
+            $endDate = Carbon::now();
+        }
+    
+        $allDates = [];
+        $currentDate = $startDate->copy();
+        while ($currentDate->lte($endDate)) {
+            $allDates[$currentDate->format('Y-m-d')] = 0; 
+            $currentDate->addDay();
+        }
+    
+        $payments = Payment::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_payment')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('total_payment', 'date')
+            ->toArray(); 
+    
+        $users = User::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_user')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('total_user', 'date')
+            ->toArray(); 
+    
+        $members = Member::whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_member')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('total_member', 'date')
+            ->toArray(); 
+    
+        $orders = Order::where('status', 'paid')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('total_order', 'date')
+            ->toArray(); 
+    
+        $orderComplements = OrderComplement::where('status', 'paid')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order_complement')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('total_order_complement', 'date')
+            ->toArray(); 
+    
+        $paymentData = array_merge($allDates, $payments); 
+        $userData = array_merge($allDates, $users); 
+        $memberData = array_merge($allDates, $members); 
+        $orderData = array_merge($allDates, $orders); 
+        $orderComplementData = array_merge($allDates, $orderComplements); 
+    
+        return [
+            'chartData' => [
+                'type' => 'line',
+                'data' => [
+                    'labels' => array_keys($allDates), 
+                    'datasets' => [
+                        [
+                            'label' => 'Payments',
+                            'data' => array_values($paymentData),
+                            'borderColor' => 'rgba(75, 192, 192, 1)',
+                            'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
+                        ],
+                        [
+                            'label' => 'Order Member',
+                            'data' => array_values($orderData),
+                            'borderColor' => 'rgba(245, 40, 145, 1)',
+                            'backgroundColor' => 'rgba(245, 40, 145, 0.2)',
+                        ],
+                        [
+                            'label' => 'Order Complement',
+                            'data' => array_values($orderComplementData),
+                            'borderColor' => 'rgba(175, 140, 221, 1)',
+                            'backgroundColor' => 'rgba(175, 140, 221, 0.2)',
+                        ],
+                        [
+                            'label' => 'Users',
+                            'data' => array_values($userData),
+                            'borderColor' => 'rgba(54, 162, 235, 1)',
+                            'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
+                        ],
+                        [
+                            'label' => 'Members',
+                            'data' => array_values($memberData),
+                            'borderColor' => 'rgba(255, 206, 86, 1)',
+                            'backgroundColor' => 'rgba(255, 206, 86, 0.2)',
+                        ]
+                    ]
+                ],
+                'options' => [
+                    'responsive' => true,
+                    'scales' => [
+                        'x' => [
+                            'title' => [
+                                'display' => true,
+                                'text' => 'Tanggal'
+                            ],
+                        ],
+                        'y' => [
+                            'title' => [
+                                'display' => true,
+                            ],
+                            'beginAtZero' => true
+                        ]
+                    ]
+                ]
+            ],
+            'app' => $app,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'paymentData' => $paymentData,
+            'userData' => $userData,
+            'memberData' => $memberData,
+            'orderData' => $orderData,
+            'orderComplementData' => $orderComplementData
+        ];
     }
 
 
-    
-
-   
-
-    public function generateReport(Request $request) {
-         $filter = $request->input('filter', 'Bulan'); 
-         $app = ApplicationSetting::first();
-     
-         $startDate = Carbon::today();
-         $endDate = Carbon::today();
-     
-         if ($filter == 'Hari') {
-             $startDate = Carbon::yesterday();
-             $endDate = Carbon::now();
-         } elseif ($filter == 'Minggu') {
-             $startDate = Carbon::now()->subWeek();
-             $endDate = Carbon::now();
-         } elseif ($filter == 'Bulan') {
-             $startDate = Carbon::now()->subMonth(); 
-             $endDate = Carbon::now();
-         }
-         
-
-         $allDates = [];
-         $currentDate = $startDate->copy();
-         while ($currentDate->lte($endDate)) {
-             $allDates[$currentDate->format('Y-m-d')] = 0; 
-             $currentDate->addDay();
-         }
-     
-         $payments = Payment::whereBetween('created_at', [$startDate, $endDate])
-         ->selectRaw('DATE(created_at) as date, COUNT(*) as total_payment')
-         ->groupBy('date')
-         ->orderBy('date')
-         ->pluck('total_payment', 'date')
-         ->toArray(); 
-    
-         $users = User::whereBetween('created_at', [$startDate, $endDate])
-         ->selectRaw('DATE(created_at) as date, COUNT(*) as total_user')
-         ->groupBy('date')
-         ->orderBy('date')
-         ->pluck('total_user', 'date')
-         ->toArray(); 
-    
-         $members = Member::whereBetween('created_at', [$startDate, $endDate])
-         ->selectRaw('DATE(created_at) as date, COUNT(*) as total_member')
-         ->groupBy('date')
-         ->orderBy('date')
-         ->pluck('total_member', 'date')
-         ->toArray(); 
-    
-         $orders = Order::where('status', 'paid')
-             ->whereBetween('created_at', [$startDate, $endDate])
-             ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order')
-             ->groupBy('date')
-             ->orderBy('date')
-             ->pluck('total_order', 'date')
-             ->toArray(); 
-    
-         $orderComplements = OrderComplement::where('status', 'paid')
-             ->whereBetween('created_at', [$startDate, $endDate])
-             ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order_complement')
-             ->groupBy('date')
-             ->orderBy('date')
-             ->pluck('total_order_complement', 'date')
-             ->toArray(); 
-
+    public function generatePdf($filter = 'Bulan') {
+        // $filter sudah diterima sebagai parameter
+        $chartDataResponse = $this->generateChartData($filter);
+        $chartDataJson = json_encode($chartDataResponse['chartData']);
+        $quickChartUrl = "https://quickchart.io/chart?c=" . urlencode($chartDataJson);
         
+        $html = view('report-admin.pdf', array_merge($chartDataResponse, compact('quickChartUrl', 'filter')))->render();
     
-         $paymentData = array_merge($allDates, $payments); 
-         $userData = array_merge($allDates, $users); 
-         $memberData = array_merge($allDates, $members); 
-         $orderData = array_merge($allDates, $orders); 
-         $orderComplementData = array_merge($allDates, $orderComplements); 
-    
-         $chartData = [
-             'type' => 'line',
-             'data' => [
-                 'labels' => array_keys($allDates), 
-                 'datasets' => [
-                     [
-                         'label' => 'Payments',
-                         'data' => array_values($paymentData),
-                         'borderColor' => 'rgba(75, 192, 192, 1)',
-                         'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                     ],
-                     [
-                         'label' => 'Order Member',
-                         'data' => array_values($orderData),
-                         'borderColor' => 'rgba(245, 40, 145, 1)',
-                         'backgroundColor' => 'rgba(245, 40, 145, 0.2)',
-                     ],
-                     [
-                         'label' => 'Order Complement',
-                         'data' => array_values($orderComplementData),
-                         'borderColor' => 'rgba(175, 140, 221, 1)',
-                         'backgroundColor' => 'rgba(175, 140, 221, 0.2)',
-                     ],
-                     [
-                         'label' => 'Users',
-                         'data' => array_values($userData),
-                         'borderColor' => 'rgba(54, 162, 235, 1)',
-                         'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
-                     ],
-                     [
-                         'label' => 'Members',
-                         'data' => array_values($memberData),
-                         'borderColor' => 'rgba(255, 206, 86, 1)',
-                         'backgroundColor' => 'rgba(255, 206, 86, 0.2)',
-                     ]
-                 ]
-             ],
-             'options' => [
-                 'responsive' => true,
-                 'scales' => [
-                     'x' => [
-                         'title' => [
-                             'display' => true,
-                             'text' => 'Tanggal'
-                         ],
-                     ],
-                     'y' => [
-                         'title' => [
-                             'display' => true,
-                         ],
-                         'beginAtZero' => true
-                     ]
-                 ]
-             ]
-         ];
-    
-         $chartDataJson = json_encode($chartData);
-    
-         $quickChartUrl = "https://quickchart.io/chart?c=" . urlencode($chartDataJson);
-         
-         $html = view('report-admin.pdf', compact('quickChartUrl', 'app', 'filter', 'startDate', 'endDate','paymentData', 'userData', 'memberData', 'orderData', 'orderComplementData'))->render();
+        // Tentukan path untuk menyimpan PDF
+        $pdfDirectory = public_path('storage/reports');
+        if (!file_exists($pdfDirectory)) {
+            mkdir($pdfDirectory, 0755, true);
+        }
 
-        //  return view('report-admin.pdf', compact('quickChartUrl', 'app', 'filter', 'startDate', 'endDate','paymentData', 'userData', 'memberData', 'orderData', 'orderComplementData'));
-
-
-         $mpdf = new Mpdf();
-         $mpdf->WriteHTML($html);
-         return $mpdf->Output('Report_' . now()->format('YmdHis') . '.pdf', 'I');   
-     }
+        $pdfName = '/Report_' . now()->format('YmdHis') . '.pdf';
+    
+        $pdfPath = $pdfDirectory . $pdfName;
+    
+        $mpdf = new Mpdf();
+        $mpdf->WriteHTML($html);
+        
+        // Simpan PDF ke file
+        $mpdf->Output($pdfPath, 'F');
+    
+        // Streaming PDF ke browser
+        // $mpdf->Output('Report_' . now()->format('YmdHis') . '.pdf', 'I');
+    
+        // URL untuk mengakses file PDF (jika diperlukan)
+        return asset('storage/reports'. $pdfName);
+        
+    }
+    
+    
     
     
     
