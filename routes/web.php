@@ -39,8 +39,8 @@ Route::post('/check-in', [CashierController::class, 'handleCheckIn']);
 
 
 Route::get('/report', [ReportController::class, 'index'])->name('report.index');
-Route::get('/report/pdf', [ReportController::class, 'generateReport'])->name('report.pdf');
-Route::post('/report', [ReportController::class, 'report'])->name('report.send');
+Route::get('/report/pdf', [ReportController::class, 'generatePdf'])->name('report.pdf');
+Route::post('/report/send', [ReportController::class, 'report'])->name('report.send');
 
 Route::get('/f&b', [LandingController::class, 'complement'])->name('f&b.index');
 Route::get('/cart', [LandingController::class, 'cart'])->name('cart.index');

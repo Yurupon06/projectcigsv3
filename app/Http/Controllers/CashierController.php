@@ -16,6 +16,7 @@ use App\Models\OrderDetail;
 use App\Models\Product_categorie;
 use App\Models\MemberCheckin;
 use BaconQrCode\Encoder\QrCode;
+use DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
@@ -252,7 +253,7 @@ class CashierController extends Controller
         $qrToken = $memberQrToken;
         
         // Generate QR code dan simpan
-        $qrcode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(250)->generate($qrToken);
+        $qrcode = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(250)->margin(1)->generate($qrToken);
         Storage::disk('public')->put($fileName, $qrcode);
 
         // Buat pesan yang akan dikirim melalui WhatsApp
@@ -261,16 +262,17 @@ class CashierController extends Controller
         // Mengirimkan pesan menggunakan API WhatsApp
         $api = Http::baseUrl($appSetting->japati_url)
             ->withToken($appSetting->japati_token)
+            ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
             ->post('/api/send-message', [
                 'gateway' => $appSetting->japati_gateway, 
                 'number' => $phone, 
                 'type' => 'media',
                 'message' => $message,
-                'media_file' => Storage::url($fileName), 
+                // 'media_file' => Storage::url($fileName), 
                 // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg',
             ]);
 
-        // Cek apakah pengiriman berhasil
+        // Cek apakah pengiriman berhasilk
         if (!$api->successful()) {
             \Log::error('Failed to send message', ['response' => $api->body()]);
             throw new \Exception('Failed to send message');
@@ -344,15 +346,23 @@ class CashierController extends Controller
     // Menyimpan customer ke tabel customer
     $customer = Customer::create([
         'user_id' => $user->id,
-        'phone' => $user->phone,
+        'phone' => $request->phone,
+    ]);
+
+    $token = Str::random(60);
+    DB::table('password_reset_tokens')->insert([
+        'phone' => $request->phone,
+        'token' => $token,
+        'created_at' => now(),
     ]);
 
     // Logika untuk mengirim pesan WhatsApp
     $setting = ApplicationSetting::first();
     $appName = $setting ? $setting->app_name : 'App Name';
-    $showForgotForm = url('/forgot'); 
+    $showForgotForm = ENV('APP_URL') . '/reset/'.$token.'?phone='.$request->phone;
+    
 
-    $message = "Hello, ". $user->name . "! Welcome to our application *$appName*. To set your password, please visit: *". $showForgotForm . "*";
+    $message = "Hello, ". $user->name . "! Welcome to our application *$appName*. To set your password, please visit ". $showForgotForm;
 
     // Mengirim pesan WhatsApp
     $api = Http::baseUrl($setting->japati_url)
@@ -627,16 +637,16 @@ class CashierController extends Controller
         $phoneNumber = preg_replace('/[^0-9]/', '', $phone); 
         $phoneNumber = '+62' . substr($phoneNumber, 1);
 
-        $message = "Hello *$customerName*, you have successfully checked in on *$checkInDate*. Here is your check-in image: $imagePath";
+        $message = "Hello *$customerName* You have successfully checked in.\n\nDate: *$checkInDate*.\nThank you!";
         $apiCustomer = Http::baseUrl($setting->japati_url)
             ->withToken($setting->japati_token)
-            // ->attach('media_file', fopen(storage_path('app/public/'.$imagePath), 'r'), basename($imagePath))
+            ->attach('media_file', fopen(storage_path('app/public/'.$imagePath), 'r'), basename($imagePath))
             ->post('/api/send-message', [
                 'gateway' => $setting->japati_gateway,
                 'number' => $phone,
                 'type' => 'media',
                 'message' => $message,
-                'media_file' => Storage::url($checkin->image),
+                // 'media_file' => Storage::url($checkin->image),
                 // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg',
             ]);
 
@@ -651,17 +661,18 @@ class CashierController extends Controller
         
             foreach ($admins as $admin) {
                 $adminPhone = $admin->phone;
-                $messageAdmin = "Hello Admin, customer $customerName has successfully checked in on $checkInDate. Image path: $imagePath.";
+                $messageAdmin = "Hello *$admin->name.*\nCustomer: *$customerName* has successfully checked in.\n\nDate: *$checkInDate*";
         
                 // Kirim pesan ke admin
                 $apiAdmin = Http::baseUrl($setting->japati_url)
                     ->withToken($setting->japati_token)
+                    ->attach('media_file', fopen(storage_path('app/public/'.$imagePath), 'r'), basename($imagePath))
                     ->post('/api/send-message', [
                         'gateway' => $setting->japati_gateway,
                         'number' => $adminPhone,
                         'type' => 'media',
                         'message' => $messageAdmin,
-                        'media_file' => Storage::url($checkin->image),
+                        // 'media_file' => Storage::url($checkin->image),
                         // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg', 
                     ]);
         

@@ -24,7 +24,7 @@ class ReportController extends Controller
     
         if ($filter == 'Hari') {
             $startDate = Carbon::yesterday();
-            $endDate = Carbon::today();
+            $endDate = Carbon::now();
         } elseif ($filter == 'Minggu') {
             $startDate = Carbon::now()->subWeek();
             $endDate = Carbon::now();
@@ -133,17 +133,17 @@ class ReportController extends Controller
             ],
             'options' => [
                 'responsive' => true,
+                
                 'scales' => [
                     'x' => [
                         'title' => [
                             'display' => true,
-                            'text' => 'Tanggal'
-                        ]
+                        ],
+                        
                     ],
                     'y' => [
                         'title' => [
                             'display' => true,
-                            'text' => 'Jumlah'
                         ],
                         'beginAtZero' => true
                     ]
@@ -159,12 +159,12 @@ class ReportController extends Controller
     }
 
     public function report(Request $request) {
-        $filter = $request->input('filter', 'Hari');
-        $app = ApplicationSetting::first();
+        $filter = $request->input('filter', 'Hari'); // Ambil filter dari request
+
         $startDate = Carbon::today(); 
         $endDate = Carbon::today();  
-
-        // Mengambil data berdasarkan filter
+    
+        // Menentukan data berdasarkan filter
         if ($filter == 'Hari') {
             $payments = Payment::whereDate('created_at', Carbon::today())->get();
             $user = User::whereDate('created_at', Carbon::today())->get();
@@ -184,40 +184,77 @@ class ReportController extends Controller
             $startDate = Carbon::now()->startOfMonth()->format('d-m-Y');
             $endDate = Carbon::now()->format('d-m-Y');
         }
-
+    
+        // Menghitung total
         $totalMember = $member->count();
         $totalUser = $user->count();
         $total = $payments->sum('amount');
         $totalAmount = number_format($total);
         $totalPayment = $payments->count();
+    
+        // Menggabungkan pesan
 
-        $message = "Data *$app->app_name* pada *$filter* ini dari *$startDate* - *$endDate* :\ntotal sales : *Rp $totalAmount*\nnew user : *$totalUser*\nnew member : *$totalMember*";
+    
+        // Menyimpan PDF
+        $pdfPath = $this->generatePdf($filter);
+        // dd($pdfPath); // Mengambil path PDF yang dihasilkan
+        $adminUsers = User::where('role', 'admin')->get(); 
+        if ($adminUsers->isNotEmpty()) {
+            foreach ($adminUsers as $admin) {
+                if ($admin->phone) { 
+                    $phone = $admin->phone;
+                    $app = ApplicationSetting::first();
+                    $message = "Data *$app->app_name* pada *$filter* ini dari *$startDate* - *$endDate* :\n" .
+                    "Total sales : *Rp $totalAmount*\n" .
+                    "New user : *$totalUser*\n" .
+                    "New member : *$totalMember*\n" .
+                    "Here is your report:";
+    
+                    $apiText = Http::baseUrl($app->japati_url)
+                    ->withToken($app->japati_token)
+                    ->post('/api/send-message', [
+                        'gateway' => $app->japati_gateway,
+                        'number' => $phone,
+                        'type' => 'text',
+                        'message' => $message,
+                    ]);
 
-        $api = Http::baseUrl($app->japati_url)
-            ->withToken($app->japati_token)
-            ->post('/api/send-message', [
-                'gateway' => $app->japati_gateway,
-                'number' => '081293962019',
-                'type' => 'text',
-                'message' => $message,
-            ]);
-        return redirect()->route('report.index')->with('success', 'Message sent successfully!');
+                    $apiCustomer = Http::baseUrl($app->japati_url)
+                    ->withToken($app->japati_token)
+                    ->post('/api/send-message', [
+                        'gateway' => $app->japati_gateway,
+                        'number' => $phone,
+                        'type' => 'media',
+                        'message' => $message, // Pesan yang menyertakan semua informasi
+                        'media_file' => $pdfPath,
+                    ]);
+                }
+            }
+        } else {
+            return redirect()->back()->with('error', 'No admin users found.');
+        }
+        
+
+        if (!$apiCustomer->ok()) {
+            logger($apiCustomer->json());
+            return redirect()->back()->with('error', 'Failed to send message');
+        }
+    
+        return redirect()->route('report.index')->with('success', 'Message and report sent successfully!');
     }
-
-
+    
+    
     
 
-    // Inside your controller method
-    public function generateReport(Request $request) {
-        $filter = $request->input('filter', 'Bulan'); 
+
+     public function generateChartData($filter) {
         $app = ApplicationSetting::first();
-    
         $startDate = Carbon::today();
         $endDate = Carbon::today();
     
         if ($filter == 'Hari') {
             $startDate = Carbon::yesterday();
-            $endDate = Carbon::today();
+            $endDate = Carbon::now();
         } elseif ($filter == 'Minggu') {
             $startDate = Carbon::now()->subWeek();
             $endDate = Carbon::now();
@@ -240,7 +277,6 @@ class ReportController extends Controller
             ->pluck('total_payment', 'date')
             ->toArray(); 
     
-        
         $users = User::whereBetween('created_at', [$startDate, $endDate])
             ->selectRaw('DATE(created_at) as date, COUNT(*) as total_user')
             ->groupBy('date')
@@ -254,70 +290,131 @@ class ReportController extends Controller
             ->orderBy('date')
             ->pluck('total_member', 'date')
             ->toArray(); 
-
+    
+        $orders = Order::where('status', 'paid')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('total_order', 'date')
+            ->toArray(); 
+    
+        $orderComplements = OrderComplement::where('status', 'paid')
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as total_order_complement')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->pluck('total_order_complement', 'date')
+            ->toArray(); 
     
         $paymentData = array_merge($allDates, $payments); 
         $userData = array_merge($allDates, $users); 
         $memberData = array_merge($allDates, $members); 
+        $orderData = array_merge($allDates, $orders); 
+        $orderComplementData = array_merge($allDates, $orderComplements); 
     
-        $chartData = [
-            'type' => 'line',
-            'data' => [
-                'labels' => array_keys($allDates), 
-                'datasets' => [
-                    [
-                        'label' => 'Payments',
-                        'data' => array_values($paymentData),
-                        'borderColor' => 'rgba(75, 192, 192, 1)',
-                        'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                        'fill' => true,
-                        'tension' => 0.1
-                    ],
-                    [
-                        'label' => 'Users',
-                        'data' => array_values($userData),
-                        'borderColor' => 'rgba(54, 162, 235, 1)',
-                        'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
-                        'fill' => true,
-                        'tension' => 0.1
-                    ],
-                    [
-                        'label' => 'Members',
-                        'data' => array_values($memberData),
-                        'borderColor' => 'rgba(255, 206, 86, 1)',
-                        'backgroundColor' => 'rgba(255, 206, 86, 0.2)',
-                        'fill' => true,
-                        'tension' => 0.1
+        return [
+            'chartData' => [
+                'type' => 'line',
+                'data' => [
+                    'labels' => array_keys($allDates), 
+                    'datasets' => [
+                        [
+                            'label' => 'Payments',
+                            'data' => array_values($paymentData),
+                            'borderColor' => 'rgba(75, 192, 192, 1)',
+                            'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
+                        ],
+                        [
+                            'label' => 'Order Member',
+                            'data' => array_values($orderData),
+                            'borderColor' => 'rgba(245, 40, 145, 1)',
+                            'backgroundColor' => 'rgba(245, 40, 145, 0.2)',
+                        ],
+                        [
+                            'label' => 'Order Complement',
+                            'data' => array_values($orderComplementData),
+                            'borderColor' => 'rgba(175, 140, 221, 1)',
+                            'backgroundColor' => 'rgba(175, 140, 221, 0.2)',
+                        ],
+                        [
+                            'label' => 'Users',
+                            'data' => array_values($userData),
+                            'borderColor' => 'rgba(54, 162, 235, 1)',
+                            'backgroundColor' => 'rgba(54, 162, 235, 0.2)',
+                        ],
+                        [
+                            'label' => 'Members',
+                            'data' => array_values($memberData),
+                            'borderColor' => 'rgba(255, 206, 86, 1)',
+                            'backgroundColor' => 'rgba(255, 206, 86, 0.2)',
+                        ]
+                    ]
+                ],
+                'options' => [
+                    'responsive' => true,
+                    'scales' => [
+                        'x' => [
+                            'title' => [
+                                'display' => true,
+                                'text' => 'Tanggal'
+                            ],
+                        ],
+                        'y' => [
+                            'title' => [
+                                'display' => true,
+                            ],
+                            'beginAtZero' => true
+                        ]
                     ]
                 ]
             ],
-            'options' => [
-                'responsive' => true,
-                'scales' => [
-                    'x' => [
-                        'title' => [
-                            'display' => true,
-                            'text' => 'Tanggal'
-                        ]
-                    ],
-                    'y' => [
-                        'title' => [
-                            'display' => true,
-                            'text' => 'Jumlah'
-                        ],
-                        'beginAtZero' => true
-                    ]
-                ]
-            ]
+            'app' => $app,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'paymentData' => $paymentData,
+            'userData' => $userData,
+            'memberData' => $memberData,
+            'orderData' => $orderData,
+            'orderComplementData' => $orderComplementData
         ];
-    
-        $chartDataJson = json_encode($chartData);
-
-        $quickChartUrl = "https://quickchart.io/chart?c=" . urlencode($chartDataJson);
-    
-
-        return view('report-admin.pdf', compact('quickChartUrl', 'app', 'filter', 'startDate', 'endDate'));
     }
+
+
+    public function generatePdf($filter = 'Bulan') {
+        // $filter sudah diterima sebagai parameter
+        $chartDataResponse = $this->generateChartData($filter);
+        $chartDataJson = json_encode($chartDataResponse['chartData']);
+        $quickChartUrl = "https://quickchart.io/chart?c=" . urlencode($chartDataJson);
+        
+        $html = view('report-admin.pdf', array_merge($chartDataResponse, compact('quickChartUrl', 'filter')))->render();
+    
+        // Tentukan path untuk menyimpan PDF
+        $pdfDirectory = public_path('storage/reports');
+        if (!file_exists($pdfDirectory)) {
+            mkdir($pdfDirectory, 0755, true);
+        }
+
+        $pdfName = '/Report_' . now()->format('YmdHis') . '.pdf';
+    
+        $pdfPath = $pdfDirectory . $pdfName;
+    
+        $mpdf = new Mpdf();
+        $mpdf->WriteHTML($html);
+        
+        // Simpan PDF ke file
+        $mpdf->Output($pdfPath, 'F');
+    
+        // Streaming PDF ke browser
+        // $mpdf->Output('Report_' . now()->format('YmdHis') . '.pdf', 'I');
+    
+        // URL untuk mengakses file PDF (jika diperlukan)
+        return asset('storage/reports'. $pdfName);
+        
+    }
+    
+    
+    
     
     
     

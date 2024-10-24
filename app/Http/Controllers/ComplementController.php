@@ -16,7 +16,7 @@ class ComplementController extends Controller
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
 
-        $complement = complement::when($search, function ($query) use ($search) {
+        $complement = Complement::when($search, function ($query) use ($search) {
             return $query->where('name', 'like', '%' . $search . '%')
                 ->orWhere('category', 'like', '%' . $search . '%')
                 ->orWhere('description', 'like', '%' . $search . '%')
@@ -53,7 +53,7 @@ class ComplementController extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $complement = new complement();
+        $complement = new Complement();
         $complement->name = $request->name;
         $complement->category = $request->category;
         $complement->description = $request->description;
@@ -73,7 +73,7 @@ class ComplementController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(complement $complement)
+    public function show(Complement $complement)
     {
         //
     }
@@ -83,7 +83,7 @@ class ComplementController extends Controller
      */
     public function edit($id)
     {
-        $complement = complement::findOrFail($id);
+        $complement = Complement::findOrFail($id);
         return view('complement.edit', compact('complement'));
     }
 
@@ -128,7 +128,7 @@ class ComplementController extends Controller
      */
     public function destroy($id)
     {
-        $complement = complement::findOrFail($id);
+        $complement = Complement::findOrFail($id);
         if (Storage::exists($complement->image)) {
             Storage::delete($complement->image);
         }
