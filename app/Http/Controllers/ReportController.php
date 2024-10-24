@@ -160,7 +160,7 @@ class ReportController extends Controller
 
     public function report(Request $request) {
         $filter = $request->input('filter', 'Hari'); // Ambil filter dari request
-        $app = ApplicationSetting::first();
+
         $startDate = Carbon::today(); 
         $endDate = Carbon::today();  
     
@@ -193,27 +193,47 @@ class ReportController extends Controller
         $totalPayment = $payments->count();
     
         // Menggabungkan pesan
-        $message = "Data *$app->app_name* pada *$filter* ini dari *$startDate* - *$endDate* :\n" .
-                   "Total sales : *Rp $totalAmount*\n" .
-                   "New user : *$totalUser*\n" .
-                   "New member : *$totalMember*\n" .
-                   "Here is your report:";
+
     
         // Menyimpan PDF
         $pdfPath = $this->generatePdf($filter);
         // dd($pdfPath); // Mengambil path PDF yang dihasilkan
+        $adminUsers = User::where('role', 'admin')->get(); 
+        if ($adminUsers->isNotEmpty()) {
+            foreach ($adminUsers as $admin) {
+                if ($admin->phone) { 
+                    $phone = $admin->phone;
+                    $app = ApplicationSetting::first();
+                    $message = "Data *$app->app_name* pada *$filter* ini dari *$startDate* - *$endDate* :\n" .
+                    "Total sales : *Rp $totalAmount*\n" .
+                    "New user : *$totalUser*\n" .
+                    "New member : *$totalMember*\n" .
+                    "Here is your report:";
     
-        // Mengirim PDF sebagai media file dengan pesan
-        $apiCustomer = Http::baseUrl($app->japati_url)
-            ->withToken($app->japati_token)
-            ->attach('media_file', fopen($pdfPath, 'r'), basename($pdfPath)) // Mengupload file PDF
-            ->post('/api/send-message', [
-                'gateway' => $app->japati_gateway,
-                'number' => '081293962019',
-                'type' => 'media',
-                'message' => $message, // Pesan yang menyertakan semua informasi
-                "media_file" => $pdfPath,
-            ]);
+                    $apiText = Http::baseUrl($app->japati_url)
+                    ->withToken($app->japati_token)
+                    ->post('/api/send-message', [
+                        'gateway' => $app->japati_gateway,
+                        'number' => $phone,
+                        'type' => 'text',
+                        'message' => $message,
+                    ]);
+
+                    $apiCustomer = Http::baseUrl($app->japati_url)
+                    ->withToken($app->japati_token)
+                    ->post('/api/send-message', [
+                        'gateway' => $app->japati_gateway,
+                        'number' => $phone,
+                        'type' => 'media',
+                        'message' => $message, // Pesan yang menyertakan semua informasi
+                        'media_file' => $pdfPath,
+                    ]);
+                }
+            }
+        } else {
+            return redirect()->back()->with('error', 'No admin users found.');
+        }
+        
 
         if (!$apiCustomer->ok()) {
             logger($apiCustomer->json());
