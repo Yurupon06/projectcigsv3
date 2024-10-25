@@ -20,6 +20,6 @@ class OrderDetail extends Model
         return $this->belongsTo(OrderComplement::class, 'order_complement_id');
     }
     public function complement(){
-        return $this->belongsTo(Complement::class, 'complement_id');
+        return $this->belongsTo(complement::class, 'complement_id');
     }
 }

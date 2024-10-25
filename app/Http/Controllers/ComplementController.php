@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
-use App\Models\Complement;
+use App\Models\complement;
 use Illuminate\Http\Request;
 
 class ComplementController extends Controller
@@ -16,7 +16,7 @@ class ComplementController extends Controller
         $search = $request->input('search');
         $perPage = $request->input('per_page', 5);
 
-        $complement = Complement::when($search, function ($query) use ($search) {
+        $complement = complement::when($search, function ($query) use ($search) {
             return $query->where('name', 'like', '%' . $search . '%')
                 ->orWhere('category', 'like', '%' . $search . '%')
                 ->orWhere('description', 'like', '%' . $search . '%')
@@ -83,7 +83,7 @@ class ComplementController extends Controller
      */
     public function edit($id)
     {
-        $complement = Complement::findOrFail($id);
+        $complement = complement::findOrFail($id);
         return view('complement.edit', compact('complement'));
     }
 
@@ -101,7 +101,7 @@ class ComplementController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $complement = Complement::findOrFail($id);
+        $complement = complement::findOrFail($id);
         $complement->name = $request->name;
         $complement->category = $request->category;
         $complement->description = $request->description;
@@ -128,7 +128,7 @@ class ComplementController extends Controller
      */
     public function destroy($id)
     {
-        $complement = Complement::findOrFail($id);
+        $complement = complement::findOrFail($id);
         if (Storage::exists($complement->image)) {
             Storage::delete($complement->image);
         }
