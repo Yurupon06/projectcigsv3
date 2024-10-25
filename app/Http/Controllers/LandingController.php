@@ -96,15 +96,20 @@ class LandingController extends Controller
             Storage::disk('public')->put($fileName, $qrcode);
             $setting = ApplicationSetting::first();
             $message = "Here is your QR code.\nScan it to cashier and get in!";
-            $api = Http::baseUrl($setting->japati_url)
-            ->withToken($setting->japati_token)
-            ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
-            ->post('/api/send-message', [
-                'gateway' => $setting->japati_gateway,
-                'number' => $user->phone,
-                'type' => 'media',
-                'message' => $message,
-            ]);
+            try{
+                $api = Http::baseUrl($setting->japati_url)
+                ->withToken($setting->japati_token)
+                ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
+                ->post('/api/send-message', [
+                    'gateway' => $setting->japati_gateway,
+                    'number' => $user->phone,
+                    'type' => 'media',
+                    'message' => $message,
+                ]);
+
+            } catch (\Throwable $th) {
+                                return redirect()->back()->with('error', 'Something went wrong, try again later.');
+                            }
 
             return view('landing.getin', compact('user', 'customer', 'member', 'cartCount', 'app'));
         }
@@ -193,14 +198,20 @@ class LandingController extends Controller
 
         $setting = ApplicationSetting::first();
         $message = "Hello, *" . $user->name . "*.\nYour password has been changed successfully. If you didn't make this change, please contact us immediately.";
-        $api = Http::baseUrl($setting->japati_url)
-        ->withToken($setting->japati_token)
-        ->post('/api/send-message', [
-            'gateway' => $setting->japati_gateway,
-            'number' => $user->phone,
-            'type' => 'text',
-            'message' => $message,
-        ]);
+        try{
+
+            $api = Http::baseUrl($setting->japati_url)
+            ->withToken($setting->japati_token)
+            ->post('/api/send-message', [
+                'gateway' => $setting->japati_gateway,
+                'number' => $user->phone,
+                'type' => 'text',
+                'message' => $message,
+            ]);
+        } catch (\Throwable $th) {
+                                return redirect()->back()->with('error', 'Something went wrong, try again later.');
+                            }
+        
 
         return redirect()->route('landing.profile')->with('success', 'Password updated successfully.');
     }
@@ -458,19 +469,24 @@ class LandingController extends Controller
                     $adminUsers = User::where('role', 'admin')->get(); 
                     if ($adminUsers->isNotEmpty()) {
                         foreach ($adminUsers as $admin) {
-                            if ($admin->phone) { 
-                                $phone = $admin->phone;
-                                $message = "Halo *$admin->name* Stok untuk *$complement->name* sudah habis.";
-                
-                                $api = Http::baseUrl($app->japati_url)
-                                    ->withToken($app->japati_token)
-                                    ->post('/api/send-message', [
-                                        'gateway' => $app->japati_gateway,
-                                        'number' => $phone,
-                                        'type' => 'text',
-                                        'message' => $message,
-                                    ]);
+                            try {
+                                if ($admin->phone) { 
+                                    $phone = $admin->phone;
+                                    $message = "Halo *$admin->name* Stok untuk *$complement->name* sudah habis.";
+                    
+                                    $api = Http::baseUrl($app->japati_url)
+                                        ->withToken($app->japati_token)
+                                        ->post('/api/send-message', [
+                                            'gateway' => $app->japati_gateway,
+                                            'number' => $phone,
+                                            'type' => 'text',
+                                            'message' => $message,
+                                        ]);
+                                }
+                            } catch (\Throwable $th) {
+                                return redirect()->back()->with('error', 'Something went wrong, try again later.');
                             }
+
                         }
                     } else {
                         return redirect()->back()->with('error', 'No admin users found.');
@@ -502,15 +518,20 @@ class LandingController extends Controller
             $user = Auth::user();
             $setting = ApplicationSetting::first();
             $message = "*Orders Details*:\n\n*Product*:\n" . $items . "\n*Total*: *Rp. " . number_format($totalAmount, 0, '.', '.') . "*\n\nThank you for order!\nScan the QR code to cashier to pay the order.";
-            $api = Http::baseUrl($setting->japati_url)
-            ->withToken($setting->japati_token)
-            ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
-            ->post('/api/send-message', [
-                'gateway' => $setting->japati_gateway,
-                'number' => $user->phone,
-                'type' => 'media',
-                'message' => $message,
-            ]);
+            try{
+                $api = Http::baseUrl($setting->japati_url)
+                ->withToken($setting->japati_token)
+                ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
+                ->post('/api/send-message', [
+                    'gateway' => $setting->japati_gateway,
+                    'number' => $user->phone,
+                    'type' => 'media',
+                    'message' => $message,
+                ]);
+            } catch (\Throwable $th) {
+                return redirect()->back()->with('error', 'Something went wrong, try again later.');
+            }
+
 
             if (Storage::disk('public')->exists($fileName)) {
                 Storage::disk('public')->delete($fileName);

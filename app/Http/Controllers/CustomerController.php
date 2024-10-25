@@ -64,7 +64,7 @@ class CustomerController extends Controller
         return view('customer.edit', compact('user', 'customer'));
     }
 
-    public function update(Request $request, $id, )
+    public function update(Request $request, $id)
     {
         $request->validate([
             'user_id' => 'required',
@@ -75,9 +75,6 @@ class CustomerController extends Controller
 
         $customer = Customer::findOrFail($id);
 
-        if (Auth::user()->role === 'customer' && Auth::id() !== $customer->user_id) {
-            abort(403);
-        }
 
         $customer->user_id = $request->user_id;
         $customer->phone = $request->phone;

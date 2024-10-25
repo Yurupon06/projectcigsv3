@@ -19,14 +19,15 @@
                     <div class="card-body px-0 pt-0 pb-2">
                         <div class="table-responsive p-0">
                             <div class="card border-1 m-3 pt-3">
-                                <form action="{{ route('customer.update', $customer->id) }}" method="POST"
-                                    enctype="multipart/form-data">
+                                <form action="{{ route('customer.update', $customer->id) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                     <div class="mb-2 ms-3 me-3">
                                         <label for="user_id" class="form-label">name</label>
                                         <input type="text" value="{{ $customer->user->name }}" disabled class="ps-2 d-block w-100">
+                                        <input type="hidden" name="user_id" value="{{ $customer->user_id }}">
                                     </div>
+                                    
                                     <div class="mb-3 ms-3 me-3">
                                         <label for="phone" class="form-label">phone</label>
                                         <input type="number"
