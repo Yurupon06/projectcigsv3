@@ -53,12 +53,4 @@
             }
         @endif
     </script>
-    <script>
-        function maxLength(input) {
-            const maxLength = 13;
-            if (input.value.length > maxLength) {
-                input.value = input.value.slice(0, maxLength);
-            }
-        }
-    </script>
 @endsection

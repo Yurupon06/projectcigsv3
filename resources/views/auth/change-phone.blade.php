@@ -130,7 +130,7 @@
                         <form action="{{ route('change-phone') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="13"
+                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" minlength="10" maxlength="13"
                                     class="form-control text-center" id="phone"
                                     name="phone" placeholder="08XXXXXXXXXX" value="{{ auth()->user()->phone }}" required>
                                 @error('phone')

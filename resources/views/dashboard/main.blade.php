@@ -7,7 +7,8 @@
         color: #ff8800
     }
     .sign-out:hover {
-        color: #D81B60
+        color: #D81B60;
+        cursor: pointer;
     }
 </style>
 @endsection
@@ -31,14 +32,12 @@
                                     {{ Auth::user()->role }} - {{ Auth::user()->name }}
                                 </span>
                             </a>
-                            <a href="{{ route('logout') }}"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                                class="nav-link text-body font-weight-bold px-0 ms-4">
+                            <div class="nav-link text-body font-weight-bold px-0 ms-4">
                                 <div class="sign-out">
                                     <i class="fa fa-sign-out me-1"></i>
                                     <span class="d-sm-inline d-none">Sign Out</span>
                                 </div>
-                            </a>
+                            </div>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                 @csrf
                             </form>
@@ -65,3 +64,24 @@
         </div>
     </nav>
     <!-- End Navbar -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.querySelector('.sign-out').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You will be logged out from this session.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, log me out!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('logout-form').submit();
+                }
+            });
+        });
+    </script>

@@ -30,7 +30,7 @@ Route::get('/test-api', function () {
 Route::post('/api', [api::class, 'api'])->name('api');
 Route::post('/api-test', [LandingController::class, 'generate']);
 
-Route::post('/send-otp', [CodeOtpController::class, 'sendOtp'])->name('send-otp');
+Route::post('/send-otp', [CodeOtpController::class, 'sendOtp'])->middleware('throttle:send-otp')->name('send-otp');
 Route::post('/send-payment-message', [CodeOtpController::class, 'sendPaymentMessage'])->name('send.payment.message');
 Route::post('/send-struk-message/{id}', [CashierController::class, 'sendStrukMessage']);
 Route::post('/store-checkin', [CashierController::class, 'storeCheckIn'])->name('cashier.storeCheckIn');

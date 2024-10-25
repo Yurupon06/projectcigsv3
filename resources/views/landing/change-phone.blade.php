@@ -38,14 +38,18 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1cnd+0AdAq8ni0Y3C03GA+6GczfURhZgefjMNKDU3KwLLpTt92lW2TdeYifz59C" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        @if (Session::has('error'))
-            {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: '{{ Session::get('error') }}',
-                })
-            }
+        @if (session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: '{{ session('error') }}',
+            })
+        @elseif(session('warning'))
+            Swal.fire({
+                icon: 'warning',
+                title: 'Oops...',
+                text: '{{ session('warning') }}',
+            })
         @endif
     </script>
     <script>

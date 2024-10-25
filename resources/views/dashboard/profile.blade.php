@@ -115,7 +115,6 @@
                             <div class="position-relative">
                                 <input type="text" id="phone" name="phone" class="form-control"
                                 value="{{ $user->phone ?? '' }}" readonly>
-                                {{-- <a href="{{ route('change-phone-cashier') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a> --}}
                             </div>
                         </div>
                         <div class="form-group">
@@ -264,6 +263,12 @@
                     icon: 'success',
                     title: 'Success',
                     text: '{{ session('success') }}',
+                })
+            @elseif(session('warning'))
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: '{{ session('warning') }}',
                 })
             @elseif(session('error'))
                 Swal.fire({

@@ -729,7 +729,7 @@ class CashierController extends Controller
         $user = Auth::user();
         $category = $request->get('category');
         $complement = $category ? Complement::where('category', $category)->get() : Complement::all();
-        $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
+        $cartItems = Cart::where('user_id', $user->id)->with('complement')->get();
         return view('cashier.ordercomplement', compact('complement', 'cartItems'));
     }
 
@@ -763,7 +763,7 @@ class CashierController extends Controller
 
     
         } else {
-            cart::create([
+            Cart::create([
                 'user_id' => $user->id,
                 'complement_id' => $complement->id,
                 'quantity' => $quantity,
@@ -778,7 +778,7 @@ class CashierController extends Controller
     
     public function deleteCart($id)
     {
-        $cartItem = cart::findOrFail($id);
+        $cartItem = Cart::findOrFail($id);
     
         $complement = complement::findOrFail($cartItem->complement_id);
     

@@ -142,7 +142,7 @@
                         <form action="{{ route('send-otp-forgot') }}" method="POST">
                             @csrf
                             <div class="mb-3">
-                                <input name="phone" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="13" class="form-control text-center @error('phone') is-invalid @enderror" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ auth()->user()->phone ?? old('phone') }}" {{ isset(auth()->user()->phone) ? 'readonly' : 'required' }}>
+                                <input name="phone" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" minlength="10" maxlength="13" class="form-control text-center @error('phone') is-invalid @enderror" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ auth()->user()->phone ?? old('phone') }}" {{ isset(auth()->user()->phone) ? 'readonly' : 'required' }}>
                                 @error('phone')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
