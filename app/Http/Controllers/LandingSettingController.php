@@ -16,7 +16,7 @@ class LandingSettingController extends Controller
     public function store(Request $request, LandingSetting $landingSetting)
     {
         $request->validate([
-            'banner_image' => 'nullable|string|max:255',
+            'banner_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'banner_h1_text' => 'nullable|string|max:255',
             'banner_p_text' => 'nullable|string',
             'banner_button_text' => 'nullable|string|max:255',
@@ -24,10 +24,11 @@ class LandingSettingController extends Controller
             'banner_button_bg_color' => 'nullable|string|max:7',
             'banner_h1_color' => 'nullable|string|max:7',
             'banner_p_color' => 'nullable|string|max:7',
+
             'about_us_text' => 'nullable|string',
             'about_us_text_color' => 'nullable|string|max:7',
 
-            'product_image_1' => 'nullable|string|max:255',
+            'product_image_1' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'product_h1_text_1' => 'nullable|string|max:255',
             'product_h1_color_1' => 'nullable|string|max:7',
             'product_p_text_1' => 'nullable|string',
@@ -35,7 +36,7 @@ class LandingSettingController extends Controller
             'product_link_1' => 'nullable|string|max:255',
             'product_link_color_1' => 'nullable|string|max:7',
 
-            'product_image_2' => 'nullable|string|max:255',
+            'product_image_2' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'product_h1_text_2' => 'nullable|string|max:255',
             'product_h1_color_2' => 'nullable|string|max:7',
             'product_p_text_2' => 'nullable|string',
@@ -43,7 +44,7 @@ class LandingSettingController extends Controller
             'product_link_2' => 'nullable|string|max:255',
             'product_link_color_2' => 'nullable|string|max:7',
 
-            'product_image_3' => 'nullable|string|max:255',
+            'product_image_3' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'product_h1_text_3' => 'nullable|string|max:255',
             'product_h1_color_3' => 'nullable|string|max:7',
             'product_p_text_3' => 'nullable|string',

@@ -29,13 +29,6 @@
                         @enderror
                     </div>
                       <div class="mb-3 ms-3 me-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="text" class="ps-2 form-control border border-secondary-subtle @error('email') is-invalid @enderror" placeholder="Email" aria-label="email" id="email" name="email" value="{{ old('email') }}">
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                      </div>
-                      <div class="mb-3 ms-3 me-3">
                         <label for="password" class="form-label">Password</label>
                         <input type="password" class="ps-2 form-control border border-secondary-subtle @error('password') is-invalid @enderror" placeholder="Password" aria-label="password" id="password" name="password">
                         @error('password')

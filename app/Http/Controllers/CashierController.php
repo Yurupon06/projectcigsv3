@@ -16,7 +16,7 @@ use App\Models\OrderDetail;
 use App\Models\Product_categorie;
 use App\Models\MemberCheckin;
 use BaconQrCode\Encoder\QrCode;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
@@ -259,22 +259,27 @@ class CashierController extends Controller
         // Buat pesan yang akan dikirim melalui WhatsApp
         $message = "Dear *$customerName*, your order for *$productName* on *$orderDate* with an amount of *Rp $amount* has been processed. Please use this QR token for check-in: *$qrToken*. Thank you for using *$appName*!";
 
+        try{
+            $api = Http::baseUrl($appSetting->japati_url)
+                ->withToken($appSetting->japati_token)
+                ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
+                ->post('/api/send-message', [
+                    'gateway' => $appSetting->japati_gateway, 
+                    'number' => $phone, 
+                    'type' => 'media',
+                    'message' => $message,
+                    // 'media_file' => Storage::url($fileName), 
+                    // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg',
+                ]);
+
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', 'Something went wrong, try again later.');
+        }
         // Mengirimkan pesan menggunakan API WhatsApp
-        $api = Http::baseUrl($appSetting->japati_url)
-            ->withToken($appSetting->japati_token)
-            ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
-            ->post('/api/send-message', [
-                'gateway' => $appSetting->japati_gateway, 
-                'number' => $phone, 
-                'type' => 'media',
-                'message' => $message,
-                // 'media_file' => Storage::url($fileName), 
-                // 'media_file' => 'https://files.f-g.my.id/images/dummy/buku-2.jpg',
-            ]);
 
         // Cek apakah pengiriman berhasilk
         if (!$api->successful()) {
-            \Log::error('Failed to send message', ['response' => $api->body()]);
+            Log::error('Failed to send message', ['response' => $api->body()]);
             throw new \Exception('Failed to send message');
         }
 
@@ -374,6 +379,10 @@ class CashierController extends Controller
             'message' => $message,
         ]);
 
+        if (!$api->successful()) {
+            Log::error('Failed to send message', ['response' => $api->body()]);
+            throw new \Exception('Failed to send message');
+        }
 
     return redirect()->route('cashier.order')->with([
         'success' => 'Customer added successfully.',
@@ -481,6 +490,11 @@ class CashierController extends Controller
             'type' => 'text',
             'message' => $message,
         ]);
+
+        if (!$api->successful()) {
+            Log::error('Failed to send message', ['response' => $api->body()]);
+            throw new \Exception('Failed to send message');
+        }
 
         return redirect()->route('cashier.profile')->with('success', 'Password updated successfully.');
     }
@@ -630,7 +644,7 @@ class CashierController extends Controller
         // Cek keberadaan file gambar sebelum mengirim
         $fullImagePath = storage_path('app/public/' . $imagePath);
         if (!file_exists($fullImagePath)) {
-            \Log::error('Image file not found: ' . $fullImagePath);
+            Log::error('Image file not found: ' . $fullImagePath);
             return response()->json(['success' => false, 'message' => 'Image file not found.'], 500);
         }
 
@@ -653,7 +667,10 @@ class CashierController extends Controller
         // Ambil respons dari API customer
         $responseCustomer = $apiCustomer->json();
         $httpStatusCustomer = $apiCustomer->status();
-
+        if (!$apiCustomer->successful()) {
+            Log::error('Failed to send message', ['response' => $apiCustomer->body()]);
+            throw new \Exception('Failed to send message');
+        }
         
         if ($httpStatusCustomer == 200 && isset($responseCustomer['success']) && $responseCustomer['success'] == true) {
             // Jika pengiriman ke customer berhasil, kirim pesan ke admin
@@ -679,16 +696,20 @@ class CashierController extends Controller
                 $responseAdmin = $apiAdmin->json();
                 $httpStatusAdmin = $apiAdmin->status();
         
+                if (!$apiAdmin->successful()) {
+                    Log::error('Failed to send message', ['response' => $apiAdmin->body()]);
+                    throw new \Exception('Failed to send message');
+                }
                 // Log status pengiriman ke admin
                 if ($httpStatusAdmin == 200 && isset($responseAdmin['success']) && $responseAdmin['success'] == true) {
-                    \Log::info("Notification sent to admin (phone: $adminPhone) successfully.");
+                    Log::info("Notification sent to admin (phone: $adminPhone) successfully.");
                 } else {
-                    \Log::error("Failed to send notification to admin (phone: $adminPhone). Status: " . $httpStatusAdmin);
+                    Log::error("Failed to send notification to admin (phone: $adminPhone). Status: " . $httpStatusAdmin);
                 }
             }
         } else {
             // Jika pengiriman ke customer gagal, catat ke dalam log
-            \Log::error('Failed to send check-in message to customer. Status: ' . $httpStatusCustomer);
+            Log::error('Failed to send check-in message to customer. Status: ' . $httpStatusCustomer);
         }
         
 
@@ -852,6 +873,10 @@ class CashierController extends Controller
                                     'type' => 'text',
                                     'message' => $message,
                                 ]);
+                                if (!$api->successful()) {
+                                    Log::error('Failed to send message', ['response' => $api->body()]);
+                                    throw new \Exception('Failed to send message');
+                                }
                         }
                     }
                 } else {
@@ -903,7 +928,7 @@ class CashierController extends Controller
                 $detail->delete();
             }
             $orderComplement->delete();
-            return redirect()->route('cashier.complement')->with('success', 'Order canceled successfully.');
+            return redirect()->back()->with('success', 'Order canceled successfully.');
         }
 
         $request->validate([
@@ -947,6 +972,10 @@ class CashierController extends Controller
             'type' => 'text',
             'message' => $message,
         ]);
+        if (!$api->successful()) {
+            Log::error('Failed to send message', ['response' => $api->body()]);
+            throw new \Exception('Failed to send message');
+        }
 
         return redirect()->route('struk_complement', ['id' => $orderComplement->id])->with('success', 'Payment processed and membership created successfully!');
     }
