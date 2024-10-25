@@ -21,6 +21,6 @@ class Cart extends Model
     }
 
     public function complement(){
-        return $this->belongsTo(Complement::class, 'complement_id');
+        return $this->belongsTo(complement::class, 'complement_id');
     }
 }

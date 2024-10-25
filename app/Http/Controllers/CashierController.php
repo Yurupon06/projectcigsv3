@@ -9,8 +9,8 @@ use App\Models\Product;
 use App\Models\Order;
 use App\Models\ApplicationSetting;
 use App\Models\Payment;
-use App\Models\Complement;
-use App\Models\Cart;
+use App\Models\complement;
+use App\Models\cart;
 use App\Models\OrderComplement;
 use App\Models\OrderDetail;
 use App\Models\Product_categorie;
@@ -728,8 +728,8 @@ class CashierController extends Controller
     public function orderComplement(Request $request){
         $user = Auth::user();
         $category = $request->get('category');
-        $complement = $category ? Complement::where('category', $category)->get() : Complement::all();
-        $cartItems = Cart::where('user_id', $user->id)->with('complement')->get();
+        $complement = $category ? complement::where('category', $category)->get() : complement::all();
+        $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
         return view('cashier.ordercomplement', compact('complement', 'cartItems'));
     }
 
@@ -763,7 +763,7 @@ class CashierController extends Controller
 
     
         } else {
-            Cart::create([
+            cart::create([
                 'user_id' => $user->id,
                 'complement_id' => $complement->id,
                 'quantity' => $quantity,
@@ -778,7 +778,7 @@ class CashierController extends Controller
     
     public function deleteCart($id)
     {
-        $cartItem = Cart::findOrFail($id);
+        $cartItem = cart::findOrFail($id);
     
         $complement = complement::findOrFail($cartItem->complement_id);
     
@@ -791,7 +791,7 @@ class CashierController extends Controller
 
     public function updateQuantity(Request $request, $id)
     {
-        $cartItem = Cart::findOrFail($id);
+        $cartItem = cart::findOrFail($id);
         $newQuantity = $request->input('quantity');
         $currentQuantity = $cartItem->quantity;
     
@@ -831,7 +831,7 @@ class CashierController extends Controller
     public function checkoutProccess() {
         $user = Auth::user();
         $app = ApplicationSetting::first();
-        $cartItems = Cart::where('user_id', $user->id)->with('complement')->get();
+        $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
         }
@@ -894,7 +894,7 @@ class CashierController extends Controller
             ]);
         }
     
-        Cart::where('user_id', $user->id)->delete();
+        cart::where('user_id', $user->id)->delete();
     
         return redirect()->route('cashier.checkout', ['qr_token' => $orderComplement->qr_token]);
     }
@@ -920,7 +920,7 @@ class CashierController extends Controller
 
         if ($request->input('action') === 'cancel') {
             foreach ($orderDetails as $detail) {
-                $complement = Complement::findOrFail($detail->complement_id);
+                $complement = complement::findOrFail($detail->complement_id);
                 $complement->update([
                     'stok' => $complement->stok + $detail->quantity,
                 ]);
@@ -957,7 +957,7 @@ class CashierController extends Controller
 
         $items = '';
         foreach ($orderDetails as $detail) {
-            $complement = Complement::find($detail['complement_id']);
+            $complement = complement::find($detail['complement_id']);
 
             $items .= $complement->name . ' (' . $detail['quantity'] . ' x Rp. ' . number_format($complement->price, 0, '.', '.') . ') = *Rp. ' . number_format($detail['sub_total'], 0, '.', '.') . "*\n";
         }
