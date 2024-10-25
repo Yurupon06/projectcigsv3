@@ -78,6 +78,13 @@
                                                         <i class="material-icons opacity-10">edit</i>
                                                     </span>
                                                 </a>
+                                                <form action="{{ route('user.destroy', $dt->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn bg-gradient-danger">
+                                                        <i class="material-icons opacity-10">delete</i>
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach
