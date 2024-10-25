@@ -168,7 +168,7 @@
 
 <body>
     <main class="container">
-        <div id="alertContainer"></div> <!-- Tempat untuk menampilkan alert -->
+        <div id="alertContainer" class="pt-3"></div> <!-- Tempat untuk menampilkan alert -->
         @if($message = session('success'))
         <div class="alert alert-success my-2 text-success" role="alert">{{ $message }}</div>
         @elseif ($message = session('error'))
@@ -201,15 +201,15 @@
                                 @enderror
                             </div>
                             <div class="form-floating mb-2">
-                                <input type="number" class="form-control @error('phone') is-invalid @enderror" id="floatingPhone" name="phone" value="{{ old('phone') }}" required autocomplete="phone">
+                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" minlength="10" maxlength="13" class="form-control @error('phone') is-invalid @enderror" id="floatingPhone" name="phone" value="{{ old('phone') }}" required autocomplete="phone">
                                 <label for="floatingPhone">Phone</label>
                             </div>
                             <div class="mb-2">
-                                <button type="button" class="btn btn-secondary w-100" onclick="sendOtp()">Kirim OTP</button>
+                                <button type="button" class="btn btn-secondary w-100" onclick="sendOtp()">Send OTP</button>
                             </div>
                             <div class="form-floating mb-2">
-                                <input type="number" class="form-control" id="floatingOtp" name="otp" placeholder="Masukkan OTP" required autocomplete="off">
-                                <label for="floatingOtp">Masukkan OTP</label>
+                                <input type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" minlength="6" maxlength="6" class="form-control" id="floatingOtp" name="otp" placeholder="Masukkan OTP" required autocomplete="off">
+                                <label for="floatingOtp">Enter OTP</label>
                                 @error('otp')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -258,7 +258,7 @@
             const phone = document.getElementById('floatingPhone').value;
 
             if (!phone) {
-                showError("Masukkan nomor telepon terlebih dahulu.");
+                showError("Please enter a valid phone number.");
                 return;
             }
             fetch("{{ route('send-otp') }}", {
@@ -272,14 +272,13 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showSuccess("OTP telah dikirim ke nomor " + phone); // Menampilkan pesan sukses
+                    showSuccess("OTP has been sent to " + phone); // Menampilkan pesan sukses
                 } else {
-                    showError(data.message || "Gagal mengirim OTP, coba lagi.");
+                    showError(data.message || "Failed to send OTP, please try again later.");
                 }
             })
             .catch(error => {
-                console.error("Error:", error);
-                showError("Terjadi kesalahan, coba lagi.");
+                showError("Too many requests, please try again later.");
             });
         }
 

@@ -154,7 +154,7 @@
                     <form action="{{ route('login') }}" method="POST">
                         @csrf
                         <div class="form-floating mb-3">
-                            <input name="phone" type="phone" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ old('phone') }}" required>
+                            <input name="phone" type="text" oninput="this.value = this.value.replace(/[^0-9]/g, '');" minlength="10" maxlength="13" class="form-control {{ $errors->has('phone') ? 'is-invalid' : '' }}" id="floatingInput" placeholder="08XXXXXXXXXX" value="{{ old('phone') }}" required>
                             <label for="floatingInput">Phone Number</label>
                             @error('phone')
                             <div class="invalid-feedback">{{ $message }}</div>

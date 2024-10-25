@@ -14,7 +14,7 @@ class ChangePhoneController extends Controller
     public function changePhone(Request $request)
     {
         $request->validate([
-            'phone' => 'required|string|max:13',
+            'phone' => 'required|string|min:10|max:13',
         ]);
 
         $user = Auth::user();
@@ -23,7 +23,9 @@ class ChangePhoneController extends Controller
 
         $userExists = User::where('phone', $phone)->exists();
 
-        if ($userExists) {
+        if ($user->phone == $phone) {
+            return redirect()->back()->with('warning', 'Please enter your new phone number');
+        } elseif ($userExists) {
             return redirect()->back()->with('error', 'Phone already exists');
         }
 

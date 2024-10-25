@@ -96,9 +96,7 @@
                                 }
                             </style>
                         </a>
-                        <a href="{{ route('logout') }}"
-                           onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                           class="nav-link text-white font-weight-bold px-0 ms-4">
+                        <div class="nav-link text-white font-weight-bold px-0 ms-4">
                             <div class="sign-out">
                                 <i class="fa fa-sign-out me-1"></i>
                                 <span class="d-sm-inline d-none">Sign Out</span>
@@ -106,9 +104,10 @@
                             <style>
                                 .sign-out:hover {
                                     color: #D81B60;
+                                    cursor: pointer;
                                 }
                             </style>
-                        </a>
+                        </div>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
                         </form>
@@ -127,3 +126,25 @@
     </nav>
     <!-- End Navbar -->
 </main>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.querySelector('.sign-out').addEventListener('click', function(event) {
+        event.preventDefault(); // Mencegah link logout default dijalankan
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You will be logged out from this session.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, log me out!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika user memilih logout, submit form logout
+                document.getElementById('logout-form').submit();
+            }
+        });
+    });
+</script>

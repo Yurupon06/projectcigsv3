@@ -113,9 +113,7 @@
                         <div class="form-group">
                             <label for="phone">Phone</label>
                                 <input type="text" class="form-control"
-                                value="{{ Auth::user()->phone ?? '' }}" readonly>
-                                {{-- <a href="{{ route('change-phone-admin') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a> --}}
-                            </div>
+                                value="{{ Auth::user()->phone ?? '' }}" disabled>
                         </div>
                         <div class="form-group">
                             <label for="born">Date of Birth</label>
@@ -263,6 +261,12 @@
                     icon: 'success',
                     title: 'Success',
                     text: '{{ session('success') }}',
+                })
+            @elseif(session('warning'))
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Oops...',
+                    text: '{{ session('warning') }}',
                 })
             @elseif(session('error'))
                 Swal.fire({

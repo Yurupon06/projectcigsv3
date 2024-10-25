@@ -197,7 +197,7 @@ class DashboardController extends Controller
             ]
         );
 
-        return redirect()->route('dashboard.profil')->with('success', 'Profile updated successfully.');
+        return redirect()->route('dashboard.profile')->with('success', 'Profile updated successfully.');
     }
 
     public function updatePassword(Request $request)
