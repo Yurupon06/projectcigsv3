@@ -440,7 +440,6 @@ class CashierController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
             'born' => 'required|date',
             'gender' => 'required|in:men,women',
         ]);
@@ -448,13 +447,11 @@ class CashierController extends Controller
         $user = Auth::user();
         $user->update([
             'name' => $request->name,
-            'phone' => $request->phone,
         ]);
 
         $customer = Customer::updateOrCreate(
             ['user_id' => $user->id],
             [
-                'phone' => $request->phone,
                 'born' => $request->born,
                 'gender' => $request->gender,
             ]
@@ -517,9 +514,25 @@ class CashierController extends Controller
 
     public function actionMember(Request $request, $id)
     {
+        $app = ApplicationSetting::first();
         $member = Member::find($id);
+        $userName = $member->customer->user->name;
+        $userPhone = $member->customer->user->phone;
         if ($request->input('action') === 'cancel') {
             $member->update(['status' => 'inactive']);
+            $message = "halo *$userName*, you got *Ban* from *$app->app_name*";
+            $api = Http::baseUrl($app->japati_url)
+            ->withToken($app->japati_token)
+            ->post('/api/send-message', [
+                'gateway' => $app->japati_gateway,
+                'number' =>  $userPhone,
+                'type' => 'text',
+                'message' => $message,
+            ]);
+            if (!$api->successful()) {
+                Log::error('Failed to send message', ['response' => $api->body()]);
+                throw new \Exception('Failed to send message');
+            }
             return redirect()->route('membercashier.membercash')->with('success', 'Member Banned successfully.');
         }
         if ($request->input('action') === 'unban') {
@@ -529,6 +542,15 @@ class CashierController extends Controller
             }else {
                 $member->update(['status' => 'active']);
             }
+            $message = "halo *$userName*, you have been *UnBanned* from *$app->app_name*\ndon't make mistake again";
+            $api = Http::baseUrl($app->japati_url)
+            ->withToken($app->japati_token)
+            ->post('/api/send-message', [
+                'gateway' => $app->japati_gateway,
+                'number' =>  $userPhone,
+                'type' => 'text',
+                'message' => $message,
+            ]);
             return redirect()->route('membercashier.membercash')->with('success', 'Member successfully Unban.');
         }
 
