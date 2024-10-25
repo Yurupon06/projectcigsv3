@@ -82,16 +82,41 @@ class UserController extends Controller
 
         return redirect()->route('user.index')->with('success', 'User updated successfully.');
     }
+
     public function destroy(string $id)
     {
         $user = User::findOrFail($id);
-
+    
         if (Auth::user()->role === 'customer' && Auth::id() !== $user->id) {
             abort(403);
         }
-
-        
+    
+        // Ambil data customer yang terkait dengan user
+        $customer = $user->customer;
+    
+        // Jika customer tidak ada, langsung hapus user
+        if (!$customer) {
+            $user->delete();
+            return redirect()->route('user.index')->with('success', 'User deleted successfully.');
+        }
+    
+        // Cek apakah customer terkait dengan tabel lain (member dan order)
+        $hasOtherRelations = $customer->member()->exists() || $customer->orders()->exists();
+    
+        if ($hasOtherRelations) {
+            return redirect()->route('user.index')->with('error', "Can't delete this user because the customer has related records.");
+        }
+    
+        // Jika customer tidak memiliki relasi di member atau order, hapus customer
+        $customer->delete();
+    
+        // Hapus user setelah customer berhasil dihapus
         $user->delete();
-        return redirect()->route('user.index')->with('success', 'user berhasil dihapus.');
+    
+        return redirect()->route('user.index')->with('success', 'User and related customer record deleted successfully.');
     }
+    
+    
+
+    
 }

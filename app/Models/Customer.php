@@ -20,13 +20,19 @@ class Customer extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function members()
-    {
-        return $this->hasMany(Member::class, 'customer_id', 'id');
-    }
 
     public function activeMember()
     {
         return $this->hasOne(Member::class, 'customer_id')->where('status', 'active');
+    }
+    public function member()
+    {
+        return $this->hasOne(Member::class, 'customer_id'); // Atau `hasMany` jika ada banyak data member
+    }
+
+    // Relasi ke tabel orders
+    public function orders()
+    {
+        return $this->hasMany(Order::class, 'customer_id');
     }
 }
