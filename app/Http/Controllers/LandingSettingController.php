@@ -57,6 +57,15 @@ class LandingSettingController extends Controller
             'facebook' => 'nullable|string|max:255',
             'twitter' => 'nullable|string|max:255',
             'instagram' => 'nullable|string|max:255',
+        ], [
+            'banner_image.image' => 'The banner image must be a small file under 2 MB.',
+            'product_image_1.image' => 'Product image 1 must be a small file under 2 MB.',
+            'product_image_2.image' => 'Product image 2 must be a small file under 2 MB.',
+            'product_image_3.image' => 'Product image 3 must be a small file under 2 MB.',
+            'banner_image.max' => 'The banner image must be under 2 MB.',
+            'product_image_1.max' => 'Product image 1 must be under 2 MB.',
+            'product_image_2.max' => 'Product image 2 must be under 2 MB.',
+            'product_image_3.max' => 'Product image 3 must be under 2 MB.',
         ]);
 
         if ($request->hasFile('banner_image') && $request->file('banner_image')->isValid()) {
@@ -81,14 +90,13 @@ class LandingSettingController extends Controller
             $request->file('product_image_3')->store('banners', 'public');
             $path = $request->file('product_image_3')->hashName();
             $landingSetting->product_image_3 = "banners/{$path}";
-
-            $landingSetting->save();
         }
 
-        $landingSetting->update($request->except('banner_image', 'product_image_1', 'product_image_2', 'product_image_3')); // Mengupdate semua kecuali gambar
+        $landingSetting->update($request->except('banner_image', 'product_image_1', 'product_image_2', 'product_image_3'));
 
         return redirect()->route('landing-settings.index')->with('success', 'Landing settings created successfully.');
     }
+
     // Memperbarui landing settings di dalam database
     public function update(Request $request, LandingSetting $landingSetting)
     {
@@ -101,7 +109,6 @@ class LandingSettingController extends Controller
             'banner_button_bg_color' => 'nullable|string|max:7',
             'banner_h1_color' => 'nullable|string|max:7',
             'banner_p_color' => 'nullable|string|max:7',
-
             'about_us_text' => 'nullable|string',
             'about_us_text_color' => 'nullable|string|max:7',
 
@@ -134,8 +141,17 @@ class LandingSettingController extends Controller
             'facebook' => 'nullable|string|max:255',
             'twitter' => 'nullable|string|max:255',
             'instagram' => 'nullable|string|max:255',
+        ], [
+           'banner_image.image' => 'The banner image must be a small file under 2 MB.',
+            'product_image_1.image' => 'Product image 1 must be a small file under 2 MB.',
+            'product_image_2.image' => 'Product image 2 must be a small file under 2 MB.',
+            'product_image_3.image' => 'Product image 3 must be a small file under 2 MB.',
+            'banner_image.max' => 'The banner image must be under 2 MB.',
+            'product_image_1.max' => 'Product image 1 must be under 2 MB.',
+            'product_image_2.max' => 'Product image 2 must be under 2 MB.',
+            'product_image_3.max' => 'Product image 3 must be under 2 MB.',
         ]);
-        
+
         if ($request->hasFile('banner_image') && $request->file('banner_image')->isValid()) {
             $request->file('banner_image')->store('banners', 'public');
             $path = $request->file('banner_image')->hashName();
@@ -158,12 +174,10 @@ class LandingSettingController extends Controller
             $request->file('product_image_3')->store('banners', 'public');
             $path = $request->file('product_image_3')->hashName();
             $landingSetting->product_image_3 = "banners/{$path}";
-
-            $landingSetting->save();
         }
 
-        $landingSetting->update($request->except('banner_image', 'product_image_1', 'product_image_2', 'product_image_3')); // Mengupdate semua kecuali gambar
+        $landingSetting->update($request->except('banner_image', 'product_image_1', 'product_image_2', 'product_image_3'));
 
-        return redirect()->back()->with('success', 'Settings updated successfully');
+        return redirect()->back()->with('success', 'Settings updated successfully.');
     }
 }
