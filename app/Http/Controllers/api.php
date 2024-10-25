@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\ApplicationSettings;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class api extends Controller
 {
@@ -23,6 +24,10 @@ class api extends Controller
         'type' => 'text',
         'message' => 'Hai *'.$user->name. '* Welcome To *' .$appName->app_name.'*',
     ]);
+    if (!$api->successful()) {
+        Log::error('Failed to send message', ['response' => $api->body()]);
+        throw new \Exception('Failed to send message');
+    }
     return redirect()->route('test-api')->with('success', 'berhasi terkirim.');
    }
 }

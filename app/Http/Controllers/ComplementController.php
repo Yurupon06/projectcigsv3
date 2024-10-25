@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
-use App\Models\complement;
+use App\Models\Complement;
 use Illuminate\Http\Request;
 
 class ComplementController extends Controller

@@ -7,12 +7,13 @@
 @section('page', 'Report')
 @section('main')
     @include('dashboard.main')
-    @if($message = session('success'))
-    <div class="alert alert-success my-2" role="alert">{{ $message }}</div>
-    @endif
+
     <div class="container" style="height: 100vh;">
-        
-            @csrf
+        @if($message = session('success'))
+        <div class="alert alert-success my-2 " role="alert">{{ $message }}</div>
+        @elseif ($message = session('error'))
+        <div class="alert alert-danger my-2 " role="alert">{{ $message }}</div>
+        @endif
             <div class="row">
                 <div class="col-auto d-flex justify-content-center">
                     <form id="reportForm" method="POST" action="{{ route('report.send') }}">

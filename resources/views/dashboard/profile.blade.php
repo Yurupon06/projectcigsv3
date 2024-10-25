@@ -112,16 +112,17 @@
                         </div>
                         <div class="form-group">
                             <label for="phone">Phone</label>
-                                <input type="text" class="form-control"
-                                value="{{ Auth::user()->phone ?? '' }}" readonly>
-                                {{-- <a href="{{ route('change-phone-admin') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a> --}}
+                            <div class="position-relative">
+                                <input type="text" id="phone" name="phone" class="form-control"
+                                value="{{ $user->phone ?? '' }}" readonly>
+                                {{-- <a href="{{ route('change-phone-cashier') }}" class="btn btn-warning position-absolute top-0 end-0">Change Phone Number</a> --}}
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="born">Date of Birth</label>
-                            <input type="date" id="born" name="born" class="form-control" 
-                                value="{{ $customer->born ?? '' }}" 
-                                max="{{ date('Y-m-d', strtotime('-1 day')) }}" required>
+                            <input type="date" id="born" name="born" class="form-control"
+                                value="{{ $customer->born ?? '' }}" max="{{ date('Y-m-d', strtotime('-1 day')) }}"
+                                required>
                         </div>
                         <div class="form-group">
                             <label for="gender">Gender</label>

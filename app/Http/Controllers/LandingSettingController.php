@@ -24,6 +24,7 @@ class LandingSettingController extends Controller
             'banner_button_bg_color' => 'nullable|string|max:7',
             'banner_h1_color' => 'nullable|string|max:7',
             'banner_p_color' => 'nullable|string|max:7',
+
             'about_us_text' => 'nullable|string',
             'about_us_text_color' => 'nullable|string|max:7',
 
