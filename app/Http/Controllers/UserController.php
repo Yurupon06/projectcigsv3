@@ -97,14 +97,14 @@ class UserController extends Controller
         // Jika customer tidak ada, langsung hapus user
         if (!$customer) {
             $user->delete();
-            return redirect()->route('user.index')->with('success', 'User deleted successfully.');
+            return redirect()->back()->with('success', 'User deleted successfully.');
         }
     
         // Cek apakah customer terkait dengan tabel lain (member dan order)
         $hasOtherRelations = $customer->member()->exists() || $customer->orders()->exists();
     
         if ($hasOtherRelations) {
-            return redirect()->route('user.index')->with('error', "Can't delete this user because the customer has related records.");
+            return redirect()->back()->with('error', "Can't delete this user because the customer has related records.");
         }
     
         // Jika customer tidak memiliki relasi di member atau order, hapus customer
@@ -113,7 +113,7 @@ class UserController extends Controller
         // Hapus user setelah customer berhasil dihapus
         $user->delete();
     
-        return redirect()->route('user.index')->with('success', 'User and related customer record deleted successfully.');
+        return redirect()->back()->with('success', 'User and related customer record deleted successfully.');
     }
     
     
