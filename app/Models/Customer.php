@@ -25,7 +25,7 @@ class Customer extends Model
     {
         return $this->hasOne(Member::class, 'customer_id')->where('status', 'active');
     }
-    public function member()
+    public function members()
     {
         return $this->hasOne(Member::class, 'customer_id'); // Atau `hasMany` jika ada banyak data member
     }

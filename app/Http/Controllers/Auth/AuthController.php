@@ -70,7 +70,7 @@ class AuthController extends Controller
                 return redirect('dashboard');
             }
             if ($user->role === 'cashier') {
-                return redirect('cashier');
+                return redirect()->route('cashier.index', ['filter' => 'membership']);
             }
             if ($user->role === 'customer') {
                 return redirect('/home');

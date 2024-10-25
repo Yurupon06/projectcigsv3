@@ -60,7 +60,7 @@
         <ul class="navbar-nav d-flex flex-row">
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('cashier') ? 'active' : '' }}" 
-                    href="{{ route('cashier.index') }}">
+                    href="{{ route('cashier.index', ['filter' => 'membership']) }}">
                     <i class="material-icons">store</i>
                     <span class="nav-link-text ms-1">Cashier</span>
                 </a>
