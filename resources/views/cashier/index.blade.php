@@ -56,17 +56,17 @@
         <div class="row">
             <div class="col-md-12 d-flex flex-column flex-md-row">
                 <div class="col-md-8 me-md-2 mb-4 mb-md-0 mt-4" style="overflow: hidden;">
-                    <a href="{{ route('cashier.index', ['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')]) }}" type="button" 
-                        class=" {{ request('filter') == 'membership' ? 'active' : '' }} btn btn-primary btn-sm align-items-center btn-membership" 
-                        style="font-size: 12px; padding: 10px 12px; background-color: #ff5c00; box-shadow: 0 4px 6px rgba(0, 0, 255, 0.1); border: none;">
-                        <i class="fas fa-user-tag me-2" style="font-size: 18px;"></i> Membership
-                    </a>
-
-                    <a href="{{ route('cashier.index', ['filter' => 'complement', 'search' => request('search'), 'per_page' => request('per_page')]) }}" type="button" 
-                        class=" {{ request('filter') == 'complement' ? 'active' : '' }} btn btn-sm align-items-center btn-complement mx-2" 
-                        style="font-size: 12px; padding: 10px 12px; background-color:#007bff; color: white; box-shadow: 0 4px 6px rgba(255, 165, 0, 0.1); border: none;">
-                        <i class="fas fa-shopping-basket me-2" style="font-size: 18px;"></i> Complement
-                    </a>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <a href="{{ route('cashier.index', ['filter' => 'membership', 'search' => request('search'), 'per_page' => request('per_page')]) }}" 
+                           class="btn btn-primary {{ request('filter') == 'membership' ? 'active' : '' }}">
+                            MEMBERSHIP
+                        </a>
+                        <a href="{{ route('cashier.index', ['filter' => 'complement', 'per_page' => request('per_page')]) }}" 
+                           class="btn btn-primary {{ request('filter') == 'complement' ? 'active' : '' }}">
+                            COMPLEMENT
+                        </a>
+                    </div>
+                    
                     <div class="card mb-4">
                         <div class="card-header pb-0 py-1">
                             <div class="d-flex justify-content-between align-items-center">

@@ -10,6 +10,15 @@
 
     <div class="container-fluid pb-4">
         <div class="row">
+            @if (session('success'))
+            <div class="alert alert-success small" role="alert">
+                {{ session('success') }}
+            </div>
+        @elseif (session('error'))
+            <div class="alert alert-danger small" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
             <div class="col-12">
                 <div class="card my-4">
                     <div class="card-header pb-0 py-1">
@@ -78,6 +87,7 @@
                                                         <i class="material-icons opacity-10">edit</i>
                                                     </span>
                                                 </a>
+                                                @if($dt->role === 'customer')
                                                 <form action="{{ route('user.destroy', $dt->id) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this user?');">
                                                     @csrf
                                                     @method('DELETE')
@@ -85,6 +95,7 @@
                                                         <i class="material-icons opacity-10">delete</i>
                                                     </button>
                                                 </form>
+                                            @endif
                                             </td>
                                         </tr>
                                     @endforeach

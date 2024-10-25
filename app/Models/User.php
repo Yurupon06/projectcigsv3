@@ -28,9 +28,8 @@ class User extends Authenticatable
 
     public function customer()
     {
-        return $this->hasMany(Customer::class, 'user_id');
+        return $this->hasOne(Customer::class, 'user_id');
     }
-
     /**
      * The attributes that should be hidden for serialization.
      *
