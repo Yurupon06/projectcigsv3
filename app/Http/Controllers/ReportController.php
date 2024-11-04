@@ -376,7 +376,7 @@ class ReportController extends Controller
     }
 
 
-    public function generatePdf($filter = 'Bulan') {
+    public function generatePdf($filter = 'Minggu') {
         // $filter sudah diterima sebagai parameter
         $chartDataResponse = $this->generateChartData($filter);
         $chartDataJson = json_encode($chartDataResponse['chartData']);
@@ -395,16 +395,21 @@ class ReportController extends Controller
         $pdfPath = $pdfDirectory . $pdfName;
     
         $mpdf = new Mpdf();
+        $mpdf->SetHTMLFooter('
+        <div style="text-align: center; font-size: 10px; color: #666;">
+            Page {PAGENO} of {nbpg}
+        </div>
+        ');
         $mpdf->WriteHTML($html);
         
         // Simpan PDF ke file
-        $mpdf->Output($pdfPath, 'F');
+        $mpdf->Output($pdfPath, 'I');
     
         // Streaming PDF ke browser
         // $mpdf->Output('Report_' . now()->format('YmdHis') . '.pdf', 'I');
     
         // URL untuk mengakses file PDF (jika diperlukan)
-        return asset('storage/reports'. $pdfName);
+        // return asset('storage/reports'. $pdfName);
         
     }
     
