@@ -72,6 +72,7 @@
                                         <select class="js-select2" name="payment_method">
                                             <option value="" selected disabled>Select a payment method</option>
                                             <option value="cash">Cash</option>
+                                            <option value="transfer">Transfer</option>
                                         </select>
                                         <div class="dropDownSelect2"></div>
                                     </div>
@@ -110,6 +111,7 @@
         document.getElementById('checkoutForm').addEventListener('submit', function(event) {
             var selectElement = document.querySelector('select[name="payment_method"]');
             var alertMessage = document.getElementById('alertMessage');
+
             if (!selectElement.value) {
                 alertMessage.style.display = 'block';
                 event.preventDefault();
@@ -117,5 +119,10 @@
                 alertMessage.style.display = 'none';
             }
         });
+
+        document.querySelector('select[name="payment_method"]').addEventListener('change', function() {
+            document.getElementById('alertMessage').style.display = 'none';
+        });
+
     </script>
 @endsection

@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/', [LandingController::class, 'orderStore'])->name('yourorder.update');
             Route::patch('/{id}', [LandingController::class, 'orderCancel'])->name('yourorder.cancel');
             Route::patch('/complement/{id}', [LandingController::class, 'complementCancel'])->name('complement.cancel');
+            
         });
 
         Route::get('/checking', [LandingController::class, 'beforeOrder'])->name('beforeorder.index');

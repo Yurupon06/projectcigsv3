@@ -7,6 +7,7 @@ use App\Models\cart;
 use App\Models\Order;
 use App\Models\Member;
 use App\Models\User;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Customer;
 use App\Models\complement;
@@ -304,29 +305,61 @@ class LandingController extends Controller
             'product_id' => $request->product_id,
             'order_date' => Carbon::now('Asia/Jakarta'),
             'total_amount' => $request->total_amount,
+            'payment_method' => $request->payment_method,
             'status' => 'unpaid',
             'qr_token' => $qrToken,
         ]);
 
-        $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
-        $filePath = storage_path('app/public/' . $fileName);
-        $qrcode = QrCode::format('png')->size(250)->margin(1)->generate('SCAN_' . $qrToken);
-        Storage::disk('public')->put($fileName, $qrcode);
-        $setting = ApplicationSetting::first();
-        $message = "*Orders Details*:\n\nProduct Name: *" . $order->product->product_name . "*\nOrder Date: *" . $order->order_date . "*\nTotal Amount: *Rp. " . number_format($order->total_amount, 0, ',', '.') . "*\n\nThank you for order!\nScan the QR code to cashier to pay the order.";
-        $api = Http::baseUrl($setting->japati_url)
-        ->withToken($setting->japati_token)
-        ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
-        ->post('/api/send-message', [
-            'gateway' => $setting->japati_gateway,
-            'number' => $user->phone,
-            'type' => 'media',
-            'message' => $message,
-        ]);
-
-        if (Storage::disk('public')->exists($fileName)) {
-            Storage::disk('public')->delete($fileName);
+        if ($request->payment_method !== 'transfer') {
+            $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
+            $filePath = storage_path('app/public/' . $fileName);
+            $qrcode = QrCode::format('png')->size(250)->margin(1)->generate('SCAN_' . $qrToken);
+            Storage::disk('public')->put($fileName, $qrcode);
+            $setting = ApplicationSetting::first();
+            $message = "*Orders Details*:\n\nProduct Name: *" . $order->product->product_name . "*\nOrder Date: *" . $order->order_date . "*\nTotal Amount: *Rp. " . number_format($order->total_amount, 0, ',', '.') . "*\n\nThank you for order!\nScan the QR code to cashier to pay the order.";
+            $api = Http::baseUrl($setting->japati_url)
+            ->withToken($setting->japati_token)
+            ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
+            ->post('/api/send-message', [
+                'gateway' => $setting->japati_gateway,
+                'number' => $user->phone,
+                'type' => 'media',
+                'message' => $message,
+            ]);
+    
+            if (Storage::disk('public')->exists($fileName)) {
+                Storage::disk('public')->delete($fileName);
+            }
         }
+
+        if ($request->payment_method === 'transfer') {
+            // Handle the "transfer" payment method
+            // Set your Merchant Server Key
+            \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+            // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+            \Midtrans\Config::$isProduction = false;
+            // Set sanitization on (default)
+            \Midtrans\Config::$isSanitized = true;
+            // Set 3DS transaction for credit card to true
+            \Midtrans\Config::$is3ds = true;
+    
+            $params = array(
+                'transaction_details' => array(
+                    'order_id' => $order->id,
+                    'gross_amount' => $order->total_amount,
+                ),
+                'customer_details' => array(
+                    'first_name' => $user->name,
+                    'phone' => $user->phone,
+                ),
+            );
+    
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+            $order->snap_token = $snapToken;
+            $order->save();
+        }
+
+
 
         return redirect()->route('checkout', ['id' => $order->id])->with('success', 'Order created successfully.');
     }
@@ -350,6 +383,134 @@ class LandingController extends Controller
         }
 
         return view('landing.checkout', compact('order', 'member', 'cartCount'));
+    }
+
+    public function callback(Request $request)
+    {
+        $serverKey = config('midtrans.serverKey');
+        $hashed = hash("sha512", $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
+        if($hashed == $request->signature_key){
+            if($request->transaction_status == 'capture'){
+                $order = Order::find($request->order_id);
+                $amountGiven = $request->gross_amount;
+                $paymentQrToken = Str::random(10);
+                $memberQrToken = Str::random(10);
+                $change = $amountGiven - $order->total_amount;
+
+                Payment::create([
+                    'order_id' => $order->id,
+                    'payment_date' => Carbon::now('Asia/Jakarta'),
+                    'amount' => $order->total_amount,
+                    'amount_given' => $amountGiven,
+                    'change' => $change,
+                    'qr_token' => $paymentQrToken,
+                ]);
+
+                $order->update(['status' => 'paid']);
+
+                $productCategory = $order->product->productcat;
+                $cycle = (int) $productCategory->cycle;
+                $visit = (int) $productCategory->visit;
+
+                $startDate = Carbon::now('Asia/Jakarta');
+                $endDate = $startDate->copy()->addDays($cycle);
+
+                $existingMember = Member::where('customer_id', $order->customer_id)->first();
+
+                if ($existingMember) {
+                    if ($existingMember->status === 'expired' || $existingMember->status === 'inactive') {
+                        $existingMember->update([
+                            'start_date' => $startDate,
+                            'end_date' => $endDate,
+                            'status' => 'active',
+                            'qr_token' => $memberQrToken,
+                            'visit' => $visit,
+                        ]);
+                    } elseif ($existingMember->status === 'active') {
+                        $newVisit = $existingMember->visit + $visit;
+                        $existingEndDate = Carbon::parse($existingMember->end_date);
+                        $newEndDate = $existingEndDate->copy()->addDays($cycle);
+                        $existingMember->update([
+                            'end_date' => $newEndDate,
+                            'visit' => $newVisit,
+                        ]);
+                    }
+                } else {
+                    Member::create([
+                        'customer_id' => $order->customer_id,
+                        'start_date' => $startDate,
+                        'end_date' => $endDate,
+                        'status' => 'active',
+                        'qr_token' => $memberQrToken,
+                        'visit' => $visit,
+                        'product_category_id' => $order->product->product_category_id,
+                    ]);
+                }
+            }
+        }
+    }
+
+    public function pay(Request $request, $id)
+    {
+        $order = Order::findOrFail($id);
+        $user = Auth::user();
+
+        $amountGiven = $order->total_amount;
+
+        $paymentQrToken = Str::random(10);
+        $memberQrToken = Str::random(10);
+        $change = $amountGiven - $order->total_amount;
+
+        Payment::create([
+            'order_id' => $order->id,
+            'payment_date' => Carbon::now('Asia/Jakarta'),
+            'amount' => $order->total_amount,
+            'amount_given' => $amountGiven,
+            'change' => $change,
+            'qr_token' => $paymentQrToken,
+        ]);
+
+        $order->update(['status' => 'paid']);
+
+        $productCategory = $order->product->productcat;
+        $cycle = (int) $productCategory->cycle;
+        $visit = (int) $productCategory->visit;
+
+        $startDate = Carbon::now('Asia/Jakarta');
+        $endDate = $startDate->copy()->addDays($cycle);
+
+        $existingMember = Member::where('customer_id', $order->customer_id)->first();
+
+        if ($existingMember) {
+            if ($existingMember->status === 'expired' || $existingMember->status === 'inactive') {
+                $existingMember->update([
+                    'start_date' => $startDate,
+                    'end_date' => $endDate,
+                    'status' => 'active',
+                    'qr_token' => $memberQrToken,
+                    'visit' => $visit,
+                ]);
+            } elseif ($existingMember->status === 'active') {
+                $newVisit = $existingMember->visit + $visit;
+                $existingEndDate = Carbon::parse($existingMember->end_date);
+                $newEndDate = $existingEndDate->copy()->addDays($cycle);
+                $existingMember->update([
+                    'end_date' => $newEndDate,
+                    'visit' => $newVisit,
+                ]);
+            }
+        } else {
+            Member::create([
+                'customer_id' => $order->customer_id,
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+                'status' => 'active',
+                'qr_token' => $memberQrToken,
+                'visit' => $visit,
+                'product_category_id' => $order->product->product_category_id,
+            ]);
+        }
+
     }
 
     public function showCheckoutComplement($id, Request $request)

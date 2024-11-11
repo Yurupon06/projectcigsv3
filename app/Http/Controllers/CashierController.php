@@ -152,6 +152,10 @@ class CashierController extends Controller
             $order->update(['status' => 'canceled']);
             return redirect()->route('cashier.index')->with('success', 'Order canceled successfully.');
         }
+        
+        $paymentQrToken = Str::random(10);
+        $memberQrToken = Str::random(10);
+
 
         $request->validate([
             'amount_given' => 'required|numeric|min:0',
@@ -163,8 +167,6 @@ class CashierController extends Controller
             return redirect()->back()->with('error', 'The amount given is less than the total amount.');
         }
 
-        $paymentQrToken = Str::random(10);
-        $memberQrToken = Str::random(10);
         $change = $amountGiven - $order->total_amount;
 
         Payment::create([
@@ -425,6 +427,31 @@ class CashierController extends Controller
             'status' => 'unpaid',
             'qr_token' => $qrToken,
         ]);
+        $customer = Customer::findOrFail($request->customer_id);
+
+         // Set your Merchant Server Key
+         \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+         // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+         \Midtrans\Config::$isProduction = false;
+         // Set sanitization on (default)
+         \Midtrans\Config::$isSanitized = true;
+         // Set 3DS transaction for credit card to true
+         \Midtrans\Config::$is3ds = true;
+ 
+         $params = array(
+             'transaction_details' => array(
+                 'order_id' => $order->id,
+                 'gross_amount' => $order->total_amount,
+             ),
+             'customer_details' => array(
+                 'first_name' => $customer->user->name,
+                 'phone' => $customer->user->phone,
+             ),
+         );
+ 
+         $snapToken = \Midtrans\Snap::getSnapToken($params);
+         $order->snap_token = $snapToken;
+         $order->save();
 
         return redirect()->route('cashier.qrscan', ['qr_token' => $order->qr_token]);
     }

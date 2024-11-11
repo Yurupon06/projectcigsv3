@@ -104,6 +104,7 @@
 
 <div class="container mt-4">
     <div class="row">
+        
         <!-- Navigation Back Link -->
         <div class="col-12 mb-3">
             <div class="navigation-links">
@@ -154,7 +155,7 @@
         </div>
 
         <div class="col-12 mb-4">
-            @if ($order->status === 'unpaid')
+            @if ($order->status === 'unpaid' && ($order->payment_method === 'cash' || $order->payment_method === null))
                 <div class="qr-code-container">
                     <div class="mt-3">Go To Cashier And Show The QrCode To Pay</div>
                     <br>
@@ -178,16 +179,45 @@
                         </span>
                     </div>
                 </div>
+                @if ($order->status === 'unpaid')
+                
+                @if ($order->payment_method === 'transfer')
                 <div class="d-flex justify-content-center mt-2">
-                    @if ($order->status === 'unpaid')
+                        <button type="submit" id="pay-button" class="btn btn-success w-100 rounded-0">Pay</button>
+                </div>
+                @endif
+                <div class="d-flex justify-content-center mt-2">
                     <form action="{{ route('yourorder.cancel', $order->id) }}" method="POST" class="mt-3 w-100">
                         @csrf
                         @method('PATCH')
                         <button type="submit" class="btn btn-dark w-100 rounded-0" onclick="return confirm('Are you sure you want to cancel this order?')">Cancel Order</button>
                     </form>
-                    @endif
                 </div>
+                @endif
         </div>
     </div>
 </div>
+
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+<script type="text/javascript">
+    document.getElementById('pay-button').onclick = function(){
+      // SnapToken acquired from previous step
+      snap.pay('{{ $order->snap_token }}', {
+        // Optional
+        onSuccess: function(result){
+            // alert("payment successful");
+            window.location.reload();
+            console.log(result);
+        },
+        // Optional
+        onPending: function(result){
+          /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+        },
+        // Optional
+        onError: function(result){
+          /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+        }
+      });
+    };
+  </script>
 @endsection

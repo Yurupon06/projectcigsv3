@@ -13,7 +13,8 @@ class Order extends Model
         'customer_id',
         'product_id',	
         'order_date',
-        'total_amount',	
+        'total_amount',
+        'payment_method',
         'status',	
         'qr_token',	
     ];

@@ -152,28 +152,39 @@
                                     </tr>
                                     @if ($order->status === 'unpaid')
                                     <tr>
-                                        <td colspan="2">
-                                            <form action="{{ route('payments.store', $order->id) }}" method="POST"
-                                                class="text-end">
-                                                @csrf
-                                                <div class="amount-input">
+                                        <td colspan="3">
+                                            <!-- Container untuk Amount Input dan Change Display -->
+                                            <div class="mb-3">
+                                                <div class="amount-input mb-2">
                                                     <label for="amount_given">Amount Given:</label>
-                                                    <input type="number" name="amount_given" id="amount_given"
-                                                        min="0" step="0.01" oninput="calculateChange()"
-                                                        onkeydown="inputE(event)">
+                                                    <input type="number" name="amount_given" id="amount_given" min="0" step="0.01"
+                                                           oninput="calculateChange()" onkeydown="inputE(event)">
                                                 </div>
                                                 <div class="change-display" id="change-display">
                                                     Change: <span id="change-amount">Rp 0</span>
                                                 </div>
-                                                <button type="submit" name="action" value="cancel"
-                                                    class="btn btn-danger"
-                                                    onclick="return confirm('Are you sure you want to cancel this Order ?')">Cancel
-                                                    Order</button>
-                                                <button type="submit" name="action" value="process"
-                                                    class="btn btn-success" id="processPaymentBtn">Process Payment</button>
-                                            </form>
+                                            </div>
+                                    
+                                            <!-- Container untuk Tombol dalam satu baris -->
+                                            <div class="d-flex align-items-center justify-content-end gap-2">
+                                                <!-- Form untuk Cancel dan Process Payment -->
+                                                <form action="{{ route('payments.store', $order->id) }}" method="POST" class="d-flex align-items-center gap-2">
+                                                    @csrf
+                                                    <!-- Cancel Order Button -->
+                                                    <button type="submit" name="action" value="cancel" class="btn btn-danger"
+                                                            onclick="return confirm('Are you sure you want to cancel this Order?')">Cancel Order</button>
+                                    
+                                                    <!-- Process Payment Button -->
+                                                    <button type="submit" name="action" value="process" class="btn btn-success" id="processPaymentBtn">Process Payment</button>
+                                                </form>
+                                    
+                                                <!-- Pay Button di luar form -->
+                                                <button name="action" type="button" id="pay-button" class="btn btn-warning">Transfer</button>
+                                            </div>
                                         </td>
                                     </tr>
+                                    
+                                    
                                     @endif
                                 </tbody>
                             </table>
@@ -202,6 +213,30 @@
             </div>
         </div>
     </div>
+
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+    <script type="text/javascript">
+        document.getElementById('pay-button').onclick = function(){
+          // SnapToken acquired from previous step
+          snap.pay('{{ $order->snap_token }}', {
+            // Optional
+            onSuccess: function(result){
+                // alert("payment successful");
+                window.location.href = '{{ route('struk_gym', ['id' => $order->id]) }}';
+                console.log("Payment Success:", result);
+            },
+            // Optional
+            onPending: function(result){
+              /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+            },
+            // Optional
+            onError: function(result){
+              /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+            }
+          });
+        };
+      </script>
+
 
     <!-- Include SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
