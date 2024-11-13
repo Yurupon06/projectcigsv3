@@ -20,12 +20,12 @@ class ProductCategorieController extends Controller
         })
         ->orderBy('created_at', 'desc')
         ->paginate($perPage);
-        return view('productcategories.index', compact('productcat'));
+        return view('Productcategories.index', compact('productcat'));
     }
 
     public function create()
     {
-        return view('productcategories.create');
+        return view('Productcategories.create');
     }
 
     public function store(Request $request)
@@ -42,13 +42,13 @@ class ProductCategorieController extends Controller
         $productcat->visit = $request->visit;
         $productcat->save();
 
-        return redirect()->route('productcategories.index')->with('success', 'productcat created successfully.');
+        return redirect()->route('Productcategories.index')->with('success', 'productcat created successfully.');
     }
 
     public function edit(Product_categorie $product_categorie, $id)
     {
         $productcat = Product_categorie::findOrFail($id);
-        return view('productcategories.edit', compact('productcat'));
+        return view('Productcategories.edit', compact('productcat'));
     }
 
     public function update(Request $request, $id, Product_categorie $product_categorie)
@@ -65,14 +65,14 @@ class ProductCategorieController extends Controller
         $productcat->visit = $request->visit;
         $productcat->save();
 
-        return redirect()->route('productcategories.index')->with('success', 'productcat created successfully.');
+        return redirect()->route('Productcategories.index')->with('success', 'productcat created successfully.');
     }
 
     public function destroy(Product_categorie $product_categorie, $id)
     {
         $productcat = product_categorie::findOrFail($id);
         $productcat->delete();
-        return redirect()->route('productcategories.index')->with('success', 'productcategories berhasil dihapus.');
+        return redirect()->route('Productcategories.index')->with('success', 'productcategories berhasil dihapus.');
     }
 
     public function member()
