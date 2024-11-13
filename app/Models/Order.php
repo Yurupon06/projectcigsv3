@@ -17,6 +17,7 @@ class Order extends Model
         'payment_method',
         'status',	
         'qr_token',	
+        'snap_token'
     ];
 
     public function customer(){

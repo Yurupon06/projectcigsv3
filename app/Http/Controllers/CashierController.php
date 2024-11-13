@@ -416,45 +416,54 @@ class CashierController extends Controller
             'product_id' => 'required|exists:products,id',
             'price' => 'required|numeric',
         ]);
-
+    
         $qrToken = Str::random(10);
-
+    
         $order = Order::create([
             'customer_id' => $request->customer_id,
             'product_id' => $request->product_id,
             'order_date' => Carbon::now('Asia/Jakarta'),
             'total_amount' => $request->price,
+            'payment_method' => $request->payment_method,
             'status' => 'unpaid',
             'qr_token' => $qrToken,
         ]);
+        
         $customer = Customer::findOrFail($request->customer_id);
-
-         // Set your Merchant Server Key
-         \Midtrans\Config::$serverKey = config('midtrans.serverKey');
-         // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
-         \Midtrans\Config::$isProduction = false;
-         // Set sanitization on (default)
-         \Midtrans\Config::$isSanitized = true;
-         // Set 3DS transaction for credit card to true
-         \Midtrans\Config::$is3ds = true;
- 
-         $params = array(
-             'transaction_details' => array(
-                 'order_id' => $order->id,
-                 'gross_amount' => $order->total_amount,
-             ),
-             'customer_details' => array(
-                 'first_name' => $customer->user->name,
-                 'phone' => $customer->user->phone,
-             ),
-         );
- 
-         $snapToken = \Midtrans\Snap::getSnapToken($params);
-         $order->snap_token = $snapToken;
-         $order->save();
-
+    
+        \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+        \Midtrans\Config::$isProduction = false;
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
+    
+        $params = [
+            'transaction_details' => [
+                'order_id' => $order->id,
+                'gross_amount' => $order->total_amount,
+            ],
+            'customer_details' => [
+                'first_name' => $customer->user->name,
+                'phone' => $customer->user->phone,
+            ],
+            'custom_field1' => 'order',
+        ];
+    
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        $order->snap_token = $snapToken;
+        $order->save();
+    
+        if ($request->payment_method === 'transfer') {
+            // Kembalikan snap token untuk digunakan di JavaScript
+            return response()->json([
+                'snapToken' => $snapToken,
+                'order_id' => $order->id
+            ]);
+        }
+    
+        // Jika metode pembayaran "cash", langsung redirect ke halaman QR scan
         return redirect()->route('cashier.qrscan', ['qr_token' => $order->qr_token]);
     }
+    
 
     public function profile()
     {
@@ -833,7 +842,7 @@ class CashierController extends Controller
     
         $cartItem->delete();
     
-        return redirect()->route('cashier.complement')->with('success', 'Item berhasil dihapus dari keranjang');
+        return redirect()->back()->with('success', 'Item berhasil dihapus dari keranjang');
     }
     
     
@@ -877,7 +886,7 @@ class CashierController extends Controller
     
     
 
-    public function checkoutProccess() {
+    public function checkoutProccess(Request $request) {
         $user = Auth::user();
         $app = ApplicationSetting::first();
         $cartItems = cart::where('user_id', $user->id)->with('complement')->get();
@@ -890,9 +899,11 @@ class CashierController extends Controller
         $orderComplement = OrderComplement::create([
             'user_id' => $user->id,
             'total_amount' => $totalAmount,
+            'payment_method' => $request->payment_method,
             'status' => 'unpaid', 
             'quantity' => $cartItems->count(),
-            'qr_token' => $qrToken, 
+            'qr_token' => $qrToken,
+            'receive_status' => 'taken',
         ]);
     
         foreach ($cartItems as $item) {
@@ -942,8 +953,46 @@ class CashierController extends Controller
                 'sub_total' => $subTotal, 
             ]);
         }
+
+            $user = Auth::user();
+            // Handle the "transfer" payment method
+            // Set your Merchant Server Key
+            \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+            // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+            \Midtrans\Config::$isProduction = false;
+            // Set sanitization on (default)
+            \Midtrans\Config::$isSanitized = true;
+            // Set 3DS transaction for credit card to true
+            \Midtrans\Config::$is3ds = true;
     
+            $params = array(
+
+                'transaction_details' => array(
+                    'order_id' => $orderComplement->id,
+                    'gross_amount' => $orderComplement->total_amount,
+                ),
+                'customer_details' => array(
+                    'first_name' => $user->name,
+                    'phone' => $user->phone,
+                ),
+                'custom_field1' => 'order_complement',
+            );
+    
+            $snapToken = \Midtrans\Snap::getSnapToken($params);
+            $orderComplement->snap_token = $snapToken;
+            $orderComplement->save();
+        
+
+
         cart::where('user_id', $user->id)->delete();
+
+        if ($request->payment_method === 'transfer') {
+            // Kembalikan snap token untuk digunakan di JavaScript
+            return response()->json([
+                'snapToken' => $snapToken,
+                'qr_token' => $orderComplement->qr_token
+            ]);
+        }
     
         return redirect()->route('cashier.checkout', ['qr_token' => $orderComplement->qr_token]);
     }
@@ -977,7 +1026,7 @@ class CashierController extends Controller
                 $detail->delete();
             }
             $orderComplement->delete();
-            return redirect()->back()->with('success', 'Order canceled successfully.');
+            return redirect()->route('cashier.index', ['filter'=>'complement'])->with('success', 'Order canceled successfully.');
         }
 
         $request->validate([
@@ -1004,27 +1053,27 @@ class CashierController extends Controller
 
         $orderComplement->update(['status' => 'paid']);
 
-        $items = '';
-        foreach ($orderDetails as $detail) {
-            $complement = complement::find($detail['complement_id']);
+        // $items = '';
+        // foreach ($orderDetails as $detail) {
+        //     $complement = complement::find($detail['complement_id']);
 
-            $items .= $complement->name . ' (' . $detail['quantity'] . ' x Rp. ' . number_format($complement->price, 0, '.', '.') . ') = *Rp. ' . number_format($detail['sub_total'], 0, '.', '.') . "*\n";
-        }
+        //     $items .= $complement->name . ' (' . $detail['quantity'] . ' x Rp. ' . number_format($complement->price, 0, '.', '.') . ') = *Rp. ' . number_format($detail['sub_total'], 0, '.', '.') . "*\n";
+        // }
 
-        $setting = ApplicationSetting::first();
-        $message = "*Successfuly Paid!*\n\n*Product*:\n" . $items . "\n*Total Amount*: *Rp. " . number_format($orderComplement->total_amount, 0, ',', '.') . "*\n*Amount Given*: *Rp. " . number_format($amountGiven, 0, ',', '.') . "*\n*Change*: *Rp. " . number_format($change, 0, ',', '.') . "*\n\nThank you for order!";
-        $api = Http::baseUrl($setting->japati_url)
-        ->withToken($setting->japati_token)
-        ->post('/api/send-message', [
-            'gateway' => $setting->japati_gateway,
-            'number' => $orderComplement->user->phone,
-            'type' => 'text',
-            'message' => $message,
-        ]);
-        if (!$api->successful()) {
-            Log::error('Failed to send message', ['response' => $api->body()]);
-            throw new \Exception('Failed to send message');
-        }
+        // $setting = ApplicationSetting::first();
+        // $message = "*Successfuly Paid!*\n\n*Product*:\n" . $items . "\n*Total Amount*: *Rp. " . number_format($orderComplement->total_amount, 0, ',', '.') . "*\n*Amount Given*: *Rp. " . number_format($amountGiven, 0, ',', '.') . "*\n*Change*: *Rp. " . number_format($change, 0, ',', '.') . "*\n\nThank you for order!";
+        // $api = Http::baseUrl($setting->japati_url)
+        // ->withToken($setting->japati_token)
+        // ->post('/api/send-message', [
+        //     'gateway' => $setting->japati_gateway,
+        //     'number' => $orderComplement->user->phone,
+        //     'type' => 'text',
+        //     'message' => $message,
+        // ]);
+        // if (!$api->successful()) {
+        //     Log::error('Failed to send message', ['response' => $api->body()]);
+        //     throw new \Exception('Failed to send message');
+        // }
 
         return redirect()->route('struk_complement', ['id' => $orderComplement->id])->with('success', 'Payment processed and membership created successfully!');
     }

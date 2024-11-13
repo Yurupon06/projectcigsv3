@@ -11,10 +11,13 @@ class OrderComplement extends Model
     protected $table = 'order_complements';
     protected $fillable = [
         'user_id',
-        'total_amount',	
+        'total_amount',
+        'payment_method',
         'status',
         'quantity',
-        'qr_token',	
+        'qr_token',
+        'snap_token',
+        'receive_status'
     ];
 
     public function user(){

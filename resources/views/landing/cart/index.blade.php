@@ -86,41 +86,64 @@
                 </div>
             </div>
         @endforeach
-        <div class="row">
-            <div class="col-12 m-auto mb-4">
-                <div class="card p-4 total-summary">
-                    <h5 class="stext-110 cl2 p-b-10">Order</h5>
+        <form id="checkout-form" action="{{ route('checkout.complement.store') }}" method="POST">
+            @csrf
+            <div class="row">
+                <div class="col-12 m-auto mb-4">
+                    <div class="card p-4 total-summary">
+                        <h5 class="stext-110 cl2 p-b-10">Order</h5>
 
-                    @foreach ($cartItems as $item)
-                        <div class="subtotal d-flex justify-content-between" data-id="{{ $item->id }}">
-                            <div class="size-80 text-left">
-                                <span class="stext-110 cl2">{{ $item->complement->name }} (<span class="total-quantity">{{ $item->quantity }}</span> x Rp. {{ number_format($item->complement->price, 0, '.', '.') }})</span>
+                        @foreach ($cartItems as $item)
+                            <div class="subtotal d-flex justify-content-between" data-id="{{ $item->id }}">
+                                <div class="size-80 text-left">
+                                    <span class="stext-110 cl2">{{ $item->complement->name }} (<span class="total-quantity">{{ $item->quantity }}</span> x Rp. {{ number_format($item->complement->price, 0, '.', '.') }})</span>
+                                </div>
+                                <div class="size-208 text-right">
+                                    <span class="mtext-110 cl2">Rp. <span class="total-price">{{ number_format($item->total, 0, '.', '.') }}</span></span>
+                                </div>
                             </div>
-                            <div class="size-208 text-right">
-                                <span class="mtext-110 cl2">Rp. <span class="total-price">{{ number_format($item->total, 0, '.', '.') }}</span></span>
+                        @endforeach
+
+                        <hr>
+
+                        <div class="d-flex justify-content-between py-3">
+                            <div class="size-208">
+                                <span class="mtext-101 cl2">Subtotal:</span>
+                            </div>
+                            <div class="size-209 text-right">
+                                <span class="mtext-110 cl2" id="subtotal">Rp. <span id="subtotal-price">{{ number_format($cartItems->sum('total'), 0, '.', '.') }}</span></span>
                             </div>
                         </div>
-                    @endforeach
-
-                    <hr>
-
-                    <div class="d-flex justify-content-between py-3">
-                        <div class="size-208">
-                            <span class="mtext-101 cl2">Subtotal:</span>
+                        <div>
+                            <div>
+                                <span class="stext-110 cl2">
+                                    Payment Method :
+                                </span>
+                            </div>
+                            <div>
+                                <div>
+                                    <div class="rs1-select2 rs2-select2 bor8 bg0 m-b-12 m-t-9">
+                                        <select class="js-select2" name="payment_method">
+                                            <option value="" selected disabled>Select a payment method</option>
+                                            <option value="cash">Cash</option>
+                                            <option value="transfer">Transfer</option>
+                                        </select>
+                                        <div class="dropDownSelect2"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="alertMessage" class="alert alert-danger" style="display:none;">
+                                Please select a payment method.
+                            </div>
                         </div>
-                        <div class="size-209 text-right">
-                            <span class="mtext-110 cl2" id="subtotal">Rp. <span id="subtotal-price">{{ number_format($cartItems->sum('total'), 0, '.', '.') }}</span></span>
-                        </div>
-                    </div>
-                    <form id="checkout-form" action="{{ route('checkout.complement.store') }}" method="POST">
-                        @csrf
+
                         <button type="submit" class="proced flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" style="font-size: 16px; padding: 10px 20px; border-radius: 5px;">
                             Checkout
                         </button>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     @else
         <div class="row">
             <div class="col-lg-12 m-lr-auto m-b-50">
@@ -136,5 +159,24 @@
         </div>
     @endif
 </div>
+
+<script>
+    document.getElementById('checkout-form').addEventListener('submit', function(event) {
+        var selectElement = document.querySelector('select[name="payment_method"]');
+        var alertMessage = document.getElementById('alertMessage');
+
+        if (!selectElement.value) {
+            alertMessage.style.display = 'block';
+            event.preventDefault();
+        } else {
+            alertMessage.style.display = 'none';
+        }
+    });
+
+    document.querySelector('select[name="payment_method"]').addEventListener('change', function() {
+        document.getElementById('alertMessage').style.display = 'none';
+    });
+
+</script>
 
 @endsection

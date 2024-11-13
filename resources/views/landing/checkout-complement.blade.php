@@ -193,13 +193,23 @@
             </div>
 
             <div class="col-12 mb-4">
-                @if ($orderComplement->status === 'unpaid')
+                @if ($orderComplement->payment_method === 'cash')
                     <div class="qr-code-container">
                         <div class="mt-3">Go To Cashier And Show The QrCode To Pay</div>
                         <br>
                         {!! QrCode::size(200)->generate('CHECKOUT_' . $orderComplement->qr_token) !!}
                     </div>
                     <br>
+                @elseif ($orderComplement->payment_method === 'transfer')
+                    @if ($orderComplement->status === 'paid')
+                    <div class="qr-code-container">
+                        <div class="mt-3">Go To Cashier And Show The QrCode To get your Complement</div>
+                        <br>
+                        {!! QrCode::size(200)->generate('CHECKOUT_' . $orderComplement->qr_token) !!}
+                    </div>
+                    <br>
+                        
+                    @endif
                 @endif
 
                 <div class="d-flex">
@@ -218,8 +228,14 @@
                         </span>
                     </div>
                 </div>
+                
+                @if ($orderComplement->status === 'unpaid')
+                @if ($orderComplement->payment_method === 'transfer')
                 <div class="d-flex justify-content-center mt-2">
-                    @if ($orderComplement->status === 'unpaid')
+                        <button type="submit" id="pay-button" class="btn btn-success w-100 rounded-0">Pay</button>
+                </div>
+                @endif
+                <div class="d-flex justify-content-center mt-2">
                         <form action="{{ route('complement.cancel', $orderComplement->id) }}" method="POST"
                             class="mt-3 w-100">
                             @csrf
@@ -228,9 +244,32 @@
                                 onclick="return confirm('Are you sure you want to cancel this order?')">Cancel
                                 Order</button>
                         </form>
-                    @endif
                 </div>
+                @endif
             </div>
         </div>
     </div>
+
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+<script type="text/javascript">
+    document.getElementById('pay-button').onclick = function(){
+      // SnapToken acquired from previous step
+      snap.pay('{{ $orderComplement->snap_token }}', {
+        // Optional
+        onSuccess: function(result){
+            // alert("payment successful");
+            window.location.reload();
+            console.log(result);
+        },
+        // Optional
+        onPending: function(result){
+          /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+        },
+        // Optional
+        onError: function(result){
+          /* You may add your own js here, this is just example */ document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
+        }
+      });
+    };
+  </script>
 @endsection

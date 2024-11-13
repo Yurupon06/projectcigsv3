@@ -208,15 +208,79 @@
                             <span>Rp {{ number_format($cartItems->sum('total'), 0, ',', '.') }}</span>
                         </div>
                     </div>
-                    <form action="{{ route('cart.checkout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-primary summary-checkout-btn">Proceed to Checkout</button>
+                    <form id="payment-form" action="{{ route('cart.checkout') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                    
+                        <div class="form-floating">
+                            <select class="form-select" id="payment_method" name="payment_method" aria-label="Floating label select example" required>
+                                <option value="" disabled selected>Select Payment Method :</option>
+                                <option value="cash">Cash</option>
+                                <option value="transfer">Transfer</option>
+                            </select>
+                            <label for="floatingSelect">Payment Method</label>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary summary-checkout-btn">Proceed to Checkout</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
     
+
+<!-- Pastikan Snap.js Midtrans sudah diimpor -->
+<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="YOUR_CLIENT_KEY"></script>
+
+<script>
+    // Ambil elemen form dan select payment_method
+    const form = document.getElementById('payment-form');
+    const paymentMethodSelect = document.getElementById('payment_method');
+
+    form.addEventListener('submit', function(event) {
+        const paymentMethod = paymentMethodSelect.value;
+
+        if (paymentMethod === 'transfer') {
+            event.preventDefault(); // Mencegah form dari submit default
+
+            // Mengirim permintaan ke server untuk mendapatkan Snap Token
+            fetch("{{ route('cart.checkout') }}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                },
+                body: JSON.stringify({
+                    payment_method: paymentMethod
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.snapToken) {
+                    // Menampilkan Midtrans Snap menggunakan Snap Token
+                    window.snap.pay(data.snapToken, {
+                        onSuccess: function(result) {
+                            console.log(result);
+                            window.location.href = `{{ route('cashier.checkout', ['qr_token' => ':qr_token']) }}`.replace(':qr_token', data.qr_token);
+                        },
+                        onPending: function(result) {
+                            alert("Menunggu pembayaran...");
+                        },
+                        onError: function(result) {
+                            alert("Pembayaran gagal!");
+                        }
+                    });
+                } else {
+                    alert("Gagal mendapatkan token pembayaran.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Terjadi kesalahan saat memproses pembayaran.");
+            });
+        }
+    });
+</script>
+
 
 <script>
 function changeQuantity(button, change, itemId) {

@@ -352,6 +352,7 @@ class LandingController extends Controller
                     'first_name' => $user->name,
                     'phone' => $user->phone,
                 ),
+                'custom_field1' => 'order',
             );
     
             $snapToken = \Midtrans\Snap::getSnapToken($params);
@@ -385,70 +386,70 @@ class LandingController extends Controller
         return view('landing.checkout', compact('order', 'member', 'cartCount'));
     }
 
-    public function callback(Request $request)
-    {
-        $serverKey = config('midtrans.serverKey');
-        $hashed = hash("sha512", $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
-        if($hashed == $request->signature_key){
-            if($request->transaction_status == 'capture'){
-                $order = Order::find($request->order_id);
-                $amountGiven = $request->gross_amount;
-                $paymentQrToken = Str::random(10);
-                $memberQrToken = Str::random(10);
-                $change = $amountGiven - $order->total_amount;
+    // public function callback(Request $request)
+    // {
+    //     $serverKey = config('midtrans.serverKey');
+    //     $hashed = hash("sha512", $request->order_id.$request->status_code.$request->gross_amount.$serverKey);
+    //     if($hashed == $request->signature_key){
+    //         if($request->transaction_status == 'capture'){
+    //             $order = Order::find($request->order_id);
+    //             $amountGiven = $request->gross_amount;
+    //             $paymentQrToken = Str::random(10);
+    //             $memberQrToken = Str::random(10);
+    //             $change = $amountGiven - $order->total_amount;
 
-                Payment::create([
-                    'order_id' => $order->id,
-                    'payment_date' => Carbon::now('Asia/Jakarta'),
-                    'amount' => $order->total_amount,
-                    'amount_given' => $amountGiven,
-                    'change' => $change,
-                    'qr_token' => $paymentQrToken,
-                ]);
+    //             Payment::create([
+    //                 'order_id' => $order->id,
+    //                 'payment_date' => Carbon::now('Asia/Jakarta'),
+    //                 'amount' => $order->total_amount,
+    //                 'amount_given' => $amountGiven,
+    //                 'change' => $change,
+    //                 'qr_token' => $paymentQrToken,
+    //             ]);
 
-                $order->update(['status' => 'paid']);
+    //             $order->update(['status' => 'paid']);
 
-                $productCategory = $order->product->productcat;
-                $cycle = (int) $productCategory->cycle;
-                $visit = (int) $productCategory->visit;
+    //             $productCategory = $order->product->productcat;
+    //             $cycle = (int) $productCategory->cycle;
+    //             $visit = (int) $productCategory->visit;
 
-                $startDate = Carbon::now('Asia/Jakarta');
-                $endDate = $startDate->copy()->addDays($cycle);
+    //             $startDate = Carbon::now('Asia/Jakarta');
+    //             $endDate = $startDate->copy()->addDays($cycle);
 
-                $existingMember = Member::where('customer_id', $order->customer_id)->first();
+    //             $existingMember = Member::where('customer_id', $order->customer_id)->first();
 
-                if ($existingMember) {
-                    if ($existingMember->status === 'expired' || $existingMember->status === 'inactive') {
-                        $existingMember->update([
-                            'start_date' => $startDate,
-                            'end_date' => $endDate,
-                            'status' => 'active',
-                            'qr_token' => $memberQrToken,
-                            'visit' => $visit,
-                        ]);
-                    } elseif ($existingMember->status === 'active') {
-                        $newVisit = $existingMember->visit + $visit;
-                        $existingEndDate = Carbon::parse($existingMember->end_date);
-                        $newEndDate = $existingEndDate->copy()->addDays($cycle);
-                        $existingMember->update([
-                            'end_date' => $newEndDate,
-                            'visit' => $newVisit,
-                        ]);
-                    }
-                } else {
-                    Member::create([
-                        'customer_id' => $order->customer_id,
-                        'start_date' => $startDate,
-                        'end_date' => $endDate,
-                        'status' => 'active',
-                        'qr_token' => $memberQrToken,
-                        'visit' => $visit,
-                        'product_category_id' => $order->product->product_category_id,
-                    ]);
-                }
-            }
-        }
-    }
+    //             if ($existingMember) {
+    //                 if ($existingMember->status === 'expired' || $existingMember->status === 'inactive') {
+    //                     $existingMember->update([
+    //                         'start_date' => $startDate,
+    //                         'end_date' => $endDate,
+    //                         'status' => 'active',
+    //                         'qr_token' => $memberQrToken,
+    //                         'visit' => $visit,
+    //                     ]);
+    //                 } elseif ($existingMember->status === 'active') {
+    //                     $newVisit = $existingMember->visit + $visit;
+    //                     $existingEndDate = Carbon::parse($existingMember->end_date);
+    //                     $newEndDate = $existingEndDate->copy()->addDays($cycle);
+    //                     $existingMember->update([
+    //                         'end_date' => $newEndDate,
+    //                         'visit' => $newVisit,
+    //                     ]);
+    //                 }
+    //             } else {
+    //                 Member::create([
+    //                     'customer_id' => $order->customer_id,
+    //                     'start_date' => $startDate,
+    //                     'end_date' => $endDate,
+    //                     'status' => 'active',
+    //                     'qr_token' => $memberQrToken,
+    //                     'visit' => $visit,
+    //                     'product_category_id' => $order->product->product_category_id,
+    //                 ]);
+    //             }
+    //         }
+    //     }
+    // }
 
     public function pay(Request $request, $id)
     {
@@ -577,10 +578,8 @@ class LandingController extends Controller
 
     public function checkoutComplement(Request $request)
     {
-        $userId = auth()->id();
-        
-        
 
+        $userId = auth()->id();
         return DB::transaction(function () use ($userId, $request) {
             $cartItems = cart::where('user_id', $userId)->with('complement')->get();
 
@@ -593,9 +592,14 @@ class LandingController extends Controller
             $qrToken = Str::random(10);
             $orderDetails = [];
 
+            if (!$request->has('payment_method')) {
+                return redirect()->back()->with('error', 'Payment method is missing.');
+            }
+
             $orderComplement = OrderComplement::create([
                 'user_id' => $userId,
                 'total_amount' => 0,
+                'payment_method' => $request->payment_method,
                 'status' => 'unpaid',
                 'quantity' => 0,
                 'qr_token' => $qrToken,
@@ -671,32 +675,66 @@ class LandingController extends Controller
                 $items .= $complement->name . ' (' . $detail['quantity'] . ' x Rp' . number_format($complement->price, 0, '.', '.') . ') = *Rp' . number_format($detail['sub_total'], 0, '.', '.') . "*\n";
             }
 
-            $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
-            $filePath = storage_path('app/public/' . $fileName);
-            $qrcode = QrCode::format('png')->size(250)->margin(1)->generate('CHECKOUT_' . $qrToken);
-            Storage::disk('public')->put($fileName, $qrcode);
+            if ($request->payment_method === 'cash'){
+                $fileName = 'qrcodes/qrcode_' . $qrToken . '.png';
+                $filePath = storage_path('app/public/' . $fileName);
+                $qrcode = QrCode::format('png')->size(250)->margin(1)->generate('CHECKOUT_' . $qrToken);
+                Storage::disk('public')->put($fileName, $qrcode);
+    
+                $user = Auth::user();
+                $setting = ApplicationSetting::first();
+                $message = "*Orders Details*:\n\n*Product*:\n" . $items . "\n*Total*: *Rp. " . number_format($totalAmount, 0, '.', '.') . "*\n\nThank you for order!\nScan the QR code to cashier to pay the order.";
+                try{
+                    $api = Http::baseUrl($setting->japati_url)
+                    ->withToken($setting->japati_token)
+                    ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
+                    ->post('/api/send-message', [
+                        'gateway' => $setting->japati_gateway,
+                        'number' => $user->phone,
+                        'type' => 'media',
+                        'message' => $message,
+                    ]);
+                } catch (\Throwable $th) {
+                    return redirect()->back()->with('error', 'Something went wrong, try again later.');
+                }
+    
+    
+                if (Storage::disk('public')->exists($fileName)) {
+                    Storage::disk('public')->delete($fileName);
+                }
 
-            $user = Auth::user();
-            $setting = ApplicationSetting::first();
-            $message = "*Orders Details*:\n\n*Product*:\n" . $items . "\n*Total*: *Rp. " . number_format($totalAmount, 0, '.', '.') . "*\n\nThank you for order!\nScan the QR code to cashier to pay the order.";
-            try{
-                $api = Http::baseUrl($setting->japati_url)
-                ->withToken($setting->japati_token)
-                ->attach('media_file', fopen($filePath, 'r'), basename($filePath))
-                ->post('/api/send-message', [
-                    'gateway' => $setting->japati_gateway,
-                    'number' => $user->phone,
-                    'type' => 'media',
-                    'message' => $message,
-                ]);
-            } catch (\Throwable $th) {
-                return redirect()->back()->with('error', 'Something went wrong, try again later.');
             }
 
+            if ($request->payment_method === 'transfer') {
+                $user = Auth::user();
+                // Handle the "transfer" payment method
+                // Set your Merchant Server Key
+                \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+                // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+                \Midtrans\Config::$isProduction = false;
+                // Set sanitization on (default)
+                \Midtrans\Config::$isSanitized = true;
+                // Set 3DS transaction for credit card to true
+                \Midtrans\Config::$is3ds = true;
+        
+                $params = array(
 
-            if (Storage::disk('public')->exists($fileName)) {
-                Storage::disk('public')->delete($fileName);
+                    'transaction_details' => array(
+                        'order_id' => $orderComplement->id,
+                        'gross_amount' => $orderComplement->total_amount,
+                    ),
+                    'customer_details' => array(
+                        'first_name' => $user->name,
+                        'phone' => $user->phone,
+                    ),
+                    'custom_field1' => 'order_complement',
+                );
+        
+                $snapToken = \Midtrans\Snap::getSnapToken($params);
+                $orderComplement->snap_token = $snapToken;
+                $orderComplement->save();
             }
+    
 
             return redirect()->route('checkout.complement', ['id' => $orderComplement->id])->with('success', 'Order created successfully.');
         });

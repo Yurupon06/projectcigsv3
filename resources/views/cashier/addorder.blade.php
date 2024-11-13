@@ -110,6 +110,15 @@
                                         <input type="text" id="visit" name="visit" class="ps-2 form-control form-control-sm"
                                             readonly>
                                     </div>
+                                    <div class="mb-1 ms-3 me-3">
+                                        <label for="payment_method" class="form-label small">Payment Method</label>
+                                        <select id="payment_method" name="payment_method" class="ps-2 form-select form-select-sm"
+                                            aria-label="Select Product" required>
+                                            <option value="" disabled selected>Select Payment</option>
+                                            <option value="cash">Cash</option>
+                                            <option value="transfer">Transfer</option>
+                                        </select>
+                                    </div>
 
                                     <div class="ms-1 me-3 mt-2 text-end">
                                         <a href="{{ route('cashier.index') }}" type="button" class="btn btn-secondary">Cancel</a>
@@ -146,7 +155,7 @@
                                 <input type="tel" id="phone" name="phone" class="form-control form-control-sm" required>
                             </div>
                             <div class="text-end">
-                                <button type="submit" class="btn btn-primary">Add Customer</button>
+                                <button type="submit" class="btn btn-primary" >Add Customer</button>
                             </div>
                         </form>
                     </div>
@@ -155,6 +164,7 @@
 
         </div>
     </div>
+
     <script>
         document.getElementById('product_id').addEventListener('change', function() {
             var selectedOption = this.options[this.selectedIndex];
@@ -266,6 +276,56 @@
             });
         });
     </script>
+
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
+    <script>
+        document.getElementById('payment_method').addEventListener('change', function() {
+            const paymentMethod = this.value;
+            const makeOrderButton = document.querySelector('button[type="submit"]');
+    
+            makeOrderButton.addEventListener('click', function(event) {
+                if (paymentMethod === 'transfer') {
+                    event.preventDefault(); // Mencegah form dikirim secara langsung
+    
+                    // Mengirim permintaan ke server untuk membuat order dan mendapatkan Snap Token
+                    fetch("{{ route('make.order') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({
+                            customer_id: document.getElementById('customer_id').value,
+                            product_id: document.getElementById('product_id').value,
+                            price: document.getElementById('price').value,
+                            payment_method: paymentMethod
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.snapToken) {
+                            window.snap.pay(data.snapToken, {
+                                onSuccess: function(result) {
+                                    alert("Pembayaran berhasil!");
+                                    window.location.href = `{{ route('struk_gym', ['id' => ':id']) }}`.replace(':id', data.order_id);
+                                },
+                                onPending: function(result) {
+                                    alert("Menunggu pembayaran...");
+                                },
+                                onError: function(result) {
+                                    alert("Pembayaran gagal!");
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
+                }
+            });
+        });
+    </script>
+
     <script>
         @if (session('error'))
             Swal.fire({
@@ -275,4 +335,6 @@
             });
         @endif
     </script>
+
+
 @endsection
