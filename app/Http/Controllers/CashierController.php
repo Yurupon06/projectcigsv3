@@ -159,6 +159,10 @@ class CashierController extends Controller
 
         $request->validate([
             'amount_given' => 'required|numeric|min:0',
+        ], [
+            'amount_given.required' => 'Amount given is required.',
+            'amount_given.numeric' => 'Amount given must be a number.',
+            'amount_given.min' => 'Amount given must be at least 0.',
         ]);
 
         $amountGiven = $request->input('amount_given');

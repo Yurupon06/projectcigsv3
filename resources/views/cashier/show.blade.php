@@ -153,6 +153,7 @@
                                     @if ($order->status === 'unpaid')
                                     <tr>
                                         <td colspan="3">
+                                            <form action="{{ route('payments.store', $order->id) }}" method="POST">
                                             <!-- Container untuk Amount Input dan Change Display -->
                                             <div class="mb-3">
                                                 <div class="amount-input mb-2">
@@ -168,7 +169,7 @@
                                             <!-- Container untuk Tombol dalam satu baris -->
                                             <div class="d-flex align-items-center justify-content-end gap-2">
                                                 <!-- Form untuk Cancel dan Process Payment -->
-                                                <form action="{{ route('payments.store', $order->id) }}" method="POST" class="d-flex align-items-center gap-2">
+                                                
                                                     @csrf
                                                     <!-- Cancel Order Button -->
                                                     <button type="submit" name="action" value="cancel" class="btn btn-danger"
